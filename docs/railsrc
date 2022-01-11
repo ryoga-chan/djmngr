@@ -1,0 +1,8 @@
+--template=template.rb
+--skip-action-mailbox
+--skip-action-text
+--skip-action-cable
+--skip-hotwire
+--skip-jbuilder
+--skip-test
+--skip-system-test
