@@ -3,6 +3,8 @@
 if ($('body').data('ctrl') +'/'+ $('body').data('action') != 'process/edit')
   return;
 
+var p_bar = '<progress class="progress is-small is-info" max="100">i</progress>';
+
 $('#rename_with').change(function () {
   var method = $(this).val();
   
@@ -19,11 +21,37 @@ $('#rename_with').change(function () {
 });
 
 // select images to delete
-$('.columns .column').click(function () {
+$('.columns .column').click(function (ev) {
+  if ($(ev.target).is(':input'))
+    return;
+  
   $(this).toggleClass('has-background-warning');
   
   var cb = $(this).find(':checkbox');
   cb.prop('checked', !cb.prop('checked'));
+});
+
+// update the single image name
+$('input[name="img_name"]').change(function () {
+  var el = $(this);
+  
+  $.ajax({
+    url: el.data('url'),
+    data: {
+      name: el.val(),
+      path: el.data('path')
+    },
+    method: 'POST',
+    dataType: 'json',
+    cache: false,
+    beforeSend: function () { el.addClass('is-hidden').after(p_bar); },//beforeSend
+    success: function (resp) {
+      if (resp.result != 'ok')
+        alert(resp.msg || 'Server error!');
+    },//success
+    complete: function () { el.removeClass('is-hidden').next().remove(); },//complete
+    error: function () { alert('Server error!'); }//error
+  });
 });
 // ------------------------------------------------------------------------
 }); })(jQuery)
