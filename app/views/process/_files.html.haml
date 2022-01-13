@@ -1,0 +1,75 @@
+= form_with url: rename_images_process_path(id: @info[:working_dir]), method: :post do |f|
+  = hidden_field_tag :tab, params[:tab]
+    
+  .field.has-addons.mb-4
+    .control.has-icons-left
+      .select= f.select :rename_with,
+        { "alphabetical index" => :alphabetical_index,
+          "filename to number" => :to_integer,
+          "regexp \\1 to number" => :regex_number,
+          "regexp \\1 as prefix, \\2 as number" => :regex_pref_num,
+          "regexp \\1 to number, \\2 as prefix" => :regex_num_pref,
+        }, {}, class: "input is-rounded"
+      %span.icon.is-small.is-left
+        %i.mi swap_horiz
+    .control.has-icons-left.is-hidden
+      = f.text_field :rename_regexp, class: :input, size: 30,
+        placeholder: 'regular expression with captures',
+        value: @info[:images_last_regexp],
+        data: { last_value: @info[:images_last_regexp] }
+      %span.icon.is-small.is-left
+        %i.mi settings
+    .control
+      = f.button type: :submit, class: 'button is-rounded is-info' do
+        %span.icon.is-small
+          %i.mi send
+        %span Rename
+
+%table.table.is-striped.is-hoverable
+  %thead
+  %tbody
+    - if @info[:files].any?
+      %tr
+        %th.has-background-info(colspan="4")= "#{@info[:files].size} &mdash; Extraneous Files &mdash;".html_safe
+      %tr
+        %th
+        %th Size
+        %th(colspan="2") Name
+      - @info[:files].each do |f|
+        %tr
+          %td
+            .field.has-addons
+              .control
+                = link_to({action: :delete_archive_files, id: @info[:working_dir], path: f[:src_path]},
+                    method: :delete, data: { confirm: 'Delete this file?' },
+                    class: 'button is-danger is-rounded', title: 'delete file') do
+                  %span.icon
+                    %i.mi delete
+          %td.has-text-right= number_to_human_size f[:size]
+          %td(colspan="2")= f[:src_path]
+    
+    %tr
+      %th.has-background-info(colspan="4")
+        = "#{@info[:images].size} &mdash; Images &mdash;".html_safe
+        - if @info[:images_collision]
+          %span.tag.is-danger DUPLICATED NAMES!
+        - else
+          %span.tag.is-success NO DUPLICATES
+    %tr
+      %th
+      %th Size
+      %th Dest
+      %th Source
+    - @info[:images].each do |img|
+      %tr
+        %td
+          .field.has-addons
+            .control
+              = link_to({action: :delete_archive_files, id: @info[:working_dir], path: img[:src_path]},
+                  method: :delete, data: { confirm: 'Delete this file?' },
+                  class: 'button is-danger is-rounded', title: 'delete file') do
+                %span.icon
+                  %i.mi delete
+        %td.has-text-right= number_to_human_size img[:size]
+        %td= img[:dst_path]
+        %td= img[:src_path]

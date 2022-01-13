@@ -1,0 +1,43 @@
+- if @info[:prepared_at]
+
+  .title= "Archive processing since #{@info[:prepared_at].strftime '%F %H:%M'}"
+  .title.is-4= @info[:relative_path]
+  
+  .tabs.is-boxed
+    %ul
+      %li{class: (:'is-active' if params[:tab] == 'files') }
+        = link_to tab: :files do
+          %span.icon.is-small
+            %i.mi edit_note
+          %span File names
+      %li{class: (:'is-active' if params[:tab] == 'images') }
+        = link_to tab: :images do
+          %span.icon.is-small
+            %i.mi collections
+          %span Images
+      %li{class: (:'is-active' if params[:tab] == 'ident') }
+        = link_to tab: :ident do
+          %span.icon.is-small
+            %i.mi fact_check
+          %span Identification
+  
+  = render partial: params[:tab]
+  
+  %hr
+  
+- else
+
+  .title= "Archive processing"
+  .title.is-4= @info[:relative_path]
+  .title.is-6= "Preparing archive, please wait ... #{@perc}%"
+
+  
+  :javascript
+    setTimeout(function () { window.location.reload(); }, 5000)
+
+= link_to({action: :delete_archive_cwd, id: params[:id]},
+    method: :delete, data: { confirm: 'Delete this processing folder?' },
+    class: 'button is-danger is-light is-rounded', title: 'delete processing folder') do
+  %span.icon
+    %i.mi delete
+  %span Delete folder

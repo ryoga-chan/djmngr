@@ -1,0 +1,24 @@
+= form_with url: delete_archive_files_process_path(id: @info[:working_dir]), method: :delete do |f|
+  = hidden_field_tag :tab, params[:tab]
+
+  .field.has-text-centered
+    .control
+      = f.button type: :submit, class: 'button is-rounded is-danger', data: { confirm: 'Delete selected images?' } do
+        %span.icon.is-small
+          %i.mi delete
+        %span Delete selected images
+
+  - base_dir = File.join(Setting['dir.sorting'], @info[:working_dir], 'thumbs')
+  - @info[:images].each_slice(6).each do |s|
+    .columns
+      - s.each do |img|
+        .column.is-2.has-text-centered
+          = thumbnail_tag File.join(base_dir, img[:thumb_path])
+          = check_box_tag 'path[]', img[:src_path], false, id: '', class: 'is-hidden'
+
+  .field.has-text-centered
+    .control
+      = f.button type: :submit, class: 'button is-rounded is-danger', data: { confirm: 'Delete selected images?' } do
+        %span.icon.is-small
+          %i.mi delete
+        %span Delete selected images
