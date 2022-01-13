@@ -28,5 +28,5 @@
           %td.has-text-right= number_to_human_size fsize
           %td
             - if @preparing_paths.include?(fname)
-              %span.tag.is-info(title="processing") 🛠️
+              %span.tag.is-info(title="processing") 🛠
             = link_to fname, action: :prepare_archive, path: fname

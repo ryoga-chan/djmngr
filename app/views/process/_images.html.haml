@@ -13,7 +13,9 @@
     .columns
       - s.each do |img|
         .column.is-2.has-text-centered
-          = thumbnail_tag File.join(base_dir, img[:thumb_path])
+          = text_field_tag :img_name, img[:dst_path], id: '', size: 10,
+            data: { url: rename_image_process_path, path: img[:src_path] }
+          = thumbnail_tag File.join(base_dir, img[:thumb_path]), title: "#{img[:dst_path]}\n↪#{img[:src_path]}"
           = check_box_tag 'path[]', img[:src_path], false, id: '', class: 'is-hidden'
 
   .field.has-text-centered
