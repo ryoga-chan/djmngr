@@ -11,6 +11,7 @@ Rails.application.routes.draw do
     end
     
     member do
+      get     :show_image
       post    :rename_image
       post    :rename_images
       delete  :delete_archive_cwd

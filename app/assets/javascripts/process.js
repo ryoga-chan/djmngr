@@ -22,7 +22,7 @@ $('#rename_with').change(function () {
 
 // select images to delete
 $('.columns .column').click(function (ev) {
-  if ($(ev.target).is(':input'))
+  if ($(ev.target).is(':input, a'))
     return;
   
   $(this).toggleClass('has-background-warning');

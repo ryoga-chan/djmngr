@@ -13,9 +13,12 @@
     .columns
       - s.each do |img|
         .column.is-2.has-text-centered
-          = text_field_tag :img_name, img[:dst_path], id: '', size: 10,
+          = text_field_tag :img_name, img[:dst_path], id: '', size: 8,
             data: { url: rename_image_process_path, path: img[:src_path] }
-          = thumbnail_tag File.join(base_dir, img[:thumb_path]), title: "#{img[:dst_path]}\n↪#{img[:src_path]}"
+          = link_to '🔎',
+            show_image_process_path(id: @info[:working_dir], path: img[:src_path]),
+            target: :_blank
+          .mt-1= thumbnail_tag File.join(base_dir, img[:thumb_path]), title: "#{img[:dst_path]} @ #{number_to_human_size img[:size]}\n↪#{img[:src_path]}"
           = check_box_tag 'path[]', img[:src_path], false, id: '', class: 'is-hidden'
 
   .field.has-text-centered
