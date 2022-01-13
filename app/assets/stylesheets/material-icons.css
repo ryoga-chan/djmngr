@@ -1,0 +1,89 @@
+/* ICONS: https://fonts.google.com/icons?selected=Material+Icons */
+
+/* taken from https://fonts.googleapis.com/icon?family=Material+Icons */
+/* fallback */
+@font-face {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: 400;
+  /* src: url(https://fonts.gstatic.com/s/materialicons/v87/flUhRq6tzZclQEJ-Vdg-IuiaDsNc.woff2) format('woff2'); */
+  src: url(/fonts/materialicons-v87.woff2) format('woff2');
+}
+
+/* taken from https://developers.google.com/fonts/docs/material_icons */
+i.mi {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: 'liga';
+}
+
+i.mi.mi-small  { font-size: 18px; }
+i.mi           { font-size: 24px; }
+i.mi.mi-medium { font-size: 36px; }
+i.mi.mi-large  { font-size: 48px; }
+
+i.mi.mi-dark              { color: rgba(  0,   0,   0, 0.54); } /* black on light bg */
+i.mi.mi-dark.mi-inactive  { color: rgba(  0,   0,   0, 0.26); }
+i.mi.mi-light             { color: rgba(255, 255, 255, 1   ); } /* white on dark bg */
+i.mi.mi-light.md-inactive { color: rgba(255, 255, 255, 0.3 ); }
+
+i.mi.mi-rot45 {
+  -webkit-transform: rotate(45deg);
+  -ms-transform:     rotate(45deg);
+  transform:         rotate(45deg);
+}
+i.mi.mi-rot90 {
+  -webkit-transform: rotate(90deg);
+  -ms-transform:     rotate(90deg);
+  transform:         rotate(90deg);
+}
+i.mi.mi-rot135 {
+  -webkit-transform: rotate(135deg);
+  -ms-transform:     rotate(135deg);
+  transform:         rotate(135deg);
+}
+i.mi.mi-rot180 {
+  -webkit-transform: rotate(180deg);
+  -ms-transform:     rotate(180deg);
+  transform:         rotate(180deg);
+}
+i.mi.mi-rot-45 {
+  -webkit-transform: rotate(-45deg);
+  -ms-transform:     rotate(-45deg);
+  transform:         rotate(-45deg);
+}
+i.mi.mi-rot-90 {
+  -webkit-transform: rotate(-90deg);
+  -ms-transform:     rotate(-90deg);
+  transform:         rotate(-90deg);
+}
+i.mi.mi-rot-135 {
+  -webkit-transform: rotate(-135deg);
+  -ms-transform:     rotate(-135deg);
+  transform:         rotate(-135deg);
+}
+i.mi.mi-flip-v {
+  -webkit-transform: scaleY(-1);
+  transform:         scaleY(-1);
+  filter:            FlipV;
+  -ms-filter:        "FlipV";
+}
+i.mi.mi-flip-h {
+  -webkit-transform: scaleX(-1);
+  transform:         scaleX(-1);
+  filter:            FlipH;
+  -ms-filter:        "FlipH";
+}
