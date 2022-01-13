@@ -1,6 +1,6 @@
 - if @info[:prepared_at]
 
-  .title= "Archive processing since #{@info[:prepared_at].strftime '%F %H:%M'}"
+  .title= "Archive processing started on #{@info[:prepared_at].strftime '%F %H:%M'}"
   .title.is-4= @info[:relative_path]
   
   .tabs.is-boxed

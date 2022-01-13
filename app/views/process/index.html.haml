@@ -7,14 +7,9 @@
     %tbody
       - @preparing.each_with_index do |f, i|
         %tr
-          %td
-            .field.has-addons
-              .control
-                = link_to({action: :delete_archive_cwd, id: f[:working_dir]},
-                    method: :delete, data: { confirm: 'Delete this processing folder?' },
-                    class: 'button is-danger is-rounded', title: 'delete processing folder') do
-                  %span.icon
-                    %i.mi delete
+          %td= link_to('🗑', {action: :delete_archive_cwd, id: f[:working_dir]},
+            method: :delete, data: { confirm: 'Delete this processing folder?' },
+            class: 'has-text-danger', title: 'delete processing folder')
           %td.has-text-right= number_to_human_size f[:tot_size]
           %td= link_to f[:relative_path], action: :edit, id: f[:working_dir]
 
@@ -27,17 +22,11 @@
     %tbody
       - @files.each do |fname, fsize|
         %tr
-          %td
-            .field.has-addons
-              .control
-                = link_to({action: :delete_archive, path: fname},
-                    method: :delete, data: { confirm: 'Delete this file?' },
-                    class: 'button is-danger is-rounded', title: 'delete file') do
-                  %span.icon
-                    %i.mi delete
+          %td= link_to('🗑', {action: :delete_archive, path: fname},
+            method: :delete, data: { confirm: 'Delete this file?' },
+            class: 'has-text-danger', title: 'delete file')
           %td.has-text-right= number_to_human_size fsize
           %td
-            = link_to fname, action: :prepare_archive, path: fname
             - if @preparing_paths.include?(fname)
-              %br/
-              %span.tag.is-info processing
+              %span.tag.is-info(title="processing") 🛠️
+            = link_to fname, action: :prepare_archive, path: fname

@@ -1,1 +1,6 @@
 .nowrap { white-space: nowrap; }
+
+#appNavbar span.navbar-item.is-current {
+  background-color: rgba(255, 255, 255, 0.075);
+  border-bottom: 0.2rem solid gray;
+}

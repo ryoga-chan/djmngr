@@ -30,27 +30,22 @@
   %tbody
     - if @info[:files].any?
       %tr
-        %th.has-background-info(colspan="4")= "#{@info[:files].size} &mdash; Extraneous Files &mdash;".html_safe
+        %th.has-background-info.pl-5(colspan="4")= "&mdash; #{@info[:files].size} Extraneous Files &mdash;".html_safe
       %tr
         %th
         %th Size
         %th(colspan="2") Name
       - @info[:files].each do |f|
         %tr
-          %td
-            .field.has-addons
-              .control
-                = link_to({action: :delete_archive_files, id: @info[:working_dir], path: f[:src_path]},
-                    method: :delete, data: { confirm: 'Delete this file?' },
-                    class: 'button is-danger is-rounded', title: 'delete file') do
-                  %span.icon
-                    %i.mi delete
+          %td= link_to('🗑', {action: :delete_archive_files, id: @info[:working_dir], path: f[:src_path]},
+            method: :delete, data: { confirm: 'Delete this file?' },
+            class: 'has-text-danger', title: 'delete file')
           %td.has-text-right= number_to_human_size f[:size]
           %td(colspan="2")= f[:src_path]
     
     %tr
-      %th.has-background-info(colspan="4")
-        = "#{@info[:images].size} &mdash; Images &mdash;".html_safe
+      %th.has-background-info.pl-5(colspan="4")
+        = "&mdash; #{@info[:images].size} Images &mdash;".html_safe
         - if @info[:images_collision]
           %span.tag.is-danger DUPLICATED NAMES!
         - else
@@ -62,14 +57,9 @@
       %th Source
     - @info[:images].each do |img|
       %tr
-        %td
-          .field.has-addons
-            .control
-              = link_to({action: :delete_archive_files, id: @info[:working_dir], path: img[:src_path]},
-                  method: :delete, data: { confirm: 'Delete this file?' },
-                  class: 'button is-danger is-rounded', title: 'delete file') do
-                %span.icon
-                  %i.mi delete
+        %td= link_to('🗑', {action: :delete_archive_files, id: @info[:working_dir], path: img[:src_path]},
+          method: :delete, data: { confirm: 'Delete this file?' },
+          class: 'has-text-danger', title: 'delete file')
         %td.has-text-right= number_to_human_size img[:size]
         %td= img[:dst_path]
         %td= img[:src_path]
