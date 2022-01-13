@@ -1,14 +1,44 @@
 !!!
 %html
   %head
+    %meta{charset: "utf-8"}/
     %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
-    %title Doujinshi manager
     %meta{:content => "width=device-width,initial-scale=1", :name => "viewport"}/
+    -# https://www.html.am/html-codes/image-codes/html-favicon-code.cfm
+    %link{rel: "shortcut icon"   , href: "/favicon.ico"}/
+    %link{rel: "apple-touch-icon", href: "/apple-touch-icon.png"}/
+    %title doujinshi manager
     = csrf_meta_tags
     = csp_meta_tag
     = stylesheet_link_tag "application"
     = javascript_include_tag "application"
   %body{data: {ctrl: params[:controller], action: params[:action], id: params[:id]}}
+    %nav.navbar{role: "navigation"}
+      .navbar-brand
+        %a.navbar-item(href='/' title='vai alla home page')= image_tag 'logo-small.png'
+        %a.navbar-burger{:role => "button", :'data-target' => "appNavbar"}
+          %span
+          %span
+          %span
+
+      #appNavbar.navbar-menu
+        .navbar-start
+          %span.navbar-item{class: params[:controller] != 'process' ? nil : 'is-current'}
+            = link_to process_index_path do
+              %span.icon-text
+                %span.icon
+                  %i.mi swap_horiz
+                %span Processing
+
+        .navbar-end
+          .navbar-item
+            .buttons
+              - if true # Current.user
+                = link_to '#', class: 'button is-primary' do
+                  .span.icon.is-small
+                    %i.mi logout
+                  .span Logout
+
     %section.section.main-content
       - {notice: 'is-info', warn: 'is-warning', alert: 'is-danger'}.each do |key, css_class|
         - if flash[key].present?
