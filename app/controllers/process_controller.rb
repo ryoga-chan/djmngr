@@ -1,7 +1,10 @@
 class ProcessController < ApplicationController
   before_action :check_archive_file  , only: [:prepare_archive, :delete_archive]
-  before_action :check_archive_folder,
-    only: [:edit, :delete_archive_cwd, :delete_archive_files, :rename_images, :rename_image]
+  before_action :check_archive_folder, only: [
+    :edit, :show_image,
+    :delete_archive_cwd, :delete_archive_files,
+    :rename_images, :rename_image
+  ]
 
   # list processable files
   def index
@@ -27,7 +30,7 @@ class ProcessController < ApplicationController
   # prepare ZIP working folder and redirects to edit
   def prepare_archive
     if Marcel::MimeType.for(Pathname.new @fname) != 'application/zip'
-      return redirect_to({action: :index}, alert: "incorrect MIME type, it's not a ZIP file!")
+      return redirect_to(process_index_path, alert: "incorrect MIME type, it's not a ZIP file!")
     end
     
     file_size = File.size @fname
@@ -55,17 +58,17 @@ class ProcessController < ApplicationController
       PrepareArchiveForProcessingJob.perform_later dst_dir
     end
     
-    redirect_to action: :edit, id: hash
+    redirect_to edit_process_path(id: hash)
   end # prepare_archive
   
   def delete_archive
     File.unlink @fname
-    return redirect_to({action: :index}, notice: "file deleted: [#{@fname}]") 
+    return redirect_to(process_index_path, notice: "file deleted: [#{@fname}]") 
   end # delete_archive
   
   def delete_archive_cwd
     FileUtils.rm_rf @dname, secure: true
-    return redirect_to({action: :index}, notice: "folder deleted: [#{@dname}]") 
+    return redirect_to(process_index_path, notice: "folder deleted: [#{@dname}]") 
   end # delete_archive_cwd
   
   def delete_archive_files
@@ -87,7 +90,7 @@ class ProcessController < ApplicationController
     
     File.open(File.join(@dname, 'info.yml'), 'w'){|f| f.puts @info.to_yaml }
     
-    return redirect_to({action: :edit, id: params[:id], tab: params[:tab]},
+    return redirect_to(edit_process_path(id: params[:id], tab: params[:tab]),
       notice: "#{params[:path].size} file/s deleted")
   end # delete_archive_files
   
@@ -137,9 +140,9 @@ class ProcessController < ApplicationController
       
       File.open(File.join(@dname, 'info.yml'), 'w'){|f| f.puts @info.to_yaml }
       
-      redirect_to action: :edit, id: params[:id]
+      redirect_to edit_process_path(id: params[:id])
     rescue
-      redirect_to({action: :edit, id: params[:id]}, alert: $!.to_s)
+      redirect_to(edit_process_path(id: params[:id]), alert: $!.to_s)
     end
   end # rename_images
   
@@ -156,6 +159,11 @@ class ProcessController < ApplicationController
     end
   end # rename_image
   
+  def show_image
+    sub_path = File.expand_path(params[:path], '/')[1..-1] # sanitize input
+    send_file File.join(@dname, 'contents', sub_path), disposition: :inline
+  end # show_image
+  
   
   private # ____________________________________________________________________
   
@@ -163,20 +171,20 @@ class ProcessController < ApplicationController
   def check_archive_file
     @fname = File.expand_path File.join(Setting['dir.to_sort'], params[:path])
     
-    return redirect_to({action: :index}, alert: "file not found!") unless File.exist?(@fname)
+    return redirect_to(process_index_path, alert: "file not found!") unless File.exist?(@fname)
     
     unless @fname.start_with?(Setting['dir.to_sort'])
-      return redirect_to({action: :index}, alert: "file outside of working directory!")
+      return redirect_to(process_index_path, alert: "file outside of working directory!")
     end
   end # check_archive_file
   
   def check_archive_folder
     @dname = File.expand_path File.join(Setting['dir.sorting'], params[:id])
     
-    return redirect_to({action: :index}, alert: "folder not found!") unless File.exist?(@dname)
+    return redirect_to(process_index_path, alert: "folder not found!") unless File.exist?(@dname)
     
     unless @dname.start_with?(Setting['dir.sorting'])
-      return redirect_to({action: :index}, alert: "folder outside of working directory!")
+      return redirect_to(process_index_path, alert: "folder outside of working directory!")
     end
   end # check_archive_folder
 end

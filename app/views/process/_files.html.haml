@@ -37,7 +37,7 @@
         %th(colspan="2") Name
       - @info[:files].each do |f|
         %tr
-          %td= link_to('🗑', {action: :delete_archive_files, id: @info[:working_dir], path: f[:src_path]},
+          %td= link_to('🗑', delete_archive_files_process_path(id: @info[:working_dir], path: f[:src_path]),
             method: :delete, data: { confirm: 'Delete this file?' },
             class: 'has-text-danger', title: 'delete file')
           %td.has-text-right= number_to_human_size f[:size]
@@ -57,10 +57,12 @@
       %th Source
     - @info[:images].each do |img|
       %tr
-        %td= link_to('🗑', {action: :delete_archive_files, id: @info[:working_dir], path: img[:src_path]},
+        %td= link_to('🗑', delete_archive_files_process_path(id: @info[:working_dir], path: img[:src_path]),
           method: :delete, data: { confirm: 'Delete this file?' },
           class: 'has-text-danger', title: 'delete file')
         %td.has-text-right= number_to_human_size img[:size]
         %td= text_field_tag :img_name, img[:dst_path], id: '', size: 10,
           data: { url: rename_image_process_path, path: img[:src_path] }
-        %td= img[:src_path]
+        %td= link_to img[:src_path],
+          show_image_process_path(id: @info[:working_dir], path: img[:src_path]),
+          target: :_blank
