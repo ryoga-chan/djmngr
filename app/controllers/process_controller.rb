@@ -1,6 +1,7 @@
 class ProcessController < ApplicationController
   before_action :check_archive_file  , only: [:prepare_archive, :delete_archive]
-  before_action :check_archive_folder, only: [:edit, :delete_archive_cwd, :delete_archive_files, :rename_images]
+  before_action :check_archive_folder,
+    only: [:edit, :delete_archive_cwd, :delete_archive_files, :rename_images, :rename_image]
 
   # list processable files
   def index
@@ -129,6 +130,8 @@ class ProcessController < ApplicationController
           raise 'unknown renaming method'
       end # case
       
+      @info[:images] = @info[:images].sort{|a,b| a[:dst_path] <=> b[:dst_path] }
+      
       @info[:images_last_regexp] = params[:rename_regexp]
       @info[:images_collision] = @info[:images].size != @info[:images].map{|i| i[:dst_path] }.uniq.size
       
@@ -139,6 +142,19 @@ class ProcessController < ApplicationController
       redirect_to({action: :edit, id: params[:id]}, alert: $!.to_s)
     end
   end # rename_images
+  
+  def rename_image
+    @info = YAML.load_file(File.join @dname, 'info.yml')
+    
+    if img = @info[:images].detect{|i| i[:src_path] == params[:path] }
+      img[:dst_path] = params[:name]
+      @info[:images] = @info[:images].sort{|a,b| a[:dst_path] <=> b[:dst_path] }
+      File.open(File.join(@dname, 'info.yml'), 'w'){|f| f.puts @info.to_yaml }
+      render(json: {result: 'ok'})
+    else
+      render(json: {result: 'err', msg: "image not found [#{params[:name]}]" })
+    end
+  end # rename_image
   
   
   private # ____________________________________________________________________

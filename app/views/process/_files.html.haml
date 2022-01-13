@@ -61,5 +61,6 @@
           method: :delete, data: { confirm: 'Delete this file?' },
           class: 'has-text-danger', title: 'delete file')
         %td.has-text-right= number_to_human_size img[:size]
-        %td= img[:dst_path]
+        %td= text_field_tag :img_name, img[:dst_path], id: '', size: 10,
+          data: { url: rename_image_process_path, path: img[:src_path] }
         %td= img[:src_path]
