@@ -12,7 +12,7 @@ Rails.application.routes.draw do
     
     member do
       get     :show_image
-      post    :rename_image
+      post    :rename_file
       post    :rename_images
       delete  :delete_archive_cwd
       delete  :delete_archive_files

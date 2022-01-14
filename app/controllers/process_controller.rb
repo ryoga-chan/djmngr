@@ -3,7 +3,7 @@ class ProcessController < ApplicationController
   before_action :check_archive_folder, only: [
     :edit, :show_image,
     :delete_archive_cwd, :delete_archive_files,
-    :rename_images, :rename_image
+    :rename_images, :rename_file,
   ]
 
   # list processable files
@@ -67,8 +67,17 @@ class ProcessController < ApplicationController
   end # delete_archive
   
   def delete_archive_cwd
+    if params[:archive_too] == 'true'
+      @info = YAML.load_file(File.join @dname, 'info.yml')
+      File.unlink @info[:file_path]
+    end
+    
     FileUtils.rm_rf @dname, secure: true
-    return redirect_to(process_index_path, notice: "folder deleted: [#{@dname}]") 
+    
+    msg = params[:archive_too] == 'true' ?
+      "archive and folder deleted: [#{@info[:relative_path]}], [#{params[:id]}]" :
+      "folder deleted: [#{params[:id]}]"
+    return redirect_to(process_index_path, notice: msg)
   end # delete_archive_cwd
   
   def delete_archive_files
@@ -108,19 +117,19 @@ class ProcessController < ApplicationController
     begin
       case params[:rename_with].to_sym
         when :alphabetical_index
-          @info[:images].each_with_index{|img, i| img[:dst_path] = '%04d.jpg' % i }
+          @info[:images].each_with_index{|img, i| img[:dst_path] = '%04d.jpg' % (i+1) }
         when :to_integer
-          @info[:images].each_with_index{|img, i| img[:dst_path] = '%04d.jpg' % img[:src_path].to_i }
+          @info[:images].each{|img| img[:dst_path] = '%04d.jpg' % img[:src_path].to_i }
         when :regex_number
           re = Regexp.new params[:rename_regexp]
-          @info[:images].each_with_index do |img, i|
+          @info[:images].each do |img|
             img[:dst_path] = '%04d.jpg' % img[:src_path].match(re)&.captures&.first.to_i
           end
         when :regex_pref_num, :regex_num_pref
           re = Regexp.new params[:rename_regexp]
           invert_terms = params[:rename_with].to_sym == :regex_num_pref
           # create a sortable label
-          @info[:images].each_with_index do |img, i|
+          @info[:images].each do |img|
             prefix, num = img[:src_path].match(re)&.captures
             num, prefix = prefix, num if invert_terms
             img[:dst_sort_by] = "#{prefix}-#{'%050d' % num.to_i}"
@@ -128,7 +137,7 @@ class ProcessController < ApplicationController
           # rename images sorted by the previous label
           @info[:images]
             .sort{|a,b| a[:dst_sort_by] <=> b[:dst_sort_by] }
-            .each_with_index{|img, i| img[:dst_path] = '%04d.jpg' % i }
+            .each_with_index{|img, i| img[:dst_path] = '%04d.jpg' % (i+1) }
         else
           raise 'unknown renaming method'
       end # case
@@ -146,18 +155,26 @@ class ProcessController < ApplicationController
     end
   end # rename_images
   
-  def rename_image
+  def rename_file
     @info = YAML.load_file(File.join @dname, 'info.yml')
     
-    if img = @info[:images].detect{|i| i[:src_path] == params[:path] }
-      img[:dst_path] = params[:name]
+    if el = @info[:files].detect{|i| i[:src_path] == params[:path] }
+      el[:dst_path] = params[:name]
+      @info[:files] = @info[:files].sort{|a,b| a[:dst_path] <=> b[:dst_path] }
+      @info[:files_collision] = @info[:files].size != @info[:files].map{|i| i[:dst_path] }.uniq.size
+    elsif el = @info[:images].detect{|i| i[:src_path] == params[:path] }
+      el[:dst_path] = params[:name]
       @info[:images] = @info[:images].sort{|a,b| a[:dst_path] <=> b[:dst_path] }
+      @info[:images_collision] = @info[:images].size != @info[:images].map{|i| i[:dst_path] }.uniq.size
+    end
+    
+    if el
       File.open(File.join(@dname, 'info.yml'), 'w'){|f| f.puts @info.to_yaml }
       render(json: {result: 'ok'})
     else
       render(json: {result: 'err', msg: "image not found [#{params[:name]}]" })
     end
-  end # rename_image
+  end # rename_file
   
   def show_image
     sub_path = File.expand_path(params[:path], '/')[1..-1] # sanitize input
