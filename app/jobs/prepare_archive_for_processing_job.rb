@@ -24,10 +24,13 @@ class PrepareArchiveForProcessingJob < ApplicationJob
     
     info[:ren_images_method] = 'alphabetical_index'
     
+    # copy filename for files
+    info[:files].each_with_index{|f, i| f[:dst_path] = "#{'%04d' % i}-#{f[:src_path].gsub '/', '_'}" }
+    
     # create thumbnails for the images
     info[:images].each_with_index do |img, i|
       begin
-        img[:dst_path] = '%04d.jpg' % i
+        img[:dst_path] = '%04d.jpg' % (i+1)
         img[:thumb_path] = img[:dst_path].dup
         
         ImageProcessing::Vips
