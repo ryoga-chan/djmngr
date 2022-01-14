@@ -1,6 +1,23 @@
+.actions-danger(style="float: right")
+  = link_to({action: :delete_archive_cwd, id: params[:id]},
+      method: :delete, data: { confirm: 'Delete this processing folder?' },
+      class: 'button is-danger is-light is-rounded mb-4', title: 'delete processing folder') do
+    %span.icon
+      %i.mi delete
+    %span Delete WIP
+  %br
+  = link_to({action: :delete_archive_cwd, id: params[:id], archive_too: true},
+      method: :delete, data: { confirm: "Delete processing folder\nAND the original archive?" },
+      class: 'button is-danger is-rounded', title: 'delete processing folder') do
+    %span.icon
+      %i.mi delete
+    %span Delete ALL
+
 - if @info[:prepared_at]
 
-  .title= "Archive processing started on #{@info[:prepared_at].strftime '%F %H:%M'}"
+  .title
+    Archive processing started
+    %span.is-1= "on #{@info[:prepared_at].strftime '%F %H:%M'}"
   .title.is-4= @info[:relative_path]
   
   .tabs.is-boxed
@@ -34,10 +51,3 @@
   
   :javascript
     setTimeout(function () { window.location.reload(); }, 5000)
-
-= link_to({action: :delete_archive_cwd, id: params[:id]},
-    method: :delete, data: { confirm: 'Delete this processing folder?' },
-    class: 'button is-danger is-light is-rounded', title: 'delete processing folder') do
-  %span.icon
-    %i.mi delete
-  %span Delete folder

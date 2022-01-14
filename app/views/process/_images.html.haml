@@ -1,8 +1,12 @@
 = form_with url: delete_archive_files_process_path(id: @info[:working_dir]), method: :delete do |f|
   = hidden_field_tag :tab, params[:tab]
 
-  .field.has-text-centered
-    .control
+  = action_buttons = capture do
+    .has-text-centered.mb-4
+      = f.button class: 'button is-rounded is-info mr-4', onclick: %Q|jQuery('.columns .column').click(); return false| do
+        %span.icon.is-small
+          %i.mi select_all
+        %span Toggle all images
       = f.button type: :submit, class: 'button is-rounded is-danger', data: { confirm: 'Delete selected images?' } do
         %span.icon.is-small
           %i.mi delete
@@ -13,17 +17,12 @@
     .columns
       - s.each do |img|
         .column.is-2.has-text-centered
-          = text_field_tag :img_name, img[:dst_path], id: '', size: 8,
-            data: { url: rename_image_process_path, path: img[:src_path] }
+          = text_field_tag :img_name, img[:dst_path], id: '', size: 7,
+            data: { url: rename_file_process_path, path: img[:src_path] }
           = link_to '🔎',
             show_image_process_path(id: @info[:working_dir], path: img[:src_path]),
             target: :_blank
           .mt-1= thumbnail_tag File.join(base_dir, img[:thumb_path]), title: "#{img[:dst_path]} @ #{number_to_human_size img[:size]}\n↪#{img[:src_path]}"
           = check_box_tag 'path[]', img[:src_path], false, id: '', class: 'is-hidden'
 
-  .field.has-text-centered
-    .control
-      = f.button type: :submit, class: 'button is-rounded is-danger', data: { confirm: 'Delete selected images?' } do
-        %span.icon.is-small
-          %i.mi delete
-        %span Delete selected images
+  = action_buttons

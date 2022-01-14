@@ -5,6 +5,7 @@ if ($('body').data('ctrl') +'/'+ $('body').data('action') != 'process/edit')
 
 var p_bar = '<progress class="progress is-small is-info" max="100">i</progress>';
 
+// massive rename with regexp
 $('#rename_with').change(function () {
   var method = $(this).val();
   
@@ -32,7 +33,7 @@ $('.columns .column').click(function (ev) {
 });
 
 // update the single image name
-$('input[name="img_name"]').change(function () {
+$('input[name="file_name"]').change(function () {
   var el = $(this);
   
   $.ajax({
