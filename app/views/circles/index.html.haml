@@ -1,0 +1,35 @@
+%h1 Listing circles
+
+%table
+  %thead
+    %tr
+      %th Name
+      %th Name romaji
+      %th Name kana
+      %th Name kakasi
+      %th Url
+      %th Info
+      %th Aliases
+      %th Links
+      %th
+      %th
+      %th
+
+  %tbody
+    - @circles.each do |circle|
+      %tr
+        %td= circle.name
+        %td= circle.name_romaji
+        %td= circle.name_kana
+        %td= circle.name_kakasi
+        %td= circle.url
+        %td= circle.info
+        %td= circle.aliases
+        %td= circle.links
+        %td= link_to 'Show', circle
+        %td= link_to 'Edit', edit_circle_path(circle)
+        %td= link_to 'Destroy', circle, method: :delete, data: { confirm: 'Are you sure?' }
+
+%br
+
+= link_to 'New Circle', new_circle_path
