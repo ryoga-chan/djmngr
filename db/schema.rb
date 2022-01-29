@@ -10,7 +10,62 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_01_11_171223) do
+ActiveRecord::Schema.define(version: 2022_01_29_102137) do
+
+  create_table "authors", force: :cascade do |t|
+    t.string "name"
+    t.string "name_romaji"
+    t.string "name_kana"
+    t.string "name_kakasi"
+    t.string "url", default: "", null: false
+    t.text "info"
+    t.text "aliases"
+    t.text "links"
+    t.integer "doujinshi_org_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "authors_circles", id: false, force: :cascade do |t|
+    t.integer "author_id", null: false
+    t.integer "circle_id", null: false
+    t.datetime "created_at", precision: 6
+    t.index ["author_id", "circle_id"], name: "index_authors_circles_on_author_id_and_circle_id", unique: true
+    t.index ["author_id"], name: "index_authors_circles_on_author_id"
+    t.index ["circle_id"], name: "index_authors_circles_on_circle_id"
+  end
+
+  create_table "authors_themes", id: false, force: :cascade do |t|
+    t.integer "author_id", null: false
+    t.integer "theme_id", null: false
+    t.datetime "created_at", precision: 6
+    t.index ["author_id", "theme_id"], name: "index_authors_themes_on_author_id_and_theme_id", unique: true
+    t.index ["author_id"], name: "index_authors_themes_on_author_id"
+    t.index ["theme_id"], name: "index_authors_themes_on_theme_id"
+  end
+
+  create_table "circles", force: :cascade do |t|
+    t.string "name"
+    t.string "name_romaji"
+    t.string "name_kana"
+    t.string "name_kakasi"
+    t.string "url", default: "", null: false
+    t.text "info"
+    t.text "aliases"
+    t.text "links"
+    t.integer "doujinshi_org_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "circles_themes", id: false, force: :cascade do |t|
+    t.integer "circle_id", null: false
+    t.integer "theme_id", null: false
+    t.datetime "created_at", precision: 6
+    t.index ["circle_id", "theme_id"], name: "index_circles_themes_on_circle_id_and_theme_id", unique: true
+    t.index ["circle_id"], name: "index_circles_themes_on_circle_id"
+    t.index ["theme_id"], name: "index_circles_themes_on_theme_id"
+  end
 
   create_table "settings", force: :cascade do |t|
     t.string "key", null: false
@@ -20,4 +75,25 @@ ActiveRecord::Schema.define(version: 2022_01_11_171223) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "themes", force: :cascade do |t|
+    t.string "name"
+    t.string "name_romaji"
+    t.string "name_kana"
+    t.string "name_kakasi"
+    t.string "url", default: "", null: false
+    t.text "info"
+    t.text "aliases"
+    t.text "links"
+    t.integer "parent_id"
+    t.integer "doujinshi_org_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  add_foreign_key "authors_circles", "authors"
+  add_foreign_key "authors_circles", "circles"
+  add_foreign_key "authors_themes", "authors"
+  add_foreign_key "authors_themes", "themes"
+  add_foreign_key "circles_themes", "circles"
+  add_foreign_key "circles_themes", "themes"
 end
