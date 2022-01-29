@@ -1,0 +1,30 @@
+%p#notice= notice
+
+%p
+  %b Name:
+  = @circle.name
+%p
+  %b Name romaji:
+  = @circle.name_romaji
+%p
+  %b Name kana:
+  = @circle.name_kana
+%p
+  %b Name kakasi:
+  = @circle.name_kakasi
+%p
+  %b Url:
+  = @circle.url
+%p
+  %b Info:
+  = @circle.info
+%p
+  %b Aliases:
+  = @circle.aliases
+%p
+  %b Links:
+  = @circle.links
+
+= link_to 'Edit', edit_circle_path(@circle)
+\|
+= link_to 'Back', circles_path

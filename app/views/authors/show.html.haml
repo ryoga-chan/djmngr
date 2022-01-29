@@ -1,0 +1,30 @@
+%p#notice= notice
+
+%p
+  %b Name:
+  = @author.name
+%p
+  %b Name romaji:
+  = @author.name_romaji
+%p
+  %b Name kana:
+  = @author.name_kana
+%p
+  %b Name kakasi:
+  = @author.name_kakasi
+%p
+  %b Url:
+  = @author.url
+%p
+  %b Info:
+  = @author.info
+%p
+  %b Aliases:
+  = @author.aliases
+%p
+  %b Links:
+  = @author.links
+
+= link_to 'Edit', edit_author_path(@author)
+\|
+= link_to 'Back', authors_path

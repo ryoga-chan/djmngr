@@ -17,5 +17,9 @@ Rails.application.routes.draw do
       delete  :delete_archive_cwd
       delete  :delete_archive_files
     end
-  end
+  end # process
+
+  resources :authors
+  resources :themes
+  resources :circles
 end

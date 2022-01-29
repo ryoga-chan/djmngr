@@ -2,8 +2,6 @@ class PrepareArchiveForProcessingJob < ApplicationJob
   queue_as :tools
 
   def perform(dst_dir)
-    # TODO: run bg job: unzip file, create thumbs
-    #   on finish: update metadata
     info = YAML.load_file(File.join dst_dir, 'info.yml')
     
     path_thumbs   = File.join(dst_dir, 'thumbs')
