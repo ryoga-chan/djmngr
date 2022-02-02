@@ -16,6 +16,7 @@ gem 'haml-rails', '~> 2.0'    # https://haml.info
 gem 'kaminari'                # pagination -- https://github.com/kaminari/kaminari
 gem 'kakasi'                  # kanji kana simple inverter -- https://github.com/knu/kakasi_ffi
 gem 'ferret', '0.11.9.0', source: 'https://rubygems.pkg.github.com/acavalin' # https://github.com/acavalin/ferret
+gem 'progressbar'
 
 group :development do
   gem 'debug', platforms: %i[ mri mingw x64_mingw ] # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
