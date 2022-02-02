@@ -17,11 +17,11 @@ ActiveRecord::Schema.define(version: 2022_01_29_102137) do
     t.string "name_romaji"
     t.string "name_kana"
     t.string "name_kakasi"
-    t.string "url", default: "", null: false
     t.text "info"
     t.text "aliases"
     t.text "links"
     t.integer "doujinshi_org_id"
+    t.string "doujinshi_org_url", default: "", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
@@ -49,11 +49,11 @@ ActiveRecord::Schema.define(version: 2022_01_29_102137) do
     t.string "name_romaji"
     t.string "name_kana"
     t.string "name_kakasi"
-    t.string "url", default: "", null: false
     t.text "info"
     t.text "aliases"
     t.text "links"
     t.integer "doujinshi_org_id"
+    t.string "doujinshi_org_url", default: "", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
@@ -80,12 +80,12 @@ ActiveRecord::Schema.define(version: 2022_01_29_102137) do
     t.string "name_romaji"
     t.string "name_kana"
     t.string "name_kakasi"
-    t.string "url", default: "", null: false
     t.text "info"
     t.text "aliases"
     t.text "links"
     t.integer "parent_id"
     t.integer "doujinshi_org_id"
+    t.string "doujinshi_org_url", default: "", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
