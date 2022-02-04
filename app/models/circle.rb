@@ -9,4 +9,7 @@ class Circle < ApplicationRecord
     c.errors.add :base, "theme already associated [#{t.id}: #{t.name}]"
     throw :abort
   }
+
+  include SearchJapaneseSubject
+  include DoujinshiOrgReference
 end

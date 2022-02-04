@@ -16,8 +16,9 @@ module CoreExt
         ac1, ac2, fname = self.match(/^\[([^\]\(\)]+)(\(.+\))*\]\s*(.+)/).captures
         
         # extract authors/circles by splitting groups
-        { ac1:   ac1  .to_s.strip             .split(/\s*[,\|]\s*/),
-          ac2:   ac2  .to_s.strip[1...-1].to_s.split(/\s*[,\|]\s*/),
+        { ac_explicit:   ac1  .to_s.strip             .split(/\s*[,\|]\s*/),
+          ac_implicit:   ac2  .to_s.strip[1...-1].to_s.split(/\s*[,\|]\s*/),
+          subjects: self.sub(/^\[([^\]]+)\].+/, '\1'),
           fname: fname.to_s.strip }
       end # parse_doujin_filename
     end
