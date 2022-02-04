@@ -38,7 +38,7 @@
             %i.mi fact_check
           %span Identification
   
-  = render partial: params[:tab]
+  %div{class: params[:tab]}= render partial: params[:tab]
   
   %hr
   
@@ -47,7 +47,9 @@
   .title= "Archive processing"
   .title.is-4= @info[:relative_path]
   .title.is-6= "Preparing archive, please wait ... #{@perc}%"
-
   
   :javascript
     setTimeout(function () { window.location.reload(); }, 5000)
+
+-#info = ''; PP.pp @info, info
+-#%pre= info
