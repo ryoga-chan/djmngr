@@ -103,12 +103,36 @@ class ProcessController < ApplicationController
       notice: "#{params[:path].size} file/s deleted")
   end # delete_archive_files
   
-  # manage archive sanitize operations
+  # manage archive operations (sanitize filenames, delete extra images, identify author)
   def edit
     params[:tab] = 'files' unless %w{ files images ident }.include?(params[:tab])
     
     @info = YAML.load_file(File.join @dname, 'info.yml')
     @perc = File.read(File.join @dname, 'completion.perc').to_f rescue 0.0 unless @info[:prepared_at]
+    
+    if params[:tab] == 'ident'
+      # toggle association by single ID
+      %w{ author circle }.each do |k|
+        if params["#{k}_id".to_sym]
+          @info["#{k}_ids".to_sym] ||= []
+          method = @info["#{k}_ids".to_sym].to_a.include?(params["#{k}_id".to_sym].to_i) ? :delete : :push
+          @info["#{k}_ids".to_sym].send method, params["#{k}_id".to_sym].to_i
+          File.open(File.join(@dname, 'info.yml'), 'w'){|f| f.puts @info.to_yaml }
+          return redirect_to(edit_process_path(id: params[:id], tab: 'ident', term: params[:term]))
+        end
+      end
+      
+      # lists of currently associated authors/circles
+      @associated_authors = Author.where(id: @info[:author_ids]).order("LOWER(name), id DESC")
+      @associated_circles = Circle.where(id: @info[:circle_ids]).order("LOWER(name), id DESC")
+      
+      # filename analisys
+      @name = File.basename(@info[:relative_path].to_s).parse_doujin_filename
+      # single term search
+      params[:term] = @name[:ac_explicit][0] || @name[:ac_implicit][0] if params[:term].blank?
+      @authors = Author.search_by_name params[:term], limit: 50
+      @circles = Circle.search_by_name params[:term], limit: 50
+    end
   end # edit
   
   def rename_images

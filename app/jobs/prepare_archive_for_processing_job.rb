@@ -4,6 +4,19 @@ class PrepareArchiveForProcessingJob < ApplicationJob
   def perform(dst_dir)
     info = YAML.load_file(File.join dst_dir, 'info.yml')
     
+    # auto associate authors/circles when a 100% match is found
+    name = File.basename(info[:relative_path].to_s).downcase.parse_doujin_filename
+    (name[:ac_explicit] + name[:ac_implicit]).each do |term|
+      list = Author.search_by_name(term, limit: 50) +
+             Circle.search_by_name(term, limit: 50)
+      list.each do |result|
+        key = "#{result.class.name.downcase}_ids".to_sym
+        info[key] ||= []
+        info[key] << result.id if result.name.downcase == term
+      end
+    end
+
+    # identify files and resize images
     path_thumbs   = File.join(dst_dir, 'thumbs')
     path_contents = File.join(dst_dir, 'contents')
     
