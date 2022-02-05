@@ -1,4 +1,59 @@
-.box.has-background-danger
-  > split doujin params
-  > select dest subfolder
-  > set dest filename
+.name_orig.mb-1
+  %span.icon.in-text-small.mr-2
+    %i.mi.mi-small photo_filter
+  = @fname
+
+- if @fname != @fname.to_romaji
+  .name_romaji.mb-1
+    %span.icon.in-text-small.mr-2
+      %i.mi.mi-small translate
+    = @fname.to_romaji #alt_readings:true, furigana_mode: true
+
+.file-type.mb-1
+  %span.icon.in-text-small.mr-2
+    %i.mi.mi-small local_offer
+  = @info[:file_type]
+  - if @info[:file_type] == 'doujin'
+    = "/ #{@info[:doujin_dest_type]}"
+
+.subfolder.mb-1
+  = form_with url: set_property_process_path do |f|
+    = f.hidden_field :tab, value: params[:tab]
+    %span.icon.in-text-small.mr-2
+      %i.mi.mi-small create_new_folder
+    %span.select.vmiddle= f.select :sel_subfolder,
+      options_for_select(@subfolders, @info[:subfolder]), {},
+      class: "input is-small vmiddle", style: 'width: 15rem',
+      onchange: %Q| $('#subfolder').val($(this).val()); this.form.submit() |
+    = f.text_field :subfolder, value: @info[:subfolder], placeholder: 'destination subfolder',
+      class: 'input is-small', style: 'width: 15rem'
+    = f.button class: 'button is-small' do
+      %span.icon
+        %i.mi.mi-small send
+
+.dest-filename.mb-1
+  = form_with url: set_property_process_path do |f|
+    = f.hidden_field :tab, value: params[:tab]
+    %span.icon.in-text-small.mr-2
+      %i.mi.mi-small insert_drive_file
+    = f.text_field :dest_filename, value: @info[:dest_filename], placeholder: 'destination filename',
+      class: 'input is-small', style: 'width: 40rem',
+      data: { orig_name: File.basename(@info[:relative_path]) }
+    = f.button class: 'button is-small' do
+      %span.icon
+        %i.mi.mi-small send
+    = f.button class: 'button is-small',
+      onclick: %Q|$('#dest_filename').val($('#dest_filename').data('orig-name')); return false;| do
+      %span.icon
+        %i.mi.mi-small restore
+
+.final-path
+  %span.icon.in-text-small.mr-2
+    %i.mi.mi-small folder
+  - path = []
+  - path << @info[:file_type] == 'doujin' ? @info[:doujin_dest_type] : @info[:file_type]
+  - path << @info[:dest_folder]
+  - path << @info[:subfolder]
+  - path << @info[:dest_filename]
+  = File.join '/', *path
+  
