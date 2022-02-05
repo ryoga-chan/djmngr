@@ -1,7 +1,7 @@
 class ProcessController < ApplicationController
   before_action :check_archive_file  , only: [:prepare_archive, :delete_archive]
   before_action :check_archive_folder, only: [
-    :edit, :show_image,
+    :edit, :show_image, :set_property,
     :delete_archive_cwd, :delete_archive_files,
     :rename_images, :rename_file,
   ]
@@ -104,6 +104,54 @@ class ProcessController < ApplicationController
       notice: "#{params[:path].size} file/s deleted")
   end # delete_archive_files
   
+  def set_property
+    @info  = YAML.load_file(File.join @dname, 'info.yml')
+    @perc  = File.read(File.join @dname, 'completion.perc').to_f rescue 0.0 unless @info[:prepared_at]
+    @fname = File.basename(@info[:relative_path].to_s)
+
+    # set file type
+    if params[:file_type] && params[:file_type] != @info[:file_type]
+      @info[:file_type] = params[:file_type]
+      File.open(File.join(@dname, 'info.yml'), 'w'){|f| f.puts @info.to_yaml }
+    end
+    
+    # DOUJIN: toggle associated author/circle ID
+    %w{ author circle }.each do |k|
+      tmp_id = params["#{k}_id".to_sym].to_i
+      
+      if tmp_id > 0
+        key = "#{k}_ids".to_sym
+        @info[key] ||= []
+        method = @info[key].to_a.include?(tmp_id) ? :delete : :push
+        @info[key].send method, tmp_id
+        
+        # remove destination if deleting it
+        @info[:doujin_dest_id] = nil if method == :delete && @info[:doujin_dest_id] == "#{k}-#{tmp_id}"
+        
+        File.open(File.join(@dname, 'info.yml'), 'w'){|f| f.puts @info.to_yaml }
+      end
+    end
+    
+    # DOUJIN: select a main/destination author/circle
+    if params[:doujin_dest_id] && params[:doujin_dest_id] != "#{@info[:doujin_dest_type]}-#{@info[:doujin_dest_id]}"
+      # store type and ID
+      @info[:doujin_dest_type], @info[:doujin_dest_id] = params[:doujin_dest_id].split('-')
+      # set destination folder to subject romaji name
+      subject = @info[:doujin_dest_type].capitalize.constantize.find_by(id: @info[:doujin_dest_id])
+      @info[:dest_folder] = (subject.name_romaji || subject.name_kakasi).downcase
+      
+      File.open(File.join(@dname, 'info.yml'), 'w'){|f| f.puts @info.to_yaml }
+    end
+    
+    # set destination folder
+    if params[:dest_folder] && params[:dest_folder] != @info[:dest_folder]
+      @info[:dest_folder] = params[:dest_folder]
+      File.open(File.join(@dname, 'info.yml'), 'w'){|f| f.puts @info.to_yaml }
+    end
+    
+    redirect_to edit_process_path(id: params[:id], tab: params[:tab], term: params[:term])
+  end # set_property
+  
   # manage archive operations (sanitize filenames, delete extra images, identify author)
   def edit
     params[:tab] = 'files' unless %w{ files images ident move }.include?(params[:tab])
@@ -113,59 +161,12 @@ class ProcessController < ApplicationController
     @fname = File.basename(@info[:relative_path].to_s)
     
     if params[:tab] == 'ident'
-      redir_params = {id: params[:id], tab: 'ident', term: params[:term]}
-      
-      # toggle association by single ID
-      %w{ author circle }.each do |k|
-        tmp_id = params["#{k}_id".to_sym].to_i
-        
-        if tmp_id > 0
-          key = "#{k}_ids".to_sym
-          @info[key] ||= []
-          method = @info[key].to_a.include?(tmp_id) ? :delete : :push
-          @info[key].send method, tmp_id
-          
-          # remove destination if deleting it
-          @info[:doujin_dest_id] = nil if method == :delete && @info[:doujin_dest_id] == "#{k}-#{tmp_id}"
-          
-          File.open(File.join(@dname, 'info.yml'), 'w'){|f| f.puts @info.to_yaml }
-          return redirect_to(edit_process_path(redir_params))
-        end
-      end
-      
-      # set file type
-      if params[:file_type] && params[:file_type] != @info[:file_type]
-        @info[:file_type] = params[:file_type]
-        File.open(File.join(@dname, 'info.yml'), 'w'){|f| f.puts @info.to_yaml }
-        return redirect_to(edit_process_path(redir_params))
-      end
-      
-      # set destination author/circle
-      if params[:doujin_dest_id] && params[:doujin_dest_id] != @info[:doujin_dest_id]
-        @info[:doujin_dest_id] = params[:doujin_dest_id]
-        
-        # set destination folder to subject romaji name
-        model, model_id = @info[:doujin_dest_id].split('-')
-        subject = model.capitalize.constantize.find_by(id: model_id)
-        @info[:dest_folder] = (subject.name_romaji || subject.name_kakasi).downcase
-        
-        File.open(File.join(@dname, 'info.yml'), 'w'){|f| f.puts @info.to_yaml }
-        return redirect_to(edit_process_path(redir_params))
-      end
-      
-      # set destination folder
-      if params[:dest_folder] && params[:dest_folder] != @info[:dest_folder]
-        @info[:dest_folder] = params[:dest_folder]
-        File.open(File.join(@dname, 'info.yml'), 'w'){|f| f.puts @info.to_yaml }
-        return redirect_to(edit_process_path(redir_params))
-      end
-      
       # list possible dest folders
       @dest_folders = []
       case @info[:file_type]
         when 'doujin'
-          if @info[:doujin_dest_id]
-            repo = File.join(Setting['dir.sorted'], @info[:doujin_dest_id].split('-')[0]).to_s
+          if @info[:doujin_dest_type]
+            repo = File.join(Setting['dir.sorted'], @info[:doujin_dest_type]).to_s
             @dest_folders = Dir.chdir(repo){ Dir['*'].select{|i| File.directory? i } }.sort.unshift('-custom name-')
           end
         when 'magazine'
