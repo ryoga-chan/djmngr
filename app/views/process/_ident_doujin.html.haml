@@ -43,7 +43,7 @@
   .column
     .title.is-4 Associations
     
-    = form_with url: edit_process_path, method: :get do |f|
+    = form_with url: set_property_process_path do |f|
       = f.hidden_field :tab , value: params[:tab]
       = f.hidden_field :term, value: params[:term]
       - %w{  circle author }.each do |type|
@@ -53,12 +53,12 @@
             - instance_variable_get("@associated_#{type.pluralize}").each do |r|
               .subject
                 = f.radio_button :doujin_dest_id, "#{type}-#{r.id}",
-                  checked: "#{type}-#{r.id}" == @info[:doujin_dest_id],
+                  checked: "#{type}-#{r.id}" == "#{@info[:doujin_dest_type]}-#{@info[:doujin_dest_id]}",
                   onchange: "this.form.submit()"
                 - name = r.name.present? ? r.name : r.name_kana
                 - if r.doujinshi_org_id
-                  = link_to({"#{type.singularize}_id" => r.id, tab: params[:tab], term: params[:term]},
-                    title: "remove association", data: {confirm: 'remove association?'}) do
+                  = link_to({action: :set_property, "#{type.singularize}_id" => r.id, tab: params[:tab], term: params[:term]},
+                    title: "remove association", data: {confirm: 'remove association?', method: :post}) do
                     %span.icon.in-text.has-text-primary
                       %i.mi remove
                   - name_hl = h(name).gsub(term_re, %Q|<span class="has-text-warning">\\0</span>|).html_safe
@@ -83,8 +83,8 @@
           .name_orig
             - name = r.name.present? ? r.name : r.name_kana
             - if r.doujinshi_org_id
-              = link_to({"#{type.singularize}_id" => r.id, tab: params[:tab], term: params[:term]},
-                title: "#{is_associated ? :remove : :add} association") do
+              = link_to({action: :set_property, "#{type.singularize}_id" => r.id, tab: params[:tab], term: params[:term]},
+                title: "#{is_associated ? :remove : :add} association", data: {method: :post}) do
                 %span.icon.in-text.has-text-primary
                   %i.mi= is_associated ? :remove : :add
               - name_hl = h(name).gsub(term_re, %Q|<span class="has-text-warning">\\0</span>|).html_safe

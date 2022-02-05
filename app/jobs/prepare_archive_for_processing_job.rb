@@ -19,9 +19,9 @@ class PrepareArchiveForProcessingJob < ApplicationJob
     end
     # set a default doujin destination
     if dest_id = info[:circle_ids].to_a.first
-      info[:doujin_dest_id] = "circle-#{dest_id}"
+      info[:doujin_dest_type], info[:doujin_dest_id] = 'circle', dest_id
     elsif dest_id = info[:author_ids].to_a.first
-      info[:doujin_dest_id] = "author-#{dest_id}"
+      info[:doujin_dest_type], info[:doujin_dest_id] = 'author', dest_id
     end
     
     # identify file type
@@ -29,9 +29,8 @@ class PrepareArchiveForProcessingJob < ApplicationJob
       info[:file_type] = 'doujin'
 
       # set destination folder to subject romaji name
-      if info[:doujin_dest_id]
-        model, model_id = info[:doujin_dest_id].split('-')
-        subject = model.capitalize.constantize.find_by(id: model_id)
+      if info[:doujin_dest_type] && info[:doujin_dest_id]
+        subject = info[:doujin_dest_type].capitalize.constantize.find_by(id: info[:doujin_dest_id])
         info[:dest_folder] = (subject.name_romaji || subject.name_kakasi).downcase
       end
     elsif fname =~ /^([^0-9]+)[ 0-9\-]+\.zip$/i
