@@ -4,8 +4,10 @@ class PrepareArchiveForProcessingJob < ApplicationJob
   def perform(dst_dir)
     info = YAML.load_file(File.join dst_dir, 'info.yml')
     
-    # auto associate authors/circles when a 100% match is found
-    name = File.basename(info[:relative_path].to_s).downcase.parse_doujin_filename
+    fname = File.basename(info[:relative_path].to_s).downcase
+
+    # auto associate doujin authors/circles when a 100% match is found
+    name = fname.parse_doujin_filename
     (name[:ac_explicit] + name[:ac_implicit]).each do |term|
       list = Author.search_by_name(term, limit: 50) +
              Circle.search_by_name(term, limit: 50)
@@ -15,7 +17,31 @@ class PrepareArchiveForProcessingJob < ApplicationJob
         info[key] << result.id if result.name.downcase == term
       end
     end
+    # set a default doujin destination
+    if dest_id = info[:circle_ids].to_a.first
+      info[:doujin_dest_id] = "circle-#{dest_id}"
+    elsif dest_id = info[:author_ids].to_a.first
+      info[:doujin_dest_id] = "author-#{dest_id}"
+    end
+    
+    # identify file type
+    if name[:subjects].present?
+      info[:file_type] = 'doujin'
 
+      # set destination folder to subject romaji name
+      if info[:doujin_dest_id]
+        model, model_id = info[:doujin_dest_id].split('-')
+        subject = model.capitalize.constantize.find_by(id: model_id)
+        info[:dest_folder] = (subject.name_romaji || subject.name_kakasi).downcase
+      end
+    elsif fname =~ /^([^0-9]+)[ 0-9\-]+\.zip$/i
+      info[:file_type] = 'magazine'
+      info[:dest_folder] = $1.strip
+    else
+      info[:file_type] = 'artbook'
+      info[:dest_folder] = ''
+    end
+    
     # identify files and resize images
     path_thumbs   = File.join(dst_dir, 'thumbs')
     path_contents = File.join(dst_dir, 'contents')

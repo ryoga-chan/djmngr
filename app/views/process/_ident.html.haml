@@ -1,72 +1,10 @@
-.name_orig
-  %span.icon.in-text-small.mr-2
-    %i.mi.mi-small photo_filter
-  = @name[:subjects]
-
-- if @name[:subjects] != @name[:subjects].to_romaji
-  .name_romaji
+= form_with url: edit_process_path, method: :get do |f|
+  = f.hidden_field :tab, value: params[:tab]
+  .file-type
     %span.icon.in-text-small.mr-2
-      %i.mi.mi-small translate
-    = @name[:subjects].to_romaji alt_readings:true#, furigana_mode: true
+      %i.mi.mi-small local_offer
+    %span.select.vmiddle= f.select :file_type,
+      options_for_select(%w{doujin magazine artbook}, @info[:file_type]), {},
+      class: "input is-small", style: 'width: 15rem', onchange: "this.form.submit()"
 
-%span.icon.in-text-small.mr-2
-  %i.mi.mi-small search
-.tags.inline-block
-  - @name[:ac_explicit].each do |ac|
-    = link_to ac, {term: ac, tab: params[:tab]}, class: "tag #{'has-text-warning' if ac == params[:term]}"
-  - @name[:ac_implicit].each do |ac|
-    = link_to ac, {term: ac, tab: params[:tab]}, class: "tag #{'has-text-warning' if ac == params[:term]} has-background-grey"
-
-- term_re = Regexp.new Regexp.escape(params[:term]), Regexp::IGNORECASE
-
-.columns.search-results
-  .column
-    .title.is-4.has-text-centered Associations
-    
-    - %w{  circle author }.each do |type|
-      - if instance_variable_get("@associated_#{type.pluralize}").any?
-        .subtitle.mb-0= type.capitalize.pluralize
-        .subject-list.pl-2.mb-5
-          - instance_variable_get("@associated_#{type.pluralize}").each do |r|
-            .subject
-              - name = r.name.present? ? r.name : r.name_kana
-              - if r.doujinshi_org_id
-                = link_to({"#{type.singularize}_id" => r.id, tab: params[:tab], term: params[:term]},
-                  title: "remove association") do
-                  %span.icon.in-text.has-text-primary
-                    %i.mi remove
-                - name_hl = h(name).gsub(term_re, %Q|<span class="has-text-warning">\\0</span>|).html_safe
-                = link_to name_hl, r.doujinshi_org_full_url, target: :_blank, title: "view on doujinshi.org"
-              - else
-                = link_to :A, Author.doujinshi_org_search_url(name), target: :_blank, title: "search author on doujinshi.org"
-                = link_to :C, Circle.doujinshi_org_search_url(name), target: :_blank, title: "search circle on doujinshi.org"
-                = name
-              %span.is-size-7 /
-              %span.has-text-grey.is-size-7
-                - name = r.name_romaji.present? ? r.name_romaji : r.name_kakasi
-                = h(name).gsub(term_re, %Q|<span class="has-text-warning">\\0</span>|).html_safe
-  
-  - %w{ circles authors }.each do |type|
-    .column{class: type}
-      .title.is-4.has-text-centered= "#{type.capitalize} search"
-      
-      - instance_variable_get("@#{type}").each do |r|
-        - is_associated = @info["#{type.singularize}_ids".to_sym].to_a.include? r.id
-        
-        .block{class: "#{'associated has-background-grey-darker' if is_associated}"}
-          .name_orig
-            - name = r.name.present? ? r.name : r.name_kana
-            - if r.doujinshi_org_id
-              = link_to({"#{type.singularize}_id" => r.id, tab: params[:tab], term: params[:term]},
-                title: "#{is_associated ? :remove : :add} association") do
-                %span.icon.in-text.has-text-primary
-                  %i.mi= is_associated ? :remove : :add
-              - name_hl = h(name).gsub(term_re, %Q|<span class="has-text-warning">\\0</span>|).html_safe
-              = link_to name_hl, r.doujinshi_org_full_url, target: :_blank, title: "view on doujinshi.org"
-            - else
-              = link_to :A, Author.doujinshi_org_search_url(name), target: :_blank, title: "search author on doujinshi.org"
-              = link_to :C, Circle.doujinshi_org_search_url(name), target: :_blank, title: "search circle on doujinshi.org"
-              = name
-          .name_romaji.has-text-grey.is-size-7
-            - name = r.name_romaji.present? ? r.name_romaji : r.name_kakasi
-            = h(name).gsub(term_re, %Q|<span class="has-text-warning">\\0</span>|).html_safe
+= render partial: "ident_#{@info[:file_type]}"
