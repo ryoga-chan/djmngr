@@ -13,12 +13,12 @@ module CoreExt
         #   '[author_circle1 name, author_circle2 name (author_or_alias1 name, author_or_alias2 name)] file name.ext'
         
         # extract groups
-        ac1, ac2, fname = self.match(/^\[([^\]\(\)]+)(\(.+\))*\]\s*(.+)/).captures
+        ac1, ac2, fname = self.match(/^\[([^\]\(\)]+)(\(.+\))*\]\s*(.+)/).try(:captures)
         
         # extract authors/circles by splitting groups
         { ac_explicit:   ac1  .to_s.strip             .split(/\s*[,\|]\s*/),
           ac_implicit:   ac2  .to_s.strip[1...-1].to_s.split(/\s*[,\|]\s*/),
-          subjects: self.sub(/^\[([^\]]+)\].+/, '\1'),
+          subjects: fname.present? ? self.sub(/^\[([^\]]+)\].+/, '\1') : '',
           fname: fname.to_s.strip }
       end # parse_doujin_filename
     end

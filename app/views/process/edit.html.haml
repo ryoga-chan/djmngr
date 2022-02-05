@@ -18,7 +18,7 @@
   .title
     Archive processing started
     %span.is-1= "on #{@info[:prepared_at].strftime '%F %H:%M'}"
-  .title.is-4= @info[:relative_path]
+  .subtitle= @info[:relative_path]
   
   .tabs.is-boxed
     %ul
@@ -37,6 +37,11 @@
           %span.icon.is-small
             %i.mi fact_check
           %span Identification
+      %li{class: (:'is-active' if params[:tab] == 'move') }
+        = link_to tab: :move do
+          %span.icon.is-small
+            %i.mi gavel
+          %span Finalize
   
   %div{class: params[:tab]}= render partial: params[:tab]
   
@@ -51,5 +56,4 @@
   :javascript
     setTimeout(function () { window.location.reload(); }, 5000)
 
--#info = ''; PP.pp @info, info
--#%pre= info
+%pre= PP.pp @info, ''

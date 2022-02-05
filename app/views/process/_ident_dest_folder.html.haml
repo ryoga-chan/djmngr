@@ -1,0 +1,14 @@
+.dest-folder.mb-1
+  = form_with url: edit_process_path, method: :get do |f|
+    = f.hidden_field :tab, value: params[:tab]
+    %span.icon.in-text-small.mr-2
+      %i.mi.mi-small folder
+    %span.select.vmiddle= f.select :sel_dest_folder,
+      options_for_select(@dest_folders, @info[:dest_folder]), {},
+      class: "input is-small vmiddle", style: 'width: 15rem',
+      onchange: %Q| $('#dest_folder').val($(this).val()); this.form.submit() |
+    = f.text_field :dest_folder, value: @info[:dest_folder], placeholder: 'destination folder',
+      class: 'input is-small', style: 'width: 15rem'
+    = f.button class: 'button is-small' do
+      %span.icon
+        %i.mi.mi-small send
