@@ -8,21 +8,22 @@ class ProcessController < ApplicationController
 
   # list processable files
   def index
-    @files = Dir
-      .chdir(Setting['dir.to_sort']) do
-        Dir['**/*.zip'].sort.inject({}){|h, f| h.merge f => File.size(f) }
-      end
+    # create archive folders
+    folders  = [ Setting['dir.to_sort'], Setting['dir.sorting'] ]
+    folders += %w{ author circle magazine artbook }.map{|d| File.join(Setting['dir.sorted'], d).to_s }
+    folders.each{|f| FileUtils.mkdir_p f }
     
-    @preparing = Dir
-      .chdir(Setting['dir.sorting']){
-        Dir['**/info.yml'].map{|f|
-          tot_size = Dir
-            .glob("#{File.dirname f}/**/*")
-            .map{|f| f.ends_with?('/file.zip') ? 0 : File.size(f) }
-            .sum
-          YAML.load_file(f).merge tot_size: tot_size
-        }
-      }.sort{|a,b| a[:relative_path] <=> b[:relative_path] }
+    @files = Dir.chdir(Setting['dir.to_sort']) do
+      Dir['**/*.zip'].sort.inject({}){|h, f| h.merge f => File.size(f) }
+    end
+    
+    @preparing = Dir.chdir(Setting['dir.sorting']){
+      Dir['**/info.yml'].map{|f|
+        tot_size = Dir.glob("#{File.dirname f}/**/*").
+          map{|f| f.ends_with?('/file.zip') ? 0 : File.size(f) }.sum
+        YAML.load_file(f).merge tot_size: tot_size
+      }
+    }.sort{|a,b| a[:relative_path] <=> b[:relative_path] }
     
     @preparing_paths = @preparing.map{|i| i[:relative_path] }
   end # index
@@ -105,21 +106,74 @@ class ProcessController < ApplicationController
   
   # manage archive operations (sanitize filenames, delete extra images, identify author)
   def edit
-    params[:tab] = 'files' unless %w{ files images ident }.include?(params[:tab])
+    params[:tab] = 'files' unless %w{ files images ident move }.include?(params[:tab])
     
-    @info = YAML.load_file(File.join @dname, 'info.yml')
-    @perc = File.read(File.join @dname, 'completion.perc').to_f rescue 0.0 unless @info[:prepared_at]
+    @info  = YAML.load_file(File.join @dname, 'info.yml')
+    @perc  = File.read(File.join @dname, 'completion.perc').to_f rescue 0.0 unless @info[:prepared_at]
+    @fname = File.basename(@info[:relative_path].to_s)
     
     if params[:tab] == 'ident'
+      redir_params = {id: params[:id], tab: 'ident', term: params[:term]}
+      
       # toggle association by single ID
       %w{ author circle }.each do |k|
-        if params["#{k}_id".to_sym]
-          @info["#{k}_ids".to_sym] ||= []
-          method = @info["#{k}_ids".to_sym].to_a.include?(params["#{k}_id".to_sym].to_i) ? :delete : :push
-          @info["#{k}_ids".to_sym].send method, params["#{k}_id".to_sym].to_i
+        tmp_id = params["#{k}_id".to_sym].to_i
+        
+        if tmp_id > 0
+          key = "#{k}_ids".to_sym
+          @info[key] ||= []
+          method = @info[key].to_a.include?(tmp_id) ? :delete : :push
+          @info[key].send method, tmp_id
+          
+          # remove destination if deleting it
+          @info[:doujin_dest_id] = nil if method == :delete && @info[:doujin_dest_id] == "#{k}-#{tmp_id}"
+          
           File.open(File.join(@dname, 'info.yml'), 'w'){|f| f.puts @info.to_yaml }
-          return redirect_to(edit_process_path(id: params[:id], tab: 'ident', term: params[:term]))
+          return redirect_to(edit_process_path(redir_params))
         end
+      end
+      
+      # set file type
+      if params[:file_type] && params[:file_type] != @info[:file_type]
+        @info[:file_type] = params[:file_type]
+        File.open(File.join(@dname, 'info.yml'), 'w'){|f| f.puts @info.to_yaml }
+        return redirect_to(edit_process_path(redir_params))
+      end
+      
+      # set destination author/circle
+      if params[:doujin_dest_id] && params[:doujin_dest_id] != @info[:doujin_dest_id]
+        @info[:doujin_dest_id] = params[:doujin_dest_id]
+        
+        # set destination folder to subject romaji name
+        model, model_id = @info[:doujin_dest_id].split('-')
+        subject = model.capitalize.constantize.find_by(id: model_id)
+        @info[:dest_folder] = (subject.name_romaji || subject.name_kakasi).downcase
+        
+        File.open(File.join(@dname, 'info.yml'), 'w'){|f| f.puts @info.to_yaml }
+        return redirect_to(edit_process_path(redir_params))
+      end
+      
+      # set destination folder
+      if params[:dest_folder] && params[:dest_folder] != @info[:dest_folder]
+        @info[:dest_folder] = params[:dest_folder]
+        File.open(File.join(@dname, 'info.yml'), 'w'){|f| f.puts @info.to_yaml }
+        return redirect_to(edit_process_path(redir_params))
+      end
+      
+      # list possible dest folders
+      @dest_folders = []
+      case @info[:file_type]
+        when 'doujin'
+          if @info[:doujin_dest_id]
+            repo = File.join(Setting['dir.sorted'], @info[:doujin_dest_id].split('-')[0]).to_s
+            @dest_folders = Dir.chdir(repo){ Dir['*'].select{|i| File.directory? i } }.sort.unshift('-custom name-')
+          end
+        when 'magazine'
+          repo = File.join(Setting['dir.sorted'], 'magazine').to_s
+          @dest_folders = Dir.chdir(repo){ Dir['*'].select{|i| File.directory? i } }.sort.unshift('-custom name-')
+        when 'artbook'
+          repo = File.join(Setting['dir.sorted'], 'artbook').to_s
+          @dest_folders = Dir.chdir(repo){ Dir['*'].select{|i| File.directory? i } }.sort.unshift('-custom name-')
       end
       
       # lists of currently associated authors/circles

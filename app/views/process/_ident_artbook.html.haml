@@ -1,0 +1,12 @@
+.name_orig.mb-1
+  %span.icon.in-text-small.mr-2
+    %i.mi.mi-small photo_filter
+  = @fname
+
+- if @fname != @fname.to_romaji
+  .name_romaji.mb-1
+    %span.icon.in-text-small.mr-2
+      %i.mi.mi-small translate
+    = @fname.to_romaji alt_readings:true#, furigana_mode: true
+
+= render partial: 'ident_dest_folder'
