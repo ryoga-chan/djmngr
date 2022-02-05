@@ -24,7 +24,7 @@ class PrepareArchiveForProcessingJob < ApplicationJob
       info[:doujin_dest_type], info[:doujin_dest_id] = 'author', dest_id
     end
     
-    # identify file type
+    # identify file type and name
     if name[:subjects].present?
       info[:file_type] = 'doujin'
 
@@ -33,12 +33,16 @@ class PrepareArchiveForProcessingJob < ApplicationJob
         subject = info[:doujin_dest_type].capitalize.constantize.find_by(id: info[:doujin_dest_id])
         info[:dest_folder] = (subject.name_romaji || subject.name_kakasi).downcase
       end
+      
+      info[:dest_filename] = name[:fname]
     elsif fname =~ /^([^0-9]+)[ 0-9\-]+\.zip$/i
       info[:file_type] = 'magazine'
       info[:dest_folder] = $1.strip
+      info[:dest_filename] = File.basename(fname)
     else
       info[:file_type] = 'artbook'
       info[:dest_folder] = ''
+      info[:dest_filename] = File.basename(fname)
     end
     
     # identify files and resize images

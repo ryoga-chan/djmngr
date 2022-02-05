@@ -108,11 +108,12 @@ class ProcessController < ApplicationController
     @info  = YAML.load_file(File.join @dname, 'info.yml')
     @perc  = File.read(File.join @dname, 'completion.perc').to_f rescue 0.0 unless @info[:prepared_at]
     @fname = File.basename(@info[:relative_path].to_s)
+    info_changed = false
 
     # set file type
     if params[:file_type] && params[:file_type] != @info[:file_type]
       @info[:file_type] = params[:file_type]
-      File.open(File.join(@dname, 'info.yml'), 'w'){|f| f.puts @info.to_yaml }
+      info_changed = true
     end
     
     # DOUJIN: toggle associated author/circle ID
@@ -124,11 +125,9 @@ class ProcessController < ApplicationController
         @info[key] ||= []
         method = @info[key].to_a.include?(tmp_id) ? :delete : :push
         @info[key].send method, tmp_id
-        
         # remove destination if deleting it
         @info[:doujin_dest_id] = nil if method == :delete && @info[:doujin_dest_id] == "#{k}-#{tmp_id}"
-        
-        File.open(File.join(@dname, 'info.yml'), 'w'){|f| f.puts @info.to_yaml }
+        info_changed = true
       end
     end
     
@@ -139,15 +138,28 @@ class ProcessController < ApplicationController
       # set destination folder to subject romaji name
       subject = @info[:doujin_dest_type].capitalize.constantize.find_by(id: @info[:doujin_dest_id])
       @info[:dest_folder] = (subject.name_romaji || subject.name_kakasi).downcase
-      
-      File.open(File.join(@dname, 'info.yml'), 'w'){|f| f.puts @info.to_yaml }
+      info_changed = true
     end
     
     # set destination folder
     if params[:dest_folder] && params[:dest_folder] != @info[:dest_folder]
       @info[:dest_folder] = params[:dest_folder]
-      File.open(File.join(@dname, 'info.yml'), 'w'){|f| f.puts @info.to_yaml }
+      info_changed = true
     end
+    
+    # set destination folder
+    if params[:subfolder] && params[:subfolder] != @info[:subfolder]
+      @info[:subfolder] = params[:subfolder]
+      info_changed = true
+    end
+    
+    # set destination filename
+    if params[:dest_filename] && params[:dest_filename] != @info[:dest_filename]
+      @info[:dest_filename] = params[:dest_filename]
+      info_changed = true
+    end
+
+    File.open(File.join(@dname, 'info.yml'), 'w'){|f| f.puts @info.to_yaml } if info_changed
     
     redirect_to edit_process_path(id: params[:id], tab: params[:tab], term: params[:term])
   end # set_property
@@ -187,7 +199,16 @@ class ProcessController < ApplicationController
       params[:term] = @name[:ac_explicit][0] || @name[:ac_implicit][0] if params[:term].blank?
       @authors = Author.search_by_name params[:term], limit: 50
       @circles = Circle.search_by_name params[:term], limit: 50
-    end
+    end # tab 'ident'
+    
+    if params[:tab] == 'move'
+      # list possible dest subfolders
+      @subfolders = ['-custom name-']
+      repo = @info[:file_type] == 'doujin' ?
+        File.join(Setting['dir.sorted'], @info[:doujin_dest_type], @info[:dest_folder]).to_s :
+        File.join(Setting['dir.sorted'], @info[:file_type], @info[:dest_folder]).to_s
+      @subfolders += Dir.chdir(repo){ Dir['*'].select{|i| File.directory? i } }.sort if File.exist?(repo)
+    end # tab 'move'
   end # edit
   
   def rename_images
