@@ -56,4 +56,6 @@
   :javascript
     setTimeout(function () { window.location.reload(); }, 5000)
 
-%pre= PP.pp @info, ''
+= link_to 'show metadata', '#', class: 'button is-info',
+  onclick: %Q|$(this).hide().next().removeClass('is-hidden'); return false|
+%pre.debug-info.is-hidden= PP.pp @info, ''

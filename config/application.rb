@@ -33,5 +33,10 @@ module Djmngr
 
     # Don't generate system test files.
     config.generators.system_tests = nil
+    
+    # https://pawelurbanek.com/rails-gzip-brotli-compression
+    # test with: curl -siIH "Accept-Encoding: gzip, deflate, br" "http://localhost:3000" | egrep "^Content-Encoding"
+    config.middleware.use Rack::Deflater
+    config.middleware.use Rack::Brotli
   end
 end
