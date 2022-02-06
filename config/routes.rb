@@ -14,9 +14,10 @@ Rails.application.routes.draw do
       get     :show_image
       post    :rename_file
       post    :rename_images
+      post    :set_property
+      post    :finalize_volume
       delete  :delete_archive_cwd
       delete  :delete_archive_files
-      post    :set_property
     end
   end # process
 
