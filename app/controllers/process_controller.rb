@@ -1,9 +1,9 @@
 class ProcessController < ApplicationController
   before_action :check_archive_file  , only: [:prepare_archive, :delete_archive]
   before_action :check_archive_folder, only: [
-    :edit, :show_image, :set_property,
+    :edit, :set_property, :finalize_volume,
+    :show_image, :rename_images, :rename_file,
     :delete_archive_cwd, :delete_archive_files,
-    :rename_images, :rename_file,
   ]
 
   # list processable files
@@ -280,6 +280,11 @@ class ProcessController < ApplicationController
     sub_path = File.expand_path(params[:path], '/')[1..-1] # sanitize input
     send_file File.join(@dname, 'contents', sub_path), disposition: :inline
   end # show_image
+  
+  # rezip archive, add metadata, move/register in collection, cleaup WIP folder
+  def finalize_volume
+    
+  end # finalize_volume
   
   
   private # ____________________________________________________________________

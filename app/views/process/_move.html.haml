@@ -12,9 +12,10 @@
 .file-type.mb-1
   %span.icon.in-text-small.mr-2
     %i.mi.mi-small local_offer
-  = @info[:file_type]
   - if @info[:file_type] == 'doujin'
-    = "/ #{@info[:doujin_dest_type]}"
+    = "#{@info[:doujin_dest_type]} #{@info[:file_type]}"
+  - else
+    = @info[:file_type]
 
 .subfolder.mb-1
   = form_with url: set_property_process_path do |f|
@@ -30,6 +31,10 @@
     = f.button class: 'button is-small' do
       %span.icon
         %i.mi.mi-small send
+    = f.button class: 'button is-small',
+      onclick: %Q|$('#subfolder').val('')| do
+      %span.icon
+        %i.mi.mi-small clear
 
 .dest-filename.mb-1
   = form_with url: set_property_process_path do |f|
@@ -51,9 +56,15 @@
   %span.icon.in-text-small.mr-2
     %i.mi.mi-small folder
   - path = []
-  - path << @info[:file_type] == 'doujin' ? @info[:doujin_dest_type] : @info[:file_type]
+  - path << (@info[:file_type] == 'doujin' ? @info[:doujin_dest_type] : @info[:file_type])
   - path << @info[:dest_folder]
   - path << @info[:subfolder]
   - path << @info[:dest_filename]
   = File.join '/', *path
-  
+
+.has-text-centered.my-4
+  = link_to finalize_volume_process_path, data: {method: :post},
+    class: 'button is-success is-rounded' do
+    %span.icon
+      %i.mi.mi-small gavel
+    %span finalize process and store volume in the collection
