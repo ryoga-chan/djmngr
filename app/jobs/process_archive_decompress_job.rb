@@ -1,4 +1,4 @@
-class PrepareArchiveForProcessingJob < ApplicationJob
+class ProcessArchiveDecompressJob < ApplicationJob
   queue_as :tools
 
   def perform(dst_dir)
@@ -38,7 +38,7 @@ class PrepareArchiveForProcessingJob < ApplicationJob
     elsif fname =~ /^([^0-9]+)[ 0-9\-]+\.zip$/i
       info[:file_type] = 'magazine'
       info[:dest_folder] = $1.strip
-      info[:dest_filename] = File.basename(fname)
+      info[:dest_filename] = File.basename(fname).sub($1.to_s, '').strip
     else
       info[:file_type] = 'artbook'
       info[:dest_folder] = ''
@@ -70,7 +70,7 @@ class PrepareArchiveForProcessingJob < ApplicationJob
     # create thumbnails for the images
     info[:images].each_with_index do |img, i|
       begin
-        img[:dst_path] = '%04d.jpg' % (i+1)
+        img[:dst_path] = "%04d#{File.extname img[:src_path]}" % (i+1)
         img[:thumb_path] = img[:dst_path].dup
         
         ImageProcessing::Vips

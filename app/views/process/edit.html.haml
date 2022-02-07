@@ -1,7 +1,14 @@
-.actions-danger(style="float: right")
+.actions-danger.has-text-centered(style="float: right")
+  - if @info[:prepared_at]
+    = link_to(finalize_volume_process_path, method: :post,
+      class: 'button is-success is-rounded mb-2', title: 'finalize processing and move to collection')  do
+      %span.icon
+        %i.mi.mi-small gavel
+      %span Finalize
+    %br
   = link_to({action: :delete_archive_cwd, id: params[:id]},
       method: :delete, data: { confirm: 'Delete this processing folder?' },
-      class: 'button is-danger is-light is-rounded mb-4', title: 'delete processing folder') do
+      class: 'button is-danger is-light is-rounded mb-2', title: 'delete processing folder') do
     %span.icon
       %i.mi delete
     %span Delete WIP
