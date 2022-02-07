@@ -56,14 +56,14 @@
   %span.icon.in-text-small.mr-2
     %i.mi.mi-small folder
   - path = []
-  - path << (@info[:file_type] == 'doujin' ? @info[:doujin_dest_type] : @info[:file_type])
-  - path << @info[:dest_folder]
-  - path << @info[:subfolder]
-  - path << @info[:dest_filename]
+  - path << (@info[:file_type] == 'doujin' ? @info[:doujin_dest_type] : @info[:file_type]).to_s
+  - path << @info[:dest_folder  ].to_s
+  - path << @info[:subfolder    ].to_s
+  - path << @info[:dest_filename].to_s
   = File.join '/', *path
 
 .has-text-centered.my-4
-  = link_to finalize_volume_process_path, data: {method: :post},
+  = link_to finalize_volume_process_path, method: :post,
     class: 'button is-success is-rounded' do
     %span.icon
       %i.mi.mi-small gavel

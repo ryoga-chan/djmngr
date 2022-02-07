@@ -1,0 +1,49 @@
+.title= "Archive finalizing #{'completed' if @perc >= 100.0 }"
+.title.is-4= @info[:relative_path]
+.final-path
+  %span.icon.in-text-small.mr-2
+    %i.mi.mi-small folder
+  - path = []
+  - path << (@info[:file_type] == 'doujin' ? @info[:doujin_dest_type] : @info[:file_type]).to_s
+  - path << @info[:dest_folder  ].to_s
+  - path << @info[:subfolder    ].to_s
+  - path << @info[:dest_filename].to_s
+  = File.join '/', *path
+
+- if @perc < 100.0
+
+  .title.is-6.mt-3= "Finalizing archive, please wait ... #{@perc}%"
+  
+  = link_to(finalize_volume_process_path(undo: true), method: :post,
+    class: 'button is-success is-light is-rounded mb-2 mr-3', title: 'undo finalize processing')  do
+    %span.icon
+      %i.mi.mi-small undo
+    %span Stalled? Undo!
+  
+  :javascript
+    setTimeout(function () { window.location.reload(); }, 5000)
+  
+- else
+
+  = link_to({action: :delete_archive_cwd, id: params[:id], archive_too: true}, method: :delete,
+      class: 'button is-danger is-rounded mt-2 rm_wip',
+      title: 'delete processing folder') do
+    %span.icon
+      %i.mi delete
+    %span
+      Delete WIP
+      %span.countdown (10)
+  
+  :javascript
+    window.countdown = 11;
+    
+    function update_countdown () {
+      window.countdown = window.countdown - 1;
+      jQuery('span.countdown').text('('+window.countdown+')');
+      if (window.countdown > 0)
+        setTimeout(update_countdown, 1000);
+      else
+        document.querySelector('.button.rm_wip').click()
+    }//update_countdown
+    
+    setTimeout(update_countdown, 1000);

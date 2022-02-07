@@ -56,7 +56,7 @@ class ProcessController < ApplicationController
       # create a symlink just in case of manual folder inspection (unsupported on windows)
       File.symlink @fname, File.join(dst_dir, 'file.zip') rescue nil
       
-      PrepareArchiveForProcessingJob.perform_later dst_dir
+      ProcessArchiveDecompressJob.perform_later dst_dir
     end
     
     redirect_to edit_process_path(id: hash)
@@ -217,13 +217,13 @@ class ProcessController < ApplicationController
     begin
       case params[:rename_with].to_sym
         when :alphabetical_index
-          @info[:images].each_with_index{|img, i| img[:dst_path] = '%04d.jpg' % (i+1) }
+          @info[:images].each_with_index{|img, i| img[:dst_path] = "%04d#{File.extname img[:src_path]}" % (i+1) }
         when :to_integer
-          @info[:images].each{|img| img[:dst_path] = '%04d.jpg' % img[:src_path].to_i }
+          @info[:images].each{|img| img[:dst_path] = "%04d#{File.extname img[:src_path]}" % img[:src_path].to_i }
         when :regex_number
           re = Regexp.new params[:rename_regexp]
           @info[:images].each do |img|
-            img[:dst_path] = '%04d.jpg' % img[:src_path].match(re)&.captures&.first.to_i
+            img[:dst_path] = "%04d#{File.extname img[:src_path]}" % img[:src_path].match(re)&.captures&.first.to_i
           end
         when :regex_pref_num, :regex_num_pref
           re = Regexp.new params[:rename_regexp]
@@ -237,13 +237,14 @@ class ProcessController < ApplicationController
           # rename images sorted by the previous label
           @info[:images]
             .sort{|a,b| a[:dst_sort_by] <=> b[:dst_sort_by] }
-            .each_with_index{|img, i| img[:dst_path] = '%04d.jpg' % (i+1) }
+            .each_with_index{|img, i| img[:dst_path] = "%04d#{File.extname img[:src_path]}" % (i+1) }
         else
           raise 'unknown renaming method'
       end # case
       
       @info[:images] = @info[:images].sort{|a,b| a[:dst_path] <=> b[:dst_path] }
       
+      @info[:ren_images_method] = params[:rename_with]
       @info[:images_last_regexp] = params[:rename_regexp]
       @info[:images_collision] = @info[:images].size != @info[:images].map{|i| i[:dst_path] }.uniq.size
       
@@ -283,7 +284,25 @@ class ProcessController < ApplicationController
   
   # rezip archive, add metadata, move/register in collection, cleaup WIP folder
   def finalize_volume
+    @info = YAML.load_file(File.join @dname, 'info.yml')
     
+    unless @info[:dest_folder].present? && @info[:dest_filename].present?
+      return redirect_to(edit_process_path(id: params[:id]), alert: "missing destination data")
+    end
+    
+    perc_file = File.join(@dname, 'finalize.perc')
+    @perc = File.read(perc_file).to_f rescue 0.0
+    
+    if params[:undo] && File.exist?(perc_file)
+      File.unlink(perc_file)
+      FileUtils.rm_rf File.join(@dname, 'output'), secure: true
+      return redirect_to(edit_process_path(id: params[:id]), notice: "finalize processing halted")
+    end
+    
+    unless File.exist?(perc_file)
+      FileUtils.touch perc_file
+      ProcessArchiveCompressJob.perform_later @dname
+    end
   end # finalize_volume
   
   
