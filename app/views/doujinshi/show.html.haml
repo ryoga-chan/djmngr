@@ -1,0 +1,36 @@
+%p#notice= notice
+
+%p
+  %b Name:
+  = @doujin.name
+%p
+  %b Name romaji:
+  = @doujin.name_romaji
+%p
+  %b Name kakasi:
+  = @doujin.name_kakasi
+%p
+  %b Size:
+  = @doujin.size
+%p
+  %b Checksum:
+  = @doujin.checksum
+%p
+  %b Num images:
+  = @doujin.num_images
+%p
+  %b Num files:
+  = @doujin.num_files
+%p
+  %b Score:
+  = @doujin.score
+%p
+  %b Path:
+  = @doujin.path
+%p
+  %b Name orig:
+  = @doujin.name_orig
+
+= link_to 'Edit', edit_doujin_path(@doujin)
+\|
+= link_to 'Back', doujinshi_path

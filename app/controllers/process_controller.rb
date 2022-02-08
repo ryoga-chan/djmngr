@@ -112,7 +112,7 @@ class ProcessController < ApplicationController
 
     # set file type
     if params[:file_type] && params[:file_type] != @info[:file_type]
-      @info[:file_type] = params[:file_type]
+      @info[:file_type] = params[:file_type].strip
       info_changed = true
     end
     
@@ -137,25 +137,25 @@ class ProcessController < ApplicationController
       @info[:doujin_dest_type], @info[:doujin_dest_id] = params[:doujin_dest_id].split('-')
       # set destination folder to subject romaji name
       subject = @info[:doujin_dest_type].capitalize.constantize.find_by(id: @info[:doujin_dest_id])
-      @info[:dest_folder] = (subject.name_romaji || subject.name_kakasi).downcase
+      @info[:dest_folder] = (subject.name_romaji || subject.name_kakasi).downcase.strip
       info_changed = true
     end
     
     # set destination folder
     if params[:dest_folder] && params[:dest_folder] != @info[:dest_folder]
-      @info[:dest_folder] = params[:dest_folder]
+      @info[:dest_folder] = params[:dest_folder].strip
       info_changed = true
     end
     
     # set destination folder
     if params[:subfolder] && params[:subfolder] != @info[:subfolder]
-      @info[:subfolder] = params[:subfolder]
+      @info[:subfolder] = params[:subfolder].strip
       info_changed = true
     end
     
     # set destination filename
     if params[:dest_filename] && params[:dest_filename] != @info[:dest_filename]
-      @info[:dest_filename] = params[:dest_filename]
+      @info[:dest_filename] = params[:dest_filename].strip
       info_changed = true
     end
 
@@ -202,6 +202,10 @@ class ProcessController < ApplicationController
     end # tab 'ident'
     
     if params[:tab] == 'move'
+      if File.exist? Doujin.dest_path_by_process_params(@info, full_path: true)
+        @collection_file_size = File.size Doujin.dest_path_by_process_params(@info, full_path: true)
+      end
+      
       # list possible dest subfolders
       @subfolders = ['-custom name-']
       repo = @info[:file_type] == 'doujin' ?
@@ -287,7 +291,11 @@ class ProcessController < ApplicationController
     @info = YAML.load_file(File.join @dname, 'info.yml')
     
     unless @info[:dest_folder].present? && @info[:dest_filename].present?
-      return redirect_to(edit_process_path(id: params[:id]), alert: "missing destination data")
+      return redirect_to(edit_process_path(id: params[:id], tab: 'ident'), alert: "empty destination folder or filename")
+    end
+    
+    if File.exist?(Doujin.dest_path_by_process_params(@info, full_path: true))
+      return redirect_to(edit_process_path(id: params[:id], tab: 'move'), alert: "file already exists in collection")
     end
     
     perc_file = File.join(@dname, 'finalize.perc')
@@ -295,7 +303,7 @@ class ProcessController < ApplicationController
     
     if params[:undo] && File.exist?(perc_file)
       File.unlink(perc_file)
-      FileUtils.rm_rf File.join(@dname, 'output'), secure: true
+      File.unlink(@info[:collection_full_path].to_s) if File.exist?(@info[:collection_full_path].to_s)
       return redirect_to(edit_process_path(id: params[:id]), notice: "finalize processing halted")
     end
     

@@ -1,0 +1,40 @@
+= form_for @doujin do |f|
+  - if @doujin.errors.any?
+    #error_explanation
+      %h2= "#{pluralize(@doujin.errors.count, "error")} prohibited this doujin from being saved:"
+      %ul
+        - @doujin.errors.full_messages.each do |message|
+          %li= message
+
+  .field
+    = f.label :name
+    = f.text_field :name
+  .field
+    = f.label :name_romaji
+    = f.text_field :name_romaji
+  .field
+    = f.label :name_kakasi
+    = f.text_field :name_kakasi
+  .field
+    = f.label :size
+    = f.number_field :size
+  .field
+    = f.label :checksum
+    = f.text_field :checksum
+  .field
+    = f.label :num_images
+    = f.number_field :num_images
+  .field
+    = f.label :num_files
+    = f.number_field :num_files
+  .field
+    = f.label :score
+    = f.number_field :score
+  .field
+    = f.label :path
+    = f.text_area :path
+  .field
+    = f.label :name_orig
+    = f.text_area :name_orig
+  .actions
+    = f.submit 'Save'

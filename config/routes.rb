@@ -24,4 +24,5 @@ Rails.application.routes.draw do
   resources :authors
   resources :themes
   resources :circles
+  resources :doujinshi
 end
