@@ -73,11 +73,11 @@ class ProcessArchiveDecompressJob < ApplicationJob
         img[:dst_path] = "%04d#{File.extname img[:src_path]}" % (i+1)
         img[:thumb_path] = img[:dst_path].dup
         
-        ImageProcessing::Vips
-          .source(File.join path_contents, img[:src_path])
-          .convert('jpg')
-          .resize_to_fit(100, 140)
-          .call destination: File.join(path_thumbs, img[:dst_path])
+        ImageProcessing::Vips.
+          source(File.join path_contents, img[:src_path]).
+          convert('jpg').
+          resize_to_fit(100, 140).
+          call destination: File.join(path_thumbs, img[:dst_path])
       rescue
         img[:dst_path] = 'RESIZE ERROR'
       end

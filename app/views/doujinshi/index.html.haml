@@ -1,0 +1,39 @@
+%h1 Listing doujinshi
+
+%table
+  %thead
+    %tr
+      %th Name
+      %th Name romaji
+      %th Name kakasi
+      %th Size
+      %th Checksum
+      %th Num images
+      %th Num files
+      %th Score
+      %th Path
+      %th Name orig
+      %th
+      %th
+      %th
+
+  %tbody
+    - @doujinshi.each do |doujin|
+      %tr
+        %td= doujin.name
+        %td= doujin.name_romaji
+        %td= doujin.name_kakasi
+        %td= doujin.size
+        %td= doujin.checksum
+        %td= doujin.num_images
+        %td= doujin.num_files
+        %td= doujin.score
+        %td= doujin.path
+        %td= doujin.name_orig
+        %td= link_to 'Show', doujin
+        %td= link_to 'Edit', edit_doujin_path(doujin)
+        %td= link_to 'Destroy', doujin, method: :delete, data: { confirm: 'Are you sure?' }
+
+%br
+
+= link_to 'New Doujin', new_doujin_path
