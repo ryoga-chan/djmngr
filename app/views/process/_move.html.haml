@@ -55,12 +55,11 @@
 .final-path
   %span.icon.in-text-small.mr-2
     %i.mi.mi-small folder
-  - path = []
-  - path << (@info[:file_type] == 'doujin' ? @info[:doujin_dest_type] : @info[:file_type]).to_s
-  - path << @info[:dest_folder  ].to_s
-  - path << @info[:subfolder    ].to_s
-  - path << @info[:dest_filename].to_s
-  = File.join '/', *path
+  = Doujin.dest_path_by_process_params @info
+- if @collection_file_size
+  .collection-collision.ml-6
+    %span.tag.is-danger= "ALREADY EXIST! collection: #{number_to_human_size @collection_file_size}"
+    %span.tag.is-info= "this file: #{number_to_human_size File.size(@info[:file_path])}"
 
 .has-text-centered.my-4
   = link_to finalize_volume_process_path, method: :post,
