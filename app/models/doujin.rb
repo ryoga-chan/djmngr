@@ -18,4 +18,9 @@ class Doujin < ApplicationRecord
     path << info[:dest_filename].to_s.gsub(/[\/\\]/, '_')
     File.join '/', *path
   end # self.dest_path_by_process_params
+  
+  # find doujin by destination folder
+  def self.find_by_process_params(info)
+    self.find_by path: self.dest_path_by_process_params(info)
+  end # self.find_by_process_params
 end

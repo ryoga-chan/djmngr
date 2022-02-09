@@ -56,10 +56,21 @@
   %span.icon.in-text-small.mr-2
     %i.mi.mi-small folder
   = Doujin.dest_path_by_process_params @info
-- if @collection_file_size
+- if @collision_info
   .collection-collision.ml-6
-    %span.tag.is-danger= "ALREADY EXIST! collection: #{number_to_human_size @collection_file_size}"
-    %span.tag.is-info= "this file: #{number_to_human_size File.size(@info[:file_path])}"
+    = form_with url: set_property_process_path do |f|
+      = f.hidden_field :tab, value: params[:tab]
+      %span.tag.is-danger= "ALREADY EXIST!"
+      &rightarrow;
+      %span.has-text-danger
+        = f.check_box :overwrite, {checked: @info[:overwrite], include_hidden: true}
+        = label_tag :overwrite, "overwrite file in the collection"
+    .file-current
+      %span.tag.is-info= "#{@collision_info[:current]} current"
+      VS.
+    .file-collection
+      %span.tag.is-info= "#{@collision_info[:collection]} collection"
+      %span.tag.is-info.is-light= "TODO: link to doujin ID [#{@collision_info[:doujin].try :id}]"
 
 .has-text-centered.my-4
   = link_to finalize_volume_process_path, method: :post,
