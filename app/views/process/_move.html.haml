@@ -17,6 +17,19 @@
   - else
     = @info[:file_type]
 
+.scoring
+  = form_with url: set_property_process_path do |f|
+    = f.hidden_field :tab, value: params[:tab]
+    = f.hidden_field :score, value: @info[:score]
+    %span.icon.in-text-small.mr-2
+      %i.mi.mi-small favorite
+    - (1..10).each do |i|
+      %span.icon.is-medium.in-text.mr-4{data: {score: i}, class: (i <= @info[:score].to_i ? 'has-text-warning' : '')}
+        %i.mi.mi-medium= i <= @info[:score].to_i ? :star_rate : :star_outline
+        %span= i
+    %span.icon.is-medium.in-text.mr-4.clear-score{data: {score: 0}}
+      %i.mi.mi-medium clear
+
 .subfolder.mb-1
   = form_with url: set_property_process_path do |f|
     = f.hidden_field :tab, value: params[:tab]
