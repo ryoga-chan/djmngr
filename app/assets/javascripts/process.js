@@ -54,5 +54,8 @@ $('input[name="file_name"]').change(function () {
     error: function () { alert('Server error!'); }//error
   });
 });
+
+// toggle overwrite flag with immediate submit
+$('#overwrite').change(function () { this.form.submit(); });
 // ------------------------------------------------------------------------
 }); })(jQuery)

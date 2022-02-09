@@ -159,6 +159,12 @@ class ProcessController < ApplicationController
       info_changed = true
     end
 
+    # toggle overwrite of file in the collection
+    if params[:overwrite] && (params[:overwrite].to_i == 1) != @info[:overwrite]
+      @info[:overwrite] = params[:overwrite].to_i == 1
+      info_changed = true
+    end
+    
     File.open(File.join(@dname, 'info.yml'), 'w'){|f| f.puts @info.to_yaml } if info_changed
     
     redirect_to edit_process_path(id: params[:id], tab: params[:tab], term: params[:term])
@@ -202,8 +208,20 @@ class ProcessController < ApplicationController
     end # tab 'ident'
     
     if params[:tab] == 'move'
-      if File.exist? Doujin.dest_path_by_process_params(@info, full_path: true)
-        @collection_file_size = File.size Doujin.dest_path_by_process_params(@info, full_path: true)
+      collection_file_path = Doujin.dest_path_by_process_params(@info, full_path: true)
+      if File.exist?(collection_file_path)
+        doujin = Doujin.find_by_process_params(@info)
+        
+        c_size = render_to_string inline: %Q|<%= number_to_human_size #{File.size collection_file_path} %>|
+        c_imgs = doujin.try(:num_images) || 'N.D.'
+        f_size = render_to_string inline: %Q|<%= number_to_human_size #{File.size @info[:file_path]} %>|
+        f_imgs = @info[:images].size
+        
+        @collision_info = {
+          collection: "#{c_imgs} pics/#{c_size}",
+          current: "#{c_imgs} pics/#{c_size}",
+          doujin: doujin
+        }
       end
       
       # list possible dest subfolders
@@ -294,7 +312,8 @@ class ProcessController < ApplicationController
       return redirect_to(edit_process_path(id: params[:id], tab: 'ident'), alert: "empty destination folder or filename")
     end
     
-    if File.exist?(Doujin.dest_path_by_process_params(@info, full_path: true))
+    if @info[:overwrite] != true && @info[:db_doujin_id].nil? &&
+       File.exist?(Doujin.dest_path_by_process_params(@info, full_path: true))
       return redirect_to(edit_process_path(id: params[:id], tab: 'move'), alert: "file already exists in collection")
     end
     
