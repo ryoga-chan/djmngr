@@ -76,7 +76,7 @@ class ProcessArchiveCompressJob < ApplicationJob
           checksum:     info[:dest_checksum],
           num_images:   info[:images].size,
           num_files:    info[:files].size,
-          score:        nil,
+          score:        (info[:score].to_i > 0 ? info[:score].to_i : nil),
           path:         info[:collection_relative_path],
           name_orig:    info[:relative_path]
         d.author_ids = info[:author_ids] if info[:author_ids].try(:any?)

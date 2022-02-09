@@ -57,5 +57,18 @@ $('input[name="file_name"]').change(function () {
 
 // toggle overwrite flag with immediate submit
 $('#overwrite').change(function () { this.form.submit(); });
+
+// set scoring
+$('.scoring span.icon[data-score]').click(function () {
+  $('#score').val( $(this).data('score') );
+  if ($(this).hasClass('clear-score')) // clear scoring status
+    $('.scoring span.icon[data-score]:not(.clear-score)').removeClass('has-text-warning').find('i').text('star_outline');
+  else { // change star color and filling
+    $(this).prevAll('span.icon[data-score]').addBack().addClass('has-text-warning').find('i').text('star_rate');
+    $(this).nextAll('span.icon[data-score]:not(.clear-score)').removeClass('has-text-warning').find('i').text('star_outline');
+  }
+  $('.scoring').after(p_bar);
+  $(this).parents('form:first').submit();
+});
 // ------------------------------------------------------------------------
 }); })(jQuery)

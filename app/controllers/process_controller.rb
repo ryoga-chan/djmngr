@@ -164,6 +164,12 @@ class ProcessController < ApplicationController
       @info[:overwrite] = params[:overwrite].to_i == 1
       info_changed = true
     end
+
+    # set doujin scoring
+    if params[:score] && params[:score].to_i != @info[:score]
+      @info[:score] = params[:score].to_i
+      info_changed = true
+    end
     
     File.open(File.join(@dname, 'info.yml'), 'w'){|f| f.puts @info.to_yaml } if info_changed
     

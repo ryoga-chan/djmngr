@@ -1,8 +1,14 @@
-.ident {
-  .search-results .block.associated {
-    padding-left: 0.5rem;
-    border-radius: 0.5rem;
-    border: 1px solid coral;
-    border-width: 0 1px 1px 0;
+body[data-action=edit][data-ctrl=process] {
+  .ident {
+    .search-results .block.associated {
+      padding-left: 0.5rem;
+      border-radius: 0.5rem;
+      border: 1px solid coral;
+      border-width: 0 1px 1px 0;
+    }
+  }
+
+  .move {
+    .scoring span.icon[data-score] { cursor: pointer; }
   }
 }
