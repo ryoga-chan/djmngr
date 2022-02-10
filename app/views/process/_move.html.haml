@@ -71,19 +71,18 @@
   = Doujin.dest_path_by_process_params @info
 - if @collision_info
   .collection-collision.ml-6
-    = form_with url: set_property_process_path do |f|
-      = f.hidden_field :tab, value: params[:tab]
+    .collision-details.my-3
       %span.tag.is-danger= "ALREADY EXIST!"
       &rightarrow;
+      %span.tag.is-info= "#{@collision_info[:current]} current"
+      VS.
+      %span.tag.is-info= "#{@collision_info[:collection]} collection"
+    = form_with url: set_property_process_path do |f|
+      = f.hidden_field :tab, value: params[:tab]
       %span.has-text-danger
         = f.check_box :overwrite, {checked: @info[:overwrite], include_hidden: true}
         = label_tag :overwrite, "overwrite file in the collection"
-    .file-current
-      %span.tag.is-info= "#{@collision_info[:current]} current"
-      VS.
-    .file-collection
-      %span.tag.is-info= "#{@collision_info[:collection]} collection"
-      %span.tag.is-info.is-light= "TODO: link to doujin ID [#{@collision_info[:doujin].try :id}]"
+      = link_to "(TODO: view doujin ID [#{@collision_info[:doujin].try :id}])", '#'
 
 .has-text-centered.my-4
   = link_to finalize_volume_process_path, method: :post,
