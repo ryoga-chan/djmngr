@@ -35,7 +35,7 @@ class ProcessArchiveCompressJob < ApplicationJob
         
         # 1. add metadata file
         File.open('metadata.yml', 'w'){|f| f.write({
-          source_file:    info[:relative_path],
+          source_file:    File.basename(info[:relative_path]),
           file_size:      info[:file_size],
           file_type:      info[:file_type],
           dest_folder:    info[:dest_folder],

@@ -110,13 +110,7 @@ class ProcessController < ApplicationController
     @fname = File.basename(@info[:relative_path].to_s)
     info_changed = false
 
-    # set file type
-    if params[:file_type] && params[:file_type] != @info[:file_type]
-      @info[:file_type] = params[:file_type].strip
-      info_changed = true
-    end
-    
-    # DOUJIN: toggle associated author/circle ID
+    # toggle associated author/circle ID
     %w{ author circle }.each do |k|
       tmp_id = params["#{k}_id".to_sym].to_i
       
@@ -131,7 +125,7 @@ class ProcessController < ApplicationController
       end
     end
     
-    # DOUJIN: select a main/destination author/circle
+    # select a main/destination author/circle
     if params[:doujin_dest_id] && params[:doujin_dest_id] != "#{@info[:doujin_dest_type]}-#{@info[:doujin_dest_id]}"
       # store type and ID
       @info[:doujin_dest_type], @info[:doujin_dest_id] = params[:doujin_dest_id].split('-')
@@ -141,24 +135,19 @@ class ProcessController < ApplicationController
       info_changed = true
     end
     
-    # set destination folder
-    if params[:dest_folder] && params[:dest_folder] != @info[:dest_folder]
-      @info[:dest_folder] = params[:dest_folder].strip
-      info_changed = true
+    %i{
+      dupe_search
+      file_type
+      dest_folder
+      subfolder
+      dest_filename
+    }.each do |k|
+      if params[k] && params[k] != @info[k]
+        @info[k] = params[k].strip
+        info_changed = true
+      end
     end
     
-    # set destination folder
-    if params[:subfolder] && params[:subfolder] != @info[:subfolder]
-      @info[:subfolder] = params[:subfolder].strip
-      info_changed = true
-    end
-    
-    # set destination filename
-    if params[:dest_filename] && params[:dest_filename] != @info[:dest_filename]
-      @info[:dest_filename] = params[:dest_filename].strip
-      info_changed = true
-    end
-
     # toggle overwrite of file in the collection
     if params[:overwrite] && (params[:overwrite].to_i == 1) != @info[:overwrite]
       @info[:overwrite] = params[:overwrite].to_i == 1
@@ -178,65 +167,74 @@ class ProcessController < ApplicationController
   
   # manage archive operations (sanitize filenames, delete extra images, identify author)
   def edit
-    params[:tab] = 'files' unless %w{ files images ident move }.include?(params[:tab])
+    params[:tab] = 'dupes' unless %w{ dupes files images ident move }.include?(params[:tab])
     
     @info  = YAML.load_file(File.join @dname, 'info.yml')
     @perc  = File.read(File.join @dname, 'completion.perc').to_f rescue 0.0 unless @info[:prepared_at]
     @fname = File.basename(@info[:relative_path].to_s)
     
-    if params[:tab] == 'ident'
-      # list possible dest folders
-      @dest_folders = []
-      case @info[:file_type]
-        when 'doujin'
-          if @info[:doujin_dest_type]
-            repo = File.join(Setting['dir.sorted'], @info[:doujin_dest_type]).to_s
-            @dest_folders = Dir.chdir(repo){ Dir['*'].select{|i| File.directory? i } }.sort.unshift('-custom name-')
-          end
-        when 'magazine'
-          repo = File.join(Setting['dir.sorted'], 'magazine').to_s
-          @dest_folders = Dir.chdir(repo){ Dir['*'].select{|i| File.directory? i } }.sort.unshift('-custom name-')
-        when 'artbook'
-          repo = File.join(Setting['dir.sorted'], 'artbook').to_s
-          @dest_folders = Dir.chdir(repo){ Dir['*'].select{|i| File.directory? i } }.sort.unshift('-custom name-')
-      end
-      
-      # lists of currently associated authors/circles
-      @associated_authors = Author.where(id: @info[:author_ids]).order("LOWER(name), id DESC")
-      @associated_circles = Circle.where(id: @info[:circle_ids]).order("LOWER(name), id DESC")
-      
-      # filename analisys
-      @name = File.basename(@info[:relative_path].to_s).parse_doujin_filename
-      # single term search
-      params[:term] = @name[:ac_explicit][0] || @name[:ac_implicit][0] if params[:term].blank?
-      @authors = Author.search_by_name params[:term], limit: 50
-      @circles = Circle.search_by_name params[:term], limit: 50
-    end # tab 'ident'
+    return render unless @info[:prepared_at]
     
-    if params[:tab] == 'move'
-      collection_file_path = Doujin.dest_path_by_process_params(@info, full_path: true)
-      if File.exist?(collection_file_path)
-        doujin = Doujin.find_by_process_params(@info)
+    case params[:tab]
+      when 'dupes'
+        @info[:dupe_search] ||= @info[:relative_path].tokenize_doujin_filename.join ' '
+        params[:dupe_search] ||= @info[:dupe_search]
+        # NOTE: sqlite LIKE is case insensitive
+        @dupes = Doujin.where("name_orig LIKE ?", "%#{params[:dupe_search].tr ' ', '%'}%").order(:name_orig)
         
-        c_size = render_to_string inline: %Q|<%= number_to_human_size #{File.size collection_file_path} %>|
-        c_imgs = doujin.try(:num_images) || 'N.D.'
-        f_size = render_to_string inline: %Q|<%= number_to_human_size #{File.size @info[:file_path]} %>|
+        f_size = helpers.number_to_human_size File.size(@info[:file_path])
         f_imgs = @info[:images].size
-        
-        @collision_info = {
-          collection: "#{c_imgs} pics/#{c_size}",
-          current: "#{c_imgs} pics/#{c_size}",
-          doujin: doujin
-        }
-      end
+        @cur_info = "#{f_imgs} pics/#{f_size}"
       
-      # list possible dest subfolders
-      @subfolders = ['-custom name-']
-      repo = @info[:file_type] == 'doujin' ?
-        File.join(Setting['dir.sorted'], @info[:doujin_dest_type], @info[:dest_folder]).to_s :
-        File.join(Setting['dir.sorted'], @info[:file_type], @info[:dest_folder]).to_s
-      @subfolders += Dir.chdir(repo){ Dir['*'].select{|i| File.directory? i } }.sort if File.exist?(repo)
-    end # tab 'move'
+      when 'ident'
+        # list possible dest folders
+        @dest_folders = []
+        case @info[:file_type]
+          when 'doujin'
+            if @info[:doujin_dest_type]
+              repo = File.join(Setting['dir.sorted'], @info[:doujin_dest_type]).to_s
+              @dest_folders = Dir.chdir(repo){ Dir['*'].select{|i| File.directory? i } }.sort.unshift('-custom name-')
+            end
+          when 'magazine'
+            repo = File.join(Setting['dir.sorted'], 'magazine').to_s
+            @dest_folders = Dir.chdir(repo){ Dir['*'].select{|i| File.directory? i } }.sort.unshift('-custom name-')
+          when 'artbook'
+            repo = File.join(Setting['dir.sorted'], 'artbook').to_s
+            @dest_folders = Dir.chdir(repo){ Dir['*'].select{|i| File.directory? i } }.sort.unshift('-custom name-')
+        end
+        
+        # lists of currently associated authors/circles
+        @associated_authors = Author.where(id: @info[:author_ids]).order("LOWER(name), id DESC")
+        @associated_circles = Circle.where(id: @info[:circle_ids]).order("LOWER(name), id DESC")
+        
+        # filename analisys
+        @name = File.basename(@info[:relative_path].to_s).parse_doujin_filename
+        # single term search
+        params[:term] = @name[:ac_explicit][0] || @name[:ac_implicit][0] if params[:term].blank?
+        @authors = Author.search_by_name params[:term], limit: 50
+        @circles = Circle.search_by_name params[:term], limit: 50
+      
+      when 'move'
+        # list possible dest subfolders
+        @subfolders = ['-custom name-']
+        repo = @info[:file_type] == 'doujin' ?
+          File.join(Setting['dir.sorted'], @info[:doujin_dest_type], @info[:dest_folder]).to_s :
+          File.join(Setting['dir.sorted'], @info[:file_type], @info[:dest_folder]).to_s
+        @subfolders += Dir.chdir(repo){ Dir['*'].select{|i| File.directory? i } }.sort if File.exist?(repo)
+        
+        # check if file already exists on disk/collection
+        collection_file_path = Doujin.dest_path_by_process_params(@info, full_path: true)
+        if File.exist?(collection_file_path)
+          doujin = Doujin.find_by_process_params(@info)
+          
+          c_size = helpers.number_to_human_size File.size(collection_file_path)
+          c_imgs = doujin.try(:num_images) || 'N.D.'
+          f_size = helpers.number_to_human_size File.size(@info[:file_path])
+          f_imgs = @info[:images].size
+          
+          @collision_info = { collection: "#{c_imgs} pics/#{c_size}", current: "#{c_imgs} pics/#{c_size}", doujin: doujin }
+        end
+    end
   end # edit
   
   def rename_images

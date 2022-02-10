@@ -21,6 +21,18 @@ module CoreExt
           subjects: fname.present? ? self.sub(/^\[([^\]]+)\].+/, '\1') : '',
           fname: fname.to_s.strip }
       end # parse_doujin_filename
+      
+      def tokenize_doujin_filename
+        cleared_string = File.basename self.strip, File.extname(self.strip)
+        
+        # keep author's parenthesis contents
+        # drop all filename parenthesis contents
+        if cleared_string =~ /^\[([^\]]+)\](.+)$/
+          cleared_string = "#{$1} #{$2.gsub /[\(\[\{][^\(\)]+[\)\]\}]/, ' '}"
+        end
+        
+        cleared_string.tr('[](){},.', ' ').split(' ')
+      end # tokenize_doujin_filename
     end
   end
 end

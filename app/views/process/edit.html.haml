@@ -29,6 +29,11 @@
   
   .tabs.is-boxed
     %ul
+      %li{class: (:'is-active' if params[:tab] == 'dupes') }
+        = link_to tab: :dupes do
+          %span.icon.is-small
+            %i.mi content_copy
+          %span Dupes
       %li{class: (:'is-active' if params[:tab] == 'files') }
         = link_to tab: :files do
           %span.icon.is-small
