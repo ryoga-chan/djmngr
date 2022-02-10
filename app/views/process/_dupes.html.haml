@@ -1,0 +1,34 @@
+.name_orig.mb-1
+  %span.icon.in-text-small.mr-2
+    %i.mi.mi-small photo_filter
+  = @fname
+
+.dest-filename.mb-1
+  = form_with url: set_property_process_path do |f|
+    = f.hidden_field :tab, value: params[:tab]
+    %span.icon.in-text-small.mr-2
+      %i.mi.mi-small search
+    = f.text_field :dupe_search, value: @info[:dupe_search], placeholder: 'search terms in sequence',
+      class: 'input is-small', style: 'width: 40rem',
+      data: { orig_name: @info[:relative_path].tokenize_doujin_filename.join(' ') }
+    = f.button class: 'button is-small' do
+      %span.icon
+        %i.mi.mi-small send
+    = f.button class: 'button is-small',
+      onclick: %Q|$('#dupe_search').val($('#dupe_search').data('orig-name')); return false;| do
+      %span.icon
+        %i.mi.mi-small restore
+
+- if @dupes.any?
+  .tags.has-addons.mt-3
+    %span.tag.is-info= "this file: #{@cur_info}"
+    %span.tag.is-danger= "#{@dupes.size} potential duplicate/s found in collection"
+- else
+  %span.tag.mt-3.is-success= "NO duplicates found in collection"
+
+.content
+  %ol.dupes
+    - @dupes.each do |d|
+      %li.dupe
+        %span.tag.is-info= "#{d.num_images} pics/#{number_to_human_size d.size}"
+        = link_to "TODO: ID-#{d.id} -- #{d.name_orig}", '#'
