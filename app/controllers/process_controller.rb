@@ -254,27 +254,27 @@ class ProcessController < ApplicationController
             img[:dst_path] = "%04d#{File.extname img[:src_path]}" % img[:src_path].match(re)&.captures&.first.to_i
           end
         
-        when :regex_pref_num, :regex_num_pref, :regex_replacement
+        when :regex_pref_num, :regex_num_pref
           re = Regexp.new params[:rename_regexp]
           
           # create a sortable label
-          if params[:rename_with].to_sym == :regex_replacement
-            @info[:images].each do |img|
-              img[:dst_sort_by] = img[:src_path].sub re, params[:rename_regexp_repl]
-            end
-          else
-            invert_terms = params[:rename_with].to_sym == :regex_num_pref
-            @info[:images].each do |img|
-              prefix, num = img[:src_path].match(re)&.captures
-              num, prefix = prefix, num if invert_terms
-              img[:dst_sort_by] = "#{prefix}-#{'%050d' % num.to_i}"
-            end
+          invert_terms = params[:rename_with].to_sym == :regex_num_pref
+          @info[:images].each do |img|
+            prefix, num = img[:src_path].match(re)&.captures
+            num, prefix = prefix, num if invert_terms
+            img[:dst_sort_by] = "#{prefix}-#{'%050d' % num.to_i}"
           end
           
           # rename images sorted by the previous label
           @info[:images]
             .sort{|a,b| a[:dst_sort_by] <=> b[:dst_sort_by] }
             .each_with_index{|img, i| img[:dst_path] = "%04d#{File.extname img[:src_path]}" % (i+1) }
+        
+        when :regex_replacement
+          re = Regexp.new params[:rename_regexp]
+          @info[:images].each do |img|
+            img[:dst_path] = img[:src_path].sub re, params[:rename_regexp_repl]
+          end
         
         else
           raise 'unknown renaming method'
