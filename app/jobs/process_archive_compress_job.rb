@@ -12,8 +12,8 @@ class ProcessArchiveCompressJob < ApplicationJob
       tot_steps = info[:images].size + 4
       cur_step  = 0
       
-      # N. hard link/convert images to the new name/format
       Dir.chdir(out_dir) do
+        # N. hard link/convert images to the new name/format
         info[:images].each do |img|
           src_path = File.join(src_dir, 'contents', img[:src_path])
           if File.extname(img[:src_path]).downcase == File.extname(img[:dst_path]).downcase
@@ -51,7 +51,7 @@ class ProcessArchiveCompressJob < ApplicationJob
         info[:collection_relative_path] = Doujin.dest_path_by_process_params info
         info[:collection_full_path] = File.join Setting['dir.sorted'], info[:collection_relative_path]
         FileUtils.mkdir_p File.dirname(info[:collection_full_path])
-        # compress sorting files alphabetically within archive, overwrite already processed file
+        # compress and sort files alphabetically within archive, overwrite already processed file
         File.unlink(info[:collection_full_path]) if File.exist?(info[:collection_full_path])
         system %Q[ find -type f | sort | zip -r #{info[:collection_full_path].shellescape} -@ ]
         
