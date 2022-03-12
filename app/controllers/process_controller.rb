@@ -244,41 +244,61 @@ class ProcessController < ApplicationController
       case params[:rename_with].to_sym
         when :alphabetical_index
           @info[:images].each_with_index{|img, i| img[:dst_path] = "%04d#{File.extname img[:src_path]}" % (i+1) }
+        
         when :to_integer
           @info[:images].each{|img| img[:dst_path] = "%04d#{File.extname img[:src_path]}" % img[:src_path].to_i }
+        
         when :regex_number
           re = Regexp.new params[:rename_regexp]
           @info[:images].each do |img|
             img[:dst_path] = "%04d#{File.extname img[:src_path]}" % img[:src_path].match(re)&.captures&.first.to_i
           end
-        when :regex_pref_num, :regex_num_pref
+        
+        when :regex_pref_num, :regex_num_pref, :regex_replacement
           re = Regexp.new params[:rename_regexp]
-          invert_terms = params[:rename_with].to_sym == :regex_num_pref
+          
           # create a sortable label
-          @info[:images].each do |img|
-            prefix, num = img[:src_path].match(re)&.captures
-            num, prefix = prefix, num if invert_terms
-            img[:dst_sort_by] = "#{prefix}-#{'%050d' % num.to_i}"
+          if params[:rename_with].to_sym == :regex_replacement
+            @info[:images].each do |img|
+              img[:dst_sort_by] = img[:src_path].sub re, params[:rename_regexp_repl]
+            end
+          else
+            invert_terms = params[:rename_with].to_sym == :regex_num_pref
+            @info[:images].each do |img|
+              prefix, num = img[:src_path].match(re)&.captures
+              num, prefix = prefix, num if invert_terms
+              img[:dst_sort_by] = "#{prefix}-#{'%050d' % num.to_i}"
+            end
           end
+          
           # rename images sorted by the previous label
           @info[:images]
             .sort{|a,b| a[:dst_sort_by] <=> b[:dst_sort_by] }
             .each_with_index{|img, i| img[:dst_path] = "%04d#{File.extname img[:src_path]}" % (i+1) }
+        
         else
           raise 'unknown renaming method'
       end # case
       
+      # append filenames
+      @info[:images].each_with_index do |img, i|
+        ext  = File.extname  img[:dst_path]
+        name = File.basename img[:dst_path], ext
+        img[:dst_path] = "#{name}-#{img[:src_path].sub(/\.[^\.]+$/, ext).tr File::SEPARATOR, '_'}"
+      end if params[:keep_names] == 'true'
+      
       @info[:images] = @info[:images].sort{|a,b| a[:dst_path] <=> b[:dst_path] }
       
-      @info[:ren_images_method] = params[:rename_with]
-      @info[:images_last_regexp] = params[:rename_regexp]
-      @info[:images_collision] = @info[:images].size != @info[:images].map{|i| i[:dst_path] }.uniq.size
+      @info[:ren_images_method      ] = params[:rename_with]
+      @info[:images_last_regexp     ] = params[:rename_regexp]
+      @info[:images_last_regexp_repl] = params[:rename_regexp_repl]
+      @info[:images_collision       ] = @info[:images].size != @info[:images].map{|i| i[:dst_path] }.uniq.size
       
       File.open(File.join(@dname, 'info.yml'), 'w'){|f| f.puts @info.to_yaml }
       
-      redirect_to edit_process_path(id: params[:id])
+      redirect_to edit_process_path(id: params[:id], tab: params[:tab])
     rescue
-      redirect_to(edit_process_path(id: params[:id]), alert: $!.to_s)
+      redirect_to(edit_process_path(id: params[:id], tab: params[:tab]), alert: $!.to_s)
     end
   end # rename_images
   

@@ -4,21 +4,35 @@
   .field.has-addons.mb-4
     .control.has-icons-left
       .select= f.select :rename_with,
-        { "alphabetical index" => :alphabetical_index,
-          "filename to number" => :to_integer,
-          "regexp \\1 to number" => :regex_number,
+        { "alphabetical index"                  => :alphabetical_index,
+          "filename to number"                  => :to_integer,
+          "regexp \\1 to number"                => :regex_number,
           "regexp \\1 as prefix, \\2 as number" => :regex_pref_num,
           "regexp \\1 to number, \\2 as prefix" => :regex_num_pref,
+          "regexp replacement"                  => :regex_replacement,
         }, {}, class: "input is-rounded"
       %span.icon.is-small.is-left
         %i.mi swap_horiz
     .control.has-icons-left.is-hidden
-      = f.text_field :rename_regexp, class: :input, size: 30,
-        placeholder: 'regular expression with captures',
+      = f.text_field :rename_regexp, class: :input, size: 20,
+        placeholder: 'regex with captures',
         value: @info[:images_last_regexp],
         data: { last_value: @info[:images_last_regexp] }
       %span.icon.is-small.is-left
         %i.mi settings
+    .control.has-icons-left.is-hidden
+      = f.text_field :rename_regexp_repl, class: :input, size: 20,
+        placeholder: 'replacement',
+        value: @info[:images_last_regexp_repl],
+        data: { last_value: @info[:images_last_regexp_repl] }
+      %span.icon.is-small.is-left
+        %i.mi find_replace
+    .control
+      = f.button type: :button, class: 'button is-rounded is-primary is-light', id: 'bt_keep_names' do
+        %span.icon.is-small
+          %i.mi check_box_outline_blank
+        %span keep names
+      = f.check_box :keep_names, {class: 'is-hidden'}, 'true', 'false'
     .control
       = f.button type: :submit, class: 'button is-rounded is-info' do
         %span.icon.is-small
@@ -94,7 +108,7 @@
             class: 'has-text-danger', title: 'delete file')
           %td.has-text-right= number_to_human_size img[:size]
           %td= check_box_tag 'path[]', img[:src_path], false, id: ''
-          %td= text_field_tag :file_name, img[:dst_path], id: '', size: 10,
+          %td= text_field_tag :file_name, img[:dst_path], id: '', size: 50,
             data: { url: rename_file_process_path, path: img[:src_path] }
           %td= link_to img[:src_path],
             show_image_process_path(id: @info[:working_dir], path: img[:src_path]),
