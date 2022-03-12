@@ -5,20 +5,29 @@ if ($('body').data('ctrl') +'/'+ $('body').data('action') != 'process/edit')
 
 var p_bar = '<progress class="progress is-small is-info" max="100">i</progress>';
 
+// keep file names button: toggle hidden checkbox and icon
+$('#bt_keep_names').click(function () {
+  $('#keep_names').prop('checked', !$('#keep_names').prop('checked'));
+  $(this).find('i').text($('#keep_names').prop('checked') ? 'check_box' : 'check_box_outline_blank');
+});
+
 // massive rename with regexp
 $('#rename_with').change(function () {
   var method = $(this).val();
   
-  $('#rename_regexp')
-    .parent()
-    .toggleClass('is-hidden', !method.match(/^regex/) );
+  $('#rename_regexp'     ).parent().toggleClass('is-hidden', !method.match(/^regex/)      );
+  $('#rename_regexp_repl').parent().toggleClass('is-hidden', method != 'regex_replacement');
   
   // insert default sample regexp or keep the previous one
   if (!$('#rename_regexp').data('last-value')) {
-    if (method == 'regex_number'  ) $('#rename_regexp').val('([0-9]+)');
-    if (method == 'regex_pref_num') $('#rename_regexp').val('(.+[^0-9])([0-9]+)');
-    if (method == 'regex_num_pref') $('#rename_regexp').val('([0-9]+)([^0-9].+)');
+    if (method == 'regex_number'     ) $('#rename_regexp').val('([0-9]+)');
+    if (method == 'regex_pref_num'   ) $('#rename_regexp').val('(.+[^0-9])([0-9]+)');
+    if (method == 'regex_num_pref'   ) $('#rename_regexp').val('([0-9]+)([^0-9].+)');
+    if (method == 'regex_replacement') $('#rename_regexp').val('');
   }//if
+  
+  if (method.match(/^regex/))
+    $('#rename_regexp').focus().select();
 });
 
 // select images to delete
