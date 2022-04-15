@@ -1,8 +1,17 @@
 body[data-action=edit][data-ctrl=process] {
   .ident {
-    .search-results .block.associated {
+    .search-results .associated .subject {
+      border-radius: 0.5rem;
+      border: 1px outset silver;
+      border-width: 0 0 1px 0;
+    }
+
+    .search-results .block {
       padding-left: 0.5rem;
       border-radius: 0.5rem;
+      border: 1px outset silver;
+    }
+    .search-results .block.associated {
       border: 1px solid coral;
       border-width: 0 1px 1px 0;
     }

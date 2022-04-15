@@ -10,6 +10,7 @@ class Author < ApplicationRecord
     throw :abort
   }
   
+  include JapaneseLabels
   include SearchJapaneseSubject
   include DoujinshiOrgReference
 end
