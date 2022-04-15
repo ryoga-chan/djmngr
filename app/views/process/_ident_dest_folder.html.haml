@@ -2,7 +2,7 @@
   = form_with url: set_property_process_path do |f|
     = f.hidden_field :tab, value: params[:tab]
     %span.icon.in-text-small.mr-2
-      %i.mi.mi-small folder
+      %i.mi.mi-small(title="destination folder (available > final)") folder
     %span.select.vmiddle= f.select :sel_dest_folder,
       options_for_select(@dest_folders, @info[:dest_folder]), {},
       class: "input is-small vmiddle", style: 'width: 15rem',
@@ -11,4 +11,4 @@
       class: 'input is-small', style: 'width: 15rem'
     = f.button class: 'button is-small' do
       %span.icon
-        %i.mi.mi-small send
+        %i.mi.mi-small(title="set destination folder") send

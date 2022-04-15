@@ -2,7 +2,7 @@
   = f.hidden_field :tab, value: params[:tab]
   .file-type
     %span.icon.in-text-small.mr-2
-      %i.mi.mi-small local_offer
+      %i.mi.mi-small(title="archive type") local_offer
     %span.select.vmiddle= f.select :file_type,
       options_for_select(%w{doujin magazine artbook}, @info[:file_type]), {},
       class: "input is-small", style: 'width: 15rem', onchange: "this.form.submit()"
