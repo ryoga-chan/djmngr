@@ -10,6 +10,7 @@ class Circle < ApplicationRecord
     throw :abort
   }
 
+  include JapaneseLabels
   include SearchJapaneseSubject
   include DoujinshiOrgReference
 end

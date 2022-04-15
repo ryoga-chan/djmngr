@@ -40,7 +40,7 @@
 - term_re = Regexp.new Regexp.escape(params[:term].to_s), Regexp::IGNORECASE
 
 .columns.search-results.mt-3
-  .column
+  .column(class="associated")
     .title.is-4 Associations
     
     = form_with url: set_property_process_path do |f|
@@ -51,7 +51,11 @@
           .subtitle.mb-0= type.capitalize.pluralize
           .subject-list.pl-2.mb-5
             - instance_variable_get("@associated_#{type.pluralize}").each do |r|
-              .subject
+              - members = r.send(type == 'author' ? :circles : :authors).order(:name)
+              - members = members.map{|m| "• #{m.label_name_orig} // #{m.label_name_romaji} (#{m.doujinshi_org_id})" }
+              - subject_title = members.join("\n") if members.any?
+              
+              .subject(title=subject_title)
                 = f.radio_button :doujin_dest_id, "#{type}-#{r.id}",
                   checked: "#{type}-#{r.id}" == "#{@info[:doujin_dest_type]}-#{@info[:doujin_dest_id]}",
                   onchange: "this.form.submit()"
@@ -80,8 +84,8 @@
         - is_associated = @info["#{type.singularize}_ids".to_sym].to_a.include? r.id
         
         .block{class: "#{'associated has-background-grey-darker' if is_associated}"}
-          .name_orig
-            - name = r.name.present? ? r.name : r.name_kana
+          %span.name_orig
+            - name = r.label_name_orig
             - if r.doujinshi_org_id
               = link_to({action: :set_property, "#{type.singularize}_id" => r.id, tab: params[:tab], term: params[:term]},
                 title: "#{is_associated ? :remove : :add} association", method: :post) do
@@ -93,6 +97,16 @@
               = link_to :A, Author.doujinshi_org_search_url(name), target: :_blank, title: "search author on doujinshi.org"
               = link_to :C, Circle.doujinshi_org_search_url(name), target: :_blank, title: "search circle on doujinshi.org"
               = name
-          .name_romaji.has-text-grey.is-size-7
-            - name = r.name_romaji.present? ? r.name_romaji : r.name_kakasi
-            = h(name).gsub(term_re, %Q|<span class="has-text-warning">\\0</span>|).html_safe
+          %span.name_romaji.has-text-grey.is-size-7
+            %span.has-text-info /
+            = h(r.label_name_romaji).gsub(term_re, %Q|<span class="has-text-warning">\\0</span>|).html_safe
+          - members = r.send(type == 'authors' ? :circles : :authors).order(:name)
+          - if members.any?
+            .related_names.is-size-7.pl-4
+              %ul
+                - members.each do |m|
+                  %li
+                    %span= link_to m.label_name_orig, m.doujinshi_org_full_url, target: :_blank,
+                      title: "view on doujinshi.org", class: 'has-text-white'
+                    %span.has-text-info /
+                    %span.has-text-grey= m.label_name_romaji
