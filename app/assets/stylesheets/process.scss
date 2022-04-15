@@ -17,8 +17,10 @@ body[data-action=edit][data-ctrl=process] {
     }
     
     .search-results .related_names .associated {
-      border: 1px dotted coral;
-      border-width: 0 0 1px 0;
+      padding: 0 3px;
+      border-radius: 0.25rem;
+      border: 1px solid coral;
+      border-width: 1px 5px;
     }
   }
 
