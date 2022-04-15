@@ -1,6 +1,6 @@
 body[data-action=edit][data-ctrl=process] {
   .ident {
-    .search-results .associated .subject {
+    .search-results .column.associated .subject {
       border-radius: 0.5rem;
       border: 1px outset silver;
       border-width: 0 0 1px 0;
@@ -12,8 +12,13 @@ body[data-action=edit][data-ctrl=process] {
       border: 1px outset silver;
     }
     .search-results .block.associated {
-      border: 1px solid coral;
+      border: 1px inset coral;
       border-width: 0 1px 1px 0;
+    }
+    
+    .search-results .related_names .associated {
+      border: 1px dotted coral;
+      border-width: 0 0 1px 0;
     }
   }
 
