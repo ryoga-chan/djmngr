@@ -36,9 +36,8 @@ module SearchJapaneseSubject
       SQL
       
       term_d = term.downcase
-      term_q = "%#{term}%"
       query_params = { term_d: term_d, term_dk: term_d.to_romaji,
-                       term_q: term_q, term_qk: term_q.to_romaji, limit: limit }
+                       term_q: "%#{term}%", term_qk: "%#{term.to_romaji}%", limit: limit }
       
       self.find_by_sql [query, query_params]
     end # search_by_name

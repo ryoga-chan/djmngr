@@ -1,13 +1,13 @@
 .name_orig.mb-1
   %span.icon.in-text-small.mr-2
-    %i.mi.mi-small photo_filter
+    %i.mi.mi-small(title="original filename") photo_filter
   = @fname
 
 .dest-filename.mb-1
   = form_with url: set_property_process_path do |f|
     = f.hidden_field :tab, value: params[:tab]
     %span.icon.in-text-small.mr-2
-      %i.mi.mi-small search
+      %i.mi.mi-small(title="terms for catalog search") search
     = f.text_field :dupe_search, value: @info[:dupe_search], placeholder: 'search terms in sequence',
       class: 'input is-small', style: 'width: 40rem',
       data: { orig_name: @info[:relative_path].tokenize_doujin_filename.join(' ') }
@@ -17,7 +17,7 @@
     = f.button class: 'button is-small',
       onclick: %Q|$('#dupe_search').val($('#dupe_search').data('orig-name')); return false;| do
       %span.icon
-        %i.mi.mi-small restore
+        %i.mi.mi-small(title="restore initial search term") restore
 
 - if @dupes.any?
   .tags.has-addons.mt-3

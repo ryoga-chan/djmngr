@@ -1,23 +1,23 @@
 .name_orig.mb-1
   %span.icon.in-text-small.mr-2
-    %i.mi.mi-small photo_filter
+    %i.mi.mi-small(title="original filename") photo_filter
   = @name[:subjects]
 
 - if @name[:subjects] != @name[:subjects].to_romaji
   .name_romaji.mb-1
     %span.icon.in-text-small.mr-2
-      %i.mi.mi-small translate
+      %i.mi.mi-small(title="kakasi filename") translate
     = @name[:subjects].to_romaji alt_readings:true#, furigana_mode: true
 
 .authors-circles.mb-1
   %span.icon.in-text-small.mr-2
-    %i.mi.mi-small supervised_user_circle
+    %i.mi.mi-small(title="search by circle") supervised_user_circle
   .tags.inline-block.mb-0
     - @name[:ac_explicit].each do |ac|
       = link_to ac, {term: ac, tab: params[:tab]}, class: "tag mb-0 #{'has-text-warning' if ac == params[:term]}"
   
   %span.icon.in-text-small.mr-2.ml-4
-    %i.mi.mi-small supervisor_account
+    %i.mi.mi-small(title="search by author") supervisor_account
   .tags.inline-block.mb-0
     - @name[:ac_implicit].each do |ac|
       = link_to ac, {term: ac, tab: params[:tab]}, class: "tag mb-0 #{'has-text-warning' if ac == params[:term]} has-background-grey"
@@ -26,11 +26,11 @@
   = form_with url: edit_process_path, method: :get do |f|
     = f.hidden_field :tab, value: params[:tab]
     %span.icon.in-text-small.mr-2
-      %i.mi.mi-small search
+      %i.mi.mi-small(title="terms for catalog search") search
     = f.text_field :term, value: params[:term], placeholder: 'search term', class: 'input is-small vmiddle', style: 'width: 15rem'
     = f.button class: 'button is-small' do
       %span.icon
-        %i.mi.mi-small person_search
+        %i.mi.mi-small(title="search") person_search
     %span.mx-4
       = link_to :A, Author.doujinshi_org_search_url(params[:term]), target: :_blank, title: "search author on doujinshi.org"
       = link_to :C, Circle.doujinshi_org_search_url(params[:term]), target: :_blank, title: "search circle on doujinshi.org"

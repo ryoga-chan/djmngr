@@ -1,17 +1,17 @@
 .name_orig.mb-1
   %span.icon.in-text-small.mr-2
-    %i.mi.mi-small photo_filter
+    %i.mi.mi-small(title="original filename") photo_filter
   = @fname
 
 - if @fname != @fname.to_romaji
   .name_romaji.mb-1
     %span.icon.in-text-small.mr-2
-      %i.mi.mi-small translate
+      %i.mi.mi-small(title="kakasi filename") translate
     = @fname.to_romaji #alt_readings:true, furigana_mode: true
 
 .file-type.mb-1
   %span.icon.in-text-small.mr-2
-    %i.mi.mi-small local_offer
+    %i.mi.mi-small(title="archive type") local_offer
   - if @info[:file_type] == 'doujin'
     = "#{@info[:doujin_dest_type]} #{@info[:file_type]}"
   - else
@@ -22,19 +22,19 @@
     = f.hidden_field :tab, value: params[:tab]
     = f.hidden_field :score, value: @info[:score]
     %span.icon.in-text-small.mr-2
-      %i.mi.mi-small favorite
+      %i.mi.mi-small(title="quality score") favorite
     - (1..10).each do |i|
       %span.icon.is-medium.in-text.mr-4{data: {score: i}, class: (i <= @info[:score].to_i ? 'has-text-warning' : '')}
         %i.mi.mi-medium= i <= @info[:score].to_i ? :star_rate : :star_outline
         %span= i
     %span.icon.is-medium.in-text.mr-4.clear-score{data: {score: 0}}
-      %i.mi.mi-medium clear
+      %i.mi.mi-medium(title="clear") clear
 
 .subfolder.mb-1
   = form_with url: set_property_process_path do |f|
     = f.hidden_field :tab, value: params[:tab]
     %span.icon.in-text-small.mr-2
-      %i.mi.mi-small create_new_folder
+      %i.mi.mi-small(title="destination subfolder") create_new_folder
     %span.select.vmiddle= f.select :sel_subfolder,
       options_for_select(@subfolders, @info[:subfolder]), {},
       class: "input is-small vmiddle", style: 'width: 15rem',
@@ -47,13 +47,13 @@
     = f.button class: 'button is-small',
       onclick: %Q|$('#subfolder').val('')| do
       %span.icon
-        %i.mi.mi-small clear
+        %i.mi.mi-small(title="clear subfolder") clear
 
 .dest-filename.mb-1
   = form_with url: set_property_process_path do |f|
     = f.hidden_field :tab, value: params[:tab]
     %span.icon.in-text-small.mr-2
-      %i.mi.mi-small insert_drive_file
+      %i.mi.mi-small(title="destination filename") insert_drive_file
     = f.text_field :dest_filename, value: @info[:dest_filename], placeholder: 'destination filename',
       class: 'input is-small', style: 'width: 40rem',
       data: { orig_name: File.basename(@info[:relative_path]) }
@@ -63,11 +63,11 @@
     = f.button class: 'button is-small',
       onclick: %Q|$('#dest_filename').val($('#dest_filename').data('orig-name')); return false;| do
       %span.icon
-        %i.mi.mi-small restore
+        %i.mi.mi-small(title="restore initial filename") restore
 
 .final-path
   %span.icon.in-text-small.mr-2
-    %i.mi.mi-small folder
+    %i.mi.mi-small(title="destination path") folder
   = Doujin.dest_path_by_process_params @info
 - if @collision_info
   .collection-collision.ml-6
