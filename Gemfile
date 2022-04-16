@@ -15,7 +15,7 @@ gem 'rack-brotli', '~> 1.2.0'    # enable brotli compression
 gem 'bcrypt',      '~> 3.1.7'    # ActiveModel's has_secure_password -- https://guides.rubyonrails.org/active_model_basics.html#securepassword
 gem 'sassc-rails'                # sass to process CSS
 gem 'sprockets-rails'            # asset pipeline -- https://github.com/rails/sprockets-rails
-gem 'image_processing', '~> 1.2' # ActiveStorage variants -- https://guides.rubyonrails.org/active_storage_overview.html#transforming-images
+gem 'image_processing', '~> 1.2' # image manipulation -- https://github.com/janko/image_processing ; ActiveStorage variants -- https://guides.rubyonrails.org/active_storage_overview.html#transforming-images
 gem 'bootsnap', require: false   # Reduces boot times through caching; required in config/boot.rb
 gem 'tzinfo-data', platforms: %i[ mingw mswin x64_mingw jruby ] # zoneinfo files for Windows
 gem 'haml-rails',  '~> 2.0'    # https://haml.info
