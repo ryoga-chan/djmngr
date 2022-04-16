@@ -15,7 +15,6 @@ gem 'rack-brotli', '~> 1.2.0'    # enable brotli compression
 gem 'bcrypt',      '~> 3.1.7'    # ActiveModel's has_secure_password -- https://guides.rubyonrails.org/active_model_basics.html#securepassword
 gem 'sassc-rails'                # sass to process CSS
 gem 'sprockets-rails'            # asset pipeline -- https://github.com/rails/sprockets-rails
-gem 'image_processing', '~> 1.2' # image manipulation -- https://github.com/janko/image_processing ; ActiveStorage variants -- https://guides.rubyonrails.org/active_storage_overview.html#transforming-images
 gem 'bootsnap', require: false   # Reduces boot times through caching; required in config/boot.rb
 gem 'tzinfo-data', platforms: %i[ mingw mswin x64_mingw jruby ] # zoneinfo files for Windows
 gem 'haml-rails',  '~> 2.0'    # https://haml.info
@@ -23,6 +22,12 @@ gem 'kaminari'                 # pagination -- https://github.com/kaminari/kamin
 gem 'kakasi'                   # kanji kana simple inverter -- https://github.com/knu/kakasi_ffi
 gem 'ferret', '0.11.9.0', source: 'https://rubygems.pkg.github.com/acavalin' # https://github.com/acavalin/ferret
 gem 'progressbar'
+
+# image manipulation  ==>         https://github.com/janko/image_processing
+# used by ActiveStorage variants: https://guides.rubyonrails.org/active_storage_overview.html#transforming-images
+# api documentation:              https://github.com/janko/image_processing/blob/master/doc/vips.md#readme
+#                                 https://rubydoc.info/gems/ruby-vips/Vips/Image#webpsave-instance_method
+gem 'image_processing', '~> 1.2'
 
 group :development do
   gem 'debug', platforms: %i[ mri mingw x64_mingw ] # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem

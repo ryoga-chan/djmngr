@@ -80,16 +80,18 @@ class ProcessArchiveDecompressJob < ApplicationJob
         img[:thumb_path] = "#{num}.webp"
         
         tpath = File.join(path_thumbs, img[:thumb_path])
+        
         # fast resize
         ImageProcessing::Vips.
           source(File.join path_contents, img[:src_path]).
           convert('webp').
-          resize_to_fit(100, 140).
+          resize_and_pad(100, 140, alpha: true).
           saver(quality: 70).
           call destination: tpath
+        
         # optimize size
-        system %Q| cwebp -q 70 #{tpath.shellescape} -o #{tpath.shellescape} |
-        raise 'err' if $?.to_i != 0
+        #system %Q| cwebp -q 70 #{tpath.shellescape} -o #{tpath.shellescape} |
+        #raise 'err' if $?.to_i != 0
       rescue
         img[:dst_path] = 'RESIZE ERROR'
       end
