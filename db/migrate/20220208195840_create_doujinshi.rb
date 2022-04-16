@@ -9,6 +9,7 @@ class CreateDoujinshi < ActiveRecord::Migration[7.0]
       t.string  :checksum
       t.integer :num_images
       t.integer :num_files
+      t.string  :category
       t.integer :score
       t.text    :path
 

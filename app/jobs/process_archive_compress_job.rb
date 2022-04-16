@@ -9,7 +9,7 @@ class ProcessArchiveCompressJob < ApplicationJob
       FileUtils.rm_rf out_dir, secure: true
       FileUtils.mkdir_p out_dir
       
-      tot_steps = info[:images].size + 4
+      tot_steps = info[:images].size + 5
       cur_step  = 0
       
       Dir.chdir(out_dir) do
@@ -64,10 +64,10 @@ class ProcessArchiveCompressJob < ApplicationJob
         File.open(File.join(src_dir, 'finalize.perc'), 'w'){|f| f.write perc.round(2) }
       end
 
-      # 4. save record on database
       Doujin.transaction do
         Doujin.find_by_process_params(info).try(:destroy) # overwrite already processed file
         
+        # 4. save record on database
         name = File.basename info[:dest_filename], File.extname(info[:dest_filename])
         d = Doujin.create! \
           name:         name,
@@ -78,13 +78,38 @@ class ProcessArchiveCompressJob < ApplicationJob
           num_files:    info[:files].size,
           score:        (info[:score].to_i > 0 ? info[:score].to_i : nil),
           path:         info[:collection_relative_path],
-          name_orig:    info[:relative_path]
+          name_orig:    info[:relative_path],
+          category:     info[:file_type]
         d.author_ids = info[:author_ids] if info[:author_ids].try(:any?)
         d.circle_ids = info[:circle_ids] if info[:circle_ids].try(:any?)
         info[:db_doujin_id] = d.id # this field marks the process as completed
+        
+        perc = (cur_step+=1).to_f / tot_steps * 100
+        File.open(File.join(src_dir, 'finalize.perc'), 'w'){|f| f.write perc.round(2) }
+        
+        # 5. create doujin thumbnail (webp animated image with sample pages)
+        # select thumbnails
+        max_id = info[:images].size - 1
+        thumb_ids = max_id == 0 ? [0] : [
+          0,
+          (max_id.to_f * 0.25).floor + 1,
+          (max_id.to_f * 0.50).floor + 1,
+          (max_id.to_f * 0.75).floor + 1,
+        ].uniq
+        thumb_src = thumb_ids.map{|i| File.join(src_dir, 'thumbs', info[:images][i][:thumb_path]).shellescape }
+        thumb_dst = File.join(Rails.root, 'public', 'thumbs', "#{d.id}.webp")
+        # merge selected thumbnails
+        system %Q| img2webp -q 70 -lossy \
+          -d 2000 #{thumb_src[0]} -d 1000 #{thumb_src[1..-1].join ' '} \
+          -o #{thumb_dst.shellescape} |
+        if $?.to_i != 0 # remove thumbnail if it goes wrong
+          File.unlink(thumb_dst) if File.exist?(thumb_dst)
+          raise "error [#{$?.to_i}] while creating thumbnails"
+        end
+        
+        perc = (cur_step+=1).to_f / tot_steps * 100
+        File.open(File.join(src_dir, 'finalize.perc'), 'w'){|f| f.write perc.round(2) }
       end
-      perc = (cur_step+=1).to_f / tot_steps * 100
-      File.open(File.join(src_dir, 'finalize.perc'), 'w'){|f| f.write perc.round(2) }
     rescue
       info[:finalize_error    ] = $!.to_s
       info[:finalize_backtrace] = $!.backtrace
