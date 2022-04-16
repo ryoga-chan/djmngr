@@ -53,7 +53,12 @@ class ProcessArchiveDecompressJob < ApplicationJob
     FileUtils.mkdir_p path_contents
     
     system %Q| unzip -d #{path_contents.shellescape} #{info[:file_path].shellescape} |
-    
+    Dir.chdir(path_contents) do # reset file/folder permissions
+      dirs, files = Dir[File.join path_contents, '**/**'].partition{|i| File.directory? i }
+      FileUtils.chmod 0755, dirs
+      FileUtils.chmod 0644, files
+    end
+
     # detect images and other files
     info[:images], info[:files] = Dir
       .chdir(path_contents){
@@ -70,14 +75,21 @@ class ProcessArchiveDecompressJob < ApplicationJob
     # create thumbnails for the images
     info[:images].each_with_index do |img, i|
       begin
-        img[:dst_path] = "%04d#{File.extname img[:src_path]}" % (i+1)
-        img[:thumb_path] = img[:dst_path].dup
+        num = '%04d' % (i+1)
+        img[:dst_path  ] = "#{num}#{File.extname img[:src_path]}"
+        img[:thumb_path] = "#{num}.webp"
         
+        tpath = File.join(path_thumbs, img[:thumb_path])
+        # fast resize
         ImageProcessing::Vips.
           source(File.join path_contents, img[:src_path]).
-          convert('jpg').
+          convert('webp').
           resize_to_fit(100, 140).
-          call destination: File.join(path_thumbs, img[:dst_path])
+          saver(quality: 70).
+          call destination: tpath
+        # optimize size
+        system %Q| cwebp -q 70 #{tpath.shellescape} -o #{tpath.shellescape} |
+        raise 'err' if $?.to_i != 0
       rescue
         img[:dst_path] = 'RESIZE ERROR'
       end
