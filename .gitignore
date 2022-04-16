@@ -39,6 +39,8 @@ Gemfile.lock
 /tmp.*
 /.geany
 
+/dj-libray/to-sort/*
 /dj-libray/sorting/*
-/dj-libray/to-sort/*
-/dj-libray/to-sort/*
+/dj-libray/sorted/*
+
+/public/thumbs/*.webp

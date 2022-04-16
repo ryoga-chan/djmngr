@@ -10,6 +10,8 @@ class Doujin < ApplicationRecord
     throw :abort
   }
   
+  after_destroy :delete_thumbnail
+  
   def self.dest_path_by_process_params(info, full_path: false)
     path = full_path ? [Setting['dir.sorted']] : []
     path << (info[:file_type] == 'doujin' ? info[:doujin_dest_type] : info[:file_type]).to_s
@@ -23,4 +25,13 @@ class Doujin < ApplicationRecord
   def self.find_by_process_params(info)
     self.find_by path: self.dest_path_by_process_params(info)
   end # self.find_by_process_params
+  
+  
+  private # ____________________________________________________________________
+  
+  
+  def delete_thumbnail
+    thumb_path = File.join Rails.root, 'public', 'thumbs', "#{self.id}.webp"
+    File.unlink(thumb_path) if File.exist?(thumb_path)
+  end # delete_thumbnail
 end
