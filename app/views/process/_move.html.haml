@@ -1,92 +1,117 @@
-.name_orig.mb-1
-  %span.icon.in-text-small.mr-2
-    %i.mi.mi-small(title="original filename") photo_filter
-  = @fname
+.columns
+  .column.is-9
+    .name_orig.mb-1
+      %span.icon.in-text-small.mr-2
+        %i.mi.mi-small(title="original filename") photo_filter
+      = @fname
 
-- if @fname != @fname.to_romaji
-  .name_romaji.mb-1
-    %span.icon.in-text-small.mr-2
-      %i.mi.mi-small(title="kakasi filename") translate
-    = @fname.to_romaji #alt_readings:true, furigana_mode: true
+    - if @fname != @fname.to_romaji
+      .name_romaji.mb-1
+        %span.icon.in-text-small.mr-2
+          %i.mi.mi-small(title="kakasi filename") translate
+        = @fname.to_romaji #alt_readings:true, furigana_mode: true
 
-.file-type.mb-1
-  %span.icon.in-text-small.mr-2
-    %i.mi.mi-small(title="archive type") local_offer
-  - if @info[:file_type] == 'doujin'
-    = "#{@info[:doujin_dest_type]} #{@info[:file_type]}"
-  - else
-    = @info[:file_type]
+    .file-type.mb-1
+      %span.icon.in-text-small.mr-2
+        %i.mi.mi-small(title="archive type") local_offer
+      - if @info[:file_type] == 'doujin'
+        = "#{@info[:doujin_dest_type]} #{@info[:file_type]}"
+      - else
+        = @info[:file_type]
 
-.scoring
-  = form_with url: set_property_process_path do |f|
-    = f.hidden_field :tab, value: params[:tab]
-    = f.hidden_field :score, value: @info[:score]
-    %span.icon.in-text-small.mr-2
-      %i.mi.mi-small(title="quality score") favorite
-    - (1..10).each do |i|
-      %span.icon.is-medium.in-text.mr-4{data: {score: i}, class: (i <= @info[:score].to_i ? 'has-text-warning' : '')}
-        %i.mi.mi-medium= i <= @info[:score].to_i ? :star_rate : :star_outline
-        %span= i
-    %span.icon.is-medium.in-text.mr-4.clear-score{data: {score: 0}}
-      %i.mi.mi-medium(title="clear") clear
+    .scoring
+      = form_with url: set_property_process_path do |f|
+        = f.hidden_field :tab, value: params[:tab]
+        = f.hidden_field :score, value: @info[:score]
+        %span.icon.in-text-small.mr-2
+          %i.mi.mi-small(title="quality score") favorite
+        - (1..10).each do |i|
+          %span.icon.is-medium.in-text.mr-4{data: {score: i}, class: (i <= @info[:score].to_i ? 'has-text-warning' : '')}
+            %i.mi.mi-medium= i <= @info[:score].to_i ? :star_rate : :star_outline
+            %span= i
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        %span.icon.is-medium.in-text.mr-4.clear-score{data: {score: 0}}
+          %i.mi.mi-medium(title="clear") clear
 
-.subfolder.mb-1
-  = form_with url: set_property_process_path do |f|
-    = f.hidden_field :tab, value: params[:tab]
-    %span.icon.in-text-small.mr-2
-      %i.mi.mi-small(title="destination subfolder") create_new_folder
-    %span.select.vmiddle= f.select :sel_subfolder,
-      options_for_select(@subfolders, @info[:subfolder]), {},
-      class: "input is-small vmiddle", style: 'width: 15rem',
-      onchange: %Q| $('#subfolder').val($(this).val()); this.form.submit() |
-    = f.text_field :subfolder, value: @info[:subfolder], placeholder: 'destination subfolder',
-      class: 'input is-small', style: 'width: 15rem'
-    = f.button class: 'button is-small' do
-      %span.icon
-        %i.mi.mi-small send
-    = f.button class: 'button is-small',
-      onclick: %Q|$('#subfolder').val('')| do
-      %span.icon
-        %i.mi.mi-small(title="clear subfolder") clear
+    .subfolder.mb-1
+      = form_with url: set_property_process_path do |f|
+        = f.hidden_field :tab, value: params[:tab]
+        %span.icon.in-text-small.mr-2
+          %i.mi.mi-small(title="destination subfolder") create_new_folder
+        %span.select.vmiddle= f.select :sel_subfolder,
+          options_for_select(@subfolders, @info[:subfolder]), {},
+          class: "input is-small vmiddle", style: 'width: 15rem',
+          onchange: %Q| $('#subfolder').val($(this).val()); this.form.submit() |
+        = f.text_field :subfolder, value: @info[:subfolder], placeholder: 'destination subfolder',
+          class: 'input is-small', style: 'width: 15rem'
+        = f.button class: 'button is-small' do
+          %span.icon
+            %i.mi.mi-small send
+        = f.button class: 'button is-small',
+          onclick: %Q|$('#subfolder').val('')| do
+          %span.icon
+            %i.mi.mi-small(title="clear subfolder") clear
 
-.dest-filename.mb-1
-  = form_with url: set_property_process_path do |f|
-    = f.hidden_field :tab, value: params[:tab]
-    %span.icon.in-text-small.mr-2
-      %i.mi.mi-small(title="destination filename") insert_drive_file
-    = f.text_field :dest_filename, value: @info[:dest_filename], placeholder: 'destination filename',
-      class: 'input is-small', style: 'width: 40rem',
-      data: { orig_name: File.basename(@info[:relative_path]) }
-    = f.button class: 'button is-small' do
-      %span.icon
-        %i.mi.mi-small send
-    = f.button class: 'button is-small',
-      onclick: %Q|$('#dest_filename').val($('#dest_filename').data('orig-name')); return false;| do
-      %span.icon
-        %i.mi.mi-small(title="restore initial filename") restore
+    .dest-filename.mb-1
+      = form_with url: set_property_process_path do |f|
+        = f.hidden_field :tab, value: params[:tab]
+        %span.icon.in-text-small.mr-2
+          %i.mi.mi-small(title="destination filename") insert_drive_file
+        = f.text_field :dest_filename, value: @info[:dest_filename], placeholder: 'destination filename',
+          class: 'input is-small', style: 'width: 40rem',
+          data: { orig_name: File.basename(@info[:relative_path]) }
+        = f.button class: 'button is-small' do
+          %span.icon
+            %i.mi.mi-small send
+        = f.button class: 'button is-small',
+          onclick: %Q|$('#dest_filename').val($('#dest_filename').data('orig-name')); return false;| do
+          %span.icon
+            %i.mi.mi-small(title="restore initial filename") restore
 
-.final-path
-  %span.icon.in-text-small.mr-2
-    %i.mi.mi-small(title="destination path") folder
-  = Doujin.dest_path_by_process_params @info
-- if @collision_info
-  .collection-collision.ml-6
-    .collision-details.my-3
-      %span.tag.is-danger= "ALREADY EXIST!"
-      &rightarrow;
-      %span.tag.is-info= "#{@collision_info[:current]} current"
-      VS.
-      %span.tag.is-info= "#{@collision_info[:collection]} collection"
-    = form_with url: set_property_process_path do |f|
-      = f.hidden_field :tab, value: params[:tab]
-      %span.has-text-danger
-        = f.check_box :overwrite, {checked: @info[:overwrite], include_hidden: true}
-        = label_tag :overwrite, "overwrite file in the collection"
-      = link_to "(TODO: view doujin ID [#{@collision_info[:doujin].try :id}])", '#'
+    .final-path
+      %span.icon.in-text-small.mr-2
+        %i.mi.mi-small(title="destination path") folder
+      = Doujin.dest_path_by_process_params @info
+    - if @collision_info
+      .collection-collision.ml-6
+        .collision-details.my-3
+          %span.tag.is-danger= "ALREADY EXIST!"
+          &rightarrow;
+          %span.tag.is-info= "#{@collision_info[:current]} current"
+          VS.
+          %span.tag.is-info= "#{@collision_info[:collection]} collection"
+        = form_with url: set_property_process_path do |f|
+          = f.hidden_field :tab, value: params[:tab]
+          %span.has-text-danger
+            = f.check_box :overwrite, {checked: @info[:overwrite], include_hidden: true}
+            = label_tag :overwrite, "overwrite file in the collection"
+          = link_to "(TODO: view doujin ID [#{@collision_info[:doujin].try :id}])", '#'
+  
+    .has-text-centered.my-4
+      = link_to finalize_volume_process_path, method: :post,
+        class: 'button is-success is-rounded' do
+        %span.icon
+          %i.mi.mi-small gavel
+        %span finalize process and store volume in the collection
 
-.has-text-centered.my-4
-  = link_to finalize_volume_process_path, method: :post,
-    class: 'button is-success is-rounded' do
-    %span.icon
-      %i.mi.mi-small gavel
-    %span finalize process and store volume in the collection
+  .column.has-text-centered
+    - base_dir = File.join(Setting['dir.sorting'], @info[:working_dir], 'thumbs')
+    - cover = @info[:images].first
+    
+    - if @info[:landscape_cover] && @info[:landscape_cover_method] != :none
+      .figure.image.is-2by3
+        = thumbnail_tag File.join(base_dir, '0000.webp'), title: "cropped cover"
+      
+      = form_with url: set_property_process_path do |f|
+        = f.hidden_field :tab, value: params[:tab]
+        .control.has-icons-left
+          - crop_methods = %w{ low centre attention entropy high }.map{|m| ["crop #{m}", m] }
+          .select.w100= f.select :cover_crop_method,
+            options_for_select(crop_methods, @info[:landscape_cover_method].to_s), {},
+            class: 'w100',
+            onchange: %Q| this.form.submit() |
+          .icon.is-small.is-left
+            %i.mi(title="crop landscape cover") crop
+
+    - else
+      .figure.image.is-2by3= thumbnail_tag File.join(base_dir, cover[:thumb_path]), title: "#{cover[:dst_path]} @ #{number_to_human_size cover[:size]}\n↪#{cover[:src_path]}"

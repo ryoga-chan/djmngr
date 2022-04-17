@@ -98,6 +98,9 @@ class ProcessController < ApplicationController
       end
     end
     
+    # refresh cropped cover
+    ProcessArchiveDecompressJob.crop_landscape_cover @dname, @info, @info[:landscape_cover_method]
+    
     File.open(File.join(@dname, 'info.yml'), 'w'){|f| f.puts @info.to_yaml }
     
     return redirect_to(edit_process_path(id: params[:id], tab: params[:tab]),
@@ -157,6 +160,11 @@ class ProcessController < ApplicationController
     # set doujin scoring
     if params[:score] && params[:score].to_i != @info[:score]
       @info[:score] = params[:score].to_i
+      info_changed = true
+    end
+    
+    if @info[:landscape_cover] && params[:cover_crop_method]
+      ProcessArchiveDecompressJob.crop_landscape_cover @dname, @info, params[:cover_crop_method].to_sym
       info_changed = true
     end
     

@@ -1,5 +1,23 @@
 class ProcessArchiveDecompressJob < ApplicationJob
+  THUMB_WIDTH  = 160
+  THUMB_HEIGHT = 240
+
   queue_as :tools
+  
+  # autogenerate portrait cover for landascape first image
+  def self.crop_landscape_cover(dst_dir, info, crop_method = :centre)
+    # get image dimensions
+    cover_img = Vips::Image.new_from_file File.join(dst_dir, 'contents', info[:images][0][:src_path])
+    info[:landscape_cover] = cover_img.width > cover_img.height
+    info[:landscape_cover_method] = crop_method # [:low, :centre, :attention, :entropy, :high]
+    
+    # generate cover
+    if info[:landscape_cover]
+      ImageProcessing::Vips.source(cover_img).
+        resize_to_fill(THUMB_WIDTH, THUMB_HEIGHT, crop: crop_method).
+        convert('webp').saver(quality: 70).call destination: File.join(dst_dir, 'thumbs', '0000.webp')
+    end
+  end # self.crop_landscape_cover
 
   def perform(dst_dir)
     info = YAML.load_file(File.join dst_dir, 'info.yml')
@@ -72,6 +90,9 @@ class ProcessArchiveDecompressJob < ApplicationJob
     # copy filename for files
     info[:files].each_with_index{|f, i| f[:dst_path] = "#{'%04d' % i}-#{f[:src_path].gsub '/', '_'}" }
     
+    # autogenerate portrait cover for landascape first image
+    self.class.crop_landscape_cover dst_dir, info
+    
     # create thumbnails for the images
     info[:images].each_with_index do |img, i|
       begin
@@ -82,12 +103,9 @@ class ProcessArchiveDecompressJob < ApplicationJob
         tpath = File.join(path_thumbs, img[:thumb_path])
         
         # fast resize
-        ImageProcessing::Vips.
-          source(File.join path_contents, img[:src_path]).
-          convert('webp').
-          resize_and_pad(100, 140, alpha: true).
-          saver(quality: 70).
-          call destination: tpath
+        ImageProcessing::Vips.source(File.join path_contents, img[:src_path]).
+          resize_and_pad(THUMB_WIDTH, THUMB_HEIGHT, alpha: true).
+          convert('webp').saver(quality: 70).call destination: tpath
         
         # optimize size
         #system %Q| cwebp -q 70 #{tpath.shellescape} -o #{tpath.shellescape} |
