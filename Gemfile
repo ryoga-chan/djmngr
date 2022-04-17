@@ -27,7 +27,7 @@ gem 'progressbar'
 # used by ActiveStorage variants: https://guides.rubyonrails.org/active_storage_overview.html#transforming-images
 # api documentation:              https://github.com/janko/image_processing/blob/master/doc/vips.md#readme
 #                                 https://rubydoc.info/gems/ruby-vips/Vips/Image#webpsave-instance_method
-gem 'image_processing', '~> 1.2'
+gem 'image_processing', '~> 1.2', require: 'ruby-vips'
 
 group :development do
   gem 'debug', platforms: %i[ mri mingw x64_mingw ] # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem

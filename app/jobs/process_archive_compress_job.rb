@@ -97,6 +97,10 @@ class ProcessArchiveCompressJob < ApplicationJob
           (max_id.to_f * 0.75).floor + 1,
         ].uniq
         thumb_src = thumb_ids.map{|i| File.join(src_dir, 'thumbs', info[:images][i][:thumb_path]).shellescape }
+        if info[:landscape_cover] # replace original cover with cropped version
+          thumb_src.shift
+          thumb_src.unshift File.join(src_dir, 'thumbs', '0000.webp').shellescape
+        end
         thumb_dst = File.join(Rails.root, 'public', 'thumbs', "#{d.id}.webp")
         # merge selected thumbnails
         system %Q| img2webp -q 70 -lossy \
