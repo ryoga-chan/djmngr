@@ -1,5 +1,5 @@
 .columns
-  .column.is-9
+  .column.is-8
     .name_orig.mb-1
       %span.icon.in-text-small.mr-2
         %i.mi.mi-small(title="original filename") photo_filter
@@ -58,7 +58,7 @@
         %span.icon.in-text-small.mr-2
           %i.mi.mi-small(title="destination filename") insert_drive_file
         = f.text_field :dest_filename, value: @info[:dest_filename], placeholder: 'destination filename',
-          class: 'input is-small', style: 'width: 40rem',
+          class: 'input is-small', style: 'width: 30.25rem',
           data: { orig_name: File.basename(@info[:relative_path]) }
         = f.button class: 'button is-small' do
           %span.icon
@@ -96,22 +96,29 @@
         %span finalize process and store volume in the collection
 
   .column.has-text-centered
-    - base_dir = File.join(Setting['dir.sorting'], @info[:working_dir], 'thumbs')
-    - cover = @info[:images].first
-    
-    - if @info[:landscape_cover] && @info[:landscape_cover_method] != :none
-      .figure.image.is-2by3
-        = thumbnail_tag File.join(base_dir, '0000.webp'), title: "cropped cover"
+    - html_cover = capture do
+      - base_dir = File.join(Setting['dir.sorting'], @info[:working_dir], 'thumbs')
+      - cover = @info[:images].first
       
-      = form_with url: set_property_process_path do |f|
-        = f.hidden_field :tab, value: params[:tab]
-        .control.has-icons-left
-          - crop_methods = %w{ low centre attention entropy high }.map{|m| ["crop #{m}", m] }
-          .select.w100= f.select :cover_crop_method,
-            options_for_select(crop_methods, @info[:landscape_cover_method].to_s), {},
-            class: 'w100', onchange: %Q| this.form.submit() |
-          .icon.is-small.is-left
-            %i.mi(title="crop landscape cover") crop
-
+      - if @info[:landscape_cover] && @info[:landscape_cover_method] != :none
+        = thumbnail_tag File.join(base_dir, '0000.webp'), title: "cropped cover"
+        = form_with url: set_property_process_path do |f|
+          = f.hidden_field :tab, value: params[:tab]
+          .control.has-icons-left
+            - crop_methods = %w{ low centre attention entropy high }.map{|m| ["crop #{m}", m] }
+            .select.w100= f.select :cover_crop_method,
+              options_for_select(crop_methods, @info[:landscape_cover_method].to_s), {},
+              class: 'w100', onchange: %Q| this.form.submit() |
+            .icon.is-small.is-left
+              %i.mi(title="crop landscape cover") crop
+      - else
+        = thumbnail_tag File.join(base_dir, cover[:thumb_path]), title: "#{cover[:dst_path]} @ #{number_to_human_size cover[:size]}\n↪#{cover[:src_path]}"
+    
+    - if @collision_info
+      .columns
+        .column.is-6= html_cover
+        .column.is-6
+          .coll_cover(style="border: 1px solid red")= image_tag File.join('/thumbs', "#{@collision_info[:doujin].try :id}.webp"), title: "collision cover"
+          .descr collection cover
     - else
-      .figure.image.is-2by3= thumbnail_tag File.join(base_dir, cover[:thumb_path]), title: "#{cover[:dst_path]} @ #{number_to_human_size cover[:size]}\n↪#{cover[:src_path]}"
+      = html_cover
