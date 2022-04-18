@@ -72,6 +72,7 @@
       %span.icon.in-text-small.mr-2
         %i.mi.mi-small(title="destination path") folder
       = Doujin.dest_path_by_process_params @info
+    
     - if @collision_info
       .collection-collision.ml-6
         .collision-details.my-3
@@ -83,7 +84,7 @@
         = form_with url: set_property_process_path do |f|
           = f.hidden_field :tab, value: params[:tab]
           %span.has-text-danger
-            = f.check_box :overwrite, {checked: @info[:overwrite], include_hidden: true}
+            = f.check_box :overwrite, {checked: @info[:overwrite], include_hidden: true, onchange: %Q| this.form.submit() |}
             = label_tag :overwrite, "overwrite file in the collection"
           = link_to "(TODO: view doujin ID [#{@collision_info[:doujin].try :id}])", '#'
   
@@ -108,8 +109,7 @@
           - crop_methods = %w{ low centre attention entropy high }.map{|m| ["crop #{m}", m] }
           .select.w100= f.select :cover_crop_method,
             options_for_select(crop_methods, @info[:landscape_cover_method].to_s), {},
-            class: 'w100',
-            onchange: %Q| this.form.submit() |
+            class: 'w100', onchange: %Q| this.form.submit() |
           .icon.is-small.is-left
             %i.mi(title="crop landscape cover") crop
 
