@@ -64,9 +64,6 @@ $('input[name="file_name"]').change(function () {
   });
 });
 
-// toggle overwrite flag with immediate submit
-$('#overwrite').change(function () { this.form.submit(); });
-
 // set scoring
 $('.scoring span.icon[data-score]').click(function () {
   $('#score').val( $(this).data('score') );
