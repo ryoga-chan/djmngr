@@ -302,6 +302,9 @@ class ProcessController < ApplicationController
       @info[:images_last_regexp_repl] = params[:rename_regexp_repl]
       @info[:images_collision       ] = @info[:images].size != @info[:images].map{|i| i[:dst_path] }.uniq.size
       
+      # refresh cropped cover
+      ProcessArchiveDecompressJob.crop_landscape_cover @dname, @info, @info[:landscape_cover_method]
+      
       File.open(File.join(@dname, 'info.yml'), 'w'){|f| f.puts @info.to_yaml }
       
       redirect_to edit_process_path(id: params[:id], tab: params[:tab])
@@ -324,6 +327,9 @@ class ProcessController < ApplicationController
     end
     
     if el
+      # refresh cropped cover
+      ProcessArchiveDecompressJob.crop_landscape_cover @dname, @info, @info[:landscape_cover_method]
+      
       File.open(File.join(@dname, 'info.yml'), 'w'){|f| f.puts @info.to_yaml }
       render(json: {result: 'ok'})
     else
@@ -342,6 +348,10 @@ class ProcessController < ApplicationController
     
     unless @info[:dest_folder].present? && @info[:dest_filename].present?
       return redirect_to(edit_process_path(id: params[:id], tab: 'ident'), alert: "empty destination folder or filename")
+    end
+    
+    unless @info[:dest_filename].to_s.end_with?('.zip')
+      return redirect_to(edit_process_path(id: params[:id], tab: 'move'), alert: "destination filename not ending with \".zip\"")
     end
     
     if @info[:overwrite] != true && @info[:db_doujin_id].nil? &&
