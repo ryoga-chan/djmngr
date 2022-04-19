@@ -7,7 +7,8 @@ class ProcessArchiveDecompressJob < ApplicationJob
   # autogenerate portrait cover for landascape first image
   def self.crop_landscape_cover(dst_dir, info, crop_method = :centre)
     # get image dimensions
-    cover_img = Vips::Image.new_from_file File.join(dst_dir, 'contents', info[:images][0][:src_path])
+    first_img = info[:images].sort{|a,b| a[:dst_path] <=> b[:dst_path]}.first
+    cover_img = Vips::Image.new_from_file File.join(dst_dir, 'contents', first_img[:src_path])
     info[:landscape_cover] = cover_img.width > cover_img.height
     info[:landscape_cover_method] = crop_method # [:low, :centre, :attention, :entropy, :high]
     
@@ -28,8 +29,8 @@ class ProcessArchiveDecompressJob < ApplicationJob
     name = fname.parse_doujin_filename
     (name[:ac_explicit] + name[:ac_implicit]).each do |term|
       # fine authors/circles and use only the first one by name
-      list  = Author.search_by_name(term, limit: 50).inject({}){|h,i| h.merge i.name => i }.values
-      list += Circle.search_by_name(term, limit: 50).inject({}){|h,i| h.merge i.name => i }.values
+      list  = Author.search_by_name(term, limit: 50).inject({}){|h,i| h.merge i.name.downcase => i }.values
+      list += Circle.search_by_name(term, limit: 50).inject({}){|h,i| h.merge i.name.downcase => i }.values
       list.each do |result|
         key = "#{result.class.name.downcase}_ids".to_sym
         info[key] ||= []
