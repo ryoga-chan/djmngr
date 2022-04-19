@@ -1,30 +1,37 @@
-.name_orig.mb-1
-  %span.icon.in-text-small.mr-2
-    %i.mi.mi-small(title="original filename") photo_filter
-  = @fname
+.columns
+  .column
+    - base_dir = File.join(Setting['dir.sorting'], @info[:working_dir], 'thumbs')
+    - cover_name = @info[:landscape_cover] ? '0000.webp' : @info[:images].first[:thumb_path]
+    = thumbnail_tag File.join(base_dir, cover_name), title: "current cover"
+  
+  .column.is-10
+    .name_orig.mb-1
+      %span.icon.in-text-small.mr-2
+        %i.mi.mi-small(title="original filename") photo_filter
+      = @fname
 
-.dest-filename.mb-1
-  = form_with url: set_property_process_path do |f|
-    = f.hidden_field :tab, value: params[:tab]
-    %span.icon.in-text-small.mr-2
-      %i.mi.mi-small(title="terms for catalog search") search
-    = f.text_field :dupe_search, value: @info[:dupe_search], placeholder: 'search terms in sequence',
-      class: 'input is-small', style: 'width: 40rem',
-      data: { orig_name: @info[:relative_path].tokenize_doujin_filename.join(' ') }
-    = f.button class: 'button is-small' do
-      %span.icon
-        %i.mi.mi-small send
-    = f.button class: 'button is-small',
-      onclick: %Q|$('#dupe_search').val($('#dupe_search').data('orig-name')); return false;| do
-      %span.icon
-        %i.mi.mi-small(title="restore initial search term") restore
+    .dest-filename.mb-1
+      = form_with url: set_property_process_path do |f|
+        = f.hidden_field :tab, value: params[:tab]
+        %span.icon.in-text-small.mr-2
+          %i.mi.mi-small(title="terms for catalog search") search
+        = f.text_field :dupe_search, value: @info[:dupe_search], placeholder: 'search terms in sequence',
+          class: 'input is-small', style: 'width: 40rem',
+          data: { orig_name: @info[:relative_path].tokenize_doujin_filename.join(' ') }
+        = f.button class: 'button is-small' do
+          %span.icon
+            %i.mi.mi-small send
+        = f.button class: 'button is-small',
+          onclick: %Q|$('#dupe_search').val($('#dupe_search').data('orig-name')); return false;| do
+          %span.icon
+            %i.mi.mi-small(title="restore initial search term") restore
 
-- if @dupes.any?
-  .tags.has-addons.mt-3
-    %span.tag.is-info= "this file: #{@cur_info}"
-    %span.tag.is-danger= "#{@dupes.size} potential duplicate/s found in collection"
-- else
-  %span.tag.mt-3.is-success= "NO duplicates found in collection"
+    - if @dupes.any?
+      .tags.has-addons.mt-3
+        %span.tag.is-info= "this file: #{@cur_info}"
+        %span.tag.is-danger= "#{@dupes.size} potential duplicate/s found in collection"
+    - else
+      %span.tag.mt-3.is-success= "NO duplicates found in collection"
 
 - @dupes.each_slice(2) do |s|
   .columns

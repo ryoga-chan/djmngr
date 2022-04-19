@@ -5,10 +5,9 @@ class ProcessArchiveDecompressJob < ApplicationJob
   queue_as :tools
   
   # autogenerate portrait cover for landascape first image
-  def self.crop_landscape_cover(dst_dir, info, crop_method = :centre)
+  def self.crop_landscape_cover(dst_dir, info, crop_method = :low)
     # get image dimensions
-    first_img = info[:images].sort{|a,b| a[:dst_path] <=> b[:dst_path]}.first
-    cover_img = Vips::Image.new_from_file File.join(dst_dir, 'contents', first_img[:src_path])
+    cover_img = Vips::Image.new_from_file File.join(dst_dir, 'contents', info[:images].first[:src_path])
     info[:landscape_cover] = cover_img.width > cover_img.height
     info[:landscape_cover_method] = crop_method # [:low, :centre, :attention, :entropy, :high]
     
