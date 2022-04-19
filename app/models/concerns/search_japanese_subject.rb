@@ -1,18 +1,17 @@
 module SearchJapaneseSubject
   extend ActiveSupport::Concern
 
-  #included do
-  #end
-
   class_methods do
     def search_by_name(term, limit: 10)
       return self.where("1 <> 1") if term.to_s.blank?
+      
+      klass = self.name.downcase
       
       # NOTE: sqlite LIKE is case insensitive! => we can skip LOWER() to speed up WHERE
       # https://www.sqlite.org/optoverview.html#the_like_optimization
       query = <<~SQL
         SELECT
-            *
+            t.*
           , CASE LOWER(name                   ) WHEN :term_d      THEN 1 ELSE 0   END +
             CASE LOWER(name_kana              ) WHEN :term_d      THEN 1 ELSE 0   END +
             CASE LOWER(name_romaji            ) WHEN :term_d      THEN 1 ELSE 0   END +
@@ -24,7 +23,8 @@ module SearchJapaneseSubject
             CASE INSTR(LOWER(aliases          ), :term_d ) WHEN 0 THEN 0 ELSE 0.5 END +
             CASE INSTR(LOWER(doujinshi_org_url), :term_d ) WHEN 0 THEN 0 ELSE 0.5 END
             AS weigth
-        FROM #{self.table_name}
+          , (SELECT COUNT(1) FROM #{klass.pluralize}_doujinshi WHERE #{klass}_id = t.id) AS num_dj
+        FROM #{self.table_name} t
         WHERE name              LIKE :term_q
            OR name_kana         LIKE :term_q
            OR name_romaji       LIKE :term_q
