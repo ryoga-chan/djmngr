@@ -91,6 +91,8 @@
                 title: "#{is_associated ? :remove : :add} association", method: :post) do
                 %span.icon.in-text.has-text-primary
                   %i.mi= is_associated ? :remove : :add
+              - if r[:num_dj].to_i > 0
+                %span.tag.is-info(title="number of doujinshi associated")= r[:num_dj]
               - name_hl = h(name).gsub(term_re, %Q|<span class="has-text-warning">\\0</span>|).html_safe
               = link_to name_hl, r.doujinshi_org_full_url, target: :_blank, title: "view on doujinshi.org"
             - else

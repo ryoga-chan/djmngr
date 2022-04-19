@@ -116,9 +116,12 @@
     
     - if @collision_info
       .columns
-        .column.is-6= html_cover
         .column.is-6
-          .coll_cover(style="border: 1px solid red")= image_tag File.join('/thumbs', "#{@collision_info[:doujin].try :id}.webp"), title: "collision cover"
-          .descr collection cover
+          .this_cover= html_cover
+          .descr this file
+        .column.is-6
+          .coll_cover= image_tag File.join('/thumbs', "#{@collision_info[:doujin].try :id}.webp"),
+            title: "collision cover", style: "border: 2px solid red; border-width: 0 2px;"
+          .descr collection
     - else
       = html_cover
