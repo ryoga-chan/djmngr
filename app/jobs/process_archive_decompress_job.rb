@@ -27,8 +27,9 @@ class ProcessArchiveDecompressJob < ApplicationJob
     # auto associate doujin authors/circles when a 100% match is found
     name = fname.parse_doujin_filename
     (name[:ac_explicit] + name[:ac_implicit]).each do |term|
-      list = Author.search_by_name(term, limit: 50) +
-             Circle.search_by_name(term, limit: 50)
+      # fine authors/circles and use only the first one by name
+      list  = Author.search_by_name(term, limit: 50).inject({}){|h,i| h.merge i.name => i }.values
+      list += Circle.search_by_name(term, limit: 50).inject({}){|h,i| h.merge i.name => i }.values
       list.each do |result|
         key = "#{result.class.name.downcase}_ids".to_sym
         info[key] ||= []
@@ -111,7 +112,7 @@ class ProcessArchiveDecompressJob < ApplicationJob
         #system %Q| cwebp -q 70 #{tpath.shellescape} -o #{tpath.shellescape} |
         #raise 'err' if $?.to_i != 0
       rescue
-        img[:dst_path] = 'RESIZE ERROR'
+        img[:dst_path] = "RESIZE ERROR: #{$!}"
       end
       
       # write completion percentage

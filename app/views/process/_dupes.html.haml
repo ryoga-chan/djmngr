@@ -26,9 +26,12 @@
 - else
   %span.tag.mt-3.is-success= "NO duplicates found in collection"
 
-.content
-  %ol.dupes
-    - @dupes.each do |d|
-      %li.dupe
-        %span.tag.is-info= "#{d.num_images} pics/#{number_to_human_size d.size}"
-        = link_to "TODO: view doujin ID [#{d.id}], was \"#{d.name_orig}\"", '#'
+- @dupes.each_slice(2) do |s|
+  .columns
+    - s.each do |d|
+      .column.is-2= image_tag File.join('/thumbs', "#{d.id}.webp")
+      .column
+        .info
+          %span.tag.is-info= "#{d.num_images} pics/#{number_to_human_size d.size}"
+          = link_to "TODO: view ID [#{d.id}]", '#'
+        .was(title="original name")= d.name_orig
