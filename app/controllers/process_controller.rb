@@ -98,7 +98,6 @@ class ProcessController < ApplicationController
       end
     end
     
-    # refresh cropped cover
     ProcessArchiveDecompressJob.crop_landscape_cover @dname, @info, @info[:landscape_cover_method]
     
     File.open(File.join(@dname, 'info.yml'), 'w'){|f| f.puts @info.to_yaml }
@@ -223,6 +222,10 @@ class ProcessController < ApplicationController
         @circles = Circle.search_by_name params[:term], limit: 50
       
       when 'move'
+        if @info[:file_type] == 'doujin' && @info[:doujin_dest_type].blank?
+          return redirect_to(edit_process_path(id: params[:id], tab: 'ident'), alert: "choose the primary association")
+        end
+        
         # list possible dest subfolders
         @subfolders = ['-custom name-']
         repo = @info[:file_type] == 'doujin' ?
@@ -240,7 +243,7 @@ class ProcessController < ApplicationController
           f_size = helpers.number_to_human_size File.size(@info[:file_path])
           f_imgs = @info[:images].size
           
-          @collision_info = { collection: "#{c_imgs} pics/#{c_size}", current: "#{c_imgs} pics/#{c_size}", doujin: doujin }
+          @collision_info = { collection: "#{c_imgs} pics/#{c_size}", current: "#{f_imgs} pics/#{f_size}", doujin: doujin }
         end
     end
   end # edit
@@ -302,7 +305,6 @@ class ProcessController < ApplicationController
       @info[:images_last_regexp_repl] = params[:rename_regexp_repl]
       @info[:images_collision       ] = @info[:images].size != @info[:images].map{|i| i[:dst_path] }.uniq.size
       
-      # refresh cropped cover
       ProcessArchiveDecompressJob.crop_landscape_cover @dname, @info, @info[:landscape_cover_method]
       
       File.open(File.join(@dname, 'info.yml'), 'w'){|f| f.puts @info.to_yaml }
@@ -327,7 +329,6 @@ class ProcessController < ApplicationController
     end
     
     if el
-      # refresh cropped cover
       ProcessArchiveDecompressJob.crop_landscape_cover @dname, @info, @info[:landscape_cover_method]
       
       File.open(File.join(@dname, 'info.yml'), 'w'){|f| f.puts @info.to_yaml }
@@ -346,12 +347,16 @@ class ProcessController < ApplicationController
   def finalize_volume
     @info = YAML.load_file(File.join @dname, 'info.yml')
     
-    unless @info[:dest_folder].present? && @info[:dest_filename].present?
-      return redirect_to(edit_process_path(id: params[:id], tab: 'ident'), alert: "empty destination folder or filename")
-    end
-    
     unless @info[:dest_filename].to_s.end_with?('.zip')
       return redirect_to(edit_process_path(id: params[:id], tab: 'move'), alert: "destination filename not ending with \".zip\"")
+    end
+    
+    if @info[:dest_folder].blank? && @info[:file_type] != 'artbook'
+      return redirect_to(edit_process_path(id: params[:id], tab: 'ident'), alert: "empty destination folder")
+    end
+    
+    unless @info[:dest_filename].present?
+      return redirect_to(edit_process_path(id: params[:id], tab: 'move'), alert: "empty destination filename")
     end
     
     if @info[:overwrite] != true && @info[:db_doujin_id].nil? &&
