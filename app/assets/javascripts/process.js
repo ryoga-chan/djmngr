@@ -41,8 +41,8 @@ $('.images .columns .column').click(function (ev) {
   cb.prop('checked', !cb.prop('checked'));
 });
 
-// update the single image name
-$('input[name="file_name"]').change(function () {
+// update the single image name in "files"
+$('input[name="file_name"], input[name="img_name"]').change(function () {
   var el = $(this);
   
   $.ajax({
