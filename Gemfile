@@ -15,7 +15,6 @@ gem 'rack-brotli', '~> 1.2.0'    # enable brotli compression
 gem 'bcrypt',      '~> 3.1.7'    # ActiveModel's has_secure_password -- https://guides.rubyonrails.org/active_model_basics.html#securepassword
 gem 'sassc-rails'                # sass to process CSS
 gem 'sprockets-rails'            # asset pipeline -- https://github.com/rails/sprockets-rails
-gem 'bootsnap', require: false   # Reduces boot times through caching; required in config/boot.rb
 gem 'tzinfo-data', platforms: %i[ mingw mswin x64_mingw jruby ] # zoneinfo files for Windows
 gem 'haml-rails',  '~> 2.0'      # https://haml.info
 gem 'kaminari'                   # pagination -- https://github.com/kaminari/kaminari
@@ -29,6 +28,7 @@ gem 'progressbar'                # cli progressbar -- https://github.com/jfelchn
 #                                 https://rubydoc.info/gems/ruby-vips/Vips/Image#webpsave-instance_method
 gem 'image_processing', '~> 1.2', require: %w{ ruby-vips image_processing }
 
+#gem 'bootsnap', require: false   # Reduces boot times through caching; required in config/boot.rb
 
 group :development do
   gem 'debug', platforms: %i[ mri mingw x64_mingw ] # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
