@@ -12,57 +12,56 @@ class ProcessArchiveCompressJob < ApplicationJob
       tot_steps = info[:images].size + 5
       cur_step  = 0
       
-      Dir.chdir(out_dir) do
-        # N. hard link/convert images to the new name/format
-        info[:images].each do |img|
-          src_path = File.join(src_dir, 'contents', img[:src_path])
-          if File.extname(img[:src_path]).downcase == File.extname(img[:dst_path]).downcase
-            if OS_LINUX
-              File.link    src_path, img[:dst_path] # efficient copy via hard link
-            else
-              FileUtils.cp src_path, img[:dst_path]
-            end
+      # N. hard link/convert images to the new name/format
+      info[:images].each do |img|
+        src_path = File.join(src_dir, 'contents', img[:src_path])
+        if File.extname(img[:src_path]).downcase == File.extname(img[:dst_path]).downcase
+          dst_path = File.join(out_dir, img[:dst_path])
+          if OS_LINUX
+            File.link    src_path, dst_path # efficient copy via hard link
           else
-            ImageProcessing::Vips.
-              source(src_path).
-              convert( File.extname(img[:dst_path]).downcase[1..-1] ).
-              call destination: img[:dst_path]
+            FileUtils.cp src_path, dst_path
           end
-          
-          perc = (cur_step+=1).to_f / tot_steps * 100
-          File.open(File.join(src_dir, 'finalize.perc'), 'w'){|f| f.write perc.round(2) }
+        else
+          ImageProcessing::Vips.
+            source(src_path).
+            convert( File.extname(img[:dst_path]).downcase[1..-1] ).
+            call destination: File.join(out_dir, img[:dst_path])
         end
         
-        # 1. add metadata file
-        File.open('metadata.yml', 'w'){|f| f.write({
-          source_file:    File.basename(info[:relative_path]),
-          file_size:      info[:file_size],
-          file_type:      info[:file_type],
-          dest_folder:    info[:dest_folder],
-          dest_subfolder: info[:subfolder],
-          dest_filename:  info[:dest_filename],
-          images: info[:images].map{|i| "#{i[:dst_path]}\t#{i[:src_path]}" },
-          files:  info[:files ].map{|i| "#{i[:dst_path]}\t#{i[:src_path]}" },
-        }.to_yaml) }
-        perc = (cur_step+=1).to_f / tot_steps * 100
-        File.open(File.join(src_dir, 'finalize.perc'), 'w'){|f| f.write perc.round(2) }
-        
-        # 2. create zip file
-        info[:collection_relative_path] = Doujin.dest_path_by_process_params info
-        info[:collection_full_path] = File.join Setting['dir.sorted'], info[:collection_relative_path]
-        FileUtils.mkdir_p File.dirname(info[:collection_full_path])
-        # compress and sort files alphabetically within archive, overwrite already processed file
-        File.unlink(info[:collection_full_path]) if File.exist?(info[:collection_full_path])
-        system %Q[ find -type f | sort | zip -r #{info[:collection_full_path].shellescape} -@ ]
-        
-        perc = (cur_step+=1).to_f / tot_steps * 100
-        File.open(File.join(src_dir, 'finalize.perc'), 'w'){|f| f.write perc.round(2) }
-        
-        # 3. calculate checksum
-        info[:dest_checksum] = `sha512sum -b #{info[:collection_full_path].shellescape}`.split(' ', 2)[0]
         perc = (cur_step+=1).to_f / tot_steps * 100
         File.open(File.join(src_dir, 'finalize.perc'), 'w'){|f| f.write perc.round(2) }
       end
+      
+      # 1. add metadata file
+      File.open(File.join(out_dir, 'metadata.yml'), 'w'){|f| f.write({
+        source_file:    File.basename(info[:relative_path]),
+        file_size:      info[:file_size],
+        file_type:      info[:file_type],
+        dest_folder:    info[:dest_folder],
+        dest_subfolder: info[:subfolder],
+        dest_filename:  info[:dest_filename],
+        images: info[:images].map{|i| "#{i[:dst_path]}\t#{i[:src_path]}" },
+        files:  info[:files ].map{|i| "#{i[:dst_path]}\t#{i[:src_path]}" },
+      }.to_yaml) }
+      perc = (cur_step+=1).to_f / tot_steps * 100
+      File.open(File.join(src_dir, 'finalize.perc'), 'w'){|f| f.write perc.round(2) }
+      
+      # 2. create zip file
+      info[:collection_relative_path] = Doujin.dest_path_by_process_params info
+      info[:collection_full_path] = File.join Setting['dir.sorted'], info[:collection_relative_path]
+      FileUtils.mkdir_p File.dirname(info[:collection_full_path])
+      # compress and sort files alphabetically within archive, overwrite already processed file
+      File.unlink(info[:collection_full_path]) if File.exist?(info[:collection_full_path])
+      system %Q[ cd #{out_dir.shellescape} && find -type f | sort | zip -r #{info[:collection_full_path].shellescape} -@ ]
+      
+      perc = (cur_step+=1).to_f / tot_steps * 100
+      File.open(File.join(src_dir, 'finalize.perc'), 'w'){|f| f.write perc.round(2) }
+      
+      # 3. calculate checksum
+      info[:dest_checksum] = `sha512sum -b #{info[:collection_full_path].shellescape}`.split(' ', 2)[0]
+      perc = (cur_step+=1).to_f / tot_steps * 100
+      File.open(File.join(src_dir, 'finalize.perc'), 'w'){|f| f.write perc.round(2) }
 
       Doujin.transaction do
         Doujin.find_by_process_params(info).try(:destroy) # overwrite already processed file
@@ -80,8 +79,12 @@ class ProcessArchiveCompressJob < ApplicationJob
           path:         info[:collection_relative_path],
           name_orig:    info[:relative_path],
           category:     info[:file_type]
-        d.author_ids = info[:author_ids] if info[:author_ids].try(:any?)
-        d.circle_ids = info[:circle_ids] if info[:circle_ids].try(:any?)
+        
+        if info[:file_type] == 'doujinshi'
+          d.author_ids = info[:author_ids] if info[:author_ids].try(:any?)
+          d.circle_ids = info[:circle_ids] if info[:circle_ids].try(:any?)
+        end
+        
         info[:db_doujin_id] = d.id # this field marks the process as completed
         
         perc = (cur_step+=1).to_f / tot_steps * 100
