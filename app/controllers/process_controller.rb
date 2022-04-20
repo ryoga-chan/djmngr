@@ -13,16 +13,15 @@ class ProcessController < ApplicationController
     folders += %w{ author circle magazine artbook }.map{|d| File.join(Setting['dir.sorted'], d).to_s }
     folders.each{|f| FileUtils.mkdir_p f }
     
-    @files = Dir.chdir(Setting['dir.to_sort']) do
-      Dir['**/*.zip'].sort.inject({}){|h, f| h.merge f => File.size(f) }
-    end
+    files_glob = File.join Setting['dir.to_sort'], '**', '*.zip'
+    @files = Dir[files_glob].sort.
+      inject({}){|h, f| h.merge Pathname.new(f).relative_path_from(Setting['dir.to_sort']).to_s => File.size(f) }
     
-    @preparing = Dir.chdir(Setting['dir.sorting']){
-      Dir['**/info.yml'].map{|f|
-        tot_size = Dir.glob("#{File.dirname f}/**/*").
-          map{|f| f.ends_with?('/file.zip') ? 0 : File.size(f) }.sum
-        YAML.load_file(f).merge tot_size: tot_size
-      }
+    files_glob = File.join Setting['dir.sorting'], '**', 'info.yml'
+    @preparing = Dir[files_glob].map{|f|
+      tot_size = Dir.glob("#{File.dirname f}/**/*").
+        map{|f| f.ends_with?('/file.zip') ? 0 : File.size(f) }.sum
+      YAML.load_file(f).merge tot_size: tot_size
     }.sort{|a,b| a[:relative_path] <=> b[:relative_path] }
     
     @preparing_paths = @preparing.map{|i| i[:relative_path] }
@@ -54,7 +53,7 @@ class ProcessController < ApplicationController
       end
       
       # create a symlink just in case of manual folder inspection (unsupported on windows)
-      File.symlink @fname, File.join(dst_dir, 'file.zip') rescue nil
+      File.symlink @fname, File.join(dst_dir, 'file.zip') if OS_LINUX
       
       ProcessArchiveDecompressJob.perform_later dst_dir
     end
@@ -200,14 +199,13 @@ class ProcessController < ApplicationController
           when 'doujin'
             if @info[:doujin_dest_type]
               repo = File.join(Setting['dir.sorted'], @info[:doujin_dest_type]).to_s
-              @dest_folders = Dir.chdir(repo){ Dir['*'].select{|i| File.directory? i } }.sort.unshift('-custom name-')
+              @dest_folders = Dir[File.join repo, '*'].select{|i| File.directory? i }.
+                map{|i| Pathname.new(i).relative_path_from(repo).to_s }.sort.unshift('-custom name-')
             end
-          when 'magazine'
-            repo = File.join(Setting['dir.sorted'], 'magazine').to_s
-            @dest_folders = Dir.chdir(repo){ Dir['*'].select{|i| File.directory? i } }.sort.unshift('-custom name-')
-          when 'artbook'
-            repo = File.join(Setting['dir.sorted'], 'artbook').to_s
-            @dest_folders = Dir.chdir(repo){ Dir['*'].select{|i| File.directory? i } }.sort.unshift('-custom name-')
+          when 'magazine', 'artbook'
+            repo = File.join(Setting['dir.sorted'], @info[:file_type]).to_s
+            @dest_folders = Dir[File.join repo, '*'].select{|i| File.directory? i }.
+              map{|i| Pathname.new(i).relative_path_from(repo).to_s }.sort.unshift('-custom name-')
         end
         
         # lists of currently associated authors/circles
@@ -231,7 +229,9 @@ class ProcessController < ApplicationController
         repo = @info[:file_type] == 'doujin' ?
           File.join(Setting['dir.sorted'], @info[:doujin_dest_type], @info[:dest_folder]).to_s :
           File.join(Setting['dir.sorted'], @info[:file_type], @info[:dest_folder]).to_s
-        @subfolders += Dir.chdir(repo){ Dir['*'].select{|i| File.directory? i } }.sort if File.exist?(repo)
+        @subfolders += Dir[File.join repo, '*'].select{|i| File.directory? i }.
+          map{|i| Pathname.new(i).relative_path_from(repo).to_s }.
+          sort.unshift('-custom name-') if File.exist?(repo)
         
         # check if file already exists on disk/collection
         collection_file_path = Doujin.dest_path_by_process_params(@info, full_path: true)
@@ -359,8 +359,7 @@ class ProcessController < ApplicationController
       return redirect_to(edit_process_path(id: params[:id], tab: 'move'), alert: "empty destination filename")
     end
     
-    if @info[:overwrite] != true && @info[:db_doujin_id].nil? &&
-       File.exist?(Doujin.dest_path_by_process_params(@info, full_path: true))
+    if @info[:overwrite] != true && File.exist?(Doujin.dest_path_by_process_params(@info, full_path: true))
       return redirect_to(edit_process_path(id: params[:id], tab: 'move'), alert: "file already exists in collection")
     end
     

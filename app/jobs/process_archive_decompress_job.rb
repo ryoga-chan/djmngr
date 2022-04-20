@@ -72,19 +72,19 @@ class ProcessArchiveDecompressJob < ApplicationJob
     FileUtils.mkdir_p path_contents
     
     system %Q| unzip -d #{path_contents.shellescape} #{info[:file_path].shellescape} |
-    Dir.chdir(path_contents) do # reset file/folder permissions
+    
+    # reset file/folder permissions
+    if OS_LINUX
       dirs, files = Dir[File.join path_contents, '**/**'].partition{|i| File.directory? i }
       FileUtils.chmod 0755, dirs
       FileUtils.chmod 0644, files
     end
 
     # detect images and other files
-    info[:images], info[:files] = Dir
-      .chdir(path_contents){
-        Dir['**/*']
-          .sort.select{|i| File.file? i }
-          .map{|i| { src_path: i, size: File.size(i) } }
-      }.partition{|i| i[:src_path] =~ /\.(jpe*g|gif|png)$/i }
+    info[:images], info[:files] = Dir[File.join path_contents, '**', '*'].
+      sort.select{|i| File.file? i }.
+      map{|i| { src_path: Pathname.new(i).relative_path_from(path_contents).to_s, size: File.size(i) } }.
+      partition{|i| i[:src_path] =~ /\.(jpe*g|gif|png)$/i }
     
     info[:ren_images_method] = 'alphabetical_index'
     
