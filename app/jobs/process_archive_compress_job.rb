@@ -68,7 +68,7 @@ class ProcessArchiveCompressJob < ApplicationJob
         
         # 4. save record on database
         name = File.basename info[:dest_filename], File.extname(info[:dest_filename])
-        d = Doujin.create! \
+        d = Doujin.new \
           name:         name,
           name_kakasi:  name.to_romaji,
           size:         File.size(info[:collection_full_path]),
@@ -76,10 +76,12 @@ class ProcessArchiveCompressJob < ApplicationJob
           num_images:   info[:images].size,
           num_files:    info[:files].size,
           score:        (info[:score].to_i > 0 ? info[:score].to_i : nil),
-          file_name:    File.basename(info[:collection_relative_path]),
+          category:     (info[:file_type] == 'doujin' ? info[:doujin_dest_type] : info[:file_type]),
           file_folder:  File.dirname(info[:collection_relative_path]),
-          name_orig:    info[:relative_path],
-          category:     (info[:file_type] == 'doujin' ? info[:doujin_dest_type] : info[:file_type])
+          file_name:    File.basename(info[:collection_relative_path]),
+          name_orig:    info[:relative_path]
+        d.file_folder = Pathname.new(d.file_folder).relative_path_from("/#{d.category}").to_s
+        d.save!
         
         if info[:file_type] == 'doujinshi'
           d.author_ids = info[:author_ids] if info[:author_ids].try(:any?)

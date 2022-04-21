@@ -23,8 +23,11 @@ class Doujin < ApplicationRecord
   
   # find doujin by destination folder
   def self.find_by_process_params(info)
-    path = self.dest_path_by_process_params(info)
-    self.find_by file_folder: File.dirname(path), file_name: File.basename(path)
+    cat  = (info[:file_type] == 'doujin' ? info[:doujin_dest_type] : info[:file_type]).to_s
+    fold = File.join *[info[:dest_folder], info[:subfolder]].map{|i| i.to_s.gsub(/[\/\\]/, '_') }
+    fold = '.' if fold.blank?
+    name = info[:dest_filename].to_s.gsub(/[\/\\]/, '_')
+    self.find_by category: cat, file_folder: fold, file_name: name
   end # self.find_by_process_params
   
   
