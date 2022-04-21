@@ -226,12 +226,11 @@ class ProcessController < ApplicationController
         
         # list possible dest subfolders
         @subfolders = ['-custom name-']
-        repo = @info[:file_type] == 'doujin' ?
-          File.join(Setting['dir.sorted'], @info[:doujin_dest_type], @info[:dest_folder]).to_s :
-          File.join(Setting['dir.sorted'], @info[:file_type], @info[:dest_folder]).to_s
+        cat  = @info[:file_type] == 'doujin' ? @info[:doujin_dest_type] : @info[:file_type]
+        repo = File.join(Setting['dir.sorted'], cat, @info[:dest_folder]).to_s
         @subfolders += Dir[File.join repo, '*'].select{|i| File.directory? i }.
           map{|i| Pathname.new(i).relative_path_from(repo).to_s }.
-          sort.unshift('-custom name-') if File.exist?(repo)
+          sort if File.exist?(repo)
         
         # check if file already exists on disk/collection
         collection_file_path = Doujin.dest_path_by_process_params(@info, full_path: true)
@@ -359,7 +358,8 @@ class ProcessController < ApplicationController
       return redirect_to(edit_process_path(id: params[:id], tab: 'move'), alert: "empty destination filename")
     end
     
-    if @info[:overwrite] != true && File.exist?(Doujin.dest_path_by_process_params(@info, full_path: true))
+    if @info[:overwrite] != true && @info[:db_doujin_id].nil? &&
+       File.exist?(Doujin.dest_path_by_process_params(@info, full_path: true))
       return redirect_to(edit_process_path(id: params[:id], tab: 'move'), alert: "file already exists in collection")
     end
     
