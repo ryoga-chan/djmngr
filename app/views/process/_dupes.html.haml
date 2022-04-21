@@ -36,9 +36,9 @@
 - @dupes.each_slice(2) do |s|
   .columns
     - s.each do |d|
-      .column.is-2= image_tag File.join('/thumbs', "#{d.id}.webp")
+      .column.is-2= image_tag doujin_path(d, format: :webp)
       .column
         .info
           %span.tag.is-info= "#{d.num_images} pics/#{number_to_human_size d.size}"
-          = link_to "TODO: view ID [#{d.id}]", '#'
+          = link_to "view doujin ID #{d.id}", doujin_path(d), target: :_blank
         .was(title="original name")= d.name_orig

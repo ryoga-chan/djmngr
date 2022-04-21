@@ -1,39 +1,39 @@
-%h1 Listing doujinshi
+.columns
+  .column.is-4
+    .tabs.is-boxed
+      %ul
+        %li{class: (:'is-active' if params[:tab] == 'author') }
+          = link_to({tab: :author}, title: 'authors') do
+            %span.icon.is-small
+              %i.mi supervisor_account
+        %li{class: (:'is-active' if params[:tab] == 'circle') }
+          = link_to({tab: :circle}, title: 'circles') do
+            %span.icon.is-small
+              %i.mi supervised_user_circle
+        %li{class: (:'is-active' if params[:tab] == 'artbook') }
+          = link_to({tab: :artbook}, title: 'artbooks') do
+            %span.icon.is-small
+              %i.mi color_lens
+        %li{class: (:'is-active' if params[:tab] == 'magazine') }
+          = link_to({tab: :magazine}, title: 'magazines') do
+            %span.icon.is-small
+              %i.mi book
+    
+    -#%div{class: params[:tab]}= render partial: params[:tab]
+    
+    %table.table.is-striped.is-narrow.w100
+      - @folders.each do |dir|
+        %tr
+          - lbl = dir == '.' ? '[base folder]' : dir
+          %td= link_to lbl, tab: params[:tab], folder: dir
 
-%table
-  %thead
-    %tr
-      %th Name
-      %th Name romaji
-      %th Name kakasi
-      %th Size
-      %th Checksum
-      %th Num images
-      %th Num files
-      %th Score
-      %th Path
-      %th Name orig
-      %th
-      %th
-      %th
-
-  %tbody
-    - @doujinshi.each do |doujin|
-      %tr
-        %td= doujin.name
-        %td= doujin.name_romaji
-        %td= doujin.name_kakasi
-        %td= doujin.size
-        %td= doujin.checksum
-        %td= doujin.num_images
-        %td= doujin.num_files
-        %td= doujin.score
-        %td= doujin.path
-        %td= doujin.name_orig
-        %td= link_to 'Show', doujin
-        %td= link_to 'Edit', edit_doujin_path(doujin)
-        %td= link_to 'Destroy', doujin, method: :delete, data: { confirm: 'Are you sure?' }
-
-%br
-
-= link_to 'New Doujin', new_doujin_path
+  .column
+    - if @doujinshi
+      - @doujinshi.each_slice(6) do |s|
+        .columns
+          - s.each do |d|
+            .column.is-2
+              - descr  = "#{d.name_romaji.present? ? d.name_romaji : d.name_kakasi}"
+              - descr += "\n#{d.name}" if descr != d.name
+              %figure.image.is2by3
+                = link_to image_tag(doujin_path(d, format: :webp), title: descr), doujin_path(d), target: :_blank
