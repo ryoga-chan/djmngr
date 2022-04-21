@@ -1,73 +1,74 @@
-.actions-danger.has-text-centered(style="float: right")
-  -#- if @info[:prepared_at]
-  -#  = link_to(finalize_volume_process_path, method: :post,
-  -#    class: 'button is-success is-rounded mb-2', title: 'finalize processing and move to collection')  do
-  -#    %span.icon
-  -#      %i.mi.mi-small gavel
-  -#    %span Finalize
-  -#  %br
-  = link_to({action: :delete_archive_cwd, id: params[:id]},
-      method: :delete, data: { confirm: 'Delete this processing folder?' },
-      class: 'button is-danger is-light is-rounded mb-2', title: 'delete processing folder') do
-    %span.icon
-      %i.mi delete
-    %span Delete WIP
-  %br
-  = link_to({action: :delete_archive_cwd, id: params[:id], archive_too: true},
-      method: :delete, data: { confirm: "Delete processing folder\nAND the original archive?" },
-      class: 'button is-danger is-rounded', title: 'delete processing folder') do
-    %span.icon
-      %i.mi delete
-    %span Delete ALL
+.container.is-max-desktop
+  .actions-danger.has-text-centered(style="float: right")
+    -#- if @info[:prepared_at]
+    -#  = link_to(finalize_volume_process_path, method: :post,
+    -#    class: 'button is-success is-rounded mb-2', title: 'finalize processing and move to collection')  do
+    -#    %span.icon
+    -#      %i.mi.mi-small gavel
+    -#    %span Finalize
+    -#  %br
+    = link_to({action: :delete_archive_cwd, id: params[:id]},
+        method: :delete, data: { confirm: 'Delete this processing folder?' },
+        class: 'button is-danger is-light is-rounded mb-2', title: 'delete processing folder') do
+      %span.icon
+        %i.mi delete
+      %span Delete WIP
+    %br
+    = link_to({action: :delete_archive_cwd, id: params[:id], archive_too: true},
+        method: :delete, data: { confirm: "Delete processing folder\nAND the original archive?" },
+        class: 'button is-danger is-rounded', title: 'delete processing folder') do
+      %span.icon
+        %i.mi delete
+      %span Delete ALL
 
-- if @info[:prepared_at]
+  - if @info[:prepared_at]
 
-  .title
-    Archive processing started
-    %span.is-1= "on #{@info[:prepared_at].strftime '%F %H:%M'}"
-  .subtitle= @info[:relative_path]
-  
-  .tabs.is-boxed
-    %ul
-      %li{class: (:'is-active' if params[:tab] == 'dupes') }
-        = link_to tab: :dupes do
-          %span.icon.is-small
-            %i.mi content_copy
-          %span Dupes
-      %li{class: (:'is-active' if params[:tab] == 'files') }
-        = link_to tab: :files do
-          %span.icon.is-small
-            %i.mi edit_note
-          %span File names
-      %li{class: (:'is-active' if params[:tab] == 'images') }
-        = link_to tab: :images do
-          %span.icon.is-small
-            %i.mi collections
-          %span Images
-      %li{class: (:'is-active' if params[:tab] == 'ident') }
-        = link_to tab: :ident do
-          %span.icon.is-small
-            %i.mi fact_check
-          %span Identification
-      %li{class: (:'is-active' if params[:tab] == 'move') }
-        = link_to tab: :move do
-          %span.icon.is-small
-            %i.mi gavel
-          %span Finalize
-  
-  %div{class: params[:tab]}= render partial: params[:tab]
-  
-  %hr
-  
-- else
+    .title
+      Archive processing started
+      %span.is-1= "on #{@info[:prepared_at].strftime '%F %H:%M'}"
+    .subtitle= @info[:relative_path]
+    
+    .tabs.is-boxed
+      %ul
+        %li{class: (:'is-active' if params[:tab] == 'dupes') }
+          = link_to tab: :dupes do
+            %span.icon.is-small
+              %i.mi content_copy
+            %span Dupes
+        %li{class: (:'is-active' if params[:tab] == 'files') }
+          = link_to tab: :files do
+            %span.icon.is-small
+              %i.mi edit_note
+            %span File names
+        %li{class: (:'is-active' if params[:tab] == 'images') }
+          = link_to tab: :images do
+            %span.icon.is-small
+              %i.mi collections
+            %span Images
+        %li{class: (:'is-active' if params[:tab] == 'ident') }
+          = link_to tab: :ident do
+            %span.icon.is-small
+              %i.mi fact_check
+            %span Identification
+        %li{class: (:'is-active' if params[:tab] == 'move') }
+          = link_to tab: :move do
+            %span.icon.is-small
+              %i.mi gavel
+            %span Finalize
+    
+    %div{class: params[:tab]}= render partial: params[:tab]
+    
+    %hr
+    
+  - else
 
-  .title= "Archive processing"
-  .title.is-4= @info[:relative_path]
-  .title.is-6= "Preparing archive, please wait ... #{@perc}%"
-  
-  :javascript
-    setTimeout(function () { window.location.reload(); }, 5000)
+    .title= "Archive processing"
+    .title.is-4= @info[:relative_path]
+    .title.is-6= "Preparing archive, please wait ... #{@perc}%"
+    
+    :javascript
+      setTimeout(function () { window.location.reload(); }, 5000)
 
-= link_to 'show metadata', '#', class: 'button is-info',
-  onclick: %Q|$(this).hide().next().removeClass('is-hidden'); return false|
-%pre.debug-info.is-hidden= PP.pp @info, ''
+  = link_to 'show metadata', '#', class: 'button is-info',
+    onclick: %Q|$(this).hide().next().removeClass('is-hidden'); return false|
+  %pre.debug-info.is-hidden= PP.pp @info, ''

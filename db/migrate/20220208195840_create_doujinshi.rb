@@ -11,7 +11,8 @@ class CreateDoujinshi < ActiveRecord::Migration[7.0]
       t.integer :num_files
       t.string  :category
       t.integer :score
-      t.text    :path
+      t.text    :file_folder
+      t.text    :file_name
 
       t.timestamps
     end

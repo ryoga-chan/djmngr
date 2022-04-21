@@ -16,7 +16,8 @@
     %nav.navbar{role: "navigation"}
       .navbar-brand
         %a.navbar-item(href='/' title='vai alla home page')= image_tag 'logo-small.png'
-        %a.navbar-burger{:role => "button", :'data-target' => "appNavbar"}
+        %a.navbar-burger{:role => "button", :'data-target' => "appNavbar",
+          :onclick => %Q|jQuery(this).add('#appNavbar').toggleClass('is-active') | }
           %span
           %span
           %span
@@ -28,7 +29,13 @@
               %span.icon-text
                 %span.icon
                   %i.mi swap_horiz
-                %span Processing
+                %span Process
+          %span.navbar-item{class: params[:controller] != 'doujinshi' ? nil : 'is-current'}
+            = link_to doujinshi_path do
+              %span.icon-text
+                %span.icon
+                  %i.mi book
+                %span Doujin
 
         .navbar-end
           .navbar-item
@@ -54,7 +61,7 @@
                     - flash[key].each do |msg|
                       %li= msg
       
-      .container.is-max-desktop= yield
+      = yield
 
     #loading.modal
       .modal-background

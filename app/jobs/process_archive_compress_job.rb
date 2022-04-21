@@ -76,9 +76,10 @@ class ProcessArchiveCompressJob < ApplicationJob
           num_images:   info[:images].size,
           num_files:    info[:files].size,
           score:        (info[:score].to_i > 0 ? info[:score].to_i : nil),
-          path:         info[:collection_relative_path],
+          file_name:    File.basename(info[:collection_relative_path]),
+          file_folder:  File.dirname(info[:collection_relative_path]),
           name_orig:    info[:relative_path],
-          category:     info[:file_type]
+          category:     (info[:file_type] == 'doujin' ? info[:doujin_dest_type] : info[:file_type])
         
         if info[:file_type] == 'doujinshi'
           d.author_ids = info[:author_ids] if info[:author_ids].try(:any?)

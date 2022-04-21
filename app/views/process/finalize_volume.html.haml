@@ -1,48 +1,49 @@
-.title= "Archive finalizing #{'completed' if @perc >= 100.0 }"
-.title.is-4= @info[:relative_path]
-.final-path
-  %span.icon.in-text-small.mr-2
-    %i.mi.mi-small folder
-  = Doujin.dest_path_by_process_params @info
+.container.is-max-desktop
+  .title= "Archive finalizing #{'completed' if @perc >= 100.0 }"
+  .title.is-4= @info[:relative_path]
+  .final-path
+    %span.icon.in-text-small.mr-2
+      %i.mi.mi-small folder
+    = Doujin.dest_path_by_process_params @info
 
-- if @perc < 100.0
+  - if @perc < 100.0
 
-  .title.is-6.mt-3= "Finalizing archive, please wait ... #{@perc}%"
-  
-  = link_to(finalize_volume_process_path(undo: true), method: :post,
-    class: 'button is-success is-light is-rounded mt-2 mr-3', title: 'undo finalize processing')  do
-    %span.icon
-      %i.mi.mi-small undo
-    %span Stalled? Undo!
-  
-  :javascript
-    window.timeout_id = setTimeout(function () { window.location.reload(); }, 5000)
-  
-- else
-
-  = link_to({action: :delete_archive_cwd, id: params[:id], archive_too: true}, method: :delete,
-      class: 'button is-danger is-rounded mt-2 mr-3 rm_wip',
-      title: 'delete processing folder') do
-    %span.icon
-      %i.mi delete
-    %span
-      Delete WIP & ZIP
-      %span.countdown (--)
-  
-  :javascript
-    window.countdown = 61;
+    .title.is-6.mt-3= "Finalizing archive, please wait ... #{@perc}%"
     
-    function update_countdown () {
-      window.countdown = window.countdown - 1;
-      jQuery('span.countdown').text('('+window.countdown+')');
-      if (window.countdown > 0)
-        setTimeout(update_countdown, 1000);
-      else
-        document.querySelector('.button.rm_wip').click()
-    }//update_countdown
+    = link_to(finalize_volume_process_path(undo: true), method: :post,
+      class: 'button is-success is-light is-rounded mt-2 mr-3', title: 'undo finalize processing')  do
+      %span.icon
+        %i.mi.mi-small undo
+      %span Stalled? Undo!
     
-    setTimeout(update_countdown, 1000);
+    :javascript
+      window.timeout_id = setTimeout(function () { window.location.reload(); }, 5000)
+    
+  - else
 
-= link_to 'show metadata', '#', class: 'button is-info mt-2',
-  onclick: %Q|clearTimeout(window.timeout_id); $(this).hide().next().removeClass('is-hidden'); return false|
-%pre.debug-info.is-hidden= PP.pp @info, ''
+    = link_to({action: :delete_archive_cwd, id: params[:id], archive_too: true}, method: :delete,
+        class: 'button is-danger is-rounded mt-2 mr-3 rm_wip',
+        title: 'delete processing folder') do
+      %span.icon
+        %i.mi delete
+      %span
+        Delete WIP & ZIP
+        %span.countdown (--)
+    
+    :javascript
+      window.countdown = 61;
+      
+      function update_countdown () {
+        window.countdown = window.countdown - 1;
+        jQuery('span.countdown').text('('+window.countdown+')');
+        if (window.countdown > 0)
+          setTimeout(update_countdown, 1000);
+        else
+          document.querySelector('.button.rm_wip').click()
+      }//update_countdown
+      
+      setTimeout(update_countdown, 1000);
+
+  = link_to 'show metadata', '#', class: 'button is-info mt-2',
+    onclick: %Q|clearTimeout(window.timeout_id); $(this).hide().next().removeClass('is-hidden'); return false|
+  %pre.debug-info.is-hidden= PP.pp @info, ''
