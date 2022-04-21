@@ -86,7 +86,8 @@
           %span.has-text-danger
             = f.check_box :overwrite, {checked: @info[:overwrite], include_hidden: true, onchange: %Q| this.form.submit() |}
             = label_tag :overwrite, "overwrite file in the collection"
-          = link_to "(TODO: view doujin ID [#{@collision_info[:doujin].try :id}])", '#'
+          - dj_id = @collision_info[:doujin].try(:id).to_i
+          = link_to "view doujin ID #{dj_id}", doujin_path(id: dj_id), target: :_blank
   
     .has-text-centered.my-4
       = link_to finalize_volume_process_path, method: :post,
@@ -121,7 +122,6 @@
           .this_cover= html_cover
         .column.is-6(style="border-left: 1px solid red")
           .descr collection
-          .coll_cover= image_tag File.join('/thumbs', "#{@collision_info[:doujin].try :id}.webp"),
-            title: "collision cover"
+          .coll_cover= image_tag doujin_path(id: @collision_info[:doujin].try(:id).to_i, format: :webp), title: "collision cover"
     - else
       = html_cover
