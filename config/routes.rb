@@ -21,8 +21,8 @@ Rails.application.routes.draw do
     end
   end # process
 
-  resources :authors
-  resources :themes
-  resources :circles
   resources :doujinshi
+  resources :authors
+  resources :circles
+  resources :themes
 end

@@ -3,11 +3,28 @@ class DoujinshiController < ApplicationController
 
   # GET /doujinshi
   def index
-    @doujinshi = Doujin.all
+    params[:tab] = 'author' unless %w{ author circle artbook magazine }.include?(params[:tab])
+    
+    rel = Doujin.where(category: params[:tab])
+    @folders = rel.order(:file_folder).distinct.pluck(:file_folder)
+    @doujinshi = rel.where(file_folder: params[:folder]).order(:name) if params[:folder]
   end
 
   # GET /doujinshi/1
   def show
+    respond_to do |format|
+      format.html
+      format.any(:webp, :jpg) {
+        # estrai primo frame (al posto di: `webpmux -get frame 1 out.webp -o -`)
+        fname = Rails.root.join('public', 'thumbs', "#{@doujin.id}.webp").to_s
+        img = ImageProcessing::Vips.source(fname).call save: false
+        data = request.format.to_sym == :webp ?
+          img.webpsave_buffer(Q: 70, lossless: false, min_size: true) :
+          img.jpegsave_buffer(Q: 70)
+        return send_data(data, type: request.format.to_sym, disposition: :inline,
+          filename: "#{@doujin.id}.#{request.format.to_sym}")
+      }
+    end
   end
 
   # GET /doujinshi/new
@@ -53,6 +70,6 @@ class DoujinshiController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def doujin_params
-      params.require(:doujin).permit(:name, :name_romaji, :name_kakasi, :size, :checksum, :num_images, :num_files, :score, :path, :name_orig)
+      params.require(:doujin).permit(:name, :name_romaji, :name_kakasi, :size, :checksum, :num_images, :num_files, :score, :file_name, :file_folder, :name_orig)
     end
 end

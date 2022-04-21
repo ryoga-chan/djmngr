@@ -7,12 +7,12 @@ git_source(:github) { |repo| 'https://github.com/#{repo}.git' }
 
 ruby '3.0.0'
 
-gem 'rails',       '~> 7.0.0',   # to use edge: gem 'rails', github: 'rails/rails', branch: 'main'
+gem 'rails',       '~> 7.0',     # to use edge: gem 'rails', github: 'rails/rails', branch: 'main'
   require: %w{ shellwords }
 gem 'sqlite3',     '~> 1.4'      # sqlite3 database for Active Record
 gem 'puma',        '~> 5.0'      # puma web server -- https://github.com/puma/puma
-gem 'rack-brotli', '~> 1.2.0'    # enable brotli compression
-gem 'bcrypt',      '~> 3.1.7'    # ActiveModel's has_secure_password -- https://guides.rubyonrails.org/active_model_basics.html#securepassword
+gem 'rack-brotli', '~> 1.2'      # enable brotli compression
+gem 'bcrypt',      '~> 3.1'      # ActiveModel's has_secure_password -- https://guides.rubyonrails.org/active_model_basics.html#securepassword
 gem 'sassc-rails'                # sass to process CSS
 gem 'sprockets-rails'            # asset pipeline -- https://github.com/rails/sprockets-rails
 gem 'tzinfo-data', platforms: %i[ mingw mswin x64_mingw jruby ] # zoneinfo files for Windows
