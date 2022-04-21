@@ -23,7 +23,8 @@ class Doujin < ApplicationRecord
   
   # find doujin by destination folder
   def self.find_by_process_params(info)
-    self.find_by path: self.dest_path_by_process_params(info)
+    path = self.dest_path_by_process_params(info)
+    self.find_by file_folder: File.dirname(path), file_name: File.basename(path)
   end # self.find_by_process_params
   
   
