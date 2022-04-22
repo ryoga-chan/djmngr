@@ -13,18 +13,28 @@ class ProcessController < ApplicationController
     folders += %w{ author circle magazine artbook }.map{|d| File.join(Setting['dir.sorted'], d).to_s }
     folders.each{|f| FileUtils.mkdir_p f }
     
-    files_glob = File.join Setting['dir.to_sort'], '**', '*.zip'
-    @files = Dir[files_glob].sort.
-      inject({}){|h, f| h.merge Pathname.new(f).relative_path_from(Setting['dir.to_sort']).to_s => File.size(f) }
+    # create "to_sort" file list
+    if !ProcessIndexRefreshJob.cache_file? || params[:refresh]
+      ProcessIndexRefreshJob.lock_file!
+      ProcessIndexRefreshJob.perform_later
+      return redirect_to(action: :index)
+    end
+
+    if ProcessIndexRefreshJob.lock_file?
+      @refreshing = true
+    else
+      # read "to_sort" file list
+      @files = ProcessIndexRefreshJob.read_cache
     
-    files_glob = File.join Setting['dir.sorting'], '**', 'info.yml'
-    @preparing = Dir[files_glob].map{|f|
-      tot_size = Dir.glob("#{File.dirname f}/**/*").
-        map{|f| f.ends_with?('/file.zip') ? 0 : File.size(f) }.sum
-      YAML.load_file(f).merge tot_size: tot_size
-    }.sort{|a,b| a[:relative_path] <=> b[:relative_path] }
-    
-    @preparing_paths = @preparing.map{|i| i[:relative_path] }
+      # read "sorting" file list
+      files_glob = File.join Setting['dir.sorting'], '**', 'info.yml'
+      @preparing = Dir[files_glob].map{|f|
+        tot_size = Dir.glob("#{File.dirname f}/**/*").
+          map{|f| f.ends_with?('/file.zip') ? 0 : File.size(f) }.sum
+        YAML.load_file(f).merge tot_size: tot_size
+      }.sort{|a,b| a[:relative_path] <=> b[:relative_path] }
+      @preparing_paths = @preparing.map{|i| i[:relative_path] }
+    end
   end # index
   
   # prepare ZIP working folder and redirects to edit
