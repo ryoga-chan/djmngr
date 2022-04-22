@@ -16,3 +16,7 @@ bin/rails g migration create_authors_doujinshi author:references doujin:referenc
 bin/rails g migration create_circles_doujinshi circle:references doujin:references
 
 bin/rails db:migrate
+
+bin/rails g job process_archive_decompress_job.rb
+bin/rails g job process_archive_compress_job.rb
+bin/rails g job process_index_refresh_job.rb

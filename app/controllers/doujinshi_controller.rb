@@ -1,16 +1,43 @@
 class DoujinshiController < ApplicationController
   before_action :set_doujin, only: %i[ show edit update destroy ]
 
-  # GET /doujinshi
   def index
     params[:tab] = 'author' unless %w{ author circle artbook magazine }.include?(params[:tab])
     
-    rel = Doujin.where(category: params[:tab])
-    @folders = rel.order(:file_folder).distinct.pluck(:file_folder)
-    @doujinshi = rel.where(file_folder: params[:folder]).order(:name_kakasi) if params[:folder]
-  end
+    case params[:tab]
+      when 'author'
+        sql_name = "COALESCE(authors.name_romaji, authors.name_kakasi, authors.name)"
+        # possibly lighter query:
+        #   Author.select(Arel.sql "id, #{sql_name} AS name").where("id IN (SELECT author_id FROM authors_doujinshi)").
+        @authors = Author.
+          distinct.select(Arel.sql "authors.id, #{sql_name} AS name").
+          joins(:doujinshi).
+          order(Arel.sql "LOWER(#{sql_name})")
+        @doujinshi = Doujin.
+          distinct.select("doujinshi.*").
+          joins(:authors).
+          where(authors: {id: params[:author_id]}).
+          order(:name_kakasi) if params[:author_id]
+      
+      when 'circle'
+        sql_name = "COALESCE(circles.name_romaji, circles.name_kakasi, circles.name)"
+        @circles = Circle.
+          distinct.select(Arel.sql "circles.id, #{sql_name} AS name").
+          joins(:doujinshi).
+          order(Arel.sql "LOWER(#{sql_name})")
+        @doujinshi = Doujin.
+          distinct.select("doujinshi.*").
+          joins(:circles).
+          where(circles: {id: params[:circle_id]}).
+          order(:name_kakasi) if params[:circle_id]
+      
+      when 'artbook', 'magazine'
+        rel = Doujin.where(category: params[:tab])
+        @folders   = rel.order(:file_folder).distinct.pluck(:file_folder)
+        @doujinshi = rel.where(file_folder: params[:folder]).order(:name_kakasi) if params[:folder]
+    end
+  end # index
 
-  # GET /doujinshi/1
   def show
     respond_to do |format|
       format.html
@@ -25,7 +52,7 @@ class DoujinshiController < ApplicationController
           filename: "#{@doujin.id}.#{request.format.to_sym}")
       }
     end
-  end
+  end # show
 
   # GET /doujinshi/new
   def new
@@ -62,14 +89,17 @@ class DoujinshiController < ApplicationController
     redirect_to doujinshi_url, notice: "Doujin was successfully destroyed."
   end
 
-  private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_doujin
-      @doujin = Doujin.find(params[:id])
-    end
 
-    # Only allow a list of trusted parameters through.
-    def doujin_params
-      params.require(:doujin).permit(:name, :name_romaji, :name_kakasi, :size, :checksum, :num_images, :num_files, :score, :file_name, :file_folder, :name_orig)
+  private # ____________________________________________________________________
+
+
+  def set_doujin
+    unless @doujin = Doujin.find(params[:id])
+      return redirect_to(doujinshi_path, alert: "doujin [#{params[:id]}] not found!")
     end
+  end
+
+  def doujin_params
+    params.require(:doujin).permit(:name, :name_romaji, :name_kakasi, :size, :checksum, :num_images, :num_files, :score, :file_name, :file_folder, :name_orig)
+  end
 end
