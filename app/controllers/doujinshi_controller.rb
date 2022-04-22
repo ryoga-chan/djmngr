@@ -7,7 +7,7 @@ class DoujinshiController < ApplicationController
     
     rel = Doujin.where(category: params[:tab])
     @folders = rel.order(:file_folder).distinct.pluck(:file_folder)
-    @doujinshi = rel.where(file_folder: params[:folder]).order(:name) if params[:folder]
+    @doujinshi = rel.where(file_folder: params[:folder]).order(:name_kakasi) if params[:folder]
   end
 
   # GET /doujinshi/1

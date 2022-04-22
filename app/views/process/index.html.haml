@@ -1,31 +1,39 @@
 .container.is-max-desktop
-  - if @preparing.any?
-    .title.is-4= "Processing archives (#{@preparing.size})"
-
-    %table.table.is-striped.is-hoverable.ml-4
-      %tbody
-        - @preparing.each_with_index do |f, i|
-          %tr
-            %td= link_to('🗑', {action: :delete_archive_cwd, id: f[:working_dir]},
-              method: :delete, data: { confirm: 'Delete this processing folder?' },
-              class: 'has-text-danger', title: 'delete processing folder')
-            %td.has-text-right= number_to_human_size f[:tot_size]
-            %td= link_to f[:relative_path], action: :edit, id: f[:working_dir]
-
-  .title.is-4= "Processable archives (#{@files.size})"
-
-  - if @files.empty?
-    %em no files to process
+  - if @refreshing
+    .columns
+      .column.is-1 refreshing
+      .column.is-3
+        %progress.progress.is-small.is-primary
   - else
-    %table.table.is-striped.is-hoverable.ml-4
-      %tbody
-        - @files.each do |fname, fsize|
-          %tr
-            %td= link_to('🗑', {action: :delete_archive, path: fname},
-              method: :delete, data: { confirm: 'Delete this file?' },
-              class: 'has-text-danger', title: 'delete file')
-            %td.has-text-right= number_to_human_size fsize
-            %td
-              - if @preparing_paths.include?(fname)
-                %span.tag.is-info(title="processing") 🛠
-              = link_to fname, action: :prepare_archive, path: fname
+    - if @preparing.any?
+      .title.is-4= "Processing archives (#{@preparing.size})"
+
+      %table.table.is-striped.is-hoverable.ml-4
+        %tbody
+          - @preparing.each_with_index do |f, i|
+            %tr
+              %td= link_to('🗑', {action: :delete_archive_cwd, id: f[:working_dir]},
+                method: :delete, data: { confirm: 'Delete this processing folder?' },
+                class: 'has-text-danger', title: 'delete processing folder')
+              %td.has-text-right= number_to_human_size f[:tot_size]
+              %td= link_to f[:relative_path], action: :edit, id: f[:working_dir]
+
+    .title.is-4
+      = "Processable archives (#{@files.size})"
+      = link_to 'refresh list', {refresh: true}, class: 'button is-info is-small is-rounded', style: 'vertical-align: middle'
+
+    - if @files.empty?
+      %em no files to process
+    - else
+      %table.table.is-striped.is-hoverable.ml-4
+        %tbody
+          - @files.each do |fname, fsize|
+            %tr
+              %td= link_to('🗑', {action: :delete_archive, path: fname},
+                method: :delete, data: { confirm: 'Delete this file?' },
+                class: 'has-text-danger', title: 'delete file')
+              %td.has-text-right= number_to_human_size fsize
+              %td
+                - if @preparing_paths.include?(fname)
+                  %span.tag.is-info(title="processing") 🛠
+                = link_to fname, action: :prepare_archive, path: fname
