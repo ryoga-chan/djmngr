@@ -4,6 +4,9 @@ class DoujinshiController < ApplicationController
   def index
     params[:tab] = 'author' unless %w{ author circle artbook magazine }.include?(params[:tab])
     
+    session[:dj_index_detail] = params[:detail] if %w{ thumbs table }.include?(params[:detail])
+    session[:dj_index_detail] ||= 'thumbs'
+    
     case params[:tab]
       when 'author'
         sql_name = "COALESCE(authors.name_romaji, authors.name_kakasi, authors.name)"
