@@ -1,34 +1,50 @@
-body[data-ctrl=doujinshi][data-action=index] {
+body[data-ctrl="doujinshi"][data-action="index"] {
   .tabs li a {
     padding-left: 0.75rem;
     padding-right: 0.75rem;
   }
   
-  .doujinshi .descr {
-    height: 1rem;
-    overflow: hidden;
+  
+  .columns.thumbs {
+    progress { margin: 0; }
+    progress[value="0"] { visibility: hidden; }
+    
+    .descr {
+      height: 1.1rem;
+      overflow: hidden;
+    }
   }
   
-  table.details tr {
-    td {
-      width: 1%;
-      text-align: center;
-      white-space: nowrap;
-    }
-    td:nth-child(2) {
-      width: auto;
-      text-align: left;
-      white-space: normal;
+  table.details {
+    margin-bottom: 300px;
+  
+    tr {
+      progress {
+        width: 2rem;
+        border: 1px outset silver;
+      }
+      
+      td {
+        width: 1%;
+        white-space: nowrap;
+      }
+      td:nth-child(2) {
+        width: auto;
+        white-space: normal;
+      }
     }
     
-    progress {
-      width: 2rem;
-      border: 1px outset silver;
+    tr td:nth-child(3),
+    tr td:nth-child(4) {
+      text-align: right;
+      font-family: monospace;
+      font-size: small;
     }
   }
   
   #sample_cover {
-    border: 1px outset silver;
+    position: absolute;
     border-radius: 1rem;
+    border: 1px outset silver;
   }
 }
