@@ -25,25 +25,27 @@
         - if %w{ author_id circle_id folder }.any?{|k| params[k] }
           - cur_params = params.permit(%w{ tab author_id circle_id folder }).to_h
           = link_to 'change view',
-            cur_params.merge(detail: session[:dj_index_detail] == 'thumbs' ? 'table' : 'thumbs'),
+            cur_params.merge(detail: session[:dj_index_detail] == 'thumbs' ? 'table' : 'thumbs', anchor: "listing"),
             class: 'button is-info is-small is-rounded', style: 'float: right'
       
       %ul.menu-list
         - if @authors
           - @authors.each do |a|
-            %li= link_to a.name, {tab: params[:tab], author_id: a.id},
+            %li= link_to a.name, {tab: params[:tab], author_id: a.id, anchor: "listing"},
               class: ('is-active' if a.id == params[:author_id].to_i)
     
         - if @circles
           - @circles.each do |c|
-            %li= link_to c.name, {tab: params[:tab], circle_id: c.id},
+            %li= link_to c.name, {tab: params[:tab], circle_id: c.id, anchor: "listing"},
               class: ('is-active' if c.id == params[:circle_id].to_i)
     
         - if @folders
           - @folders.each do |f|
             - lbl = f == '.' ? '[root folder]' : f
-            %li= link_to lbl, {tab: params[:tab], folder: f},
+            %li= link_to lbl, {tab: params[:tab], folder: f, anchor: "listing"},
               class: ('is-active' if f == params[:folder])
+    
+    %a(name="listing")
 
   .column.doujinshi
     - if session[:dj_index_detail] == 'thumbs'
@@ -52,29 +54,32 @@
           - s.each do |d|
             - title = descr = "#{d.name_romaji.present? ? d.name_romaji : d.name_kakasi}"
             - title += "\n#{d.name}" if descr != d.name
+            - title += "\n#{d.score.to_i}⭐ / #{d.num_images} pages / #{number_to_human_size d.size, precision: 2}"
             .column.is-2.has-text-centered(title=title)
               %figure.image.is2by3
                 = link_to image_tag(doujin_path(d, format: :webp), title: title), doujin_path(d), target: :_blank
+              %progress.progress.is-warning{value: d.score.to_i, title: "#{d.score.to_i}⭐", max: 10}
               .descr.is-size-7= descr
     - else
-      %img#sample_cover.is-hidden(style="position: absolute")
-      
-      %table.details.table.is-striped.is-narrow.is-fullwidth
-        %thead
-          %tr
-            %th ⭐
-            %th Name
-            %th Pag.
-            %th Size
-        %tbody
-          - @doujinshi.to_a.each do |d|
-            - descr = d.name_romaji.present? ? d.name_romaji : d.name_kakasi
-            - title = d.name if d.name != descr
-            
-            %tr{title: title, data: {cover: doujin_path(d, format: :webp)}}
-              %td
-                - if d.score.to_i > 0
-                  %progress.progress.is-warning{value: d.score.to_i, title: d.score, max: 10}
-              %td= link_to descr, doujin_path(d), target: :_blank
-              %td= d.num_images
-              %td= number_to_human_size d.size, precision: 2
+      - if @doujinshi
+        %img#sample_cover.is-hidden
+        
+        %table.details.table.is-striped.is-narrow.is-fullwidth
+          %thead
+            %tr
+              %th ⭐
+              %th Name
+              %th Pag.
+              %th Size
+          %tbody
+            - @doujinshi.to_a.each do |d|
+              - descr = d.name_romaji.present? ? d.name_romaji : d.name_kakasi
+              - title = d.name if d.name != descr
+              
+              %tr{title: title, data: {cover: doujin_path(d, format: :webp)}}
+                %td
+                  - if d.score.to_i > 0
+                    %progress.progress.is-warning{value: d.score.to_i, title: "#{d.score.to_i}⭐", max: 10}
+                %td= link_to descr, doujin_path(d), target: :_blank
+                %td= d.num_images
+                %td= number_to_human_size(d.size, precision: 2).delete ' '

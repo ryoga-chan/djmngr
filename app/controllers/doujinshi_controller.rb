@@ -5,7 +5,7 @@ class DoujinshiController < ApplicationController
     params[:tab] = 'author' unless %w{ author circle artbook magazine }.include?(params[:tab])
     
     session[:dj_index_detail] = params[:detail] if %w{ thumbs table }.include?(params[:detail])
-    session[:dj_index_detail] ||= 'thumbs'
+    session[:dj_index_detail] ||= 'table'
     
     case params[:tab]
       when 'author'
