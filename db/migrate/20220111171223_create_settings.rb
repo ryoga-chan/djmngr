@@ -8,8 +8,8 @@ class CreateSettings < ActiveRecord::Migration[7.0]
       t.timestamps
     end
     
-    Setting.create key: 'dir.to_sort', value: Rails.root.join('dj-libray', 'to-sort'), notes: 'folder containing doujinshi to process'
-    Setting.create key: 'dir.sorting', value: Rails.root.join('dj-libray', 'sorting'), notes: 'folder containing processing doujinshi'
-    Setting.create key: 'dir.sorted' , value: Rails.root.join('dj-libray', 'sorted' ), notes: 'folder containing the processed doujinshi'
+    Setting.create key: 'dir.to_sort', value: Rails.root.join('dj-libray', 'to-sort').to_s, notes: 'folder containing doujinshi to process'
+    Setting.create key: 'dir.sorting', value: Rails.root.join('dj-libray', 'sorting').to_s, notes: 'folder containing doujinshi under process'
+    Setting.create key: 'dir.sorted' , value: Rails.root.join('dj-libray', 'sorted' ).to_s, notes: 'folder containing processed doujinshi'
   end
 end

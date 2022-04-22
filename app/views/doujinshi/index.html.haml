@@ -1,6 +1,6 @@
 .columns
-  .column.is-4
-    .tabs.is-boxed
+  .column.is-3
+    .tabs.is-boxed.is-centered
       %ul
         %li{class: (:'is-active' if params[:tab] == 'author') }
           = link_to({tab: :author}, title: 'authors') do
@@ -19,21 +19,32 @@
             %span.icon.is-small
               %i.mi book
     
-    -#%div{class: params[:tab]}= render partial: params[:tab]
+    %aside.menu
+      %p.menu-label= params[:tab].capitalize.pluralize
+      
+      %ul.menu-list
+        - if @authors
+          - @authors.each do |a|
+            %li= link_to a.name, {tab: params[:tab], author_id: a.id},
+              class: ('is-active' if a.id == params[:author_id].to_i)
     
-    %table.table.is-striped.is-narrow.w100
-      - @folders.each do |dir|
-        %tr
-          - lbl = dir == '.' ? '[base folder]' : dir
-          %td= link_to lbl, tab: params[:tab], folder: dir
+        - if @circles
+          - @circles.each do |c|
+            %li= link_to c.name, {tab: params[:tab], circle_id: c.id},
+              class: ('is-active' if c.id == params[:circle_id].to_i)
+    
+        - if @folders
+          - @folders.each do |f|
+            - lbl = f == '.' ? '[root folder]' : f
+            %li= link_to lbl, {tab: params[:tab], folder: f},
+              class: ('is-active' if f == params[:folder])
 
   .column
-    - if @doujinshi
-      - @doujinshi.each_slice(6) do |s|
-        .columns
-          - s.each do |d|
-            .column.is-2
-              - descr  = "#{d.name_romaji.present? ? d.name_romaji : d.name_kakasi}"
-              - descr += "\n#{d.name}" if descr != d.name
-              %figure.image.is2by3
-                = link_to image_tag(doujin_path(d, format: :webp), title: descr), doujin_path(d), target: :_blank
+    - @doujinshi.to_a.each_slice(6) do |s|
+      .columns
+        - s.each do |d|
+          .column.is-2
+            - descr  = "#{d.name_romaji.present? ? d.name_romaji : d.name_kakasi}"
+            - descr += "\n#{d.name}" if descr != d.name
+            %figure.image.is2by3
+              = link_to image_tag(doujin_path(d, format: :webp), title: descr), doujin_path(d), target: :_blank

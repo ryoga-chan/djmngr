@@ -30,6 +30,10 @@ class Doujin < ApplicationRecord
     self.find_by category: cat, file_folder: fold, file_name: name
   end # self.find_by_process_params
   
+  def file_path
+    File.join self.category, self.file_folder, self.file_name
+  end # file_path
+  
   
   private # ____________________________________________________________________
   
