@@ -31,8 +31,13 @@ class Doujin < ApplicationRecord
   end # self.find_by_process_params
   
   def file_path
-    File.join self.category, self.file_folder, self.file_name
+    tmp_folder = self.file_folder == '.' ? '' : self.file_folder
+    File.join self.category, tmp_folder, self.file_name
   end # file_path
+  
+  def to_label
+    self.name_romaji.present? ? self.name_romaji : self.name_kakasi
+  end # to_label
   
   
   private # ____________________________________________________________________

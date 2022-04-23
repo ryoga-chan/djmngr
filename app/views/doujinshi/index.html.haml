@@ -52,7 +52,7 @@
       - @doujinshi.to_a.each_slice(6) do |s|
         .columns.thumbs
           - s.each do |d|
-            - title = descr = "#{d.name_romaji.present? ? d.name_romaji : d.name_kakasi}"
+            - title = descr = d.to_label
             - title += "\n#{d.name}" if descr != d.name
             - title += "\n#{d.score.to_i}⭐ / #{d.num_images} pages / #{number_to_human_size d.size, precision: 2}"
             .column.is-2.has-text-centered(title=title)
