@@ -86,8 +86,8 @@
           %span.has-text-danger
             = f.check_box :overwrite, {checked: @info[:overwrite], include_hidden: true, onchange: %Q| this.form.submit() |}
             = label_tag :overwrite, "overwrite file in the collection"
-          - dj_id = @collision_info[:doujin].try(:id).to_i
-          = link_to "view doujin ID #{dj_id}", doujin_path(id: dj_id), target: :_blank
+          - if dj_id = @collision_info[:doujin].try(:id)
+            = link_to "view doujin ID #{dj_id}", doujin_path(id: dj_id), target: :_blank
   
     .has-text-centered.my-4
       = link_to finalize_volume_process_path, method: :post,
