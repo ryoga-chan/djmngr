@@ -83,12 +83,13 @@ class ProcessArchiveCompressJob < ApplicationJob
         d.file_folder = Pathname.new(d.file_folder).relative_path_from("/#{d.category}").to_s
         d.save!
         
-        if info[:file_type] == 'doujinshi'
+        if info[:file_type] == 'doujin'
           d.author_ids = info[:author_ids] if info[:author_ids].try(:any?)
           d.circle_ids = info[:circle_ids] if info[:circle_ids].try(:any?)
         end
         
-        info[:db_doujin_id] = d.id # this field marks the process as completed
+        # user in ProcessController#finalize_volume to skip the redirect to edit
+        info[:db_doujin_id] = d.id
         
         perc = (cur_step+=1).to_f / tot_steps * 100
         File.open(File.join(src_dir, 'finalize.perc'), 'w'){|f| f.write perc.round(2) }

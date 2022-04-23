@@ -40,5 +40,5 @@
       .column
         .info
           %span.tag.is-info= "#{d.num_images} pics/#{number_to_human_size d.size}"
-          = link_to "view doujin ID #{d.id}", doujin_path(d), target: :_blank
+        .now(title="collection path" style="border-bottom: 1px solid silver")= link_to "##{d.id} @ #{d.file_path}", doujin_path(d), target: :_blank
         .was(title="original name")= d.name_orig
