@@ -70,7 +70,7 @@ class DoujinshiController < ApplicationController
         img = ImageProcessing::Vips.source(fname).call save: false
         data = request.format.to_sym == :webp ?
           img.webpsave_buffer(Q: 70, lossless: false, min_size: true) :
-          img.jpegsave_buffer(Q: 70)
+          img.jpegsave_buffer(Q: 70, background: [255,255,255])
         return send_data(data, type: request.format.to_sym, disposition: :inline,
           filename: "#{@doujin.id}.#{request.format.to_sym}")
       }
