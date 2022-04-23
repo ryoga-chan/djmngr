@@ -1,0 +1,30 @@
+!!!
+%html
+  %head
+    %meta{charset: "utf-8"}/
+    %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
+    %meta{:content => "width=device-width,initial-scale=1", :name => "viewport"}/
+    -# https://www.html.am/html-codes/image-codes/html-favicon-code.cfm
+    %link{rel: "shortcut icon"   , href: "/favicon.ico"}/
+    %link{rel: "apple-touch-icon", href: "/apple-touch-icon.png"}/
+    %title doujinshi manager
+    = csrf_meta_tags
+    = csp_meta_tag
+    = stylesheet_link_tag "ereader"
+    = javascript_include_tag "ereader"
+  %body{data: {ctrl: params[:controller], action: params[:action], id: params[:id]}}
+    - {notice: 'is-info', warn: 'is-warning', alert: 'is-danger'}.each do |key, css_class|
+      - if flash[key].present?
+        .notification{class: css_class}
+          - if flash[key].is_a?(String)
+            = flash[key]
+          - elsif flash[key].is_a?(Array)
+            - if flash[key].one?
+              = flash[key].first
+            - else
+              .content
+                %ul.mt-0
+                  - flash[key].each do |msg|
+                    %li= msg
+      
+    = yield

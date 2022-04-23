@@ -1,49 +1,69 @@
 class DoujinshiController < ApplicationController
+  layout -> { return 'ereader' if request.format.to_sym == :ereader }
+  
   before_action :set_doujin, only: %i[ show edit update destroy ]
 
+  # browse doujinshi by author/circle/folder
   def index
     params[:tab] = 'author' unless %w{ author circle artbook magazine }.include?(params[:tab])
     
     session[:dj_index_detail] = params[:detail] if %w{ thumbs table }.include?(params[:detail])
     session[:dj_index_detail] ||= 'table'
     
-    case params[:tab]
-      when 'author'
-        sql_name = "COALESCE(NULLIF(authors.name_romaji, ''), NULLIF(authors.name_kakasi, ''))"
-        # possibly lighter query:
-        #   Author.select(Arel.sql "id, #{sql_name} AS name").where("id IN (SELECT author_id FROM authors_doujinshi)").
-        @authors = Author.
-          distinct.select(Arel.sql "authors.id, #{sql_name} AS name").
-          joins(:doujinshi).
-          order(Arel.sql "LOWER(#{sql_name})")
-        @doujinshi = Doujin.
-          distinct.select("doujinshi.*").
-          joins(:authors).
-          where(authors: {id: params[:author_id]}).
-          order(:name_kakasi) if params[:author_id]
+    respond_to do |format|
+      format.html {
+        case params[:tab]
+          when 'author'
+            sql_name = "COALESCE(NULLIF(authors.name_romaji, ''), NULLIF(authors.name_kakasi, ''))"
+            # possibly lighter query:
+            #   Author.select(Arel.sql "id, #{sql_name} AS name").where("id IN (SELECT author_id FROM authors_doujinshi)").
+            @authors = Author.
+              distinct.select(Arel.sql "authors.id, #{sql_name} AS name").
+              joins(:doujinshi).
+              order(Arel.sql "LOWER(#{sql_name})")
+            @doujinshi = Doujin.
+              distinct.select("doujinshi.*").
+              joins(:authors).
+              where(authors: {id: params[:author_id]}).
+              order(:name_kakasi) if params[:author_id]
+          
+          when 'circle'
+            sql_name = "COALESCE(NULLIF(circles.name_romaji, ''), NULLIF(circles.name_kakasi, ''))"
+            @circles = Circle.
+              distinct.select(Arel.sql "circles.id, #{sql_name} AS name").
+              joins(:doujinshi).
+              order(Arel.sql "LOWER(#{sql_name})")
+            @doujinshi = Doujin.
+              distinct.select("doujinshi.*").
+              joins(:circles).
+              where(circles: {id: params[:circle_id]}).
+              order(:name_kakasi) if params[:circle_id]
+          
+          when 'artbook', 'magazine'
+            rel = Doujin.where(category: params[:tab])
+            @folders   = rel.order(:file_folder).distinct.pluck(:file_folder)
+            @doujinshi = rel.where(file_folder: params[:folder]).order(:name_kakasi) if params[:folder]
+        end
+      }# html
       
-      when 'circle'
-        sql_name = "COALESCE(NULLIF(circles.name_romaji, ''), NULLIF(circles.name_kakasi, ''))"
-        @circles = Circle.
-          distinct.select(Arel.sql "circles.id, #{sql_name} AS name").
-          joins(:doujinshi).
-          order(Arel.sql "LOWER(#{sql_name})")
-        @doujinshi = Doujin.
-          distinct.select("doujinshi.*").
-          joins(:circles).
-          where(circles: {id: params[:circle_id]}).
-          order(:name_kakasi) if params[:circle_id]
-      
-      when 'artbook', 'magazine'
+      format.ereader {
         rel = Doujin.where(category: params[:tab])
-        @folders   = rel.order(:file_folder).distinct.pluck(:file_folder)
-        @doujinshi = rel.where(file_folder: params[:folder]).order(:name_kakasi) if params[:folder]
-    end
+        
+        @folders = rel.order(:file_folder).distinct.pluck(:file_folder)
+        
+        if params[:folder]
+          @doujinshi = rel.
+            where(file_folder: params[:folder]).
+            order(Arel.sql "LOWER(COALESCE(NULLIF(name_romaji, ''), NULLIF(name_kakasi, '')))")
+        end
+      }# ereader
+    end # respond_to
   end # index
-
+  
   def show
     respond_to do |format|
       format.html
+      format.ereader
       format.any(:webp, :jpg) {
         # estrai primo frame (al posto di: `webpmux -get frame 1 out.webp -o -`)
         fname = Rails.root.join('public', 'thumbs', "#{@doujin.id}.webp").to_s

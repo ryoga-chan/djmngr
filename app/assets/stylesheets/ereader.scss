@@ -1,0 +1,79 @@
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS (and SCSS, if configured) file within this directory, lib/assets/stylesheets, or any plugin's
+ * vendor/assets/stylesheets directory can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the bottom of the
+ * compiled file so the styles you add here take precedence over styles defined in any other CSS
+ * files in this directory. Styles in this file should be added after the last require_* statement.
+ * It is generally better to create a new file per style scope.
+ *
+
+
+ */
+.w1   { width: 1% }
+.w100 { width: 100% }
+
+table.is-striped thead tr { background-color: #aaa; }
+table.is-striped tbody tr:nth-child(even) { background-color: #ccc; }
+
+.button {
+  padding: 0.4rem;
+  border-radius: 1rem;
+  border: 1px outset silver;
+  background-color: #ddd;
+  text-decoration: none;
+}
+
+body[data-ctrl="doujinshi"][data-action="index"] {
+  li { margin-bottom: 1rem; }
+
+  table {
+    border-collapse: collapse;
+    
+    td {
+      vertical-align: top;
+      padding: 0.75rem 0.25rem;
+    }
+    
+    a { display: block; }
+  }
+  
+  .thumbs .doujin {
+    text-align: center;
+    display: inline-block;
+    width: 170px;
+    
+    .score { background-color: #ccc; }
+    .descr {
+      height: 1.1rem;
+      overflow: hidden;
+    }
+  }
+}
+
+body[data-ctrl="doujinshi"][data-action="show"] {
+  table.doujin {
+    td { vertical-align: top; }
+    
+    // set image size to stop the FOUC
+    td.cover img {
+      width: 160px;
+      heigth: 240px;
+    }
+    
+    td.details th {
+      text-align: right;
+      vertical-align: top;
+    }
+    
+    td.details td,
+    td.details th { padding: 0.3rem; }
+    
+    .score { font-family: monospace; }
+    
+    td.links { padding-top: 2rem; }
+  }
+}
