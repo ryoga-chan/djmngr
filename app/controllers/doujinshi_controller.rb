@@ -9,7 +9,7 @@ class DoujinshiController < ApplicationController
     
     case params[:tab]
       when 'author'
-        sql_name = "COALESCE(authors.name_romaji, authors.name_kakasi, authors.name)"
+        sql_name = "COALESCE(NULLIF(authors.name_romaji, ''), NULLIF(authors.name_kakasi, ''))"
         # possibly lighter query:
         #   Author.select(Arel.sql "id, #{sql_name} AS name").where("id IN (SELECT author_id FROM authors_doujinshi)").
         @authors = Author.
@@ -23,7 +23,7 @@ class DoujinshiController < ApplicationController
           order(:name_kakasi) if params[:author_id]
       
       when 'circle'
-        sql_name = "COALESCE(circles.name_romaji, circles.name_kakasi, circles.name)"
+        sql_name = "COALESCE(NULLIF(circles.name_romaji, ''), NULLIF(circles.name_kakasi, ''))"
         @circles = Circle.
           distinct.select(Arel.sql "circles.id, #{sql_name} AS name").
           joins(:doujinshi).
@@ -97,7 +97,7 @@ class DoujinshiController < ApplicationController
 
 
   def set_doujin
-    unless @doujin = Doujin.find(params[:id])
+    unless @doujin = Doujin.find_by(id: params[:id])
       return redirect_to(doujinshi_path, alert: "doujin [#{params[:id]}] not found!")
     end
   end

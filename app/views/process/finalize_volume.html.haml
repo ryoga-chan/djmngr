@@ -1,6 +1,9 @@
 .container.is-max-desktop
   .title= "Archive finalizing #{'completed' if @perc >= 100.0 }"
-  .title.is-4= @info[:relative_path]
+  .suorce-path
+    %span.icon.in-text-small.mr-2
+      %i.mi.mi-small(title="original filename") photo_filter
+    = @info[:relative_path]
   .final-path
     %span.icon.in-text-small.mr-2
       %i.mi.mi-small folder
