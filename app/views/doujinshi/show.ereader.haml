@@ -1,0 +1,45 @@
+%table.doujin
+  %tr
+    %td.w1.cover
+      = image_tag doujin_path @doujin, format: :jpg
+    %td.details
+      %table
+        %tr
+          %th Name
+          %td= @doujin.to_label
+        - if @doujin.to_label != @doujin.name
+          %tr
+            %th Kanji
+            %td= @doujin.name
+        - if @doujin.score.to_i > 0
+          %tr
+            %th Score
+            -#%td.score= "[#{'#'*@doujin.score}#{'_'*(10-@doujin.score)}] #{@doujin.score}*"
+            %td
+              - @doujin.score.times do
+                &hearts;
+              = "(#{@doujin.score})"
+        %tr
+          %th Pages
+          %td= @doujin.num_images
+        %tr
+          %th Size
+          %td= number_to_human_size @doujin.size, precision: 2
+        %tr
+          %th Path
+          %td= @doujin.file_path
+        %tr
+          %th Source
+          %td= @doujin.name_orig
+        %tr
+          %th Actions
+          %td.links
+            = link_to 'Read'                 , '#', class: :button
+            = link_to '&nabla;EPUB'.html_safe, '#', class: :button
+            = link_to '&nabla;CBZ'.html_safe , '#', class: :button
+            = link_to '&nabla;ZIP'.html_safe , '#', class: :button
+
+%hr
+= link_to 'Back',
+  doujinshi_path(tab: @doujin.category, folder: @doujin.file_folder, format: :ereader),
+  class: :button, style: "float: right"

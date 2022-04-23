@@ -1,0 +1,64 @@
+= link_to 'home', '/'
+
+&raquo;
+
+= select_tag :tab,
+  options_for_select(%w{ author circle artbook magazine }, params[:tab]),
+  onchange: %Q|location = location.pathname + '?' + jQuery.param({tab: jQuery(this).val()})|
+
+- if @doujinshi
+  &raquo;
+  - lbl = params[:folder] == '.' ? '[root folder]' : params[:folder]
+  = link_to lbl, tab: params[:tab], format: :ereader
+
+  \|
+
+  - cur_params = params.permit(%w{ tab folder format }).to_h
+  - cur_params.merge! detail: session[:dj_index_detail] == 'thumbs' ? 'table' : 'thumbs'
+  %small= link_to '(change view)', cur_params
+
+%hr
+
+- if @doujinshi
+
+  %h3 Doujinshi:
+  - if session[:dj_index_detail] == 'table'
+    %table.doujinshi.is-striped.w100
+      %thead
+        %tr
+          %th.w1 Cover
+          %th.w1 &hearts;
+          %th    Name
+          %th.w1 Pag.
+          %th.w1 Size
+      %tbody
+        - @doujinshi.to_a.each do |d|
+          - descr = d.name_romaji.present? ? d.name_romaji : d.name_kakasi
+          - title = d.name if d.name != descr
+          %tr
+            %td= link_to 'show', '#',
+              data: { cover: doujin_path(d, format: :jpg)},
+              onclick: %Q|jQuery(this).hide().after(jQuery('<img>').attr('src', jQuery(this).data('cover'))); return false|
+            %td= "#{d.score.to_i}&hearts;".html_safe if d.score.to_i > 0
+            %td= link_to descr, doujin_path(d, format: :ereader)
+            %td= d.num_images
+            %td= number_to_human_size(d.size, precision: 2).delete ' '
+  - else
+    .thumbs
+      - @doujinshi.each do |d|
+        .doujin
+          = link_to image_tag(doujin_path d, format: :jpg), doujin_path(d, format: :ereader)
+          .descr
+            - if d.score.to_i > 0
+              %span.score= "#{d.score.to_i}*"
+            %span.name= d.to_label
+
+- else
+
+  %h3 Folders:
+  %table.doujinshi.is-striped.w100
+    %tbody
+      - @folders.each do |f|
+        %tr
+          - lbl = f == '.' ? '[root folder]' : f
+          %td= link_to lbl, {tab: params[:tab], folder: f, format: :ereader}
