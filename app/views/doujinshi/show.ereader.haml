@@ -14,9 +14,10 @@
         - if @doujin.score.to_i > 0
           %tr
             %th Score
-            -#%td.score= "[#{'#'*@doujin.score}#{'_'*(10-@doujin.score)}] #{@doujin.score}*"
             %td
               - @doujin.score.times do
+                &#9825;
+              - (10 - @doujin.score).times do
                 &hearts;
               = "(#{@doujin.score})"
         %tr

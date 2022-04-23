@@ -47,10 +47,10 @@
     .thumbs
       - @doujinshi.each do |d|
         .doujin
-          = link_to image_tag(doujin_path d, format: :jpg), doujin_path(d, format: :ereader)
+          .cover= link_to image_tag(doujin_path d, format: :jpg), doujin_path(d, format: :ereader)
           .descr
             - if d.score.to_i > 0
-              %span.score= "#{d.score.to_i}*"
+              %span.score= "#{d.score.to_i}&hearts;".html_safe
             %span.name= d.to_label
 
 - else
