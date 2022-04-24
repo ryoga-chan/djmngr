@@ -16,7 +16,8 @@ module CoreExt
           self[0..KAKASI_MAXLENGTH].
             # fix UTF-8 to Windows-31J (Encoding::UndefinedConversionError)
             encode(Encoding::CP932, **KAKASI_ENC_OPTIONS)
-        ).encode(Encoding::UTF_8, **KAKASI_ENC_OPTIONS) # reencode to UTF8 for further processing
+        ).encode(Encoding::UTF_8, **KAKASI_ENC_OPTIONS). # reencode to UTF8 for further processing
+        gsub(/\(kigou\)/, '-') # symbol -- https://jlearn.net/search/kigou?source=dictionary
       end # to_romaji
     end
   end

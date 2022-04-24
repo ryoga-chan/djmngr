@@ -85,8 +85,8 @@ class ProcessController < ApplicationController
     FileUtils.rm_rf @dname, secure: true
     
     msg = params[:archive_too] == 'true' ?
-      "archive and folder deleted: [#{@info[:relative_path]}], [#{params[:id]}]" :
-      "folder deleted: [#{params[:id]}]"
+      "archive and folder deleted: [#{@info[:relative_path]}], [#{params[:id][0..10]}...]" :
+      "folder deleted: [#{params[:id][0..10]}...]"
     return redirect_to(process_index_path, notice: msg)
   end # delete_archive_cwd
   
