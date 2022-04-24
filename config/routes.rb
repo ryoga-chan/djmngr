@@ -4,7 +4,7 @@ Rails.application.routes.draw do
   
   get 'home/index'
   
-  resources :process, only: [:index, :edit] do
+  resources :process, only: %i[ index edit ] do
     collection do
       get     :prepare_archive
       delete  :delete_archive
@@ -21,7 +21,12 @@ Rails.application.routes.draw do
     end
   end # process
 
-  resources :doujinshi
+  resources :doujinshi, exclude: %i[ new create ] do
+    member do
+      get  :read
+      post :score
+    end
+  end
   resources :authors
   resources :circles
   resources :themes
