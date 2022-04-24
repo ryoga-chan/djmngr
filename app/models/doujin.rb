@@ -12,6 +12,8 @@ class Doujin < ApplicationRecord
   
   after_destroy :delete_thumbnail
   
+  include JapaneseLabels
+  
   def self.dest_path_by_process_params(info, full_path: false)
     path = full_path ? [Setting['dir.sorted']] : []
     path << (info[:file_type] == 'doujin' ? info[:doujin_dest_type] : info[:file_type]).to_s
@@ -38,10 +40,6 @@ class Doujin < ApplicationRecord
   def file_contents
     File.read File.join(Setting['dir.sorted'], self.file_path)
   end # file_contents
-  
-  def name_latin
-    self.name_romaji.present? ? self.name_romaji : self.name_kakasi
-  end # name_latin
   
   def file_dl_name
     tmp_folder = self.file_folder == '.' ? '' : self.file_folder

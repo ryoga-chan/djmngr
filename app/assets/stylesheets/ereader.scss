@@ -65,12 +65,12 @@ body[data-ctrl="doujinshi"][data-action="index"] {
     display: inline-block;
     width: 170px;
     
-    .score { background-color: #ccc; }
-    
     .descr {
       height: 1.1rem;
       overflow: hidden;
     }
+    
+    .score { background-color: #ccc; }
   }
 }
 
@@ -91,8 +91,8 @@ body[data-ctrl="doujinshi"][data-action="show"] {
     td.details td,
     td.details th { padding: 0.3rem; }
     
-    .score { font-family: monospace; }
+    .kanji { background-color: #eee; }
     
-    td.links { padding-top: 2rem; }
+    .actions { padding: 1rem; }
   }
 }
