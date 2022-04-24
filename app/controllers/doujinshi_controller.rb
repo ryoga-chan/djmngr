@@ -1,7 +1,7 @@
 class DoujinshiController < ApplicationController
   layout -> { return 'ereader' if request.format.to_sym == :ereader }
   
-  before_action :set_doujin, only: %i[ show edit update destroy ]
+  before_action :set_doujin, only: %i[ show edit update destroy score read ]
 
   # browse doujinshi by author/circle/folder
   def index
@@ -61,6 +61,11 @@ class DoujinshiController < ApplicationController
   end # index
   
   def show
+    if params[:mcomix]
+      system %Q| mcomix -f #{@doujin.file_path(full: true).shellescape} & |
+      return render json: {ris: :ok}
+    end
+  
     respond_to do |format|
       format.html
       format.ereader
@@ -86,25 +91,19 @@ class DoujinshiController < ApplicationController
       }# epub
     end
   end # show
-
-  # GET /doujinshi/new
-  def new
-    @doujin = Doujin.new
-  end
+  
+  def score
+    @doujin.update(params.permit(:score)) ?
+      redirect_to(@doujin, notice: "doujin score set") :
+      redirect_to(@doujin, alert: "unable to update the score")
+  end # score
+  
+  def read
+    # TODO: online reading
+  end # read
 
   # GET /doujinshi/1/edit
   def edit
-  end
-
-  # POST /doujinshi
-  def create
-    @doujin = Doujin.new(doujin_params)
-
-    if @doujin.save
-      redirect_to @doujin, notice: "Doujin was successfully created."
-    else
-      render :new, status: :unprocessable_entity
-    end
   end
 
   # PATCH/PUT /doujinshi/1

@@ -1,38 +1,96 @@
-%p#notice= notice
-
-%p
-  %b Name:
-  = @doujin.name
-%p
-  %b Name romaji:
-  = @doujin.name_romaji
-%p
-  %b Name kakasi:
-  = @doujin.name_kakasi
-%p
-  %b Size:
-  = @doujin.size
-%p
-  %b Checksum:
-  = @doujin.checksum
-%p
-  %b Num images:
-  = @doujin.num_images
-%p
-  %b Num files:
-  = @doujin.num_files
-%p
-  %b Score:
-  = @doujin.score
-%p
-  %b Folder:
-  = @doujin.file_folder
-%p
-  %b Name:
-  = @doujin.file_name
-%p
-  %b Name orig:
-  = @doujin.name_orig
+.columns
+  .column.is-2.has-text-centered
+    %figure.image.is2by3
+      = image_tag("/thumbs/#{@doujin.id}.webp")
+  .column.pl-5
+    %table.table.is-striped.is-fullwidth
+      %tr
+        %th.w1 Title
+        %td= @doujin.label_name_latin
+      - if @doujin.name != @doujin.label_name_latin
+        %tr
+          %th Alt.
+          %td
+            .kanji= @doujin.name
+      - if @doujin.authors.any?
+        %tr
+          %th Author
+          %td= @doujin.authors.map{|i| link_to(i.label_name_latin,
+            doujinshi_path(tab: :author, author_id: i.id),
+            target: :_blank) }.sort.join(', ').html_safe
+      - if @doujin.circles.any?
+        %tr
+          %th Circle
+          %td= @doujin.circles.map{|i| link_to(i.label_name_latin,
+            doujinshi_path(tab: :circle, circle_id: i.id),
+            target: :_blank) }.sort.join(', ').html_safe
+      %tr
+        %th Info
+        %td
+          %span.icon-text
+            %span.icon.is-small.mr-3
+              %i.mi auto_stories
+            %span= @doujin.num_images
+            
+            - if @doujin.num_files.to_i > 0
+              %span.icon.is-small.mr-3.ml-6
+                %i.mi insert_drive_file
+              %span= @doujin.num_files
+            
+            %span.icon.is-small.mr-3.ml-6
+              %i.mi monitor_weight
+            %span= number_to_human_size @doujin.size, precision: 2
+      %tr
+        %th Score
+        %td
+          = form_with url: score_doujin_path(@doujin) do |f|
+            = f.hidden_field :score, value: @doujin.score.to_i
+            .scoring
+              - (1..10).each do |i|
+                %span.icon.is-medium.set-score{data: {score: i},
+                  class: (i <= @doujin.score.to_i ? 'has-text-warning' : ''), title: i}
+                  %i.mi.mi-medium= i <= @doujin.score.to_i ? :star_rate : :star_outline
+                  %span= i
+              %span.icon.is-medium.ml-5.mr-4.clear-score{data: {score: 0}}
+                %i.mi.mi-medium(title="clear") clear
+      %tr
+        %th Path
+        %td= @doujin.file_path
+      %tr
+        %th Orig.
+        %td= @doujin.name_orig
+    
+    .actions.field.is-grouped
+      .field.has-addons.mr-1
+        %p.control
+          = link_to '#TODO', class: 'button is-info is-rounded' do
+            %span.icon
+              %i.mi.mi-small chrome_reader_mode
+            %span Read
+        %p.control
+          = link_to doujin_path(@doujin, mcomix: true),
+              onclick: %Q|var bt=jQuery(this); bt.addClass('is-loading'); setTimeout(function(){ bt.removeClass('is-loading') }, 3000)|,
+              remote: true, class: 'button is-info is-rounded' do
+            %span.icon
+              %i.mi.mi-small launch
+            %span Mcomix
+      
+      .field.has-addons
+        %p.control
+          = link_to doujin_path(@doujin, format: :epub), class: 'button is-link is-rounded' do
+            %span.icon
+              %i.mi.mi-small file_download
+            %span EPUB
+        %p.control
+          = link_to doujin_path(@doujin, format: :cbz), class: 'button is-link is-rounded' do
+            %span.icon
+              %i.mi.mi-small file_download
+            %span CBZ
+        %p.control
+          = link_to doujin_path(@doujin, format: :zip), class: 'button is-link is-rounded' do
+            %span.icon
+              %i.mi.mi-small file_download
+            %span ZIP
 
 = link_to 'Edit', edit_doujin_path(@doujin)
 \|

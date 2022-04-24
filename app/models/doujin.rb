@@ -32,13 +32,14 @@ class Doujin < ApplicationRecord
     self.find_by category: cat, file_folder: fold, file_name: name
   end # self.find_by_process_params
   
-  def file_path
+  def file_path(full: false)
     tmp_folder = self.file_folder == '.' ? '' : self.file_folder
-    File.join self.category, tmp_folder, self.file_name
+    tmp_path = File.join self.category, tmp_folder, self.file_name
+    full ? File.join(Setting['dir.sorted'], tmp_path) : tmp_path
   end # file_path
   
   def file_contents
-    File.read File.join(Setting['dir.sorted'], self.file_path)
+    File.read self.file_path(full: true)
   end # file_contents
   
   def file_dl_name
@@ -58,6 +59,8 @@ class Doujin < ApplicationRecord
         lbl += self.file_name
     end
   end # file_dl_name
+  
+  def thumb_path = "/thumbs/#{self.id}.webp"
   
   
   private # ____________________________________________________________________
