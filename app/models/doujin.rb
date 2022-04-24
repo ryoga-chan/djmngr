@@ -35,9 +35,31 @@ class Doujin < ApplicationRecord
     File.join self.category, tmp_folder, self.file_name
   end # file_path
   
-  def to_label
+  def file_contents
+    File.read File.join(Setting['dir.sorted'], self.file_path)
+  end # file_contents
+  
+  def name_latin
     self.name_romaji.present? ? self.name_romaji : self.name_kakasi
-  end # to_label
+  end # name_latin
+  
+  def file_dl_name
+    tmp_folder = self.file_folder == '.' ? '' : self.file_folder
+    
+    case self.category
+      when 'author', 'circle'
+        tmp_author, tmp_subfolder = tmp_folder.split(File::SEPARATOR, 2)
+        lbl  = "[#{tmp_author}] "
+        lbl += "#{tmp_subfolder} -- " if tmp_subfolder
+        lbl += self.file_name
+      when 'artbook', 'magazine'
+        tmp_folder, tmp_subfolder = tmp_folder.split(File::SEPARATOR, 2)
+        lbl  = "{#{self.category[0..2]}} "
+        lbl += "#{tmp_folder} #{'-- ' if self.category == 'artbook'}" if tmp_folder.present?
+        lbl += "- #{tmp_subfolder} " if tmp_subfolder.present?
+        lbl += self.file_name
+    end
+  end # file_dl_name
   
   
   private # ____________________________________________________________________

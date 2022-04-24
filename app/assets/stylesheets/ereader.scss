@@ -32,12 +32,16 @@ table.is-striped tbody tr:nth-child(even) { background-color: #ccc; }
   border: 1px solid black;
   border-width: 1px 1px 0 1px;
 }
+.samples {
+  border: 1px solid black;
+  border-width: 1px 0px 1px 0;
+}
 .cover + .descr {
   border: 1px solid black;
   border-width: 0px 1px 1px 1px;
   background-color: #eee;
 }
-.cover img {
+img {
   width:  160px;
   height: 240px;
 }

@@ -6,8 +6,8 @@
       %table
         %tr
           %th Name
-          %td= @doujin.to_label
-        - if @doujin.to_label != @doujin.name
+          %td= @doujin.name_latin
+        - if @doujin.name_latin != @doujin.name
           %tr
             %th Kanji
             %td= @doujin.name
@@ -36,11 +36,16 @@
           %th Actions
           %td.links
             = link_to 'Read'                 , '#', class: :button
-            = link_to '&nabla;EPUB'.html_safe, '#', class: :button
-            = link_to '&nabla;CBZ'.html_safe , '#', class: :button
-            = link_to '&nabla;ZIP'.html_safe , '#', class: :button
+            = link_to '&nabla;EPUB'.html_safe , doujin_path(@doujin, format: :epub), class: :button
+            = link_to '&nabla;CBZ' .html_safe , doujin_path(@doujin, format: :cbz ), class: :button
+            = link_to '&nabla;ZIP' .html_safe , doujin_path(@doujin, format: :zip ), class: :button
+  %tr
+    %td.samples(colspan="2")
+      = image_tag doujin_path @doujin, format: :jpg, page: 1
+      = image_tag doujin_path @doujin, format: :jpg, page: 2
+      = image_tag doujin_path @doujin, format: :jpg, page: 3
 
-%hr
+%br
 = link_to 'Back',
   doujinshi_path(tab: @doujin.category, folder: @doujin.file_folder, format: :ereader),
   class: :button, style: "float: right"
