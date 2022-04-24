@@ -53,7 +53,8 @@ class ProcessArchiveDecompressJob < ApplicationJob
         info[:dest_folder] = (subject.name_romaji || subject.name_kakasi).downcase
       end
       
-      info[:dest_filename] = name[:fname]
+      # suggest the romaji title
+      info[:dest_filename] = name[:fname].to_romaji.sub(/ *\.zip$/i, '.zip')
     elsif fname =~ /^([^0-9]+)[ 0-9\-]+\.zip$/i
       info[:file_type] = 'magazine'
       info[:dest_folder] = $1.strip
