@@ -52,7 +52,7 @@
           .subject-list.pl-2.mb-5
             - instance_variable_get("@associated_#{type.pluralize}").each do |r|
               - members = r.send(type == 'author' ? :circles : :authors).order(:name)
-              - members = members.map{|m| "• #{m.label_name_orig} // #{m.label_name_romaji} (#{m.doujinshi_org_id})" }
+              - members = members.map{|m| "• #{m.label_name_kanji} // #{m.label_name_latin} (#{m.doujinshi_org_id})" }
               - subject_title = members.join("\n") if members.any?
               
               .subject(title=subject_title)
@@ -85,7 +85,7 @@
         
         .block{class: "#{'associated has-background-grey-darker' if is_associated}"}
           %span.name_orig
-            - name = r.label_name_orig
+            - name = r.label_name_kanji
             - if r.doujinshi_org_id
               = link_to({action: :set_property, "#{type.singularize}_id" => r.id, tab: params[:tab], term: params[:term]},
                 title: "#{is_associated ? :remove : :add} association", method: :post) do
@@ -102,7 +102,7 @@
               
           %span.name_romaji.has-text-grey.is-size-7
             %span.has-text-info /
-            = h(r.label_name_romaji).gsub(term_re, %Q|<span class="has-text-warning">\\0</span>|).html_safe
+            = h(r.label_name_latin).gsub(term_re, %Q|<span class="has-text-warning">\\0</span>|).html_safe
           
           - members_name = type == 'authors' ? :circles : :authors
           - members = r.send(members_name).order(:name)
@@ -113,7 +113,7 @@
                   - am = instance_variable_get("@associated_#{members_name}")
                   - is_associated = am.any?{|i| i.doujinshi_org_id == m.doujinshi_org_id }
                   %li
-                    %span{class: ('associated' if is_associated)}= link_to m.label_name_orig, m.doujinshi_org_full_url, target: :_blank,
+                    %span{class: ('associated' if is_associated)}= link_to m.label_name_kanji, m.doujinshi_org_full_url, target: :_blank,
                       title: "view on doujinshi.org", class: 'has-text-white'
                     %span.has-text-info /
-                    %span.has-text-grey= m.label_name_romaji
+                    %span.has-text-grey= m.label_name_latin

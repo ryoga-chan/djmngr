@@ -5,40 +5,39 @@
     %td.details
       %table
         %tr
-          %th Name
-          %td= @doujin.name_latin
-        - if @doujin.name_latin != @doujin.name
+          %th Title
+          %td= @doujin.label_name_latin
+        - if @doujin.name != @doujin.label_name_latin
           %tr
-            %th Kanji
-            %td= @doujin.name
-        - if @doujin.score.to_i > 0
-          %tr
-            %th Score
+            %th
             %td
-              - @doujin.score.times do
+              .kanji= @doujin.name
+        - if @doujin.authors.any?
+          %tr
+            %th Author
+            %td= @doujin.authors.map{|i| i.label_name_latin }.sort.join(', ')
+        - if @doujin.circles.any?
+          %tr
+            %th Circle
+            %td= @doujin.circles.map{|i| i.label_name_latin }.sort.join(', ')
+        %tr
+          %th Info
+          %td
+            = @doujin.num_images
+            pages
+            &nbsp;~&nbsp;
+            = number_to_human_size @doujin.size, precision: 2
+            - if @doujin.score.to_i > 0
+              &nbsp;~&nbsp;
+              %span.score
+                =@doujin.score
                 &#9825;
-              - (10 - @doujin.score).times do
-                &hearts;
-              = "(#{@doujin.score})"
-        %tr
-          %th Pages
-          %td= @doujin.num_images
-        %tr
-          %th Size
-          %td= number_to_human_size @doujin.size, precision: 2
-        %tr
-          %th Path
-          %td= @doujin.file_path
-        %tr
-          %th Source
-          %td= @doujin.name_orig
-        %tr
-          %th Actions
-          %td.links
-            = link_to 'Read'                 , '#', class: :button
-            = link_to '&nabla;EPUB'.html_safe , doujin_path(@doujin, format: :epub), class: :button
-            = link_to '&nabla;CBZ' .html_safe , doujin_path(@doujin, format: :cbz ), class: :button
-            = link_to '&nabla;ZIP' .html_safe , doujin_path(@doujin, format: :zip ), class: :button
+      
+      .actions
+        = link_to 'Read'                 , '#', class: :button
+        = link_to '&nabla;EPUB'.html_safe , doujin_path(@doujin, format: :epub), class: :button
+        = link_to '&nabla;CBZ' .html_safe , doujin_path(@doujin, format: :cbz ), class: :button
+        = link_to '&nabla;ZIP' .html_safe , doujin_path(@doujin, format: :zip ), class: :button
   %tr
     %td.samples(colspan="2")
       = image_tag doujin_path @doujin, format: :jpg, page: 1
