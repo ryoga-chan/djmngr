@@ -65,15 +65,25 @@ class DoujinshiController < ApplicationController
       format.html
       format.ereader
       format.any(:webp, :jpg) {
-        # estrai primo frame (al posto di: `webpmux -get frame 1 out.webp -o -`)
+        # extract a frame (cli: `webpmux -get frame 1 out.webp -o -`)
+        params[:page] = 0 unless (0..3).include?(params[:page].to_i)
         fname = Rails.root.join('public', 'thumbs', "#{@doujin.id}.webp").to_s
-        img = ImageProcessing::Vips.source(fname).call save: false
+        img = Vips::Image.webpload(fname, page: params[:page].to_i) # ImageProcessing::Vips.source(fname).call save: false
         data = request.format.to_sym == :webp ?
           img.webpsave_buffer(Q: 70, lossless: false, min_size: true) :
           img.jpegsave_buffer(Q: 70, background: [255,255,255])
-        return send_data(data, type: request.format.to_sym, disposition: :inline,
-          filename: "#{@doujin.id}.#{request.format.to_sym}")
-      }
+        send_data data,
+          type: request.format.to_sym, disposition: :inline,
+          filename: "#{@doujin.id}.#{request.format.to_sym}"
+      }# webp, jpg
+      format.any(:zip, :cbz) {
+        send_data @doujin.file_contents,
+          type: request.format.to_sym, disposition: :attachment,
+          filename: "#{@doujin.file_dl_name}.#{request.format.to_sym}"
+      }# zip, cbz
+      format.epub {
+        #TODO: ZIP2EPUB converting job
+      }# epub
     end
   end # show
 
