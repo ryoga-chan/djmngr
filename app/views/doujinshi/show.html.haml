@@ -51,7 +51,7 @@
                   class: (i <= @doujin.score.to_i ? 'has-text-warning' : ''), title: i}
                   %i.mi.mi-medium= i <= @doujin.score.to_i ? :star_rate : :star_outline
                   %span= i
-              %span.icon.is-medium.ml-5.mr-4.clear-score{data: {score: 0}}
+              %span.icon.is-medium.ml-5.clear-score{data: {score: 0}}
                 %i.mi.mi-medium(title="clear") clear
       %tr
         %th Path
