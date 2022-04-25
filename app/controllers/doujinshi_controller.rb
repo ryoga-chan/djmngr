@@ -10,62 +10,55 @@ class DoujinshiController < ApplicationController
     session[:dj_index_detail] = params[:detail] if %w{ thumbs table }.include?(params[:detail])
     session[:dj_index_detail] ||= 'table'
     
-    respond_to do |format|
-      format.html {
-        case params[:tab]
-          when 'author'
-            sql_name = "COALESCE(NULLIF(authors.name_romaji, ''), NULLIF(authors.name_kakasi, ''))"
-            # possibly lighter query:
-            #   Author.select(Arel.sql "id, #{sql_name} AS name").where("id IN (SELECT author_id FROM authors_doujinshi)").
-            @authors = Author.
-              distinct.select(Arel.sql "authors.id, #{sql_name} AS name").
-              joins(:doujinshi).
-              order(Arel.sql "LOWER(#{sql_name})")
-            @doujinshi = Doujin.
-              distinct.select("doujinshi.*").
-              joins(:authors).
-              where(authors: {id: params[:author_id]}).
-              order(:name_kakasi) if params[:author_id]
-          
-          when 'circle'
-            sql_name = "COALESCE(NULLIF(circles.name_romaji, ''), NULLIF(circles.name_kakasi, ''))"
-            @circles = Circle.
-              distinct.select(Arel.sql "circles.id, #{sql_name} AS name").
-              joins(:doujinshi).
-              order(Arel.sql "LOWER(#{sql_name})")
-            @doujinshi = Doujin.
-              distinct.select("doujinshi.*").
-              joins(:circles).
-              where(circles: {id: params[:circle_id]}).
-              order(:name_kakasi) if params[:circle_id]
-          
-          when 'artbook', 'magazine'
-            rel = Doujin.where(category: params[:tab])
-            @folders   = rel.order(:file_folder).distinct.pluck(:file_folder)
-            @doujinshi = rel.where(file_folder: params[:folder]).order(:name_kakasi) if params[:folder]
-        end
-      }# html
+    case params[:tab]
+      when 'author'
+        sql_name = "COALESCE(NULLIF(authors.name_romaji, ''), NULLIF(authors.name_kakasi, ''))"
+        # possibly lighter query:
+        #   Author.select(Arel.sql "id, #{sql_name} AS name").where("id IN (SELECT author_id FROM authors_doujinshi)").
+        @parents = Author.
+          distinct.select(Arel.sql "authors.id, #{sql_name} AS name").
+          joins(:doujinshi).
+          order(Arel.sql "LOWER(#{sql_name})")
+        @doujinshi = Doujin.
+          distinct.select("doujinshi.*").
+          joins(:authors).
+          where(authors: {id: params[:author_id]}).
+          order(:name_kakasi) if params[:author_id]
       
-      format.ereader {
+      when 'circle'
+        sql_name = "COALESCE(NULLIF(circles.name_romaji, ''), NULLIF(circles.name_kakasi, ''))"
+        @parents = Circle.
+          distinct.select(Arel.sql "circles.id, #{sql_name} AS name").
+          joins(:doujinshi).
+          order(Arel.sql "LOWER(#{sql_name})")
+        @doujinshi = Doujin.
+          distinct.select("doujinshi.*").
+          joins(:circles).
+          where(circles: {id: params[:circle_id]}).
+          order(:name_kakasi) if params[:circle_id]
+      
+      when 'artbook', 'magazine'
         rel = Doujin.where(category: params[:tab])
-        
-        @folders = rel.order(:file_folder).distinct.pluck(:file_folder)
-        
-        if params[:folder]
-          @doujinshi = rel.
-            where(file_folder: params[:folder]).
-            order(Arel.sql "LOWER(COALESCE(NULLIF(name_romaji, ''), NULLIF(name_kakasi, '')))")
-        end
-      }# ereader
-    end # respond_to
+        @parents   = rel.order(:file_folder).distinct.pluck(:file_folder)
+        @doujinshi = rel.where(file_folder: params[:folder]).order(:name_kakasi) if params[:folder]
+    end
+    
+    if request.format.to_sym == :ereader
+      @parent_name = Author.find_by(id: params[:author_id].to_i).try(:label_name_latin) if params[:author_id]
+      @parent_name = Circle.find_by(id: params[:circle_id].to_i).try(:label_name_latin) if params[:circle_id]
+      @parent_name = params[:folder] if params[:folder]
+      # group by first letter
+      @parents = @parents.inject({}) do |h, i|
+        key = (i.try(:name) || i)[0].upcase # Author/Circle/String
+        h[key] = (h[key] || []).push i
+        h
+      end
+      @letters = @parents.keys.sort
+      params[:letter] = @letters.first unless @letters.include?(params[:letter])
+    end # ereader format
   end # index
   
   def show
-    if params[:mcomix]
-      system %Q| mcomix -f #{@doujin.file_path(full: true).shellescape} & |
-      return render json: {ris: :ok}
-    end
-  
     respond_to do |format|
       format.html
       format.ereader
@@ -89,6 +82,13 @@ class DoujinshiController < ApplicationController
       format.epub {
         #TODO: ZIP2EPUB converting job
       }# epub
+      format.json {
+        if params[:run] == 'mcomix'
+          system %Q| mcomix -f #{@doujin.file_path(full: true).shellescape} & |
+          return render json: {ris: :ok}
+        end
+        render json: ''
+      }#json
     end
   end # show
   

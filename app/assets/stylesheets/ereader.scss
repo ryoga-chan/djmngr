@@ -55,7 +55,15 @@ body[data-ctrl="doujinshi"][data-action="index"] {
       padding: 0.75rem 0.25rem;
     }
     
-    a { display: block; }
+    td a { display: block; }
+  }
+  
+  table.parents {
+    td {
+      width: 25%;
+      border-left: 1px dotted black;
+    }
+    td:first-child { border: 0; }
   }
   
   .thumbs .doujin {
