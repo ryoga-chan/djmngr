@@ -21,7 +21,7 @@ Rails.application.routes.draw do
     end
   end # process
 
-  resources :doujinshi, exclude: %i[ new create ] do
+  resources :doujinshi, except: %i[ new create ] do
     member do
       get  :read
       post :score
