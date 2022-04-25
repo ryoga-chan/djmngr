@@ -29,21 +29,15 @@
             class: 'button is-info is-small is-rounded', style: 'float: right'
       
       %ul.menu-list
-        - if @authors
-          - @authors.each do |a|
-            %li= link_to a.name, {tab: params[:tab], author_id: a.id, anchor: "listing"},
-              class: ('is-active' if a.id == params[:author_id].to_i)
-    
-        - if @circles
-          - @circles.each do |c|
-            %li= link_to c.name, {tab: params[:tab], circle_id: c.id, anchor: "listing"},
-              class: ('is-active' if c.id == params[:circle_id].to_i)
-    
-        - if @folders
-          - @folders.each do |f|
-            - lbl = f == '.' ? '[root folder]' : f
-            %li= link_to lbl, {tab: params[:tab], folder: f, anchor: "listing"},
-              class: ('is-active' if f == params[:folder])
+        - @parents.each do |p|
+          - if p.is_a?(String)
+            - lbl = p == '.' ? '[root folder]' : p
+            %li= link_to lbl, {tab: params[:tab], folder: p, anchor: "listing"},
+              class: ('is-active' if p == params[:folder])
+          - else
+            - type = p.class.name.downcase
+            %li= link_to p.name, {tab: params[:tab], "#{type}_id": p.id, anchor: "listing"},
+              class: ('is-active' if p.id == params["#{type}_id"].to_i)
     
     %a(name="listing")
 
@@ -80,6 +74,6 @@
                 %td
                   - if d.score.to_i > 0
                     %progress.progress.is-warning{value: d.score.to_i, title: "#{d.score.to_i}⭐", max: 10}
-                %td= link_to descr, doujin_path(d), target: :_blank
+                %td= link_to descr, doujin_path(d, from_author: params[:author_id], from_circle: params[:circle_id]), target: :_blank
                 %td= d.num_images
                 %td= number_to_human_size(d.size, precision: 2).delete ' '

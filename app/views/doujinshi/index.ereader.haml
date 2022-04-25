@@ -1,27 +1,32 @@
-= link_to 'home', '/'
+- cur_params = params.permit(%w{ format tab letter author_id circle_id folder }).to_h
 
-&raquo;
+= form_with url: doujinshi_path, method: :get do |f|
+  = f.hidden_field :format, value: params[:format]
 
-= select_tag :tab,
-  options_for_select(%w{ author circle artbook magazine }, params[:tab]),
-  onchange: %Q|location = location.pathname + '?' + jQuery.param({tab: jQuery(this).val()})|
-
-- if @doujinshi
+  = link_to 'home', '/'
+  
   &raquo;
-  - lbl = params[:folder] == '.' ? '[root folder]' : params[:folder]
-  = link_to lbl, tab: params[:tab], format: :ereader
+  
+  = select_tag :tab, options_for_select(%w{ author circle artbook magazine }, params[:tab]), onchange: %Q|this.form.submit()|
 
-  \|
+  - if @letters
+    &raquo;
+    = select_tag :letter, options_for_select(@letters, params[:letter]), onchange: %Q|this.form.submit()|
+  
+  - if @parent_name
+    &raquo;
+    = @parent_name == '.' ? '[root folder]' : @parent_name
 
-  - cur_params = params.permit(%w{ tab folder format }).to_h
-  - cur_params.merge! detail: session[:dj_index_detail] == 'thumbs' ? 'table' : 'thumbs'
-  %small= link_to '(change view)', cur_params
+    &middot;
 
-%hr
+    %small= link_to '(back)', cur_params.slice(*%w{ tab letter format })
+    \|
+    %small= link_to '(change view)', cur_params.merge(detail: session[:dj_index_detail] == 'thumbs' ? 'table' : 'thumbs')
+
+%hr/
 
 - if @doujinshi
 
-  %h3 Doujinshi:
   - if session[:dj_index_detail] == 'table'
     %table.doujinshi.is-striped.w100
       %thead
@@ -53,12 +58,17 @@
               %span.score= "#{d.score.to_i}&hearts;".html_safe
             %span.name= d.label_name_latin
 
-- else
+- elsif @parents
 
-  %h3 Folders:
-  %table.doujinshi.is-striped.w100
+  %table.parents.is-striped.w100
     %tbody
-      - @folders.each do |f|
+      - @parents[params[:letter]].to_a.each_slice(4) do |s|
         %tr
-          - lbl = f == '.' ? '[root folder]' : f
-          %td= link_to lbl, {tab: params[:tab], folder: f, format: :ereader}
+          - s.each do |parent|
+            - if parent.is_a?(String)
+              - lbl = parent == '.' ? '[root folder]' : parent
+              %td= link_to lbl, cur_params.merge(folder: parent)
+            - else
+              %td= link_to parent.name, cur_params.merge("#{parent.class.name.downcase}_id": parent.id)
+          - (4-s.size).times do
+            %td
