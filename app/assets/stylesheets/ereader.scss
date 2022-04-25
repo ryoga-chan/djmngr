@@ -14,6 +14,14 @@
 .w1   { width: 1% }
 .w100 { width: 100% }
 
+.notification {
+  padding: 0.3rem;
+  border: 1px inset silver;
+}
+.notification.is-info    { background-color: #eee; }
+.notification.is-warning { background-color: #ccc; }
+.notification.is-danger  { background-color: #aaa; }
+
 table.is-striped thead tr { background-color: #aaa; }
 table.is-striped tbody tr:nth-child(even) { background-color: #ccc; }
 
@@ -100,5 +108,19 @@ body[data-ctrl="doujinshi"][data-action="show"] {
     .kanji { background-color: #eee; }
     
     .actions { padding: 1rem; }
+    
+    .scoring {
+      .set { background-color: #bbb; }
+      .set-score {
+        padding: 0.2rem;
+        padding-left: 0.35rem;
+        border-radius: 1rem;
+      }
+      .clear-score {
+        border-radius: 0.5rem;
+        padding: 0.2rem 0.5rem;
+        border: 1px outset silver;
+      }
+    }
   }
 }

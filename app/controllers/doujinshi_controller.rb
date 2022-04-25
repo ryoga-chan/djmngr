@@ -94,8 +94,8 @@ class DoujinshiController < ApplicationController
   
   def score
     @doujin.update(params.permit(:score)) ?
-      redirect_to(@doujin, notice: "doujin score set") :
-      redirect_to(@doujin, alert: "unable to update the score")
+      redirect_to(doujin_path(@doujin, format: params[:format])) :
+      redirect_to(doujin_path(@doujin, format: params[:format]), alert: "unable to update the score")
   end # score
   
   def read
