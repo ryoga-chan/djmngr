@@ -34,6 +34,9 @@ module Djmngr
     # Don't generate system test files.
     config.generators.system_tests = nil
     
+    # https://github.com/rails/rails/issues/22965#issuecomment-172983268
+    config.action_controller.forgery_protection_origin_check = false
+    
     # https://pawelurbanek.com/rails-gzip-brotli-compression
     # test with: curl -siIH "Accept-Encoding: gzip, deflate, br" "http://localhost:3000" | egrep "^Content-Encoding"
     config.middleware.use Rack::Deflater

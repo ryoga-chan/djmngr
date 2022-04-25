@@ -27,11 +27,34 @@
             pages
             &nbsp;~&nbsp;
             = number_to_human_size @doujin.size, precision: 2
-            - if @doujin.score.to_i > 0
-              &nbsp;~&nbsp;
-              %span.score
-                =@doujin.score
-                &#9825;
+        %tr
+          %th Score
+          %td
+            = form_with url: score_doujin_path(@doujin, format: :ereader) do |f|
+              = f.hidden_field :score, value: @doujin.score.to_i
+              .scoring
+                - (1..10).each do |i|
+                  %span.set-score{data: {score: i}, class: ('set' if i <= @doujin.score.to_i)}
+                    &#9825;
+                &nbsp;&nbsp;
+                %span.clear-score{data: {score: 0}}
+                  &times;
+              - if @doujin.score.to_i > 0 && @doujin.scored_at
+                %small.scored_at
+                  scored at
+                  = l @doujin.scored_at
+            :javascript
+              jQuery(function () {
+                jQuery('.scoring span').click(function () {
+                  if (jQuery(this).hasClass('clear-score'))
+                    jQuery(this).prevAll('span').removeClass('set');
+                  else {
+                    jQuery(this).prevAll('span').add(this).addClass('set');
+                    jQuery(this).nextAll('span').removeClass('set');
+                  }//if-else
+                  jQuery('#score').val( jQuery(this).data('score') ).get(0).form.submit();
+                });
+              })
       
       .actions
         = link_to 'Read'                 , '#', class: :button
