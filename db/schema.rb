@@ -99,6 +99,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_02_08_200104) do
     t.string "category"
     t.text "file_folder"
     t.text "file_name"
+    t.datetime "scored_at"
   end
 
   create_table "settings", force: :cascade do |t|
