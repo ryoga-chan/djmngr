@@ -20,3 +20,5 @@ bin/rails db:migrate
 bin/rails g job process_archive_decompress_job.rb
 bin/rails g job process_archive_compress_job.rb
 bin/rails g job process_index_refresh_job.rb
+
+wget -O config/locales/en.yml https://github.com/svenfuchs/rails-i18n/raw/master/rails/locale/en.yml
