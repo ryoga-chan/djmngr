@@ -63,13 +63,13 @@
     .actions.field.is-grouped
       .field.has-addons.mr-1
         %p.control
-          = link_to '#TODO', class: 'button is-info is-rounded' do
+          = link_to read_doujin_path(@doujin, format: :ereader), class: 'button is-info is-rounded' do
             %span.icon
               %i.mi.mi-small chrome_reader_mode
             %span Read
         %p.control
-          = link_to doujin_path(@doujin, mcomix: true),
-              onclick: %Q|var bt=jQuery(this); bt.addClass('is-loading'); setTimeout(function(){ bt.removeClass('is-loading') }, 3000)|,
+          = link_to doujin_path(@doujin, run: :mcomix, format: :json),
+              onclick: %Q|var bt=jQuery(this); bt.addClass('is-loading'); setTimeout(function(){ bt.removeClass('is-loading') }, 5000)|,
               remote: true, class: 'button is-info is-rounded' do
             %span.icon
               %i.mi.mi-small launch
@@ -92,6 +92,12 @@
               %i.mi.mi-small file_download
             %span ZIP
 
-= link_to 'Edit', edit_doujin_path(@doujin)
-\|
-= link_to 'Back', doujinshi_path
+-#= link_to 'Edit', edit_doujin_path(@doujin)
+
+- url_params = if %w{ artbook magazine }.include?(@doujin.category)
+  - { tab: @doujin.category, folder: @doujin.file_folder }
+- elsif params[:from_author].present?
+  - { tab: :author, author_id: params[:from_author] }
+- elsif params[:from_circle].present?
+  - { tab: :circle, circle_id: params[:from_circle] }
+= link_to 'Back', doujinshi_path(url_params.to_h.merge anchor: 'listing'), class: 'button is-info is-rounded'
