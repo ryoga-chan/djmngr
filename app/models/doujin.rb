@@ -10,9 +10,14 @@ class Doujin < ApplicationRecord
     throw :abort
   }
   
+  before_validation :sanitize_fields
   after_destroy :delete_thumbnail
   
   include JapaneseLabels
+  
+  def sanitize_fields
+    self.scored_at = Time.now if score_changed?
+  end # sanitize_fields
   
   def self.dest_path_by_process_params(info, full_path: false)
     path = full_path ? [Setting['dir.sorted']] : []

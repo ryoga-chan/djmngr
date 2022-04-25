@@ -7,7 +7,9 @@
   .final-path
     %span.icon.in-text-small.mr-2
       %i.mi.mi-small folder
-    = Doujin.dest_path_by_process_params @info
+    - lbl = Doujin.dest_path_by_process_params(@info)
+    = @info[:db_doujin_id] ? link_to(lbl, doujin_path(@info[:db_doujin_id])) : lbl
+
 
   - if @perc < 100.0
 

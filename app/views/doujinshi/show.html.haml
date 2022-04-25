@@ -53,6 +53,10 @@
                   %span= i
               %span.icon.is-medium.ml-5.clear-score{data: {score: 0}}
                 %i.mi.mi-medium(title="clear") clear
+            - if @doujin.score.to_i > 0 && @doujin.scored_at
+              .scored_at.is-size-7
+                scored at
+                = l @doujin.scored_at
       %tr
         %th Path
         %td= @doujin.file_path
