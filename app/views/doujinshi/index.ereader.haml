@@ -1,7 +1,7 @@
 %h3
   Doujinshi collection
   .actions{style: "float: right"}
-    = link_to 'home', root_path(format: :ereader), class: :button
+    = link_to 'home', root_path, class: :button
 
 - cur_params = params.permit(%w{ format tab letter author_id circle_id folder }).to_h
 
@@ -46,14 +46,14 @@
               data: { cover: doujin_path(d, format: :jpg)},
               onclick: %Q|jQuery(this).hide().after(jQuery('<img>').attr('src', jQuery(this).data('cover'))); return false|
             %td= "#{d.score.to_i}&hearts;".html_safe if d.score.to_i > 0
-            %td= link_to descr, doujin_path(d, from_author: params[:author_id], from_circle: params[:circle_id], format: :ereader)
+            %td= link_to descr, doujin_path(d, from_author: params[:author_id], from_circle: params[:circle_id])
             %td= d.num_images
             %td= number_to_human_size(d.size, precision: 2).delete ' '
   - else
     .thumbs
       - @doujinshi.each do |d|
         .doujin
-          .cover= link_to image_tag(doujin_path d, format: :jpg), doujin_path(d, from_author: params[:author_id], from_circle: params[:circle_id], format: :ereader)
+          .cover= link_to image_tag(doujin_path d, format: :jpg), doujin_path(d, from_author: params[:author_id], from_circle: params[:circle_id])
           .descr
             - if d.score.to_i > 0
               %span.score= "#{d.score.to_i}&hearts;".html_safe
