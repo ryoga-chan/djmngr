@@ -79,7 +79,8 @@ class ProcessArchiveCompressJob < ApplicationJob
           category:     (info[:file_type] == 'doujin' ? info[:doujin_dest_type] : info[:file_type]),
           file_folder:  File.dirname(info[:collection_relative_path]),
           file_name:    File.basename(info[:collection_relative_path]),
-          name_orig:    info[:relative_path]
+          name_orig:    info[:relative_path],
+          reading_direction: info[:reading_direction]
         d.file_folder = Pathname.new(d.file_folder).relative_path_from("/#{d.category}").to_s
         d.save!
         

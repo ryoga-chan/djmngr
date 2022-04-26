@@ -47,21 +47,43 @@ class Doujin < ApplicationRecord
     File.read self.file_path(full: true)
   end # file_contents
   
-  def file_dl_name
+  # infer a default artist and filename
+  def file_dl_info
+    return @file_dl_info if @file_dl_info
+  
+    @file_dl_info = {}
+    
     tmp_folder = self.file_folder == '.' ? '' : self.file_folder
     
     case self.category
       when 'author', 'circle'
         tmp_author, tmp_subfolder = tmp_folder.split(File::SEPARATOR, 2)
-        lbl  = "[#{tmp_author}] "
-        lbl += "#{tmp_subfolder} -- " if tmp_subfolder
-        lbl += self.file_name
+        @file_dl_info[:author  ] = tmp_author
+        @file_dl_info[:filename] = self.file_name
+        @file_dl_info[:filename] = "#{tmp_subfolder} -- #{@file_dl_info[:filename]}" if tmp_subfolder
       when 'artbook', 'magazine'
         tmp_folder, tmp_subfolder = tmp_folder.split(File::SEPARATOR, 2)
-        lbl  = "{#{self.category[0..2]}} "
-        lbl += "#{tmp_folder} #{'-- ' if self.category == 'artbook'}" if tmp_folder.present?
-        lbl += "- #{tmp_subfolder} " if tmp_subfolder.present?
-        lbl += self.file_name
+        @file_dl_info[:author  ] = 'various'
+        @file_dl_info[:filename] = "{#{self.category[0..2]}} "
+        @file_dl_info[:filename] += "#{tmp_folder} #{'-- ' if self.category == 'artbook'}" if tmp_folder.present?
+        @file_dl_info[:filename] += "- #{tmp_subfolder} " if tmp_subfolder.present?
+        @file_dl_info[:filename] += self.file_name
+    end
+    
+    @file_dl_info[:ext] = File.extname @file_dl_info[:filename]
+    @file_dl_info[:filename] = File.basename @file_dl_info[:filename], @file_dl_info[:ext]
+    
+    @file_dl_info
+  end # file_dl_info
+  
+  def file_dl_name
+    return @file_dl_name if @file_dl_name
+    
+    info = self.file_dl_info
+    
+    @file_dl_name = case self.category
+      when 'author', 'circle'   ; "[#{info[:author]}] #{info[:filename]}#{info[:ext]}"
+      when 'artbook', 'magazine'; "#{info[:filename]}#{info[:ext]}"
     end
   end # file_dl_name
   

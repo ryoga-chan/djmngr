@@ -12,13 +12,23 @@
         = @fname.to_romaji #alt_readings:true, furigana_mode: true
 
     .file-type.mb-1
-      %span.icon.in-text-small.mr-2
-        %i.mi.mi-small(title="archive type") local_offer
-      - if @info[:file_type] == 'doujin'
-        = "#{@info[:doujin_dest_type]} #{@info[:file_type]}"
-      - else
-        = @info[:file_type]
+      = form_with url: set_property_process_path do |f|
+        = f.hidden_field :tab, value: params[:tab]
+        
+        %span.icon.in-text-small.mr-2
+          %i.mi.mi-small(title="reading direction") sync_alt
+        %span.select.vmiddle= f.select :reading_direction,
+          options_for_select({'right to left' => 'r2l', 'left to right' => 'l2r'}, @info[:reading_direction]), {},
+          class: "input is-small vmiddle", style: 'width: 15rem',
+          onchange: %Q| this.form.submit() |
 
+        %span.icon.in-text-small.mr-2.ml-6
+          %i.mi.mi-small(title="archive type") local_offer
+        - if @info[:file_type] == 'doujin'
+          = "#{@info[:doujin_dest_type]} #{@info[:file_type]}"
+        - else
+          = @info[:file_type]
+        
     .scoring-stars
       = form_with url: set_property_process_path do |f|
         = f.hidden_field :tab, value: params[:tab]
