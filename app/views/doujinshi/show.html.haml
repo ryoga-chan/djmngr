@@ -44,6 +44,8 @@
         %th Score
         %td
           = form_with url: score_doujin_path(@doujin) do |f|
+            = f.hidden_field :from_author, value: params[:from_author]
+            = f.hidden_field :from_circle, value: params[:from_circle]
             = f.hidden_field :score, value: @doujin.score.to_i
             .scoring
               - (1..10).each do |i|
@@ -81,9 +83,9 @@
       
       .field.has-addons
         %p.control
-          = link_to doujin_path(@doujin, format: :epub), class: 'button is-link is-rounded' do
+          = link_to epub_doujinshi_path(convert: @doujin.id), class: 'button is-link is-rounded' do
             %span.icon
-              %i.mi.mi-small file_download
+              %i.mi.mi-small construction
             %span EPUB
         %p.control
           = link_to doujin_path(@doujin, format: :cbz), class: 'button is-link is-rounded' do
@@ -104,4 +106,5 @@
   - { tab: :author, author_id: params[:from_author] }
 - elsif params[:from_circle].present?
   - { tab: :circle, circle_id: params[:from_circle] }
-= link_to 'Back', doujinshi_path(url_params.to_h.merge anchor: 'listing'), class: 'button is-info is-rounded'
+= link_to 'Back', doujinshi_path(url_params.to_h.merge letter: params[:letter], anchor: 'listing'),
+  class: 'button is-info is-rounded'

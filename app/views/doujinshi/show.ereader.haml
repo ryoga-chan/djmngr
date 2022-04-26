@@ -1,3 +1,5 @@
+%h3 Doujin details
+
 %table.doujin
   %tr
     %td.w1.cover
@@ -31,6 +33,8 @@
           %th Score
           %td
             = form_with url: score_doujin_path(@doujin, format: :ereader) do |f|
+              = f.hidden_field :from_author, value: params[:from_author]
+              = f.hidden_field :from_circle, value: params[:from_circle]
               = f.hidden_field :score, value: @doujin.score.to_i
               .scoring
                 - (1..10).each do |i|
@@ -46,19 +50,13 @@
             :javascript
               jQuery(function () {
                 jQuery('.scoring span').click(function () {
-                  if (jQuery(this).hasClass('clear-score'))
-                    jQuery(this).prevAll('span').removeClass('set');
-                  else {
-                    jQuery(this).prevAll('span').add(this).addClass('set');
-                    jQuery(this).nextAll('span').removeClass('set');
-                  }//if-else
                   jQuery('#score').val( jQuery(this).data('score') ).get(0).form.submit();
                 });
               })
       
       .actions
         = link_to 'Read'                 , '#', class: :button
-        = link_to '&nabla;EPUB'.html_safe , doujin_path(@doujin, format: :epub), class: :button
+        = link_to '&nabla;EPUB'.html_safe , epub_doujinshi_path(convert: @doujin.id, format: :ereader), class: :button
         = link_to '&nabla;CBZ' .html_safe , doujin_path(@doujin, format: :cbz ), class: :button
         = link_to '&nabla;ZIP' .html_safe , doujin_path(@doujin, format: :zip ), class: :button
   %tr
@@ -68,6 +66,12 @@
       = image_tag doujin_path @doujin, format: :jpg, page: 3
 
 %br
-= link_to 'Back',
-  doujinshi_path(tab: @doujin.category, folder: @doujin.file_folder, format: :ereader),
+
+- url_params = if %w{ artbook magazine }.include?(@doujin.category)
+  - { tab: @doujin.category, folder: @doujin.file_folder }
+- elsif params[:from_author].present?
+  - { tab: :author, author_id: params[:from_author] }
+- elsif params[:from_circle].present?
+  - { tab: :circle, circle_id: params[:from_circle] }
+= link_to 'Back', doujinshi_path(url_params.to_h.merge letter: params[:letter], format: :ereader),
   class: :button, style: "float: right"

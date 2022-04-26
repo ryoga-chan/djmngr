@@ -1,0 +1,29 @@
+.title.is-3
+  Generated EPUB files
+  = link_to epub_doujinshi_path, class: 'button is-info is-rounded' do
+    %span.icon
+      %i.mi.mi-small refresh
+    %span refresh
+  
+
+%table.table.is-striped.is-fullwidth
+  - @wip.each do |f|
+    %tr
+      %td.w1= link_to '🗑', epub_doujinshi_path(remove: File.basename(f)),
+        data: { confirm: 'Delete this file?' },
+        class: 'has-text-danger', title: 'delete file'
+      %td
+        = "#{File.basename(f)[0..-6]} (#{File.read f}%)"
+        - error_log = f.sub(/\.perc$/, '.wip/error.log')
+        - if File.exist?(error_log)
+          %span.tag.is-danger= File.read error_log
+  - @done.each do |f|
+    %tr
+      %td.w1= link_to '🗑', epub_doujinshi_path(remove: File.basename(f)),
+        data: { confirm: 'Delete this file?' },
+        class: 'has-text-danger', title: 'delete file'
+      %td= link_to File.basename(f), '/'+Pathname.new(f).relative_path_from(@pub_dir).to_s
+
+- if @wip.any?
+  :javascript
+    window.timeout_id = setTimeout(function () { window.location.reload(); }, 5000)

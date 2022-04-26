@@ -1,4 +1,14 @@
-%h1 Home#index
-%p Find me in app/views/home/index.html.haml
-
-TODO: login
+%ul
+  %li
+    = link_to epub_doujinshi_path, class: 'button is-info is-rounded' do
+      %span.icon
+        %i.mi.mi-small construction
+      %span generated EPUB files
+  %li= link_to "TODO: view favorities", '#', class: 'button is-info is-rounded'
+  %li= link_to "TODO: view top scored", '#', class: 'button is-info is-rounded'
+  %li
+    view random:
+    %ul
+      %li= link_to "TODO: view random book", '#', class: 'button is-info is-rounded'
+      %li= link_to "TODO: view random fav", '#', class: 'button is-info is-rounded'
+      %li= link_to "TODO: view random top scored", '#', class: 'button is-info is-rounded'

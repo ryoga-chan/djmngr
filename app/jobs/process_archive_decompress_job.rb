@@ -121,6 +121,7 @@ class ProcessArchiveDecompressJob < ApplicationJob
       File.open(File.join(dst_dir, 'completion.perc'), 'w'){|f| f.write perc.round(2) }
     end
     
+    info[:reading_direction] = Setting[:reading_direction]
     info[:prepared_at] = Time.now
     
     File.open(File.join(dst_dir, 'info.yml'), 'w'){|f| f.puts info.to_yaml }

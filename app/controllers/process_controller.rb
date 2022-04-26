@@ -152,6 +152,7 @@ class ProcessController < ApplicationController
       dest_folder
       subfolder
       dest_filename
+      reading_direction
     }.each do |k|
       if params[k] && params[k] != @info[k]
         @info[k] = params[k].strip

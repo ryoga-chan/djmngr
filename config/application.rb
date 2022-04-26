@@ -34,6 +34,8 @@ module Djmngr
     # Don't generate system test files.
     config.generators.system_tests = nil
     
+    # fix form sumit error when running `bin/rails s -b 0.0.0.0`
+    # and sumitting a form from the ereader
     # https://github.com/rails/rails/issues/22965#issuecomment-172983268
     config.action_controller.forgery_protection_origin_check = false
     

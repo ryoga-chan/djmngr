@@ -1,6 +1,4 @@
 class DoujinshiController < ApplicationController
-  layout -> { return 'ereader' if request.format.to_sym == :ereader }
-  
   before_action :set_doujin, only: %i[ show edit update destroy score read ]
 
   # browse doujinshi by author/circle/folder
@@ -79,9 +77,6 @@ class DoujinshiController < ApplicationController
           type: request.format.to_sym, disposition: :attachment,
           filename: "#{@doujin.file_dl_name}.#{request.format.to_sym}"
       }# zip, cbz
-      format.epub {
-        #TODO: ZIP2EPUB converting job
-      }# epub
       format.json {
         if params[:run] == 'mcomix'
           system %Q| mcomix -f #{@doujin.file_path(full: true).shellescape} & |
@@ -93,10 +88,38 @@ class DoujinshiController < ApplicationController
   end # show
   
   def score
-    @doujin.update(params.permit(:score)) ?
-      redirect_to(doujin_path(@doujin, format: params[:format])) :
-      redirect_to(doujin_path(@doujin, format: params[:format]), alert: "unable to update the score")
+    redir_url = doujin_path @doujin, params.permit(%w{ format from_author from_circle }).to_h
+    
+    result = @doujin.update(params.permit(:score))
+    
+    return html_redirect_to(redir_url) if request.format.to_sym == :ereader
+    result ? redirect_to(redir_url) : redirect_to(redir_url, alert: "unable to update the score")
   end # score
+  
+  # run new conversions and manage converted files
+  def epub
+    @pub_dir = Rails.root.join('public').to_s
+    
+    if params[:convert]
+      EpubConverterJob.perform_later params[:convert]
+      sleep 3
+      redir_url = epub_doujinshi_path format: params[:format]
+      return html_redirect_to(redir_url) if request.format.to_sym == :ereader
+      return redirect_to(redir_url, notice: "now converting doujin ID [#{params[:convert]}]")
+    end
+    
+    fname = File.expand_path File.join(@pub_dir, 'epub', params[:remove].to_s)
+    if params[:remove].present? && fname.start_with?(@pub_dir) && File.exist?(fname)
+      File.unlink     fname if fname.end_with?('.perc') || fname.end_with?('.epub')
+      FileUtils.rm_rf fname.sub(/perc$/, 'wip') if fname.end_with?('.perc')
+      redir_url = epub_doujinshi_path format: params[:format]
+      return html_redirect_to(redir_url) if request.format.to_sym == :ereader
+      return redirect_to(redir_url)
+    end
+    
+    @wip, @done = Dir[ File.join(@pub_dir, 'epub', '*.{epub,perc}') ].
+      sort.partition{|i| i.end_with? '.perc' }
+  end # epub
   
   def read
     # TODO: online reading
