@@ -14,6 +14,7 @@ class CreateDoujinshi < ActiveRecord::Migration[7.0]
       t.string   :category
       t.text     :file_folder
       t.text     :file_name
+      t.string   :reading_direction
 
       t.timestamps
     end

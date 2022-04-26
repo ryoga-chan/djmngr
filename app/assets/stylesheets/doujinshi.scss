@@ -17,7 +17,7 @@ body[data-ctrl="doujinshi"][data-action="index"] {
   
   table.details {
     margin-bottom: 300px;
-  
+    
     tr {
       progress {
         width: 2rem;
@@ -32,6 +32,8 @@ body[data-ctrl="doujinshi"][data-action="index"] {
         width: auto;
         white-space: normal;
       }
+      
+      a { display: block; }
     }
     
     tr td:nth-child(3),

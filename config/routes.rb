@@ -22,6 +22,10 @@ Rails.application.routes.draw do
   end # process
 
   resources :doujinshi, except: %i[ new create ] do
+    collection do
+      get  :epub
+    end
+    
     member do
       get  :read
       post :score

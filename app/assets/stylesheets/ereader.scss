@@ -124,3 +124,16 @@ body[data-ctrl="doujinshi"][data-action="show"] {
     }
   }
 }
+
+body[data-ctrl="doujinshi"][data-action="epub"] {
+  table.files {
+    border-collapse: collapse;
+  
+    tr {
+      height: 2.5rem;
+      
+      td a { display: block; }
+      td { padding: 0.25rem; }
+    }
+  }
+}
