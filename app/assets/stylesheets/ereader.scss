@@ -88,39 +88,37 @@ body[data-ctrl="doujinshi"][data-action="index"] {
   }
 }
 
-body[data-ctrl="doujinshi"][data-action="show"] {
-  table.doujin {
-    .cover {
-      padding-right: 0.5rem;
-      border-width: 0 1px 0 0;
+table.doujin {
+  .cover {
+    padding-right: 0.5rem;
+    border-width: 0 1px 0 0;
+  }
+  
+  td { vertical-align: top; }
+  
+  td.details th {
+    text-align: right;
+    vertical-align: top;
+  }
+  
+  td.details td,
+  td.details th { padding: 0.3rem; }
+  
+  .kanji { background-color: #eee; }
+  
+  .actions { padding: 1rem; }
+  
+  .scoring {
+    .set { background-color: #bbb; }
+    .set-score {
+      padding: 0.2rem;
+      padding-left: 0.35rem;
+      border-radius: 1rem;
     }
-    
-    td { vertical-align: top; }
-    
-    td.details th {
-      text-align: right;
-      vertical-align: top;
-    }
-    
-    td.details td,
-    td.details th { padding: 0.3rem; }
-    
-    .kanji { background-color: #eee; }
-    
-    .actions { padding: 1rem; }
-    
-    .scoring {
-      .set { background-color: #bbb; }
-      .set-score {
-        padding: 0.2rem;
-        padding-left: 0.35rem;
-        border-radius: 1rem;
-      }
-      .clear-score {
-        border-radius: 0.5rem;
-        padding: 0.2rem 0.5rem;
-        border: 1px outset silver;
-      }
+    .clear-score {
+      border-radius: 0.5rem;
+      padding: 0.2rem 0.5rem;
+      border: 1px outset silver;
     }
   }
 }
