@@ -81,7 +81,7 @@
               %i.mi.mi-small launch
             %span Mcomix
       
-      .field.has-addons
+      .field.has-addons.mr-1
         %p.control
           = link_to epub_doujinshi_path(convert: @doujin.id), class: 'button is-link is-rounded' do
             %span.icon
@@ -97,6 +97,18 @@
             %span.icon
               %i.mi.mi-small file_download
             %span ZIP
+            
+      .field.has-addons
+        %p.control
+          = link_to edit_doujin_path(@doujin), class: 'button is-primary is-rounded' do
+            %span.icon
+              %i.mi.mi-small edit
+            %span Edit
+        %p.control
+          = link_to @doujin, method: :delete, data: { confirm: 'Are you sure?' }, class: 'button is-danger is-rounded' do
+            %span.icon
+              %i.mi.mi-small delete
+            %span Delete
 
 -#= link_to 'Edit', edit_doujin_path(@doujin)
 

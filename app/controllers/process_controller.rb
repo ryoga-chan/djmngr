@@ -379,7 +379,8 @@ class ProcessController < ApplicationController
     
     if params[:undo] && File.exist?(perc_file)
       File.unlink(perc_file)
-      File.unlink(@info[:collection_full_path].to_s) if File.exist?(@info[:collection_full_path].to_s)
+      fname = "#{@info[:collection_full_path]}.NEW"
+      File.unlink(fname) if File.exist?(fname)
       return redirect_to(edit_process_path(id: params[:id]), notice: "finalize processing halted")
     end
     
