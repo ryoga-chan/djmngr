@@ -52,8 +52,8 @@ class ProcessArchiveCompressJob < ApplicationJob
       info[:collection_full_path] = File.join Setting['dir.sorted'], info[:collection_relative_path]
       FileUtils.mkdir_p File.dirname(info[:collection_full_path])
       # compress and sort files alphabetically within archive, overwrite already processed file
-      File.unlink(info[:collection_full_path]) if File.exist?(info[:collection_full_path])
-      system %Q[ cd #{out_dir.shellescape} && find -type f | sort | zip -r #{info[:collection_full_path].shellescape} -@ ]
+      File.unlink "#{info[:collection_full_path]}.NEW" if File.exist?("#{info[:collection_full_path]}.NEW")
+      system %Q[ find -type f | sort | zip -r #{info[:collection_full_path].shellescape}.NEW -@ ], chdir: out_dir
       
       perc = (cur_step+=1).to_f / tot_steps * 100
       File.open(File.join(src_dir, 'finalize.perc'), 'w'){|f| f.write perc.round(2) }
@@ -64,14 +64,15 @@ class ProcessArchiveCompressJob < ApplicationJob
       File.open(File.join(src_dir, 'finalize.perc'), 'w'){|f| f.write perc.round(2) }
 
       Doujin.transaction do
-        Doujin.find_by_process_params(info).try(:destroy) # overwrite already processed file
+        # look for the eventual file already in collection
+        prev_doujin = Doujin.find_by_process_params info
         
         # 4. save record on database
         name = File.basename info[:dest_filename], File.extname(info[:dest_filename])
         d = Doujin.new \
           name:         name,
           name_kakasi:  name.to_romaji,
-          size:         File.size(info[:collection_full_path]),
+          size:         File.size("#{info[:collection_full_path]}.NEW"),
           checksum:     info[:dest_checksum],
           num_images:   info[:images].size,
           num_files:    info[:files].size,
@@ -118,6 +119,11 @@ class ProcessArchiveCompressJob < ApplicationJob
           File.unlink(thumb_dst) if File.exist?(thumb_dst)
           raise "error [#{$?.to_i}] while creating thumbnails"
         end
+        
+        # delete the eventual file already in collection
+        prev_doujin.try(:destroy_with_files)
+        # rename temporary file into his final destination
+        FileUtils.mv "#{info[:collection_full_path]}.NEW", info[:collection_full_path], force: true
         
         perc = (cur_step+=1).to_f / tot_steps * 100
         File.open(File.join(src_dir, 'finalize.perc'), 'w'){|f| f.write perc.round(2) }

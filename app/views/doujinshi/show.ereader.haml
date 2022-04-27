@@ -6,29 +6,7 @@
       = image_tag doujin_path @doujin, format: :jpg
     %td.details
       %table
-        %tr
-          %th Title
-          %td= @doujin.label_name_latin
-        - if @doujin.name != @doujin.label_name_latin
-          %tr
-            %th
-            %td
-              .kanji= @doujin.name
-        - if @doujin.authors.any?
-          %tr
-            %th Author
-            %td= @doujin.authors.map{|i| i.label_name_latin }.sort.join(', ')
-        - if @doujin.circles.any?
-          %tr
-            %th Circle
-            %td= @doujin.circles.map{|i| i.label_name_latin }.sort.join(', ')
-        %tr
-          %th Info
-          %td
-            = @doujin.num_images
-            pages
-            &nbsp;~&nbsp;
-            = number_to_human_size @doujin.size, precision: 2
+        = render 'show_info'
         %tr
           %th Score
           %td
@@ -56,9 +34,11 @@
       
       .actions
         = link_to 'Read'                 , '#', class: :button
-        = link_to '&nabla;EPUB'.html_safe , epub_doujinshi_path(convert: @doujin.id), class: :button
-        = link_to '&nabla;CBZ' .html_safe , doujin_path(@doujin, format: :cbz ), class: :button
-        = link_to '&nabla;ZIP' .html_safe , doujin_path(@doujin, format: :zip ), class: :button
+        = link_to '&nabla;EPUB'.html_safe, epub_doujinshi_path(convert: @doujin.id), class: :button
+        = link_to '&nabla;CBZ' .html_safe, doujin_path(@doujin, format: :cbz ), class: :button
+        = link_to '&nabla;ZIP' .html_safe, doujin_path(@doujin, format: :zip ), class: :button
+        = link_to '&empty;Del' .html_safe, delete_doujin_path(@doujin, params.permit(:from_author, :from_circle).to_h), class: :button
+        
   %tr
     %td.samples(colspan="2")
       = image_tag doujin_path @doujin, format: :jpg, page: 1

@@ -1,0 +1,31 @@
+%tr
+  %th Title
+  %td= @doujin.label_name_latin
+
+- if @doujin.name != @doujin.label_name_latin
+  %tr
+    %th
+    %td
+      .kanji= @doujin.name
+
+- if @doujin.authors.any?
+  %tr
+    %th Author
+    %td= @doujin.authors.map{|i| i.label_name_latin }.sort.join(', ')
+
+- if @doujin.circles.any?
+  %tr
+    %th Circle
+    %td= @doujin.circles.map{|i| i.label_name_latin }.sort.join(', ')
+
+%tr
+  %th Info
+  %td
+    = @doujin.num_images
+    pages
+    &nbsp;~&nbsp;
+    = number_to_human_size @doujin.size, precision: 2
+    - if @doujin.score.to_i > 0 && params[:action] == 'delete'
+      &nbsp;~&nbsp;
+      &#9825;
+      = @doujin.score.to_i

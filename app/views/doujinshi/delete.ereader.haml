@@ -1,0 +1,14 @@
+%h3 Are you sure to delete this doujin?
+
+%table.doujin
+  %tr
+    %td.w1.cover
+      = image_tag doujin_path @doujin, format: :jpg
+    %td.details
+      %table
+        = render 'show_info'
+
+      = form_with url: doujin_path(@doujin), method: :delete, class: :actions do |f|
+        = f.submit 'YES, delete it', class: :button
+        &nbsp;&nbsp;
+        = link_to 'NO, go back', doujin_path(@doujin, params.permit(:from_author, :from_circle).to_h), class: :button

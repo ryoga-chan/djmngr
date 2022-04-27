@@ -1,5 +1,5 @@
 class DoujinshiController < ApplicationController
-  before_action :set_doujin, only: %i[ show edit update destroy score read ]
+  before_action :set_doujin, only: %i[ show edit update delete destroy score read ]
 
   # browse doujinshi by author/circle/folder
   def index
@@ -104,8 +104,9 @@ class DoujinshiController < ApplicationController
       EpubConverterJob.perform_later params[:convert]
       sleep 3
       redir_url = epub_doujinshi_path format: params[:format]
+      flash[:notice] = "now converting doujin ID [#{params[:convert]}]"
       return html_redirect_to(redir_url) if request.format.to_sym == :ereader
-      return redirect_to(redir_url, notice: "now converting doujin ID [#{params[:convert]}]")
+      return redirect_to(redir_url)
     end
     
     fname = File.expand_path File.join(@pub_dir, 'epub', params[:remove].to_s)
@@ -125,24 +126,22 @@ class DoujinshiController < ApplicationController
     # TODO: online reading
   end # read
 
-  # GET /doujinshi/1/edit
-  def edit
-  end
-
-  # PATCH/PUT /doujinshi/1
   def update
+    doujin_params = params.require(:doujin).
+      permit(:name, :name_romaji, :checksum, :num_images, :num_files,
+             :score, :name_orig)
+    
     if @doujin.update(doujin_params)
       redirect_to @doujin, notice: "Doujin was successfully updated."
     else
       render :edit, status: :unprocessable_entity
     end
-  end
+  end # update
 
-  # DELETE /doujinshi/1
   def destroy
-    @doujin.destroy
-    redirect_to doujinshi_url, notice: "Doujin was successfully destroyed."
-  end
+    @doujin.destroy_with_files
+    redirect_to doujinshi_url, notice: "doujin [#{@doujin.id}] deleted"
+  end # destroy
 
 
   private # ____________________________________________________________________
@@ -152,9 +151,5 @@ class DoujinshiController < ApplicationController
     unless @doujin = Doujin.find_by(id: params[:id])
       return redirect_to(doujinshi_path, alert: "doujin [#{params[:id]}] not found!")
     end
-  end
-
-  def doujin_params
-    params.require(:doujin).permit(:name, :name_romaji, :name_kakasi, :size, :checksum, :num_images, :num_files, :score, :file_name, :file_folder, :name_orig)
-  end
+  end # set_doujin
 end

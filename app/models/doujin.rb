@@ -11,7 +11,7 @@ class Doujin < ApplicationRecord
   }
   
   before_validation :sanitize_fields
-  after_destroy :delete_thumbnail
+  after_destroy :delete_files
   
   include JapaneseLabels
   
@@ -89,12 +89,20 @@ class Doujin < ApplicationRecord
   
   def thumb_path = "/thumbs/#{self.id}.webp"
   
+  def destroy_with_files
+    @delete_files = true
+    self.destroy
+  end # destroy_with_files
+  
   
   private # ____________________________________________________________________
   
   
-  def delete_thumbnail
-    thumb_path = File.join Rails.root, 'public', 'thumbs', "#{self.id}.webp"
-    File.unlink(thumb_path) if File.exist?(thumb_path)
-  end # delete_thumbnail
+  def delete_files
+    return unless @delete_files
+    [
+      self.file_path(full: true), # doujin file
+      File.join(Rails.root, 'public', 'thumbs', "#{self.id}.webp"), # thumbnail
+    ].each{|f| File.unlink(f) if File.exist?(f) }
+  end # delete_files
 end
