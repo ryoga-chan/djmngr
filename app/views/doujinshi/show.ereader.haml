@@ -3,7 +3,7 @@
 %table.doujin
   %tr
     %td.w1.cover
-      = image_tag doujin_path @doujin, format: :jpg
+      = image_tag doujin_path(@doujin, format: :jpg), class: :thumb
     %td.details
       %table
         = render 'show_info'
@@ -33,7 +33,7 @@
               })
       
       .actions
-        = link_to 'Read'                 , '#', class: :button
+        = link_to 'Read', read_doujin_path(@doujin), class: :button
         = link_to '&nabla;EPUB'.html_safe, epub_doujinshi_path(convert: @doujin.id), class: :button
         = link_to '&nabla;CBZ' .html_safe, doujin_path(@doujin, format: :cbz ), class: :button
         = link_to '&nabla;ZIP' .html_safe, doujin_path(@doujin, format: :zip ), class: :button
@@ -41,9 +41,9 @@
         
   %tr
     %td.samples(colspan="2")
-      = image_tag doujin_path @doujin, format: :jpg, page: 1
-      = image_tag doujin_path @doujin, format: :jpg, page: 2
-      = image_tag doujin_path @doujin, format: :jpg, page: 3
+      = image_tag doujin_path(@doujin, format: :jpg, page: 1), class: :thumb
+      = image_tag doujin_path(@doujin, format: :jpg, page: 2), class: :thumb
+      = image_tag doujin_path(@doujin, format: :jpg, page: 3), class: :thumb
 
 %br
 

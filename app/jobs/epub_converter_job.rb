@@ -40,7 +40,7 @@ class EpubConverterJob < ApplicationJob
     puts "Converting images..."
     images = []
     Zip::File.open(fname_src) do |zip|
-      entries = zip.glob('*.{jpg,jpeg,png,gif}').sort{|a,b| a.name <=> b.name}
+      entries = zip.glob('*.{jpg,jpeg,png,gif}').sort{|a,b| a.name <=> b.name }
       
       entries.each_with_index do |entry, i|
         puts entry.name
@@ -100,8 +100,8 @@ class EpubConverterJob < ApplicationJob
       f.puts <<~CSS
         @page, html, body, div.main, img { margin: 0; padding:0; }
         div.main { width: 100%; text-align: center; }
-        img.page.long { height: 100%; margin: 0 auto; }
-        img.page.wide { width:  100%; margin: auto 0; }
+        img.page.fit-height { height: 100%; margin: 0 auto; }
+        img.page.fit-width  { width:  100%; margin: auto 0; }
       CSS
     }
     
@@ -127,7 +127,7 @@ class EpubConverterJob < ApplicationJob
       items[:toc  ] << %Q|    <navPoint id="n#{i+1}" playOrder="#{i+1}" class="chapter"><navLabel><text>Page #{i+1}</text></navLabel><content src="pages/#{num}.xhtml"/></navPoint>|
       
       # create XHTML page
-      img_type = img_name =~ /....-[12]\.jpg/ ? 'wide' : 'long'
+      img_type = img_name =~ /....-[12]\.jpg/ ? 'fit-width' : 'fit-height'
       File.open("#{tmpd}/pages/#{num}.xhtml",'w') do |f|
         f.puts <<~XHTML
           <?xml version="1.0" encoding="UTF-8"?>
