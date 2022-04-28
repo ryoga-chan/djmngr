@@ -1,6 +1,6 @@
 class DoujinshiController < ApplicationController
   before_action :set_doujin,
-    only: %i[ show edit update delete destroy score read image ]
+    only: %i[ show edit update delete destroy score read read_pages image ]
 
   # browse doujinshi by author/circle/folder
   def index
@@ -124,6 +124,11 @@ class DoujinshiController < ApplicationController
     params[:page] = params[:page].to_i
     params[:page] = 0 unless (0...@files.size).include?(params[:page])
   end # read
+  
+  def read_pages
+    ris = @doujin.update read_pages: params[:page].to_i if params[:page].present? && params[:page].to_i >= 0
+    render json: (ris == false ? :err : :ok)
+  end # read_pages
   
   # return the selected image extracting it from the ZIP file
   def image

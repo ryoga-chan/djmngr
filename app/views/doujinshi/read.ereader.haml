@@ -1,6 +1,6 @@
 :javascript
   var files    = #{@files.to_json.html_safe};
-  var cur_page = #{params[:page].to_i};
+  var cur_page = #{params[:page]};
 
   function setImgClass (el) {
     var pag_ratio = $(window).width() / $(window).height(); // https://stackoverflow.com/questions/3437786/get-the-size-of-the-screen-current-web-page-and-browser-window/3437825#3437825
@@ -68,6 +68,17 @@
     }//if-else
     
     $('#pag_num .cur').text(cur_page + 1);
+    
+    // save current page on server
+    setTimeout(function () {
+      $.ajax({
+        url: $('.main').data('pages-url'),
+        data: { page: cur_page },
+        method: 'POST',
+        dataType: 'json',
+        cache: false,
+      });
+    }, 1000);
   }//turnPage
   
   function showAndCenter(el) {
@@ -76,37 +87,57 @@
       css('top' , $(window).height() / 3 - $(el).height() / 2);
   }//showAndCenter
   
+  // manage page actions like an ebook reader: divide in three parts the screen
+  function turnPageByClick (ev) {
+    ev.stopImmediatePropagation();
+    
+    if ($(ev.target).parents('#menu').length > 0 || $('#menu').get(0) === ev.target)
+      return; // noop if clicking within the menu
+  
+    var chunk_size = parseInt( $(window).width() / 3 );
+    
+    if (ev.pageX < chunk_size)          // tap on left    => go back 1 page
+      turnPage(cur_page - 1);
+    else if (ev.pageX > chunk_size * 2) // tap on right   => go forward 1 page
+      turnPage(cur_page + 1);
+    else                                // tap on middle  => open menu
+      if ($('#menu').hasClass('hidden')) {
+        $('#page').val(parseInt($('#pag_num .cur').text()) - 1);
+        showAndCenter('#menu');
+        $('table.help').removeClass('hidden');
+      } else
+        $('#menu, table.help').addClass('hidden');
+  }//turnPageByClick
+  
+  function turnPageByKey (ev) {
+    if (ev.ctrlKey || ev.altKey || $(document.activeElement).is(':input'))
+      return true;
+    
+    if ($.inArray(ev.which, [37, 38, 33, 39, 40, 34, 32]) != -1)
+      ev.preventDefault();
+    
+    if (ev.which == 37 || ev.which == 38 || ev.which == 33) // left|up|pgUp
+      turnPage(cur_page - 1);
+    else if (ev.which == 39 || ev.which == 40 || ev.which == 34 || ev.which == 32) // right|down|pgDn|space
+      turnPage(cur_page + 1);
+  }//turnPageByKey
+  
   (function($){ $(function () {
-    // initialize images and turn to the desired page
-    $('img.prev').attr('src', imgPath(#{params[:page].to_i >= 0 ? params[:page].to_i : 0}));
-    $('img.curr').attr('src', imgPath(#{(params[:page].to_i + 1) < @files.size ? (params[:page].to_i + 1) : (@files.size - 1) }));
-    turnPage(#{params[:page].to_i});
+    // initialize initial images
+    $('img.prev').attr('src', imgPath(#{params[:page]}));
+    $('img.curr').attr('src', imgPath(#{(params[:page] + 1) < @files.size ? (params[:page] + 1) : (@files.size - 1)}));
     
-    // manage actions like an ebook reader: divide in three parts the screen
-    $('body').on('click', function (ev) {
-      ev.stopImmediatePropagation();
-      
-      if ($(ev.target).parents('#menu').length > 0 || $('#menu').get(0) === ev.target)
-        return; // noop if clicking within the menu
+    // turn to the initial request page
+    turnPage(#{params[:page]});
     
-      var chunk_size = parseInt( $(window).width() / 3 );
-      
-      if (ev.pageX < chunk_size)          // tap on left    => go back 1 page
-        turnPage(cur_page - 1);
-      else if (ev.pageX > chunk_size * 2) // tap on right   => go forward 1 page
-        turnPage(cur_page + 1);
-      else                                // tap on middle  => open menu
-        if ($('#menu').hasClass('hidden')) {
-          $('#page').val(parseInt($('#pag_num .cur').text()) - 1);
-          showAndCenter('#menu');
-          $('table.help').removeClass('hidden');
-        } else {
-          $('#menu, table.help').addClass('hidden');
-        }
-    });
+    // bind reading controls to mouse & keyboard
+    $('body').
+      on('click', turnPageByClick).
+      on('keydown', turnPageByKey);
   }); })(jQuery)
 
-.main{data: {image_url: image_doujin_path(@doujin, format: '') }}
+.main{data: { image_url: image_doujin_path(@doujin, format: ''),
+              pages_url: read_pages_doujin_path(@doujin) }}
   %img.prev(src="" class="page hidden" onload="setImgClass(this)")
   %img.curr(src="" class="page hidden" onload="setImgClass(this)")
   %img.next(src="" class="page hidden" onload="setImgClass(this)")
@@ -138,4 +169,4 @@
       = select_tag :page,
         options_for_select(@files.size.times.map{|i| [i+1, i] }, params[:page]),
         onchange: %Q|this.form.submit()|
-  .back= link_to 'back to details', doujin_path(@doujin), class: :button
+  .back= link_to 'back to details', doujin_path(@doujin, format: params[:from_format]), class: :button

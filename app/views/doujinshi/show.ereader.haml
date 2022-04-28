@@ -33,7 +33,7 @@
               })
       
       .actions
-        = link_to 'Read', read_doujin_path(@doujin), class: :button
+        = link_to 'Read', read_doujin_path(@doujin, page: @doujin.read_pages.to_i, from_format: :ereader), class: :button
         = link_to '&nabla;EPUB'.html_safe, epub_doujinshi_path(convert: @doujin.id), class: :button
         = link_to '&nabla;CBZ' .html_safe, doujin_path(@doujin, format: :cbz ), class: :button
         = link_to '&nabla;ZIP' .html_safe, doujin_path(@doujin, format: :zip ), class: :button
