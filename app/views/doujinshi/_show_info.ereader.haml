@@ -25,7 +25,7 @@
     pages
     &nbsp;~&nbsp;
     = number_to_human_size @doujin.size, precision: 2
-    - if @doujin.score.to_i > 0 && params[:action] == 'delete'
+    - if @doujin.score.to_i > 0
       &nbsp;~&nbsp;
       &#9825;
-      = @doujin.score.to_i
+      = "#{@doujin.score}/10"

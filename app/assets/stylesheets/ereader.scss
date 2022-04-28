@@ -14,6 +14,8 @@
 .w1   { width: 1% }
 .w100 { width: 100% }
 
+.hidden { display: none; }
+
 .notification {
   padding: 0.3rem;
   border: 1px inset silver;
@@ -47,9 +49,44 @@ table.is-striped tbody tr:nth-child(even) { background-color: #ccc; }
   border-width: 0px 1px 1px 1px;
   background-color: #eee;
 }
-img {
+img.thumb {
   width:  160px;
   height: 240px;
+}
+
+table.doujin {
+  .cover {
+    padding-right: 0.5rem;
+    border-width: 0 1px 0 0;
+  }
+  
+  td { vertical-align: top; }
+  
+  td.details th {
+    text-align: right;
+    vertical-align: top;
+  }
+  
+  td.details td,
+  td.details th { padding: 0.3rem; }
+  
+  .kanji { background-color: #eee; }
+  
+  .actions { padding: 1rem; }
+  
+  .scoring {
+    .set { background-color: #bbb; }
+    .set-score {
+      padding: 0.2rem;
+      padding-left: 0.35rem;
+      border-radius: 1rem;
+    }
+    .clear-score {
+      border-radius: 0.5rem;
+      padding: 0.2rem 0.5rem;
+      border: 1px outset silver;
+    }
+  }
 }
 
 body[data-ctrl="doujinshi"][data-action="index"] {
@@ -88,41 +125,6 @@ body[data-ctrl="doujinshi"][data-action="index"] {
   }
 }
 
-table.doujin {
-  .cover {
-    padding-right: 0.5rem;
-    border-width: 0 1px 0 0;
-  }
-  
-  td { vertical-align: top; }
-  
-  td.details th {
-    text-align: right;
-    vertical-align: top;
-  }
-  
-  td.details td,
-  td.details th { padding: 0.3rem; }
-  
-  .kanji { background-color: #eee; }
-  
-  .actions { padding: 1rem; }
-  
-  .scoring {
-    .set { background-color: #bbb; }
-    .set-score {
-      padding: 0.2rem;
-      padding-left: 0.35rem;
-      border-radius: 1rem;
-    }
-    .clear-score {
-      border-radius: 0.5rem;
-      padding: 0.2rem 0.5rem;
-      border: 1px outset silver;
-    }
-  }
-}
-
 body[data-ctrl="doujinshi"][data-action="epub"] {
   table.files {
     border-collapse: collapse;
@@ -133,5 +135,79 @@ body[data-ctrl="doujinshi"][data-action="epub"] {
       td a { display: block; }
       td { padding: 0.25rem; }
     }
+  }
+}
+
+// same styles as in EpubConverterJob
+body[data-ctrl="doujinshi"][data-action="read"] {
+  margin: 0; padding: 0;
+  overflow: hidden;
+  
+  div.main, div.main img { margin: 0; padding:0; }
+  div.main {
+    width:  100vw;
+    height: 100vh;
+    text-align: center;
+    
+    img.page.fit-height { height: 100%; margin: 0 auto; }
+    img.page.fit-width  { width:  100%; margin: auto 0; }
+  }
+  
+  #pag_num {
+    position: absolute;
+    right:  0;
+    bottom: 0;
+    opacity: 0.5;
+    font-size: smaller;
+    padding: 0 0.25rem;
+    border: 1px outset silver;
+    border-width: 1px 0 0 1px;
+    background-color: #ccc;
+  }
+  
+  #msg {
+    position: absolute; // top and left set via js
+    font-size: 3rem;
+  }
+  
+  table.help {
+    position: absolute;
+    top:  0;
+    left: 0;
+    width:  100vw;
+    height: 100vh;
+  
+    border-collapse: collapse;
+    
+    td {
+      text-align: center;
+      vertical-align: bottom;
+      
+      span {
+        display: inline-block;
+        padding: 1rem;
+        margin-bottom: 4rem;
+        border: 1px inset silver;
+        background-color: white;
+      }
+    }
+    
+    td:nth-child(2) {
+      border: 4px dotted black;
+      border-width: 0 4px 0 4px;
+    }
+  }
+  
+  #menu {
+    position: absolute; // top and left set via js
+    text-align: center;
+    background-color: white;
+    border: 0.2rem outset silver;
+    
+    .title {
+      font-size: larger;
+      border-bottom: 1px solid black;
+    }
+    div { margin: 1.5rem; }
   }
 }

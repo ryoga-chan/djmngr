@@ -1,5 +1,6 @@
 class DoujinshiController < ApplicationController
-  before_action :set_doujin, only: %i[ show edit update delete destroy score read ]
+  before_action :set_doujin,
+    only: %i[ show edit update delete destroy score read image ]
 
   # browse doujinshi by author/circle/folder
   def index
@@ -88,12 +89,8 @@ class DoujinshiController < ApplicationController
   end # show
   
   def score
-    redir_url = doujin_path @doujin, params.permit(%w{ format from_author from_circle }).to_h
-    
-    result = @doujin.update(params.permit(:score))
-    
-    return html_redirect_to(redir_url) if request.format.to_sym == :ereader
-    result ? redirect_to(redir_url) : redirect_to(redir_url, alert: "unable to update the score")
+    flash[:alert] = "unable to update the score" unless @doujin.update(params.permit(:score))
+    redirect_to_with_format doujin_path(@doujin, params.permit(%w{ from_author from_circle }).to_h)
   end # score
   
   # run new conversions and manage converted files
@@ -103,28 +100,41 @@ class DoujinshiController < ApplicationController
     if params[:convert]
       EpubConverterJob.perform_later params[:convert]
       sleep 3
-      redir_url = epub_doujinshi_path format: params[:format]
       flash[:notice] = "now converting doujin ID [#{params[:convert]}]"
-      return html_redirect_to(redir_url) if request.format.to_sym == :ereader
-      return redirect_to(redir_url)
+      return redirect_to_with_format(epub_doujinshi_path)
     end
     
     fname = File.expand_path File.join(@pub_dir, 'epub', params[:remove].to_s)
     if params[:remove].present? && fname.start_with?(@pub_dir) && File.exist?(fname)
       File.unlink     fname if fname.end_with?('.perc') || fname.end_with?('.epub')
       FileUtils.rm_rf fname.sub(/perc$/, 'wip') if fname.end_with?('.perc')
-      redir_url = epub_doujinshi_path format: params[:format]
-      return html_redirect_to(redir_url) if request.format.to_sym == :ereader
-      return redirect_to(redir_url)
+      return redirect_to_with_format(epub_doujinshi_path)
     end
     
     @wip, @done = Dir[ File.join(@pub_dir, 'epub', '*.{epub,perc}') ].
       sort.partition{|i| i.end_with? '.perc' }
   end # epub
   
+  # online reading
   def read
-    # TODO: online reading
+    Zip::File.open(@doujin.file_path full: true) do |zip|
+      @files = zip.glob('*.{jpg,jpeg,png,gif}').map(&:name).sort
+    end
+    
+    params[:page] = params[:page].to_i
+    params[:page] = 0 unless (0...@files.size).include?(params[:page])
   end # read
+  
+  # return the selected image extracting it from the ZIP file
+  def image
+    Zip::File.open(@doujin.file_path full: true) do |zip|
+      @content   = zip.find_entry(params[:file])&.get_input_stream&.read
+      @content ||= File.read(Rails.root.join 'public', 'img-not-found.png')
+    end
+    
+    send_data @content, type: File.extname(params[:file]).delete('.').to_sym,
+      disposition: :inline, filename: params[:file]
+  end # image
 
   def update
     doujin_params = params.require(:doujin).
@@ -137,10 +147,11 @@ class DoujinshiController < ApplicationController
       render :edit, status: :unprocessable_entity
     end
   end # update
-
+  
   def destroy
     @doujin.destroy_with_files
-    redirect_to doujinshi_url, notice: "doujin [#{@doujin.id}] deleted"
+    flash[:notice] = "doujin [#{@doujin.id}] deleted"
+    redirect_to_with_format doujinshi_path
   end # destroy
 
 
@@ -149,7 +160,13 @@ class DoujinshiController < ApplicationController
 
   def set_doujin
     unless @doujin = Doujin.find_by(id: params[:id])
-      return redirect_to(doujinshi_path, alert: "doujin [#{params[:id]}] not found!")
+      flash[:alert] = "doujin [#{params[:id]}] not found!"
+      return redirect_to_with_format(doujinshi_path)
     end
   end # set_doujin
+  
+  def redirect_to_with_format(url_or_options)
+    return html_redirect_to(url_or_options) if request.format.to_sym == :ereader
+    redirect_to url_or_options
+  end # redirect_to_with_format
 end
