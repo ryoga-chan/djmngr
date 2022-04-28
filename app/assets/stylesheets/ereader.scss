@@ -187,8 +187,9 @@ body[data-ctrl="doujinshi"][data-action="read"] {
         display: inline-block;
         padding: 1rem;
         margin-bottom: 4rem;
-        border: 1px inset silver;
+        border: 4px dashed black;
         background-color: white;
+        border-radius: 1rem;
       }
     }
     
@@ -203,6 +204,7 @@ body[data-ctrl="doujinshi"][data-action="read"] {
     text-align: center;
     background-color: white;
     border: 0.2rem outset silver;
+    border-radius: 1rem;
     
     .title {
       font-size: larger;

@@ -28,6 +28,7 @@ Rails.application.routes.draw do
     
     member do
       get  :read
+      post :read_pages
       get  :image
       get  :delete
       post :score
