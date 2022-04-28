@@ -40,6 +40,11 @@
             %span.icon.is-small.mr-3.ml-6
               %i.mi monitor_weight
             %span= number_to_human_size @doujin.size, precision: 2
+            
+            - if @doujin.score.to_i > 0
+              %span.icon.is-small.mr-3.ml-6
+                %i.mi star_rate
+              %span= "#{@doujin.score}/10"
       %tr
         %th Score
         %td
@@ -69,7 +74,7 @@
     .actions.field.is-grouped
       .field.has-addons.mr-1
         %p.control
-          = link_to read_doujin_path(@doujin, format: :ereader), class: 'button is-info is-rounded' do
+          = link_to read_doujin_path(@doujin, format: :ereader, from_format: :html), class: 'button is-info is-rounded' do
             %span.icon
               %i.mi.mi-small chrome_reader_mode
             %span Read
@@ -80,6 +85,11 @@
             %span.icon
               %i.mi.mi-small launch
             %span Mcomix
+        %p.control
+          = link_to doujin_path(@doujin, sample: true), class: 'button is-info is-rounded' do
+            %span.icon
+              %i.mi.mi-small casino
+            %span Sample
       
       .field.has-addons.mr-1
         %p.control
@@ -109,8 +119,6 @@
             %span.icon
               %i.mi.mi-small delete
             %span Delete
-
--#= link_to 'Edit', edit_doujin_path(@doujin)
 
 - url_params = if %w{ artbook magazine }.include?(@doujin.category)
   - { tab: @doujin.category, folder: @doujin.file_folder }

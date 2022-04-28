@@ -1,0 +1,141 @@
+:javascript
+  var files    = #{@files.to_json.html_safe};
+  var cur_page = #{params[:page].to_i};
+
+  function setImgClass (el) {
+    var pag_ratio = $(window).width() / $(window).height(); // https://stackoverflow.com/questions/3437786/get-the-size-of-the-screen-current-web-page-and-browser-window/3437825#3437825
+    var img_ratio = el.naturalWidth / el.naturalHeight;     // https://www.w3schools.com/jsref/prop_img_naturalwidth.asp
+    
+    $(el).removeClass('fit-height fit-width');
+    
+    if (pag_ratio > img_ratio)
+      $(el).addClass('fit-height');
+    else
+      $(el).addClass('fit-width');
+    
+    //$(el).removeClass('hidden');
+  }//setImgClass
+  
+  function imgPath(page_num) {
+    return $('.main').data('image-url') + '?' + $.param({file: files[page_num]});
+  }//imgPath
+
+  function turnPage (page_num) {
+    var img_prev = $('img.prev'),
+        img_curr = $('img.curr'),
+        img_next = $('img.next');
+    
+    if (page_num > cur_page) {
+      if (page_num < files.length) {
+        // go forward
+        $('#msg').addClass('hidden');
+        
+        img_curr.removeClass('curr').addClass('prev hidden');
+        img_next.removeClass('next hidden').addClass('curr');
+        img_prev.removeClass('prev').addClass('next hidden');
+        
+        // load next image
+        if ((page_num + 1) < files.length)
+          img_prev.attr('src', imgPath(page_num + 1));
+        else
+          img_prev.removeAttr('src');
+        
+        cur_page = page_num;
+      } else {
+        // show finished message and hide last image
+        showAndCenter('#msg');
+        img_curr.addClass('hidden');
+      }//if
+    } else {
+      if (page_num >= 0) {
+        // go back
+        $('#msg').addClass('hidden');
+        
+        img_curr.removeClass('curr').addClass('next hidden');
+        img_prev.removeClass('prev hidden').addClass('curr');
+        img_next.removeClass('next').addClass('prev hidden');
+        
+        // load previous image
+        if ((page_num - 1) >= 0)
+          img_next.attr('src', imgPath(page_num - 1));
+        else
+          img_next.removeAttr('src');
+        
+        cur_page = page_num;
+      } else {
+        $('img.curr').removeClass('hidden');
+      }//if
+    }//if-else
+    
+    $('#pag_num .cur').text(cur_page + 1);
+  }//turnPage
+  
+  function showAndCenter(el) {
+    $(el).removeClass('hidden').
+      css('left', $(window).width()  / 2 - $(el).width()  / 2).
+      css('top' , $(window).height() / 3 - $(el).height() / 2);
+  }//showAndCenter
+  
+  (function($){ $(function () {
+    // initialize images and turn to the desired page
+    $('img.prev').attr('src', imgPath(#{params[:page].to_i >= 0 ? params[:page].to_i : 0}));
+    $('img.curr').attr('src', imgPath(#{(params[:page].to_i + 1) < @files.size ? (params[:page].to_i + 1) : (@files.size - 1) }));
+    turnPage(#{params[:page].to_i});
+    
+    // manage actions like an ebook reader: divide in three parts the screen
+    $('body').on('click', function (ev) {
+      ev.stopImmediatePropagation();
+      
+      if ($(ev.target).parents('#menu').length > 0 || $('#menu').get(0) === ev.target)
+        return; // noop if clicking within the menu
+    
+      var chunk_size = parseInt( $(window).width() / 3 );
+      
+      if (ev.pageX < chunk_size)          // tap on left    => go back 1 page
+        turnPage(cur_page - 1);
+      else if (ev.pageX > chunk_size * 2) // tap on right   => go forward 1 page
+        turnPage(cur_page + 1);
+      else                                // tap on middle  => open menu
+        if ($('#menu').hasClass('hidden')) {
+          $('#page').val(parseInt($('#pag_num .cur').text()) - 1);
+          showAndCenter('#menu');
+          $('table.help').removeClass('hidden');
+        } else {
+          $('#menu, table.help').addClass('hidden');
+        }
+    });
+  }); })(jQuery)
+
+.main{data: {image_url: image_doujin_path(@doujin, format: '') }}
+  %img.prev(src="" class="page hidden" onload="setImgClass(this)")
+  %img.curr(src="" class="page hidden" onload="setImgClass(this)")
+  %img.next(src="" class="page hidden" onload="setImgClass(this)")
+  
+#msg.hidden Finished
+
+#pag_num
+  %span.cur>= params[:page] + 1
+  \/
+  %span.tot>= @files.size
+
+%table.help.hidden
+  %tr
+    %td(width="33%")
+      %span Previous page
+    %td(width="33%")
+      %span Menu
+    %td(width="33%")
+      %span Next page
+
+#menu.hidden
+  .title
+    reading
+    %br/
+    men&ugrave;
+  .jump
+    = form_with url: read_doujin_path(@doujin), method: :get do |f|
+      jump to
+      = select_tag :page,
+        options_for_select(@files.size.times.map{|i| [i+1, i] }, params[:page]),
+        onchange: %Q|this.form.submit()|
+  .back= link_to 'back to details', doujin_path(@doujin), class: :button

@@ -53,7 +53,8 @@
     .thumbs
       - @doujinshi.each do |d|
         .doujin
-          .cover= link_to image_tag(doujin_path d, format: :jpg), doujin_path(d, from_author: params[:author_id], from_circle: params[:circle_id])
+          .cover= link_to image_tag(doujin_path(d, format: :jpg), class: :thumb),
+            doujin_path(d, from_author: params[:author_id], from_circle: params[:circle_id])
           .descr
             - if d.score.to_i > 0
               %span.score= "#{d.score.to_i}&hearts;".html_safe

@@ -1,4 +1,8 @@
-# mime descr: Marcel::MimeType.for(extension: :webp)
+# find a MIME type descr by extension
+#   Marcel::MimeType.for(extension: :webp)
+# list of all currently registered MIME types
+#   Mime::EXTENSION_LOOKUP.map{|x| x}.sort
+#   Mime::Type.lookup_by_extension(:pdf) # or look up by type
 Mime::Type.register "image/webp", :jpg
 Mime::Type.register "image/jpeg", :webp
 Mime::Type.register "text/html" , :ereader
