@@ -71,54 +71,60 @@
         %th Orig.
         %td= @doujin.name_orig
     
-    .actions.field.is-grouped
-      .field.has-addons.mr-1
-        %p.control
-          = link_to read_doujin_path(@doujin, format: :ereader, page: @doujin.read_pages.to_i, from_format: :html), class: 'button is-info is-rounded' do
-            %span.icon
-              %i.mi.mi-small chrome_reader_mode
-            %span Read
-        %p.control
-          = link_to doujin_path(@doujin, run: :mcomix, format: :json),
-              onclick: %Q|var bt=jQuery(this); bt.addClass('is-loading'); setTimeout(function(){ bt.removeClass('is-loading') }, 5000)|,
-              remote: true, class: 'button is-info is-rounded' do
-            %span.icon
-              %i.mi.mi-small launch
-            %span Mcomix
-        %p.control
-          = link_to doujin_path(@doujin, sample: true), class: 'button is-info is-rounded' do
-            %span.icon
-              %i.mi.mi-small casino
-            %span Sample
+    .columns
+      .column.is-third
+        .actions.field.is-grouped
+          .field.has-addons
+            %p.control
+              = link_to read_doujin_path(@doujin, format: :ereader, page: @doujin.read_pages.to_i, from_format: :html), class: 'button is-info is-rounded' do
+                %span.icon
+                  %i.mi.mi-small chrome_reader_mode
+                %span Read
+            %p.control
+              = link_to doujin_path(@doujin, run: :mcomix, format: :json),
+                  onclick: %Q|var bt=jQuery(this); bt.addClass('is-loading'); setTimeout(function(){ bt.removeClass('is-loading') }, 5000)|,
+                  remote: true, class: 'button is-info is-rounded' do
+                %span.icon
+                  %i.mi.mi-small launch
+                %span Mcomix
+            %p.control
+              = link_to doujin_path(@doujin, sample: true), class: 'button is-info is-rounded' do
+                %span.icon
+                  %i.mi.mi-small casino
+                %span Sample
       
-      .field.has-addons.mr-1
-        %p.control
-          = link_to epub_doujinshi_path(convert: @doujin.id), class: 'button is-link is-rounded' do
-            %span.icon
-              %i.mi.mi-small construction
-            %span EPUB
-        %p.control
-          = link_to doujin_path(@doujin, format: :cbz), class: 'button is-link is-rounded' do
-            %span.icon
-              %i.mi.mi-small file_download
-            %span CBZ
-        %p.control
-          = link_to doujin_path(@doujin, format: :zip), class: 'button is-link is-rounded' do
-            %span.icon
-              %i.mi.mi-small file_download
-            %span ZIP
+      .column.is-third
+        .actions.field.is-grouped
+          .field.has-addons
+            %p.control
+              = link_to epub_doujinshi_path(convert: @doujin.id), class: 'button is-link is-rounded' do
+                %span.icon
+                  %i.mi.mi-small construction
+                %span EPUB
+            %p.control
+              = link_to doujin_path(@doujin, format: :cbz), class: 'button is-link is-rounded' do
+                %span.icon
+                  %i.mi.mi-small file_download
+                %span CBZ
+            %p.control
+              = link_to doujin_path(@doujin, format: :zip), class: 'button is-link is-rounded' do
+                %span.icon
+                  %i.mi.mi-small file_download
+                %span ZIP
             
-      .field.has-addons
-        %p.control
-          = link_to edit_doujin_path(@doujin), class: 'button is-primary is-rounded' do
-            %span.icon
-              %i.mi.mi-small edit
-            %span Edit
-        %p.control
-          = link_to @doujin, method: :delete, data: { confirm: 'Are you sure?' }, class: 'button is-danger is-rounded' do
-            %span.icon
-              %i.mi.mi-small delete
-            %span Delete
+      .column.is-third
+        .actions.field.is-grouped
+          .field.has-addons
+            %p.control
+              = link_to edit_doujin_path(@doujin), class: 'button is-primary is-rounded' do
+                %span.icon
+                  %i.mi.mi-small edit
+                %span Edit
+            %p.control
+              = link_to @doujin, method: :delete, data: { confirm: 'Are you sure?' }, class: 'button is-danger is-rounded' do
+                %span.icon
+                  %i.mi.mi-small delete
+                %span Delete
 
 - url_params = if %w{ artbook magazine }.include?(@doujin.category)
   - { tab: @doujin.category, folder: @doujin.file_folder }
