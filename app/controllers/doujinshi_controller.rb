@@ -150,14 +150,12 @@ class DoujinshiController < ApplicationController
 
   def update
     doujin_params = params.require(:doujin).
-      permit(:name, :name_romaji, :checksum, :num_images, :num_files,
-             :score, :name_orig)
+      permit(:name, :name_romaji, :name_kakasi, :name_orig, :reading_direction,
+             :read_pages, :language, :censored, :colorized, :notes)
     
-    if @doujin.update(doujin_params)
-      redirect_to @doujin, notice: "Doujin was successfully updated."
-    else
-      render :edit, status: :unprocessable_entity
-    end
+    @doujin.update(doujin_params) ?
+      redirect_to(@doujin, notice: "doujin [#{params[:id]}] updated") :
+      render(:edit, status: :unprocessable_entity)
   end # update
   
   def destroy

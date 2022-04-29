@@ -14,8 +14,12 @@ class CreateDoujinshi < ActiveRecord::Migration[7.0]
       t.string   :category
       t.text     :file_folder
       t.text     :file_name
-      t.string   :reading_direction
-      t.integer  :read_pages
+      t.string   :notes
+      t.string   :reading_direction, default: :r2l, limit: 3
+      t.integer  :read_pages, default: 0
+      t.string   :language,   default: :jpn, limit: 3
+      t.boolean  :censored,   default: true
+      t.boolean  :colorized,  default: false
 
       t.timestamps
     end

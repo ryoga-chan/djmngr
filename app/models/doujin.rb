@@ -17,6 +17,9 @@ class Doujin < ApplicationRecord
   
   def sanitize_fields
     self.scored_at = Time.now if score_changed?
+    
+    self.name_kakasi = name.to_romaji if name_changed?
+    self.notes = notes.to_s.strip if notes_changed?
   end # sanitize_fields
   
   def self.dest_path_by_process_params(info, full_path: false)

@@ -1,0 +1,32 @@
+.columns
+  .column.is-half
+    .actions.field.is-grouped
+      .field.has-addons
+        - url_params = if %w{ artbook magazine }.include?(@doujin.category)
+          - { tab: @doujin.category, folder: @doujin.file_folder }
+        - elsif params[:from_author].present?
+          - { tab: :author, author_id: params[:from_author] }
+        - elsif params[:from_circle].present?
+          - { tab: :circle, circle_id: params[:from_circle] }
+        %p.control
+          = link_to 'Back', doujinshi_path(url_params.to_h.merge letter: params[:letter], anchor: 'listing'),
+            class: 'button is-info is-rounded'
+        
+        - url_params = params.permit(:from_author, :from_circle, :letter)
+        
+        - if params[:action] == 'edit'
+          %p.control
+            = link_to 'Show', doujin_path(@doujin, url_params),
+              class: 'button is-info is-rounded'
+
+        - if params[:action] == 'show'
+          %p.control
+            = link_to edit_doujin_path(@doujin, url_params), class: 'button is-primary is-rounded' do
+              %span.icon
+                %i.mi.mi-small edit
+              %span Edit
+  .column.has-text-right
+    = link_to @doujin, method: :delete, data: { confirm: 'Are you sure?' }, class: 'button is-danger is-rounded' do
+      %span.icon
+        %i.mi.mi-small delete
+      %span Delete

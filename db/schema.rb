@@ -100,8 +100,12 @@ ActiveRecord::Schema[7.0].define(version: 2022_02_08_200104) do
     t.text "file_folder"
     t.text "file_name"
     t.datetime "scored_at"
-    t.string "reading_direction"
+    t.string "reading_direction", limit: 3, default: "r2l"
     t.integer "read_pages", default: 0
+    t.string "language", limit: 3, default: "jpn"
+    t.boolean "censored", default: true
+    t.boolean "colorized", default: false
+    t.string "notes"
   end
 
   create_table "settings", force: :cascade do |t|
