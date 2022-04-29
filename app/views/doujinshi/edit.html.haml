@@ -1,7 +1,105 @@
-%h1 Editing doujin
+- if @doujin.errors.any?
+  .is-size-5.notification.is-danger.content
+    %ul
+      - @doujin.errors.full_messages.each do |message|
+        %li= message
 
-= render 'form'
+= form_for @doujin do |f|
+  .field.is-horizontal
+    .field-label.is-normal
+      %label.label Name
+    .field-body
+      .field
+        .control.is-expanded.has-icons-left
+          = f.text_field :name, class: :input
+          %span.icon.is-small.is-left
+            %i.mi.mi-small local_offer
 
-= link_to 'Show', @doujin
-\|
-= link_to 'Back', doujinshi_path
+  .field.is-horizontal
+    .field-label.is-normal
+      %label.label Name romaji
+    .field-body
+      .field
+        .control.is-expanded.has-icons-left
+          = f.text_field :name_romaji, class: :input
+          %span.icon.is-small.is-left
+            %i.mi.mi-small translate
+
+  .field.is-horizontal
+    .field-label.is-normal
+      %label.label Name kakasi
+    .field-body
+      .field
+        .control.is-expanded.has-icons-left
+          = f.text_field :name_kakasi, class: :input
+          %span.icon.is-small.is-left
+            %i.mi.mi-small translate
+
+  .field.is-horizontal
+    .field-label.is-normal
+      %label.label Original name
+    .field-body
+      .field
+        .control.is-expanded.has-icons-left
+          = f.text_field :name_orig, class: :input
+          %span.icon.is-small.is-left
+            %i.mi.mi-small photo_filter
+
+  .field.is-horizontal
+    .field-label.is-normal
+      %label.label Specs
+    .field-body
+      .field
+        .control.is-expanded.has-icons-left
+          .select.is-fullwidth(title="language")
+            -# https://www.abbreviations.com/JPN
+            = f.select :language,
+              { 'Japanese'   => :'jpn',
+                'English'    => :'eng',
+                'Chinese'    => :'chi',
+                'Italian'    => :'ita',
+                'French'     => :'fra',
+                'Spanish'    => :'spa',
+                'Deutsch'    => :'deu',
+                'None/Other' => :'???', }
+          %span.icon.is-small.is-left
+            %i.mi.mi-small language
+      .field
+        .control.has-icons-left
+          .select.is-fullwidth(title="reading direction")
+            = f.select :reading_direction, {'right to left' => 'r2l', 'left to right' => 'l2r'}
+          %span.icon.is-small.is-left
+            %i.mi.mi-small sync_alt
+      .field
+        .control.has-icons-left
+          .select.is-fullwidth(title="censoring")
+            = f.select :censored, {'uncensored' => false, 'censored' => true}
+          %span.icon.is-small.is-left
+            %i.mi.mi-small visibility_off
+      .field
+        .control.has-icons-left
+          .select.is-fullwidth(title="fan made colorization")
+            = f.select :colorized, {'black & white' => false, 'colorized' => true}
+          %span.icon.is-small.is-left
+            %i.mi.mi-small format_paint
+      .field
+        .control.is-expanded.has-icons-left
+          .select.is-fullwidth(title="read pages")
+            = f.select :read_pages, (0..@doujin.num_images).map{|i| [i+1, i] }
+          %span.icon.is-small.is-left
+            %i.mi.mi-small auto_stories
+
+  .field.is-horizontal
+    .field-label.is-normal
+      %label.label Notes
+    .field-body
+      .field
+        .control= f.text_area :notes, class: :textarea, maxlength: 255
+
+  .field.is-horizontal
+    .field-label.is-normal
+    .field-body
+      .field
+        .control= f.submit 'Save', class: 'button is-primary'
+
+.actions.mt-5= render partial: 'actions'

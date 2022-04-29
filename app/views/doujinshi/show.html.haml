@@ -37,16 +37,29 @@
                 %i.mi insert_drive_file
               %span= @doujin.num_files
             
-            %span.icon.is-small.mr-3.ml-6
+            %span.icon.is-small.ml-5
               %i.mi monitor_weight
             %span= number_to_human_size @doujin.size, precision: 2
             
-            %span.icon.is-small.mr-3.ml-6
+            %span.icon.is-small.ml-5
               %i.mi sync_alt
             %span= @doujin.reading_direction
             
+            %span.icon.is-small.ml-5
+              %i.mi.mi-small language
+            %span= @doujin.language
+            
+            %span.icon.is-small.ml-5
+              %i.mi.mi-small visibility_off
+            %span= @doujin.censored? ? :cen : :unc
+            
+            - if @doujin.colorized?
+              %span.icon.is-small.ml-5
+                %i.mi.mi-small format_paint
+              %span col
+            
             - if @doujin.score.to_i > 0
-              %span.icon.is-small.mr-3.ml-6
+              %span.icon.is-small.ml-5
                 %i.mi star_rate
               %span= "#{@doujin.score}/10"
       %tr
@@ -65,7 +78,7 @@
               %span.icon.is-medium.ml-5.clear-score{data: {score: 0}}
                 %i.mi.mi-medium(title="clear") clear
             - if @doujin.score.to_i > 0 && @doujin.scored_at
-              .scored_at.is-size-7
+              .scored_at.is-size-7.pl-6
                 scored at
                 = l @doujin.scored_at
       %tr
@@ -74,9 +87,13 @@
       %tr
         %th Orig.
         %td= @doujin.name_orig
+      - if @doujin.notes.present?
+        %tr
+          %th Notes
+          %td.is-family-monospace.is-italic= @doujin.notes
     
     .columns
-      .column.is-third
+      .column.is-half
         .actions.field.is-grouped
           .field.has-addons
             %p.control
@@ -98,7 +115,7 @@
                     %i.mi.mi-small casino
                   %span Sample
       
-      .column.is-third
+      .column
         .actions.field.is-grouped
           .field.has-addons
             %p.control
@@ -116,29 +133,8 @@
                 %span.icon
                   %i.mi.mi-small file_download
                 %span ZIP
-            
-      .column.is-third
-        .actions.field.is-grouped
-          .field.has-addons
-            %p.control
-              = link_to edit_doujin_path(@doujin), class: 'button is-primary is-rounded' do
-                %span.icon
-                  %i.mi.mi-small edit
-                %span Edit
-            %p.control
-              = link_to @doujin, method: :delete, data: { confirm: 'Are you sure?' }, class: 'button is-danger is-rounded' do
-                %span.icon
-                  %i.mi.mi-small delete
-                %span Delete
 
-- url_params = if %w{ artbook magazine }.include?(@doujin.category)
-  - { tab: @doujin.category, folder: @doujin.file_folder }
-- elsif params[:from_author].present?
-  - { tab: :author, author_id: params[:from_author] }
-- elsif params[:from_circle].present?
-  - { tab: :circle, circle_id: params[:from_circle] }
-= link_to 'Back', doujinshi_path(url_params.to_h.merge letter: params[:letter], anchor: 'listing'),
-  class: 'button is-info is-rounded'
+= render partial: 'actions'
 
 - if @doujin.num_images > 10 && params[:sample]
   .columns
