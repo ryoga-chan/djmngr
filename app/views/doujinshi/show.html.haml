@@ -91,11 +91,12 @@
                 %span.icon
                   %i.mi.mi-small launch
                 %span Mcomix
-            %p.control
-              = link_to doujin_path(@doujin, sample: true), class: 'button is-info is-rounded' do
-                %span.icon
-                  %i.mi.mi-small casino
-                %span Sample
+            - if @doujin.num_images > 10
+              %p.control
+                = link_to doujin_path(@doujin, sample: true), class: 'button is-info is-rounded' do
+                  %span.icon
+                    %i.mi.mi-small casino
+                  %span Sample
       
       .column.is-third
         .actions.field.is-grouped
@@ -138,3 +139,12 @@
   - { tab: :circle, circle_id: params[:from_circle] }
 = link_to 'Back', doujinshi_path(url_params.to_h.merge letter: params[:letter], anchor: 'listing'),
   class: 'button is-info is-rounded'
+
+- if @doujin.num_images > 10 && params[:sample]
+  .columns
+    - start_idx = (rand(@doujin.num_images - 1 - 5) + 1).to_i
+    - (start_idx...(start_idx+3)).each do |i|
+      .column.is-4.has-text-centered
+        .is-size-7= "page #{i}"
+        %figure.image.is2by3
+          = image_tag image_doujin_path(@doujin, page: i)
