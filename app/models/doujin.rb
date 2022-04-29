@@ -94,6 +94,8 @@ class Doujin < ApplicationRecord
     self.destroy
   end # destroy_with_files
   
+  def percent_read = (read_pages.to_f / num_images * 100).round(2)
+  
   
   private # ____________________________________________________________________
   
