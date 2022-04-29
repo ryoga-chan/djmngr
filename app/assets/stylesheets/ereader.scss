@@ -153,25 +153,40 @@ body[data-ctrl="doujinshi"][data-action="read"] {
     img.page.fit-width  { width:  100%; margin: auto 0; }
   }
   
-  #pag_num {
-    position: absolute;
-    right:  0;
-    bottom: 0;
+  #pag_num, #zoom, #debug {
+    position: fixed;
     opacity: 0.5;
     font-size: smaller;
     padding: 0 0.25rem;
     border: 1px outset silver;
-    border-width: 1px 0 0 1px;
     background-color: #ccc;
   }
-  
+  #debug {
+    top: 0; left: 0;
+    border-width: 1px;
+  }
+  #pag_num {
+    bottom: 0; right: 0;
+    border-width: 1px 0 0 1px;
+  }
+  #zoom {
+    bottom: 0; left:  0;
+    border-width: 1px 1px 0 0;
+    padding: 0;
+    
+    .controls { padding: 0.5rem 0; }
+    span { padding: 0.5rem 0.7rem; }
+    .inc { border-left: 1px dotted black; }
+    .perc { text-align: center; }
+  }
+
   #msg {
     position: absolute; // top and left set via js
     font-size: 3rem;
   }
   
   table.help {
-    position: absolute;
+    position: fixed;
     top:  0;
     left: 0;
     width:  100vw;
@@ -200,7 +215,7 @@ body[data-ctrl="doujinshi"][data-action="read"] {
   }
   
   #menu {
-    position: absolute; // top and left set via js
+    position: fixed; // top and left set via js
     text-align: center;
     background-color: white;
     border: 0.2rem outset silver;
