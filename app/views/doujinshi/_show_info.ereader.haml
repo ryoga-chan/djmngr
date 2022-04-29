@@ -25,6 +25,8 @@
     pages
     &nbsp;~&nbsp;
     = number_to_human_size @doujin.size, precision: 2
+    &nbsp;~&nbsp;
+    = @doujin.reading_direction
     - if @doujin.score.to_i > 0
       &nbsp;~&nbsp;
       &#9825;
