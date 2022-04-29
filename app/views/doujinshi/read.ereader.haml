@@ -91,14 +91,17 @@
   function turnPageByClick (ev) {
     ev.stopImmediatePropagation();
     
+    //$('#debug').html($(window).width() + 'screen w<br>' + ev.pageX + 'mouse x<br>' + $(document).scrollLeft() + 'scroll left');
+    
     if ($(ev.target).parents('#menu').length > 0 || $('#menu').get(0) === ev.target)
       return; // noop if clicking within the menu
   
     var chunk_size = parseInt( $(window).width() / 3 );
+    var x_coord = ev.pageX - $(document).scrollLeft();
     
-    if (ev.pageX < chunk_size)          // tap on left    => go back 1 page
+    if (x_coord < chunk_size)          // tap on left    => go back 1 page
       turnPage(cur_page - 1);
-    else if (ev.pageX > chunk_size * 2) // tap on right   => go forward 1 page
+    else if (x_coord > chunk_size * 2) // tap on right   => go forward 1 page
       turnPage(cur_page + 1);
     else                                // tap on middle  => open menu
       if ($('#menu').hasClass('hidden')) {
@@ -122,6 +125,22 @@
       turnPage(cur_page + 1);
   }//turnPageByKey
   
+  function zoomImage (ev) {
+    ev.stopImmediatePropagation();
+    
+    var increment = $(ev.target).hasClass('inc') ? 50 : -50;
+    var level     = parseInt($('#zoom').data('level')) + increment;
+    
+    if (100 <= level && level <= 300) {
+      console.log(level);
+      $('#zoom').data('level', level);
+      $('.main').css('width', level+'vw').css('height', level+'vh');
+      $('body').css('overflow', level == 100 ? 'hidden' : 'auto');
+      $('#zoom .perc').text(level == 100 ? '' : level+'%')
+      
+    }//if
+  }//zoomImage
+  
   (function($){ $(function () {
     // initialize initial images
     $('img.prev').attr('src', imgPath(#{params[:page]}));
@@ -134,6 +153,9 @@
     $('body').
       on('click', turnPageByClick).
       on('keydown', turnPageByKey);
+    
+    // bind zoom control
+    $('#zoom span').on('click', zoomImage);
   }); })(jQuery)
 
 .main{data: { image_url: image_doujin_path(@doujin, format: ''),
@@ -157,6 +179,14 @@
       %span Menu
     %td(width="33%")
       %span Next
+
+-#debug
+
+#zoom{data: {level: 100}}
+  .perc
+  .controls
+    %span.dec> &minus;
+    %span.inc> &plus;
 
 #menu.hidden
   .title
