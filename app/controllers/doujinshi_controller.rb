@@ -133,12 +133,19 @@ class DoujinshiController < ApplicationController
   # return the selected image extracting it from the ZIP file
   def image
     Zip::File.open(@doujin.file_path full: true) do |zip|
-      @content   = zip.find_entry(params[:file])&.get_input_stream&.read
-      @content ||= File.read(Rails.root.join 'public', 'img-not-found.png')
+      entry = zip.find_entry(params[:file]) if params[:file]
+      entry = zip.glob('*.{jpg,jpeg,png,gif}').sort{|a,b| a.name <=> b.name }[params[:page].to_i] if params[:page]
+      @fname   = entry&.name
+      @content = entry&.get_input_stream&.read
     end
     
-    send_data @content, type: File.extname(params[:file]).delete('.').to_sym,
-      disposition: :inline, filename: params[:file]
+    unless @content
+      @fname = 'img-not-found.png'
+      @content = File.read(Rails.root.join 'public', @fname)
+    end
+    
+    send_data @content, type: File.extname(@fname).delete('.').to_sym,
+      disposition: :inline, filename: @fname
   end # image
 
   def update
