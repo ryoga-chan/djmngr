@@ -79,7 +79,7 @@
               = link_to read_doujin_path(@doujin, format: :ereader, page: @doujin.read_pages.to_i, from_format: :html), class: 'button is-info is-rounded' do
                 %span.icon
                   %i.mi.mi-small chrome_reader_mode
-                %span Read
+                %span= @doujin.read_pages.to_i > 0 ? "Read (#{@doujin.percent_read.round}%)" : :Read
             %p.control
               = link_to doujin_path(@doujin, run: :mcomix, format: :json),
                   onclick: %Q|var bt=jQuery(this); bt.addClass('is-loading'); setTimeout(function(){ bt.removeClass('is-loading') }, 5000)|,
