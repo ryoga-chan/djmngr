@@ -41,6 +41,10 @@
               %i.mi monitor_weight
             %span= number_to_human_size @doujin.size, precision: 2
             
+            %span.icon.is-small.mr-3.ml-6
+              %i.mi sync_alt
+            %span= @doujin.reading_direction
+            
             - if @doujin.score.to_i > 0
               %span.icon.is-small.mr-3.ml-6
                 %i.mi star_rate
