@@ -58,6 +58,11 @@ class DoujinshiController < ApplicationController
   end # index
   
   def show
+    msg = @doujin.check_hash?       ? [:notice,'same checksum'       ] : [:alert,'different checksum'] if params[:check_hash]
+    msg = @doujin.check_zip?        ? [:notice,'zip test successfull'] : [:alert,'zip test failed'   ] if params[:check_zip]
+    msg = @doujin.refresh_checksum! ? [:notice,'checksum refreshed'  ] : [:alert,'checksum error'    ] if params[:rehash]
+    flash.now.send '[]=', *msg if msg
+    
     respond_to do |format|
       format.html
       format.ereader

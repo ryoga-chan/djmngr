@@ -102,6 +102,15 @@ class Doujin < ApplicationRecord
   
   def percent_read = (read_pages.to_f / num_images * 100).round(2)
   
+  def check_hash? = checksum == `sha512sum -b #{file_path(full: true).shellescape}`.split(' ', 2)[0]
+  
+  def check_zip?
+    `unzip -qt #{file_path(full: true).shellescape}`
+    $?.to_i == 0
+  end # check_zip?
+  
+  def refresh_checksum! = update(checksum: `sha512sum -b #{file_path(full: true).shellescape}`.split(' ', 2)[0])
+  
   
   private # ____________________________________________________________________
   

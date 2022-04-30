@@ -93,7 +93,7 @@
           %td.is-family-monospace.is-italic= @doujin.notes
     
     .columns
-      .column.is-half
+      .column.is-third
         .actions.field.is-grouped
           .field.has-addons
             %p.control
@@ -115,7 +115,7 @@
                     %i.mi.mi-small casino
                   %span Sample
       
-      .column
+      .column.is-third
         .actions.field.is-grouped
           .field.has-addons
             %p.control
@@ -132,6 +132,24 @@
               = link_to doujin_path(@doujin, format: :zip), class: 'button is-link is-rounded' do
                 %span.icon
                   %i.mi.mi-small file_download
+                %span ZIP
+      
+      .column
+        - url_params = params.permit(:from_author, :from_circle).to_h
+        
+        .actions.field.is-grouped
+          .field.has-addons
+            %p.control
+              = link_to doujin_path(@doujin, url_params.merge(check_hash: true)),
+                  title: 'test checksum', class: 'button is-info is-rounded' do
+                %span.icon
+                  %i.mi.mi-small verified
+                %span HASH
+            %p.control
+              = link_to doujin_path(@doujin, url_params.merge(check_zip: true)),
+                  title: 'test ZIP file', class: 'button is-info is-rounded' do
+                %span.icon
+                  %i.mi.mi-small verified
                 %span ZIP
 
 = render partial: 'actions'
