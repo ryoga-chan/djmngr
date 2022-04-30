@@ -109,7 +109,10 @@ class Doujin < ApplicationRecord
     $?.to_i == 0
   end # check_zip?
   
-  def refresh_checksum! = update(checksum: `sha512sum -b #{file_path(full: true).shellescape}`.split(' ', 2)[0])
+  def refresh_checksum!
+    tmp_hash = `sha512sum -b #{file_path(full: true).shellescape}`.split(' ', 2)[0].to_s.strip
+    tmp_hash.size == 128 ? update(checksum: tmp_hash) : false
+  end # refresh_checksum!
   
   
   private # ____________________________________________________________________
