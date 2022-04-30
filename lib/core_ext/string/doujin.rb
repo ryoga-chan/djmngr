@@ -22,14 +22,16 @@ module CoreExt
           fname: fname.to_s.strip }
       end # parse_doujin_filename
       
-      def tokenize_doujin_filename
+      def tokenize_doujin_filename(remove_numbers: false)
         cleared_string = File.basename self.strip, File.extname(self.strip)
         
         # keep author's parenthesis contents
-        # drop all filename parenthesis contents
+        # drop all filename's parenthesis contents
         if cleared_string =~ /^\[([^\]]+)\](.+)$/
           cleared_string = "#{$1} #{$2.gsub /[\(\[\{][^\(\)]+[\)\]\}]/, ' '}"
         end
+        
+        cleared_string.gsub!(/[0-9]+/, ' ') if remove_numbers
         
         cleared_string.tr('[](){},.', ' ').split(' ')
       end # tokenize_doujin_filename
