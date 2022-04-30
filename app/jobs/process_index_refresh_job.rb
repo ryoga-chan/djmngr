@@ -10,6 +10,12 @@ class ProcessIndexRefreshJob < ApplicationJob
   def self.cache_file?  = File.exist?(CACHE_FILE)
   def self.read_cache   = YAML.load_file(CACHE_FILE)
   
+  def self.remove_entry_from_cache(path)
+    files = read_cache
+    files.delete path
+    File.open(CACHE_FILE, 'w'){|f| f.puts files.to_yaml }
+  end # self.remove_entry_from_cache
+  
   def perform(*args)
     self.class.lock_file!
     
