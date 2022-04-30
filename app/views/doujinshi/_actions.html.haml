@@ -1,18 +1,18 @@
+- url_params = params.permit(:from_author, :from_circle)
+
 .columns
   .column.is-half
     .actions.field.is-grouped
       .field.has-addons
-        - url_params = if %w{ artbook magazine }.include?(@doujin.category)
+        - back_params = if %w{ artbook magazine }.include?(@doujin.category)
           - { tab: @doujin.category, folder: @doujin.file_folder }
         - elsif params[:from_author].present?
           - { tab: :author, author_id: params[:from_author] }
         - elsif params[:from_circle].present?
           - { tab: :circle, circle_id: params[:from_circle] }
         %p.control
-          = link_to 'Back', doujinshi_path(url_params.to_h.merge letter: params[:letter], anchor: 'listing'),
+          = link_to 'Back', doujinshi_path(back_params.to_h, anchor: 'listing'),
             class: 'button is-info is-rounded'
-        
-        - url_params = params.permit(:from_author, :from_circle)
         
         - if params[:action] == 'edit'
           %p.control
@@ -25,8 +25,19 @@
               %span.icon
                 %i.mi.mi-small edit
               %span Edit
-  .column.has-text-right
-    = link_to @doujin, method: :delete, data: { confirm: 'Are you sure?' }, class: 'button is-danger is-rounded' do
-      %span.icon
-        %i.mi.mi-small delete
-      %span Delete
+  .column
+    .actions.field
+      .field.has-addons.is-justify-content-flex-end
+        %p.control
+          = link_to doujin_path(@doujin, url_params.merge(rehash: true)),
+              data: {confirm: 'rehash file and update stored checksum?'},
+              title: 'recalculate checksum', class: 'button is-danger is-rounded' do
+            %span.icon
+              %i.mi.mi-small tag
+            %span ReHASH
+        
+        %p.control
+          = link_to @doujin, method: :delete, data: { confirm: 'Are you sure?' }, class: 'button is-danger is-rounded' do
+            %span.icon
+              %i.mi.mi-small delete
+            %span Delete
