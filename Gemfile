@@ -21,6 +21,7 @@ gem 'kaminari'                   # pagination -- https://github.com/kaminari/kam
 gem 'kakasi'                     # kanji kana simple inverter -- https://github.com/knu/kakasi_ffi
 gem 'progressbar'                # cli progressbar -- https://github.com/jfelchner/ruby-progressbar
 gem 'rubyzip', '~> 2.3', require: 'zip' # manage ZIP files -- https://github.com/rubyzip/rubyzip
+gem 'paper_trail', '~> 12.3'     # track model changes -- https://github.com/paper-trail-gem/paper_trail
 #gem 'ferret', '0.11.9.0', source: 'https://rubygems.pkg.github.com/acavalin' # https://github.com/acavalin/ferret
 
 # image manipulation  ==>         https://github.com/janko/image_processing

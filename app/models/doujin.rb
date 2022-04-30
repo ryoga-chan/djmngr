@@ -10,8 +10,11 @@ class Doujin < ApplicationRecord
     throw :abort
   }
   
+  has_paper_trail only: %i[ name name_romaji name_orig ], on: %i[ update ]
+  
   before_validation :sanitize_fields
-  after_destroy :delete_files
+  before_destroy    :delete_versions
+  after_destroy     :delete_files
   
   include JapaneseLabels
   
@@ -37,17 +40,17 @@ class Doujin < ApplicationRecord
     fold = File.join *[info[:dest_folder], info[:subfolder]].select(&:present?).map{|i| i.to_s.gsub(/[\/\\]/, '_') }
     fold = '.' if fold.blank?
     name = info[:dest_filename].to_s.gsub(/[\/\\]/, '_')
-    self.find_by category: cat, file_folder: fold, file_name: name
+    find_by category: cat, file_folder: fold, file_name: name
   end # self.find_by_process_params
   
   def file_path(full: false)
-    tmp_folder = self.file_folder == '.' ? '' : self.file_folder
-    tmp_path = File.join self.category, tmp_folder, self.file_name
+    tmp_folder = file_folder == '.' ? '' : file_folder
+    tmp_path = File.join category, tmp_folder, file_name
     full ? File.join(Setting['dir.sorted'], tmp_path) : tmp_path
   end # file_path
   
   def file_contents
-    File.read self.file_path(full: true)
+    File.read file_path(full: true)
   end # file_contents
   
   # infer a default artist and filename
@@ -56,21 +59,21 @@ class Doujin < ApplicationRecord
   
     @file_dl_info = {}
     
-    tmp_folder = self.file_folder == '.' ? '' : self.file_folder
+    tmp_folder = file_folder == '.' ? '' : file_folder
     
     case self.category
       when 'author', 'circle'
         tmp_author, tmp_subfolder = tmp_folder.split(File::SEPARATOR, 2)
         @file_dl_info[:author  ] = tmp_author
-        @file_dl_info[:filename] = self.file_name
+        @file_dl_info[:filename] = file_name
         @file_dl_info[:filename] = "#{tmp_subfolder} -- #{@file_dl_info[:filename]}" if tmp_subfolder
       when 'artbook', 'magazine'
         tmp_folder, tmp_subfolder = tmp_folder.split(File::SEPARATOR, 2)
         @file_dl_info[:author  ] = 'various'
-        @file_dl_info[:filename] = "{#{self.category[0..2]}} "
-        @file_dl_info[:filename] += "#{tmp_folder} #{'-- ' if self.category == 'artbook'}" if tmp_folder.present?
+        @file_dl_info[:filename] = "{#{category[0..2]}} "
+        @file_dl_info[:filename] += "#{tmp_folder} #{'-- ' if category == 'artbook'}" if tmp_folder.present?
         @file_dl_info[:filename] += "- #{tmp_subfolder} " if tmp_subfolder.present?
-        @file_dl_info[:filename] += self.file_name
+        @file_dl_info[:filename] += file_name
     end
     
     @file_dl_info[:ext] = File.extname @file_dl_info[:filename]
@@ -82,19 +85,19 @@ class Doujin < ApplicationRecord
   def file_dl_name
     return @file_dl_name if @file_dl_name
     
-    info = self.file_dl_info
+    info = file_dl_info
     
-    @file_dl_name = case self.category
+    @file_dl_name = case category
       when 'author', 'circle'   ; "[#{info[:author]}] #{info[:filename]}#{info[:ext]}"
       when 'artbook', 'magazine'; "#{info[:filename]}#{info[:ext]}"
     end
   end # file_dl_name
   
-  def thumb_path = "/thumbs/#{self.id}.webp"
+  def thumb_path = "/thumbs/#{id}.webp"
   
   def destroy_with_files
     @delete_files = true
-    self.destroy
+    destroy
   end # destroy_with_files
   
   def percent_read = (read_pages.to_f / num_images * 100).round(2)
@@ -106,8 +109,10 @@ class Doujin < ApplicationRecord
   def delete_files
     return unless @delete_files
     [
-      self.file_path(full: true), # doujin file
-      File.join(Rails.root, 'public', 'thumbs', "#{self.id}.webp"), # thumbnail
+      file_path(full: true), # doujin file
+      File.join(Rails.root, 'public', 'thumbs', "#{id}.webp"), # thumbnail
     ].each{|f| File.unlink(f) if File.exist?(f) }
   end # delete_files
+  
+  def delete_versions = versions.destroy_all
 end
