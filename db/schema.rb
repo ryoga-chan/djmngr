@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_02_08_200104) do
+ActiveRecord::Schema[7.0].define(version: 2022_04_30_115038) do
   create_table "authors", force: :cascade do |t|
     t.string "name"
     t.string "name_romaji"
@@ -129,6 +129,16 @@ ActiveRecord::Schema[7.0].define(version: 2022_02_08_200104) do
     t.string "doujinshi_org_url", default: "", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "versions", force: :cascade do |t|
+    t.string "item_type", null: false
+    t.bigint "item_id", null: false
+    t.string "event", null: false
+    t.string "whodunnit"
+    t.text "object_changes"
+    t.datetime "created_at"
+    t.index ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id"
   end
 
   add_foreign_key "authors_circles", "authors"
