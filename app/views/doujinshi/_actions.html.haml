@@ -12,7 +12,7 @@
           = link_to 'Back', doujinshi_path(url_params.to_h.merge letter: params[:letter], anchor: 'listing'),
             class: 'button is-info is-rounded'
         
-        - url_params = params.permit(:from_author, :from_circle, :letter)
+        - url_params = params.permit(:from_author, :from_circle)
         
         - if params[:action] == 'edit'
           %p.control
