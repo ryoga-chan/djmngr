@@ -81,6 +81,8 @@ class ProcessController < ApplicationController
     if params[:archive_too] == 'true'
       @info = YAML.load_file(File.join @dname, 'info.yml')
       File.unlink @info[:file_path]
+      # update filelist
+      ProcessIndexRefreshJob.remove_entry_from_cache @info[:relative_path]
     end
     
     FileUtils.rm_rf @dname, secure: true
