@@ -1,3 +1,5 @@
+- versions = @doujin.versions.reverse
+
 - if @doujin.errors.any?
   .is-size-5.notification.is-danger.content
     %ul
@@ -5,6 +7,9 @@
         %li= message
 
 = form_for @doujin do |f|
+  = hidden_field_tag :from_author, params[:from_author]
+  = hidden_field_tag :from_circle, params[:from_circle]
+
   .field.is-horizontal
     .field-label.is-normal
       %label.label Name
@@ -14,6 +19,8 @@
           = f.text_field :name, class: :input
           %span.icon.is-small.is-left
             %i.mi.mi-small local_offer
+      = render partial: 'versions_link', locals: {field: 'name'}
+  = render partial: 'versions', locals: {versions: versions, field: 'name'}
 
   .field.is-horizontal
     .field-label.is-normal
@@ -24,6 +31,8 @@
           = f.text_field :name_romaji, class: :input
           %span.icon.is-small.is-left
             %i.mi.mi-small translate
+      = render partial: 'versions_link', locals: {field: 'name_romaji'}
+  = render partial: 'versions', locals: {versions: versions, field: 'name_romaji'}
 
   .field.is-horizontal
     .field-label.is-normal
@@ -44,6 +53,8 @@
           = f.text_field :name_orig, class: :input
           %span.icon.is-small.is-left
             %i.mi.mi-small photo_filter
+      = render partial: 'versions_link', locals: {field: 'name_orig'}
+  = render partial: 'versions', locals: {versions: versions, field: 'name_orig'}
 
   .field.is-horizontal
     .field-label.is-normal

@@ -154,7 +154,7 @@ class DoujinshiController < ApplicationController
              :read_pages, :language, :censored, :colorized, :notes)
     
     @doujin.update(doujin_params) ?
-      redirect_to(@doujin, notice: "doujin [#{params[:id]}] updated") :
+      redirect_to(doujin_path(@doujin, params.permit(:from_author, :from_circle)), notice: "doujin [#{params[:id]}] updated") :
       render(:edit, status: :unprocessable_entity)
   end # update
   
