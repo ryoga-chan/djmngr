@@ -28,10 +28,12 @@ Rails.application.routes.draw do
     
     member do
       get  :read
-      post :read_pages
       get  :image
       get  :delete
+      post :read_pages
       post :score
+      post :rehash
+      post :reprocess
     end
   end
   resources :authors

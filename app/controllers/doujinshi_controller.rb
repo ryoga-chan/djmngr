@@ -1,6 +1,6 @@
 class DoujinshiController < ApplicationController
   before_action :set_doujin,
-    only: %i[ show edit update delete destroy score read read_pages image ]
+    only: %i[ show edit update delete destroy score rehash read read_pages image ]
 
   # browse doujinshi by author/circle/folder
   def index
@@ -60,7 +60,6 @@ class DoujinshiController < ApplicationController
   def show
     msg = @doujin.check_hash?       ? [:notice,'same checksum'       ] : [:alert,'different checksum'] if params[:check_hash]
     msg = @doujin.check_zip?        ? [:notice,'zip test successfull'] : [:alert,'zip test failed'   ] if params[:check_zip]
-    msg = @doujin.refresh_checksum! ? [:notice,'checksum refreshed'  ] : [:alert,'checksum error'    ] if params[:rehash]
     flash.now.send '[]=', *msg if msg
     
     respond_to do |format|
@@ -162,6 +161,11 @@ class DoujinshiController < ApplicationController
       redirect_to(doujin_path(@doujin, params.permit(:from_author, :from_circle)), notice: "doujin [#{params[:id]}] updated") :
       render(:edit, status: :unprocessable_entity)
   end # update
+  
+  def rehash
+    msg = @doujin.refresh_checksum! ? {notice: 'checksum refreshed'} : {alert: 'checksum error'}
+    redirect_to doujin_path(@doujin, params.permit(:from_author, :from_circle)), flash: msg
+  end # rehash
   
   def destroy
     @doujin.destroy_with_files
