@@ -1,0 +1,17 @@
+.field.is-horizontal.versions.is-hidden{class: field}
+  .field-label.is-normal
+  .field-body
+    - if versions.any?{|v| v.changeset[field].present? }
+      %table.table.is-striped.is-fullwidth.is-hoverable
+        - versions.each do |v|
+          - next if !v.changeset[field] || v.changeset[field][0].blank?
+          %tr
+            %td= v.changeset[field][0]
+            %th.w1.nowrap= l v.created_at
+            %td.w1
+              = link_to '#', class: 'button is-info is-small is-rounded', title: 'restore this text',
+                  onclick: %Q|jQuery('#doujin_#{field}').val( jQuery(this).parents('tr:first').find('td:first').text().trim() ); return false| do
+                %span.icon.is-small
+                  %i.mi.mi-small restore
+    - else
+      .is-italic no changes made
