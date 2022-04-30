@@ -246,6 +246,19 @@ class ProcessController < ApplicationController
           map{|i| Pathname.new(i).relative_path_from(repo).to_s }.
           sort if File.exist?(repo)
         
+        # find similar names to suggest
+        search_terms = @info[:dest_filename].tokenize_doujin_filename(remove_numbers: true).join '%'
+        if search_terms.size > 6
+          sql_name = "COALESCE(NULLIF(name_romaji, ''), NULLIF(name_kakasi, ''))"
+          # NOTE: sqlite LIKE is case insensitive
+          @suggestions = Doujin.
+            distinct.select(Arel.sql "#{sql_name} AS name").
+            where(category: @info[:file_type]).
+            where("name_romaji LIKE :terms OR name_kakasi LIKE :terms", terms: "%#{search_terms}%").
+            order(Arel.sql sql_name).limit(50).
+            map(&:name)
+        end
+        
         # check if file already exists on disk/collection
         collection_file_path = Doujin.dest_path_by_process_params(@info, full_path: true)
         if File.exist?(collection_file_path)

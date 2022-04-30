@@ -68,7 +68,7 @@
               %th Size
           %tbody
             - @doujinshi.to_a.each do |d|
-              - descr = d.name_romaji.present? ? d.name_romaji : d.name_kakasi
+              - descr = d.label_name_latin
               - title = d.name if d.name != descr
               
               %tr{title: title, data: {cover: doujin_path(d, format: :webp)}}
