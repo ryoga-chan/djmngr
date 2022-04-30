@@ -78,6 +78,14 @@
           onclick: %Q|$('#dest_filename').val($('#dest_filename').data('orig-name')); return false;| do
           %span.icon
             %i.mi.mi-small(title="restore initial filename") restore
+    
+    - if @suggestions
+      .suggested-filenames.mb1.ml-6(title="suggested filenames" style="max-height: 10rem; overflow: auto;")
+        %table.table.is-striped
+          - @suggestions.each do |lbl|
+            %tr
+              %td= link_to lbl, '#', title: 'copy this suggestion',
+                onclick: %Q|jQuery('#dest_filename').val( jQuery(this).text().trim() + '.zip' ); return false|
 
     .final-path
       %span.icon.in-text-small.mr-2
