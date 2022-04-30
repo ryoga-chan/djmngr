@@ -12,6 +12,10 @@ class Doujin < ApplicationRecord
   
   has_paper_trail only: %i[ name name_romaji name_orig ], on: %i[ update ]
   
+  validates :name, :size, :checksum, :num_images, :num_files,
+            :category, :file_folder, :file_name,
+            presence: true
+  
   before_validation :sanitize_fields
   before_destroy    :delete_versions
   after_destroy     :delete_files

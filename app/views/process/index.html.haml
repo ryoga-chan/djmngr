@@ -4,6 +4,9 @@
       .column.is-1 refreshing
       .column.is-3
         %progress.progress.is-small.is-primary
+    
+    :javascript
+      setTimeout(function () { window.location.reload(); }, 5000)
   - else
     - if @preparing.any?
       .title.is-4= "Processing archives (#{@preparing.size})"

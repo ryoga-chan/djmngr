@@ -47,6 +47,7 @@
                   .span Logout
 
     %section.section.main-content
+      -# NOTE: "notice" and "alert" are Rails defaults, "warn" is a custom key
       - {notice: 'is-info', warn: 'is-warning', alert: 'is-danger'}.each do |key, css_class|
         - if flash[key].present?
           .is-size-5.notification{class: css_class}

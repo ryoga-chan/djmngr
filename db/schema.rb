@@ -85,20 +85,20 @@ ActiveRecord::Schema[7.0].define(version: 2022_04_30_115038) do
   end
 
   create_table "doujinshi", force: :cascade do |t|
-    t.string "name"
+    t.string "name", null: false
     t.string "name_romaji"
     t.string "name_kakasi"
-    t.integer "size"
-    t.string "checksum"
-    t.integer "num_images"
-    t.integer "num_files"
+    t.integer "size", null: false
+    t.string "checksum", null: false
+    t.integer "num_images", null: false
+    t.integer "num_files", null: false
     t.integer "score"
-    t.text "name_orig"
+    t.string "name_orig", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "category"
-    t.text "file_folder"
-    t.text "file_name"
+    t.string "category", null: false
+    t.string "file_folder", null: false
+    t.string "file_name", null: false
     t.datetime "scored_at"
     t.string "reading_direction", limit: 3, default: "r2l"
     t.integer "read_pages", default: 0

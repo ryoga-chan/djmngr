@@ -1,9 +1,10 @@
 class DoujinshiController < ApplicationController
-  before_action :set_doujin,
-    only: %i[ show edit update delete destroy score rehash read read_pages image ]
+  before_action :set_doujin, except: %i[ index ]
 
   # browse doujinshi by author/circle/folder
   def index
+    return redirect_to(process_index_path, flash: {warn: 'collection is empty'}) unless Doujin.any?
+    
     params[:tab] = 'author' unless %w{ author circle artbook magazine }.include?(params[:tab])
     
     session[:dj_index_detail] = params[:detail] if %w{ thumbs table }.include?(params[:detail])
@@ -172,6 +173,21 @@ class DoujinshiController < ApplicationController
     flash[:notice] = "doujin [#{@doujin.id}] deleted"
     redirect_to_with_format doujinshi_path
   end # destroy
+  
+  def reprocess
+    # create original folder in /to_sort/reprocess
+    dst_dir = File.expand_path File.join(Setting['dir.to_sort'], 'reprocess', File.dirname(@doujin.name_orig))
+    FileUtils.mkdir_p dst_dir
+    
+    # move current ZIP file to that folder
+    FileUtils.mv @doujin.file_path(full: true),
+                 File.join(dst_dir, File.basename(@doujin.name_orig)), force: true
+    
+    @doujin.destroy_with_files
+    
+    redirect_to prepare_archive_process_index_path(path: File.join('reprocess', @doujin.name_orig)),
+      notice: "doujin removed from collection, processing auto started"
+  end # reprocess
 
 
   private # ____________________________________________________________________
