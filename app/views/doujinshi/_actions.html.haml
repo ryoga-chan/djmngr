@@ -29,7 +29,7 @@
     .actions.field
       .field.has-addons.is-justify-content-flex-end
         %p.control
-          = link_to doujin_path(@doujin, url_params.merge(rehash: true)),
+          = link_to rehash_doujin_path(@doujin, url_params), method: :post,
               data: {confirm: 'rehash file and update stored checksum?'},
               title: 'recalculate checksum', class: 'button is-danger is-rounded' do
             %span.icon
@@ -37,7 +37,17 @@
             %span ReHASH
         
         %p.control
-          = link_to @doujin, method: :delete, data: { confirm: 'Are you sure?' }, class: 'button is-danger is-rounded' do
+          = link_to reprocess_doujin_path(@doujin), method: :post,
+              data: {confirm: 'remove from collection and rerun processing?'},
+              title: 're-process this file', class: 'button is-danger is-rounded' do
+            %span.icon
+              %i.mi.mi-small swap_horiz
+            %span ReProcess
+        
+        %p.control
+          = link_to @doujin, method: :delete,
+              data: { confirm: 'Are you sure?' },
+              class: 'button is-danger is-rounded' do
             %span.icon
               %i.mi.mi-small delete
             %span Delete
