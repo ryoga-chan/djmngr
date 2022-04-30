@@ -59,7 +59,7 @@ class ProcessArchiveCompressJob < ApplicationJob
       File.open(File.join(src_dir, 'finalize.perc'), 'w'){|f| f.write perc.round(2) }
       
       # 3. calculate checksum
-      info[:dest_checksum] = `sha512sum -b #{info[:collection_full_path].shellescape}`.split(' ', 2)[0]
+      info[:dest_checksum] = `sha512sum -b #{info[:collection_full_path].shellescape}.NEW`.split(' ', 2)[0]
       perc = (cur_step+=1).to_f / tot_steps * 100
       File.open(File.join(src_dir, 'finalize.perc'), 'w'){|f| f.write perc.round(2) }
 
