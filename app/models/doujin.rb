@@ -1,4 +1,15 @@
 class Doujin < ApplicationRecord
+  LANGUAGES = { # https://www.abbreviations.com
+    'Japanese'   => 'jpn',
+    'English'    => 'eng',
+    'Chinese'    => 'chi',
+    'Italian'    => 'ita',
+    'French'     => 'fra',
+    'Spanish'    => 'spa',
+    'Deutsch'    => 'deu',
+    'None/Other' => '???',
+  }.freeze
+
   has_and_belongs_to_many :authors, before_add: -> (d, a) {
     return unless d.authors.where(id: a.id).exists? # ensure uniqueness
     d.errors.add :base, "author already associated [#{a.id}: #{a.name}]"
