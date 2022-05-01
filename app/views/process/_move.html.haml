@@ -1,38 +1,58 @@
-.columns
-  .column.is-8
-    .name_orig.mb-1
-      %span.icon.in-text-small.mr-2
-        %i.mi.mi-small(title="original filename") photo_filter
-      = @fname
-
-    - if @fname != @fname.to_romaji
-      .name_romaji.mb-1
+= form_with url: set_property_process_path do |f|
+  = f.hidden_field :tab, value: params[:tab]
+  = f.hidden_field :score, value: @info[:score]
+  
+  .columns
+    .column.is-8
+      .name_orig.mb-1
         %span.icon.in-text-small.mr-2
-          %i.mi.mi-small(title="kakasi filename") translate
-        = @fname.to_romaji #alt_readings:true, furigana_mode: true
+          %i.mi.mi-small(title="original filename") photo_filter
+        = @fname
 
-    .file-type.mb-1
-      = form_with url: set_property_process_path do |f|
-        = f.hidden_field :tab, value: params[:tab]
-        
+      - if @fname != @fname.to_romaji
+        .name_romaji.mb-1
+          %span.icon.in-text-small.mr-2
+            %i.mi.mi-small(title="kakasi filename") translate
+          = @fname.to_romaji #alt_readings:true, furigana_mode: true
+
+      .file-type.mb-1
         %span.icon.in-text-small.mr-2
-          %i.mi.mi-small(title="reading direction") sync_alt
-        %span.select.vmiddle= f.select :reading_direction,
-          options_for_select({'right to left' => 'r2l', 'left to right' => 'l2r'}, @info[:reading_direction]), {},
-          class: "input is-small vmiddle", style: 'width: 15rem',
-          onchange: %Q| this.form.submit() |
-
-        %span.icon.in-text-small.mr-2.ml-6
           %i.mi.mi-small(title="archive type") local_offer
         - if @info[:file_type] == 'doujin'
           = "#{@info[:doujin_dest_type]} #{@info[:file_type]}"
         - else
           = @info[:file_type]
+          
+      .other-settings.mb-1
+        %span.icon.in-text-small.mr-2
+          %i.mi.mi-small(title="other properties") settings
         
-    .scoring-stars
-      = form_with url: set_property_process_path do |f|
-        = f.hidden_field :tab, value: params[:tab]
-        = f.hidden_field :score, value: @info[:score]
+        .select(title="language")= f.select :language,
+          options_for_select(Doujin::LANGUAGES, @info[:language]),
+          {}, class: "input is-small vmiddle", onchange: %Q| this.form.submit() |
+        
+        .select(title="censored?")= f.select :censored,
+          options_for_select({'uncensored' => false, 'censored' => true}, @info[:censored]),
+          {}, class: "input is-small vmiddle", onchange: %Q| this.form.submit() |
+        
+        .select(title="colorized?")= f.select :colorized,
+          options_for_select({'black & white' => false, 'colorized' => true}, @info[:colorized]),
+          {}, class: "input is-small vmiddle", onchange: %Q| this.form.submit() |
+        
+        .select(title="reading direction")= f.select :reading_direction,
+          options_for_select({'right to left' => 'r2l', 'left to right' => 'l2r'}, @info[:reading_direction]),
+          {}, class: "input is-small vmiddle", onchange: %Q| this.form.submit() |
+
+      .notes
+        %span.icon.in-text-small.mr-2
+          %i.mi.mi-small(title="notes") comment
+        = f.text_field :notes, value: @info[:notes], placeholder: 'notes',
+          class: 'input is-small', style: 'width: 30.25rem'
+        = f.button class: 'button is-small' do
+          %span.icon
+            %i.mi.mi-small send
+
+      .scoring-stars
         %span.icon.in-text-small.mr-2
           %i.mi.mi-small(title="quality score") favorite
         %span.scoring
@@ -44,9 +64,7 @@
           %span.icon.is-medium.in-text.clear-score{data: {score: 0}}
             %i.mi.mi-medium(title="clear") clear
 
-    .subfolder.mb-1
-      = form_with url: set_property_process_path do |f|
-        = f.hidden_field :tab, value: params[:tab]
+      .subfolder.mb-1
         %span.icon.in-text-small.mr-2
           %i.mi.mi-small(title="destination subfolder") create_new_folder
         %span.select.vmiddle= f.select :sel_subfolder,
@@ -58,14 +76,11 @@
         = f.button class: 'button is-small' do
           %span.icon
             %i.mi.mi-small send
-        = f.button class: 'button is-small',
-          onclick: %Q|$('#subfolder').val('')| do
+        = f.button class: 'button is-small', onclick: %Q|$('#subfolder').val('')| do
           %span.icon
             %i.mi.mi-small(title="clear subfolder") clear
 
-    .dest-filename.mb-1
-      = form_with url: set_property_process_path do |f|
-        = f.hidden_field :tab, value: params[:tab]
+      .dest-filename.mb-1
         %span.icon.in-text-small.mr-2
           %i.mi.mi-small(title="destination filename") insert_drive_file
         = f.text_field :dest_filename, value: @info[:dest_filename], placeholder: 'destination filename',
@@ -78,52 +93,49 @@
           onclick: %Q|$('#dest_filename').val($('#dest_filename').data('orig-name')); return false;| do
           %span.icon
             %i.mi.mi-small(title="restore initial filename") restore
-    
-    - if @suggestions
-      .suggested-filenames.mb1.ml-6(title="suggested filenames" style="max-height: 10rem; overflow: auto;")
-        %table.table.is-striped
-          - @suggestions.each do |lbl|
-            %tr
-              %td= link_to lbl, '#', title: 'copy this suggestion',
-                onclick: %Q|jQuery('#dest_filename').val( jQuery(this).text().trim() + '.zip' ); return false|
-
-    .final-path
-      %span.icon.in-text-small.mr-2
-        %i.mi.mi-small(title="destination path") folder
-      = Doujin.dest_path_by_process_params @info
-    
-    - if @collision_info
-      .collection-collision.ml-6
-        .collision-details.my-3
-          %span.tag.is-danger= "ALREADY EXIST!"
-          &rightarrow;
-          %span.tag.is-info= "#{@collision_info[:current]} current"
-          VS.
-          %span.tag.is-info= "#{@collision_info[:collection]} collection"
-        = form_with url: set_property_process_path do |f|
-          = f.hidden_field :tab, value: params[:tab]
-          %span.has-text-danger
-            = f.check_box :overwrite, {checked: @info[:overwrite], include_hidden: true, onchange: %Q| this.form.submit() |}
-            = label_tag :overwrite, "overwrite file in the collection"
-          - if dj_id = @collision_info[:doujin].try(:id)
-            = link_to "view doujin ID #{dj_id}", doujin_path(id: dj_id), target: :_blank
-  
-    .has-text-centered.my-4
-      = link_to finalize_volume_process_path, method: :post,
-        class: 'button is-success is-rounded' do
-        %span.icon
-          %i.mi.mi-small gavel
-        %span finalize process and store volume in the collection
-
-  .column.has-text-centered
-    - html_cover = capture do
-      - base_dir = File.join(Setting['dir.sorting'], @info[:working_dir], 'thumbs')
-      - cover = @info[:images].first
       
-      - if @info[:landscape_cover] && @info[:landscape_cover_method] != :none
-        = thumbnail_tag File.join(base_dir, '0000.webp'), title: "cropped cover"
-        = form_with url: set_property_process_path do |f|
-          = f.hidden_field :tab, value: params[:tab]
+      - if @suggestions
+        .suggested-filenames.mb1.ml-6(title="suggested filenames" style="max-height: 10rem; overflow: auto;")
+          %table.table.is-striped
+            - @suggestions.each do |lbl|
+              %tr
+                %td= link_to lbl, '#', title: 'copy this suggestion',
+                  onclick: %Q|jQuery('#dest_filename').val( jQuery(this).text().trim() + '.zip' ); return false|
+
+      .final-path
+        %span.icon.in-text-small.mr-2
+          %i.mi.mi-small(title="destination path") folder
+        = Doujin.dest_path_by_process_params @info
+      
+      - if @collision_info
+        .collection-collision.ml-6
+          .collision-details.my-3
+            %span.tag.is-danger= "ALREADY EXIST!"
+            &rightarrow;
+            %span.tag.is-info= "#{@collision_info[:current]} current"
+            VS.
+            %span.tag.is-info= "#{@collision_info[:collection]} collection"
+          .collision-confirm
+            %span.has-text-danger
+              = f.check_box :overwrite, {checked: @info[:overwrite], include_hidden: true, onchange: %Q| this.form.submit() |}
+              = label_tag :overwrite, "overwrite file in the collection"
+            - if dj_id = @collision_info[:doujin].try(:id)
+              = link_to "view doujin ID #{dj_id}", doujin_path(id: dj_id), target: :_blank
+    
+      .has-text-centered.my-4
+        = link_to finalize_volume_process_path, method: :post,
+          class: 'button is-success is-rounded' do
+          %span.icon
+            %i.mi.mi-small gavel
+          %span finalize process and store volume in the collection
+
+    .column.has-text-centered
+      - html_cover = capture do
+        - base_dir = File.join(Setting['dir.sorting'], @info[:working_dir], 'thumbs')
+        - cover = @info[:images].first
+        
+        - if @info[:landscape_cover] && @info[:landscape_cover_method] != :none
+          = thumbnail_tag File.join(base_dir, '0000.webp'), title: "cropped cover"
           .control.has-icons-left
             - crop_methods = %w{ low centre attention entropy high }.map{|m| ["crop #{m}", m] }
             .select.w100= f.select :cover_crop_method,
@@ -131,16 +143,16 @@
               class: 'w100', onchange: %Q| this.form.submit() |
             .icon.is-small.is-left
               %i.mi(title="crop landscape cover") crop
+        - else
+          = thumbnail_tag File.join(base_dir, cover[:thumb_path]), title: "#{cover[:dst_path]} @ #{number_to_human_size cover[:size]}\n↪#{cover[:src_path]}"
+      
+      - if @collision_info
+        .columns
+          .column.is-6(style="border-right: 1px solid transparent")
+            .descr this file
+            .this_cover= html_cover
+          .column.is-6(style="border-left: 1px solid red")
+            .descr collection
+            .coll_cover= image_tag doujin_path(id: @collision_info[:doujin].try(:id).to_i, format: :webp), title: "collision cover"
       - else
-        = thumbnail_tag File.join(base_dir, cover[:thumb_path]), title: "#{cover[:dst_path]} @ #{number_to_human_size cover[:size]}\n↪#{cover[:src_path]}"
-    
-    - if @collision_info
-      .columns
-        .column.is-6(style="border-right: 1px solid transparent")
-          .descr this file
-          .this_cover= html_cover
-        .column.is-6(style="border-left: 1px solid red")
-          .descr collection
-          .coll_cover= image_tag doujin_path(id: @collision_info[:doujin].try(:id).to_i, format: :webp), title: "collision cover"
-    - else
-      = html_cover
+        = html_cover

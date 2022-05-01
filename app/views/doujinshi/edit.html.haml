@@ -63,16 +63,7 @@
       .field
         .control.is-expanded.has-icons-left
           .select.is-fullwidth(title="language")
-            -# https://www.abbreviations.com/JPN
-            = f.select :language,
-              { 'Japanese'   => :'jpn',
-                'English'    => :'eng',
-                'Chinese'    => :'chi',
-                'Italian'    => :'ita',
-                'French'     => :'fra',
-                'Spanish'    => :'spa',
-                'Deutsch'    => :'deu',
-                'None/Other' => :'???', }
+            = f.select :language, Doujin::LANGUAGES
           %span.icon.is-small.is-left
             %i.mi.mi-small language
       .field
@@ -89,7 +80,7 @@
             %i.mi.mi-small visibility_off
       .field
         .control.has-icons-left
-          .select.is-fullwidth(title="fan made colorization")
+          .select.is-fullwidth(title="almost all pages are full color")
             = f.select :colorized, {'black & white' => false, 'colorized' => true}
           %span.icon.is-small.is-left
             %i.mi.mi-small format_paint

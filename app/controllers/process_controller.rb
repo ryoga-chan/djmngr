@@ -156,6 +156,10 @@ class ProcessController < ApplicationController
       subfolder
       dest_filename
       reading_direction
+      language
+      censored
+      colorized
+      notes
     }.each do |k|
       if params[k] && params[k] != @info[k]
         @info[k] = params[k].strip

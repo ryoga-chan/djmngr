@@ -11,7 +11,7 @@
         - elsif params[:from_circle].present?
           - { tab: :circle, circle_id: params[:from_circle] }
         %p.control
-          = link_to 'Back', doujinshi_path(back_params.to_h, anchor: 'listing'),
+          = link_to 'Back', doujinshi_path(back_params.to_h.merge anchor: 'listing'),
             class: 'button is-info is-rounded'
         
         - if params[:action] == 'edit'

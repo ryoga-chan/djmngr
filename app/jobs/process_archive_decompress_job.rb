@@ -36,6 +36,7 @@ class ProcessArchiveDecompressJob < ApplicationJob
         info[key] << result.id if result.name.downcase == term
       end
     end
+    
     # set a default doujin destination
     if dest_id = info[:circle_ids].to_a.first
       info[:doujin_dest_type], info[:doujin_dest_id] = 'circle', dest_id
@@ -64,6 +65,11 @@ class ProcessArchiveDecompressJob < ApplicationJob
       info[:dest_folder] = ''
       info[:dest_filename] = File.basename(fname)
     end
+    
+    # set properties
+    info[:language ] = Doujin::LANGUAGES.values.detect{|v| name[:properties].include?(v) } || Doujin::LANGUAGES.values.first
+    info[:censored ] = !name[:properties].include?('unc')
+    info[:colorized] = info[:file_type] == 'artbook' || name[:properties].include?('col')
     
     # identify files and resize images
     path_thumbs   = File.join(dst_dir, 'thumbs')
