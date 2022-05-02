@@ -2,7 +2,7 @@
 
 - if @doujin.errors.any?
   .is-size-5.notification.is-danger.content
-    %ul
+    %ul.mt-0
       - @doujin.errors.full_messages.each do |message|
         %li= message
 
@@ -43,6 +43,16 @@
           = f.text_field :name_kakasi, class: :input
           %span.icon.is-small.is-left
             %i.mi.mi-small translate
+
+  .field.is-horizontal
+    .field-label.is-normal
+      %label.label File name
+    .field-body
+      .field
+        .control.is-expanded.has-icons-left
+          = f.text_field :file_name, class: :input
+          %span.icon.is-small.is-left
+            %i.mi.mi-small description
 
   .field.is-horizontal
     .field-label.is-normal
