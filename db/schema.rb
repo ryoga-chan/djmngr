@@ -23,6 +23,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_04_30_115038) do
     t.string "doujinshi_org_url", default: "", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "favorite", default: false
+    t.datetime "faved_at"
   end
 
   create_table "authors_circles", id: false, force: :cascade do |t|
@@ -64,6 +66,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_04_30_115038) do
     t.string "doujinshi_org_url", default: "", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "favorite", default: false
+    t.datetime "faved_at"
   end
 
   create_table "circles_doujinshi", id: false, force: :cascade do |t|
@@ -106,6 +110,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_04_30_115038) do
     t.boolean "censored", default: true
     t.boolean "colorized", default: false
     t.string "notes"
+    t.boolean "favorite", default: false
+    t.datetime "faved_at"
   end
 
   create_table "settings", force: :cascade do |t|

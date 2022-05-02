@@ -19,15 +19,15 @@
             %span.icon.is-small
               %i.mi book
     
+    %p.menu-label
+      = params[:tab].capitalize.pluralize
+      - if %w{ author_id circle_id folder }.any?{|k| params[k] }
+        - cur_params = params.permit(%w{ tab author_id circle_id folder }).to_h
+        = link_to 'change view',
+          cur_params.merge(detail: session[:dj_index_detail] == 'thumbs' ? 'table' : 'thumbs', anchor: "listing"),
+          class: 'button is-info is-small is-rounded', style: 'float: right'
+    
     %aside.menu
-      %p.menu-label
-        = params[:tab].capitalize.pluralize
-        - if %w{ author_id circle_id folder }.any?{|k| params[k] }
-          - cur_params = params.permit(%w{ tab author_id circle_id folder }).to_h
-          = link_to 'change view',
-            cur_params.merge(detail: session[:dj_index_detail] == 'thumbs' ? 'table' : 'thumbs', anchor: "listing"),
-            class: 'button is-info is-small is-rounded', style: 'float: right'
-      
       %ul.menu-list
         - @parents.each do |p|
           - if p.is_a?(String)
@@ -36,8 +36,11 @@
               class: ('is-active' if p == params[:folder])
           - else
             - type = p.class.name.downcase
-            %li= link_to p.name, {tab: params[:tab], "#{type}_id": p.id, anchor: "listing"},
-              class: ('is-active' if p.id == params["#{type}_id"].to_i)
+            %li
+              = link_to p.name, {tab: params[:tab], "#{type}_id": p.id, anchor: "listing"},
+                class: "entry #{'is-active' if p.id == params["#{type}_id"].to_i}"
+              = link_to '&star;'.html_safe, fav_toggle_doujinshi_path(type: p.class.name, id: p.id),
+                class: "fav #{'has-text-warning' if p.favorite?}"
     
     %a(name="listing")
 
