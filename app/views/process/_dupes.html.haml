@@ -1,4 +1,4 @@
-.columns
+.columns{style: (@dupes.any? ? 'border-bottom: 1px dashed silver' : '')}
   .column
     - base_dir = File.join(Setting['dir.sorting'], @info[:working_dir], 'thumbs')
     - cover_name = @info[:landscape_cover] ? '0000.webp' : @info[:images].first[:thumb_path]
