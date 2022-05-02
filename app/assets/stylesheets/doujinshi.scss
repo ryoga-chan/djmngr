@@ -1,23 +1,4 @@
-body[data-ctrl="doujinshi"][data-action="index"] {
-  .tabs li a {
-    padding-left: 0.75rem;
-    padding-right: 0.75rem;
-  }
-  
-  .menu {
-    height:   70vh;
-    overflow: auto;
-    
-    a { display: inline-block; }
-    a.entry { width: 85%; }
-    a.fav {
-      width: 15%;
-      float: right;
-      text-align: center;
-    }
-    a.fav.has-text-warning { background-color: rgba(255,255,0,0.1); }
-  }
-  
+body[data-ctrl="doujinshi"] {
   .columns.thumbs {
     progress { margin: 0; }
     progress[value="0"] { visibility: hidden; }
@@ -28,7 +9,7 @@ body[data-ctrl="doujinshi"][data-action="index"] {
     }
   }
   
-  table.details {
+  table.dj-details {
     margin-bottom: 300px;
     
     tr {
@@ -61,5 +42,41 @@ body[data-ctrl="doujinshi"][data-action="index"] {
     position: absolute;
     border-radius: 1rem;
     border: 1px outset silver;
+  }
+}
+
+body[data-ctrl="doujinshi"][data-action="index"] {
+  .tabs li a {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+  
+  .menu {
+    height:   70vh;
+    overflow: auto;
+    
+    a { display: inline-block; }
+    a.entry { width: 85%; }
+    a.fav {
+      width: 15%;
+      float: right;
+      text-align: center;
+    }
+    a.fav.has-text-warning { background-color: rgba(255,255,0,0.1); }
+  }
+}
+
+body[data-ctrl="doujinshi"][data-action="favorites"] {
+  p.menu-label {
+    top: 0;
+    left: 0;
+    position: sticky;
+    background-color: #1f2424;
+    border-bottom: 1px solid silver;
+  }
+  
+  .column.entries {
+    height:   80vh;
+    overflow: auto;
   }
 }

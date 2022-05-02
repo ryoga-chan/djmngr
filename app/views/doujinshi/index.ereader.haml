@@ -20,16 +20,17 @@
 
     &middot;
 
-    %small= link_to '(back)', cur_params.slice(*%w{ tab letter format })
+    %small= link_to 'back', cur_params.slice(*%w{ tab letter format })
     \|
-    %small= link_to '(change view)', cur_params.merge(detail: session[:dj_index_detail] == 'thumbs' ? 'table' : 'thumbs')
+    - show_key = session[:dj_index_detail] == 'thumbs' ? 'table' : 'thumbs'
+    %small= link_to "show #{show_key}", cur_params.merge(detail: show_key)
 
 %hr/
 
 - if @doujinshi
 
   - if session[:dj_index_detail] == 'table'
-    %table.doujinshi.is-striped.w100
+    %table.doujinshi.is-striped.block-links.w100
       %thead
         %tr
           %th.w1 Cover
@@ -62,7 +63,7 @@
 
 - elsif @parents
 
-  %table.parents.is-striped.w100
+  %table.parents.block-links.is-striped.w100
     %tbody
       - @parents[params[:letter]].to_a.each_slice(4) do |s|
         %tr

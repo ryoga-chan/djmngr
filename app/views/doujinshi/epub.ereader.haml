@@ -4,7 +4,7 @@
     = link_to 'refresh', epub_doujinshi_path, class: :button
     = link_to 'home', root_path, class: :button
 
-%table.files.is-striped.w100
+%table.files.is-striped.block-links.w100
   - @wip.each do |f|
     %tr
       %td

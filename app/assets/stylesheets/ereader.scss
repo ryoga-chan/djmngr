@@ -89,6 +89,27 @@ table.doujin {
   }
 }
 
+.thumbs .doujin {
+  text-align: center;
+  display: inline-block;
+  width: 170px;
+  
+  .descr {
+    height: 2.5rem;
+    overflow: hidden;
+  }
+  
+  .score { background-color: #ccc; }
+}
+
+table.block-links td a { display: block; }
+
+a.fav { text-align: center; }
+a.fav.is-favorite {
+  font-weight: bold;
+  background-color: #ccc;
+}
+
 body[data-ctrl="doujinshi"][data-action="index"] {
   li { margin-bottom: 1rem; }
 
@@ -99,8 +120,6 @@ body[data-ctrl="doujinshi"][data-action="index"] {
       vertical-align: top;
       padding: 0.75rem 0.25rem;
     }
-    
-    td a { display: block; }
   }
   
   table.parents {
@@ -109,19 +128,6 @@ body[data-ctrl="doujinshi"][data-action="index"] {
       border-left: 1px dotted black;
     }
     td:first-child { border: 0; }
-  }
-  
-  .thumbs .doujin {
-    text-align: center;
-    display: inline-block;
-    width: 170px;
-    
-    .descr {
-      height: 1.1rem;
-      overflow: hidden;
-    }
-    
-    .score { background-color: #ccc; }
   }
 }
 
@@ -132,7 +138,6 @@ body[data-ctrl="doujinshi"][data-action="epub"] {
     tr {
       height: 2.5rem;
       
-      td a { display: block; }
       td { padding: 0.25rem; }
     }
   }
