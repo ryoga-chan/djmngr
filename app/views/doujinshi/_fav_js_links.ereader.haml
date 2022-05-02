@@ -1,0 +1,17 @@
+:javascript
+  (function($){ $(function () {
+    // toggle favorites
+    $('a.fav').on('click', function (ev) {
+      ev.preventDefault();
+      var el = $(this);
+      
+      $.ajax({
+        url: el.attr('href'),
+        dataType: 'json',
+        cache: false,
+        beforeSend: function () { el.hide().after('<span>...</span>'); },//beforeSend
+        success: function (resp) { el.toggleClass('is-favorite', resp.favorite); },//success
+        complete: function () { el.show().next().remove(); },//complete
+      });
+    });
+  }); })(jQuery)

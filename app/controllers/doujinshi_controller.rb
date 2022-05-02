@@ -1,14 +1,12 @@
 class DoujinshiController < ApplicationController
-  before_action :set_doujin, except: %i[ index fav_toggle ]
+  before_action :set_index_detail, only: %i[ index favorites ]
+  before_action :set_doujin, only: %i[ show score read read_pages image update rehash destroy reprocess ]
 
   # browse doujinshi by author/circle/folder
   def index
     return redirect_to(process_index_path, flash: {warn: 'collection is empty'}) unless Doujin.any?
     
     params[:tab] = 'author' unless %w{ author circle artbook magazine }.include?(params[:tab])
-    
-    session[:dj_index_detail] = params[:detail] if %w{ thumbs table }.include?(params[:detail])
-    session[:dj_index_detail] ||= 'table'
     
     case params[:tab]
       when 'author'
@@ -199,6 +197,24 @@ class DoujinshiController < ApplicationController
       render(json: {result: :ok, favorite: record.favorite?}) :
       render(json: {result: :err, msg: record.errors.full_messages.map{|m| "- #{m}"}.join("\n") })
   end # fav_toggle
+  
+  def favorites
+    params[:sort] = 'date' unless %w{ name date }.include?(params[:sort])
+    
+    sql_name = "COALESCE(NULLIF(name_romaji, ''), NULLIF(name_kakasi, ''))"
+    
+    sql_sort_by = params[:sort] == 'date' ? {faved_at: :desc} : Arel.sql(sql_name)
+    sql_select  = Arel.sql "id, #{sql_name} AS name, favorite"
+    @authors    = Author.select(sql_select).where(favorite: true).order(sql_sort_by)
+    @circles    = Circle.select(sql_select).where(favorite: true).order(sql_sort_by)
+
+    sql_sort_by = params[:sort] == 'date' ? {faved_at: :desc} : :name_kakasi
+    @doujinshi  = Doujin.where(favorite: true).order(sql_sort_by)
+    
+    if request.format.to_sym == :ereader
+      params[:tab] = 'doujin' unless %w{ doujin author circle }.include?(params[:tab])
+    end
+  end # favorites
 
 
   private # ____________________________________________________________________
@@ -210,6 +226,11 @@ class DoujinshiController < ApplicationController
       return redirect_to_with_format(doujinshi_path)
     end
   end # set_doujin
+  
+  def set_index_detail
+    session[:dj_index_detail] = params[:detail] if %w{ thumbs table }.include?(params[:detail])
+    session[:dj_index_detail] ||= 'table'
+  end # set_index_detail
   
   def redirect_to_with_format(url_or_options)
     return html_redirect_to(url_or_options) if request.format.to_sym == :ereader

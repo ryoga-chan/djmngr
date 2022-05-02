@@ -30,12 +30,34 @@
                 %span.icon
                   %i.mi swap_horiz
                 %span Process
-          %span.navbar-item{class: params[:controller] != 'doujinshi' ? nil : 'is-current'}
-            = link_to doujinshi_path do
+          
+          %span.navbar-item.has-dropdown{class: (params[:controller] != 'doujinshi' ? nil : 'is-current'),
+            onclick: "jQuery(this).toggleClass('is-active')"}
+            %a.navbar-link
               %span.icon-text
-                %span.icon
+                %span.icon.mr-2
                   %i.mi book
                 %span Doujin
+            .navbar-dropdown
+              = link_to doujinshi_path, class: 'navbar-item', style: 'display: inline' do
+                %span.icon-text
+                  %span.icon.mr-2
+                    %i.mi apps
+                  %span Collection
+              %br/
+              %br/
+              = link_to favorites_doujinshi_path, class: 'navbar-item', style: 'display: inline' do
+                %span.icon-text
+                  %span.icon.mr-2
+                    %i.mi auto_awesome
+                  %span Favorites
+              %br/
+              %br/
+              = link_to epub_doujinshi_path, class: 'navbar-item', style: 'display: inline' do
+                %span.icon-text
+                  %span.icon.mr-2
+                    %i.mi.mi-small construction
+                  %span EPUBs
 
         .navbar-end
           .navbar-item
