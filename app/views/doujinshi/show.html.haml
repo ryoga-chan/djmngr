@@ -2,6 +2,9 @@
   .column.is-2.has-text-centered
     %figure.image.is2by3
       = image_tag("/thumbs/#{@doujin.id}.webp")
+    = link_to '&star; fave'.html_safe,
+      fav_toggle_doujinshi_path(type: 'Doujin', id: @doujin.id),
+      class: "button is-rounded fav #{'is-warning' if @doujin.favorite?}"
   .column.pl-5
     %table.table.is-striped.is-fullwidth
       %tr

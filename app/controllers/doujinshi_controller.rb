@@ -1,5 +1,5 @@
 class DoujinshiController < ApplicationController
-  before_action :set_doujin, except: %i[ index ]
+  before_action :set_doujin, except: %i[ index fav_toggle ]
 
   # browse doujinshi by author/circle/folder
   def index
@@ -16,9 +16,9 @@ class DoujinshiController < ApplicationController
         # possibly lighter query:
         #   Author.select(Arel.sql "id, #{sql_name} AS name").where("id IN (SELECT author_id FROM authors_doujinshi)").
         @parents = Author.
-          distinct.select(Arel.sql "authors.id, #{sql_name} AS name").
+          distinct.select(Arel.sql "authors.id, #{sql_name} AS name, authors.favorite").
           joins(:doujinshi).
-          order(Arel.sql "LOWER(#{sql_name})")
+          order(Arel.sql "authors.favorite DESC, LOWER(#{sql_name})")
         @doujinshi = Doujin.
           distinct.select("doujinshi.*").
           joins(:authors).
@@ -28,9 +28,9 @@ class DoujinshiController < ApplicationController
       when 'circle'
         sql_name = "COALESCE(NULLIF(circles.name_romaji, ''), NULLIF(circles.name_kakasi, ''))"
         @parents = Circle.
-          distinct.select(Arel.sql "circles.id, #{sql_name} AS name").
+          distinct.select(Arel.sql "circles.id, #{sql_name} AS name, circles.favorite").
           joins(:doujinshi).
-          order(Arel.sql "LOWER(#{sql_name})")
+          order(Arel.sql "circles.favorite DESC, LOWER(#{sql_name})")
         @doujinshi = Doujin.
           distinct.select("doujinshi.*").
           joins(:circles).
@@ -188,6 +188,17 @@ class DoujinshiController < ApplicationController
     redirect_to prepare_archive_process_index_path(path: File.join('reprocess', @doujin.name_orig)),
       notice: "doujin removed from collection, processing auto started"
   end # reprocess
+  
+  def fav_toggle
+    return render(json: {result: :err, msg: 'type error'}) unless %w{ Author Circle Doujin }.include?(params[:type])
+    
+    record = params[:type].constantize.find_by id: params[:id]
+    return render(json: {result: :err, msg: "#{params[:type]} [#{params[:id]}] not found"}) unless record
+    
+    record.update(favorite: !record.favorite?) ?
+      render(json: {result: :ok, favorite: record.favorite?}) :
+      render(json: {result: :err, msg: record.errors.full_messages.map{|m| "- #{m}"}.join("\n") })
+  end # fav_toggle
 
 
   private # ____________________________________________________________________

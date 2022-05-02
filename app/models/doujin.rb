@@ -34,6 +34,7 @@ class Doujin < ApplicationRecord
   after_destroy     :delete_files
   
   include JapaneseLabels
+  include FavoriteManagement
   
   def sanitize_fields
     self.scored_at = Time.now if score_changed?

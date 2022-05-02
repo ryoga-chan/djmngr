@@ -18,4 +18,5 @@ class Circle < ApplicationRecord
   include JapaneseLabels
   include SearchJapaneseSubject
   include DoujinshiOrgReference
+  include FavoriteManagement
 end
