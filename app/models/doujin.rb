@@ -26,9 +26,11 @@ class Doujin < ApplicationRecord
   validates :name, :size, :checksum, :num_images, :num_files,
             :category, :file_folder, :file_name,
             presence: true
+  validate  :validates_rename_file, on: :update
   
   before_validation :sanitize_fields
   before_destroy    :delete_versions
+  after_update      :rename_file
   after_destroy     :delete_files
   
   include JapaneseLabels
@@ -36,9 +38,17 @@ class Doujin < ApplicationRecord
   def sanitize_fields
     self.scored_at = Time.now if score_changed?
     
-    self.name_kakasi = name.to_romaji if name_changed?
-    self.notes = notes.to_s.strip if notes_changed?
+    self.name_kakasi = name.to_romaji   if name_changed?
+    self.notes       = notes.to_s.strip if notes_changed?
   end # sanitize_fields
+  
+  def validates_rename_file
+    if file_name_changed?
+      errors.add :file_name, "file name not ending in \".zip\"" unless file_name.ends_with?('.zip')
+      errors.add :file_name, "file name already exist"          if File.exist?(file_path full: true)
+      @old_file_path = file_path(full: true, alter_file_name: file_name_was) if errors[:file_name].empty?
+    end
+  end # validates_rename_file
   
   def self.dest_path_by_process_params(info, full_path: false)
     path = full_path ? [Setting['dir.sorted']] : []
@@ -58,9 +68,9 @@ class Doujin < ApplicationRecord
     find_by category: cat, file_folder: fold, file_name: name
   end # self.find_by_process_params
   
-  def file_path(full: false)
+  def file_path(full: false, alter_file_name: nil)
     tmp_folder = file_folder == '.' ? '' : file_folder
-    tmp_path = File.join category, tmp_folder, file_name
+    tmp_path = File.join category, tmp_folder, (alter_file_name || file_name)
     full ? File.join(Setting['dir.sorted'], tmp_path) : tmp_path
   end # file_path
   
@@ -142,4 +152,8 @@ class Doujin < ApplicationRecord
   end # delete_files
   
   def delete_versions = versions.destroy_all
+  
+  def rename_file
+    FileUtils.mv @old_file_path, file_path(full: true), force: true if @old_file_path
+  end # rename_file
 end
