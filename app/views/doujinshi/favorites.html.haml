@@ -1,0 +1,81 @@
+.columns
+  .column.entries
+    .columns.mb-0
+      .column
+        %p.menu-label.mb-3= "Doujinshi by #{params[:sort]}"
+      .column.is-3
+        .field.has-addons
+          - show_key = session[:dj_index_detail] == 'thumbs' ? 'table' : 'thumbs'
+          .control{title: "show #{show_key}"}
+            = link_to({detail: show_key, sort: params[:sort]},
+              class: 'button is-info is-small is-rounded') do
+              %span.icon.is-small
+                %i.mi.mi-small= session[:dj_index_detail] == 'thumbs' ? 'view_list' : 'image'
+          
+          - sort_key = params[:sort] == 'name' ? 'date' : 'name'
+          .control{title: "sort by #{sort_key}"}
+            = link_to({sort: sort_key}, class: 'button is-info is-small is-rounded') do
+              %span.icon.is-small
+                %i.mi.mi-small= params[:sort] == 'name' ? 'event' : 'description'
+          
+
+    - if session[:dj_index_detail] == 'thumbs'
+      - @doujinshi.to_a.each_slice(6) do |s|
+        .columns.thumbs
+          - s.each do |d|
+            - title = "#{d.file_dl_name omit_ext: true}\n#{d.score.to_i}⭐ / #{d.num_images} pages / #{number_to_human_size d.size, precision: 2}"
+            .column.is-2.has-text-centered(title=title)
+              %figure.image.is2by3
+                = link_to image_tag(doujin_path(d, format: :webp), title: title),
+                  doujin_path(d, from_author: params[:author_id], from_circle: params[:circle_id]), target: :_blank
+              %progress.progress.is-warning{value: d.score.to_i, title: "#{d.score.to_i}⭐", max: 10}
+              .descr.is-size-7= d.name
+    - else
+      - if @doujinshi
+        %img#sample_cover.is-hidden
+        
+        %table.dj-details.table.is-striped.is-narrow.is-fullwidth
+          %thead
+            %tr
+              %th ⭐
+              %th Name
+              %th Pag.
+              %th Size
+              %th Fav
+          %tbody
+            - @doujinshi.to_a.each do |d|
+              %tr{data: {cover: doujin_path(d, format: :webp)}}
+                %td
+                  - if d.score.to_i > 0
+                    %progress.progress.is-warning{value: d.score.to_i, title: "#{d.score.to_i}⭐", max: 10}
+                %td= link_to d.file_dl_name(omit_ext: true), doujin_path(d), target: :_blank
+                %td= d.num_images
+                %td= number_to_human_size(d.size, precision: 2).delete ' '
+                %td= link_to '&star;'.html_safe,
+                  fav_toggle_doujinshi_path(type: :Doujin, id: d.id),
+                  class: "fav #{'has-text-warning' if d.favorite?}"
+
+  
+  .column.entries.is-3
+    %p.menu-label.mb-3 Authors
+    
+    %table.table.is-striped
+      - @authors.find_each do |r|
+        %tr
+          %td
+            = link_to r.name, doujinshi_path({tab: 'author', author_id: r.id, anchor: "listing"})
+          %td.w1
+            = link_to '&star;'.html_safe, fav_toggle_doujinshi_path(type: :Author, id: r.id),
+              class: "fav #{'has-text-warning' if r.favorite?}"
+  
+  .column.entries.is-3
+    %p.menu-label.mb-3 Circles
+    
+    %table.table.is-striped
+      - @circles.find_each do |r|
+        %tr
+          %td
+            = link_to r.name, doujinshi_path({tab: 'circle', circle_id: r.id, anchor: "listing"})
+          %td.w1
+            = link_to '&star;'.html_safe, fav_toggle_doujinshi_path(type: :Circle, id: r.id),
+              class: "fav #{'has-text-warning' if r.favorite?}"

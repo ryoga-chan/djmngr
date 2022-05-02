@@ -108,14 +108,14 @@ class Doujin < ApplicationRecord
     @file_dl_info
   end # file_dl_info
   
-  def file_dl_name
+  def file_dl_name(omit_ext: false)
     return @file_dl_name if @file_dl_name
     
     info = file_dl_info
     
     @file_dl_name = case category
-      when 'author', 'circle'   ; "[#{info[:author]}] #{info[:filename]}#{info[:ext]}"
-      when 'artbook', 'magazine'; "#{info[:filename]}#{info[:ext]}"
+      when 'author', 'circle'   ; "[#{info[:author]}] #{info[:filename]}#{info[:ext] unless omit_ext}"
+      when 'artbook', 'magazine'; "#{info[:filename]}#{info[:ext] unless omit_ext}"
     end
   end # file_dl_name
   
