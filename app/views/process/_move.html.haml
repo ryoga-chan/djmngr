@@ -29,30 +29,27 @@
         
         .select(title="language")= f.select :language,
           options_for_select(Doujin::LANGUAGES, @info[:language]),
-          {}, class: "input is-small vmiddle", onchange: %Q| this.form.submit() |
+          {}, class: "input is-small vmiddle"
         
         .select(title="censored?")= f.select :censored,
           options_for_select({'uncensored' => false, 'censored' => true}, @info[:censored]),
-          {}, class: "input is-small vmiddle", onchange: %Q| this.form.submit() |
+          {}, class: "input is-small vmiddle"
         
         .select(title="colorized?")= f.select :colorized,
           options_for_select({'black & white' => false, 'colorized' => true}, @info[:colorized]),
-          {}, class: "input is-small vmiddle", onchange: %Q| this.form.submit() |
+          {}, class: "input is-small vmiddle"
         
         .select(title="reading direction")= f.select :reading_direction,
           options_for_select({'right to left' => 'r2l', 'left to right' => 'l2r'}, @info[:reading_direction]),
-          {}, class: "input is-small vmiddle", onchange: %Q| this.form.submit() |
+          {}, class: "input is-small vmiddle"
 
-      .notes
+      .notes.mb-1
         %span.icon.in-text-small.mr-2
           %i.mi.mi-small(title="notes") comment
         = f.text_field :notes, value: @info[:notes], placeholder: 'notes',
           class: 'input is-small', style: 'width: 30.25rem'
-        = f.button class: 'button is-small' do
-          %span.icon
-            %i.mi.mi-small send
 
-      .scoring-stars
+      .scoring-stars.mb-1
         %span.icon.in-text-small.mr-2
           %i.mi.mi-small(title="quality score") favorite
         %span.scoring
@@ -70,13 +67,10 @@
         %span.select.vmiddle= f.select :sel_subfolder,
           options_for_select(@subfolders, @info[:subfolder]), {},
           class: "input is-small vmiddle", style: 'width: 15rem',
-          onchange: %Q| $('#subfolder').val($(this).val()); this.form.submit() |
+          onchange: %Q| $('#subfolder').val($(this).val() == '-custom name-' ? '' : $(this).val()) |
         = f.text_field :subfolder, value: @info[:subfolder], placeholder: 'destination subfolder',
           class: 'input is-small', style: 'width: 15rem'
-        = f.button class: 'button is-small' do
-          %span.icon
-            %i.mi.mi-small send
-        = f.button class: 'button is-small', onclick: %Q|$('#subfolder').val('')| do
+        = link_to '#', class: 'button is-small', onclick: %Q|$('#subfolder').val(''); return false| do
           %span.icon
             %i.mi.mi-small(title="clear subfolder") clear
 
@@ -86,11 +80,8 @@
         = f.text_field :dest_filename, value: @info[:dest_filename], placeholder: 'destination filename',
           class: 'input is-small', style: 'width: 30.25rem',
           data: { orig_name: File.basename(@info[:relative_path]) }
-        = f.button class: 'button is-small' do
-          %span.icon
-            %i.mi.mi-small send
-        = f.button class: 'button is-small',
-          onclick: %Q|$('#dest_filename').val($('#dest_filename').data('orig-name')); return false;| do
+        = link_to '#', class: 'button is-small',
+          onclick: %Q|$('#dest_filename').val($('#dest_filename').data('orig-name')); return false| do
           %span.icon
             %i.mi.mi-small(title="restore initial filename") restore
       
@@ -102,32 +93,34 @@
                 %td= link_to lbl, '#', title: 'copy this suggestion',
                   onclick: %Q|jQuery('#dest_filename').val( jQuery(this).text().trim() + '.zip' ); return false|
 
-      .final-path
+      .final-path.mb-1
         %span.icon.in-text-small.mr-2
           %i.mi.mi-small(title="destination path") folder
+        - if @collision_info
+          %span.tag.is-danger= "ALREADY EXIST!"
         = Doujin.dest_path_by_process_params @info
       
       - if @collision_info
-        .collection-collision.ml-6
-          .collision-details.my-3
-            %span.tag.is-danger= "ALREADY EXIST!"
-            &rightarrow;
-            %span.tag.is-info= "#{@collision_info[:current]} current"
-            VS.
-            %span.tag.is-info= "#{@collision_info[:collection]} collection"
-          .collision-confirm
-            %span.has-text-danger
-              = f.check_box :overwrite, {checked: @info[:overwrite], include_hidden: true, onchange: %Q| this.form.submit() |}
-              = label_tag :overwrite, "overwrite file in the collection"
-            - if dj_id = @collision_info[:doujin].try(:id)
-              = link_to "view doujin ID #{dj_id}", doujin_path(id: dj_id), target: :_blank
+        .overwrite-confirm.mb-1
+          %span.icon.in-text-small.mr-2
+            %i.mi.mi-small(title="confirm overwrite") warning
+          %span.has-text-danger
+            = f.check_box :overwrite, {checked: @info[:overwrite], include_hidden: true}
+            = label_tag :overwrite, "overwrite file in the collection"
     
-      .has-text-centered.my-4
-        = link_to finalize_volume_process_path, method: :post,
-          class: 'button is-success is-rounded' do
-          %span.icon
-            %i.mi.mi-small gavel
-          %span finalize process and store volume in the collection
+      .actions.field.is-grouped.ml-6
+        .field.has-addons
+          %p.control
+            = f.button class: 'button is-primary is-rounded' do
+              %span.icon
+                %i.mi.mi-small send
+              %span update
+          %p.control
+            = link_to finalize_volume_process_path, method: :post,
+              class: 'button is-success is-rounded' do
+              %span.icon
+                %i.mi.mi-small gavel
+              %span end processing and store volume in collection
 
     .column.has-text-centered
       - html_cover = capture do
@@ -151,8 +144,14 @@
           .column.is-6(style="border-right: 1px solid transparent")
             .descr this file
             .this_cover= html_cover
+            %span.tag.is-info= @collision_info[:current]
           .column.is-6(style="border-left: 1px solid red")
-            .descr collection
+            .descr
+              - if dj_id = @collision_info[:doujin].try(:id)
+                = link_to "collection ##{dj_id}", doujin_path(id: dj_id), target: :_blank
+              - else
+                collection
             .coll_cover= image_tag doujin_path(id: @collision_info[:doujin].try(:id).to_i, format: :webp), title: "collision cover"
+            %span.tag.is-info= @collision_info[:collection]
       - else
         = html_cover

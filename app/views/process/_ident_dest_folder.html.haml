@@ -6,7 +6,7 @@
     %span.select.vmiddle= f.select :sel_dest_folder,
       options_for_select(@dest_folders, @info[:dest_folder]), {},
       class: "input is-small vmiddle", style: 'width: 15rem',
-      onchange: %Q| $('#dest_folder').val($(this).val()); this.form.submit() |
+      onchange: %Q| $('#dest_folder').val($(this).val() == '-custom name-' ? '' : $(this).val()); this.form.submit() |
     = f.text_field :dest_folder, value: @info[:dest_folder], placeholder: 'destination folder',
       class: 'input is-small', style: 'width: 15rem'
     = f.button class: 'button is-small' do

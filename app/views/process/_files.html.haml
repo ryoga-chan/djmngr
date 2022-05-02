@@ -63,7 +63,8 @@
           %th
           %th Size
           %th
-            = link_to '#', onclick: %Q|jQuery('#filenames tr.files :checkbox').prop('checked', true); return false| do
+            = link_to '#', title: 'select all',
+              onclick: %Q|jQuery('#filenames tr.files :checkbox').prop('checked', true); return false| do
               %span.icon.is-small
                 %i.mi select_all
           %th Dest
@@ -96,7 +97,8 @@
         %th
         %th Size
         %th
-          = link_to '#', onclick: %Q|jQuery('#filenames tr.images :checkbox').prop('checked', true); return false| do
+          = link_to '#', title: 'select all',
+            onclick: %Q|jQuery('#filenames tr.images :checkbox').prop('checked', true); return false| do
             %span.icon.is-small
               %i.mi select_all
         %th Dest
