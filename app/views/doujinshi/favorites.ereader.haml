@@ -27,12 +27,13 @@
   %table.is-striped.block-links.w100
     %thead
       %tr
-        %th    Name
+        %th=   "Name (#{@authors.reselect('1').count})"
         %th.w1 Fav
     %tbody
       - @authors.find_each do |r|
         %tr
-          %td= link_to r.name, doujinshi_path({tab: 'author', author_id: r.id, letter: r.name[0].upcase})
+          %td= link_to "#{r.name} (#{r.doujinshi.count})",
+            doujinshi_path({tab: 'author', author_id: r.id, letter: r.name[0].upcase})
           %td.w1= link_to '&star;'.html_safe,
             fav_toggle_doujinshi_path(type: :Author, id: r.id),
             class: "fav is-favorite"
@@ -41,12 +42,13 @@
   %table.is-striped.block-links.w100
     %thead
       %tr
-        %th    Name
+        %th=   "Name (#{@circles.reselect('1').count})"
         %th.w1 Fav
     %tbody
       - @circles.find_each do |r|
         %tr
-          %td= link_to r.name, doujinshi_path({tab: 'circle', circle_id: r.id, letter: r.name[0].upcase})
+          %td= link_to "#{r.name} (#{r.doujinshi.count})",
+            doujinshi_path({tab: 'circle', circle_id: r.id, letter: r.name[0].upcase})
           %td= link_to '&star;'.html_safe,
             fav_toggle_doujinshi_path(type: :Circle, id: r.id),
             class: "fav is-favorite"
@@ -58,7 +60,7 @@
         %tr
           %th.w1 Cover
           %th.w1 &hearts;
-          %th    Name
+          %th=   "Name (#{@doujinshi.count})"
           %th.w1 Pag.
           %th.w1 Size
           %th.w1 Fav
