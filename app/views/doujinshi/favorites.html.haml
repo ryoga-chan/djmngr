@@ -18,43 +18,7 @@
               %span.icon.is-small
                 %i.mi.mi-small= params[:sort] == 'name' ? 'event' : 'description'
           
-
-    - if session[:dj_index_detail] == 'thumbs'
-      - @doujinshi.each_slice(6) do |s|
-        .columns.thumbs
-          - s.each do |d|
-            - title = "#{d.file_dl_name omit_ext: true}\n#{d.score.to_i}⭐ / #{d.num_images} pages / #{number_to_human_size d.size, precision: 2}"
-            .column.is-2.has-text-centered(title=title)
-              %figure.image.is2by3
-                = link_to image_tag(doujin_path(d, format: :webp), title: title),
-                  doujin_path(d, from_author: params[:author_id], from_circle: params[:circle_id]), target: :_blank
-              %progress.progress.is-warning{value: d.score.to_i, title: "#{d.score.to_i}⭐", max: 10}
-              .descr.is-size-7= d.name
-    - else
-      - if @doujinshi
-        %img#sample_cover.is-hidden
-        
-        %table.dj-details.table.is-striped.is-narrow.is-fullwidth
-          %thead
-            %tr
-              %th ⭐
-              %th Name
-              %th Pag.
-              %th Size
-              %th Fav
-          %tbody
-            - @doujinshi.each do |d|
-              %tr{data: {cover: doujin_path(d, format: :webp)}}
-                %td
-                  - if d.score.to_i > 0
-                    %progress.progress.is-warning{value: d.score.to_i, title: "#{d.score.to_i}⭐", max: 10}
-                %td= link_to d.file_dl_name(omit_ext: true), doujin_path(d), target: :_blank
-                %td= d.num_images
-                %td= number_to_human_size(d.size, precision: 2).delete ' '
-                %td= link_to '&star;'.html_safe,
-                  fav_toggle_doujinshi_path(type: :Doujin, id: d.id),
-                  class: "fav #{'has-text-warning' if d.favorite?}"
-
+    = render partial: 'thumbs_table', locals: { doujinshi: @doujinshi }
   
   .column.entries.is-3
     %p.menu-label.mb-3= "Authors (#{@authors.reselect('1').count})"

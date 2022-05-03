@@ -112,6 +112,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_04_30_115038) do
     t.string "notes"
     t.boolean "favorite", default: false
     t.datetime "faved_at"
+    t.string "name_orig_kakasi", null: false
   end
 
   create_table "settings", force: :cascade do |t|

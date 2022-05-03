@@ -9,7 +9,7 @@
       setTimeout(function () { window.location.reload(); }, 5000)
   - else
     - if @preparing.any?
-      .title.is-4= "Processing archives (#{@preparing.size})"
+      .title.is-size-4= "Processing archives (#{@preparing.size})"
 
       %table.table.is-striped.is-hoverable.ml-4
         %tbody
@@ -21,7 +21,7 @@
               %td.has-text-right= number_to_human_size f[:tot_size]
               %td= link_to f[:relative_path], action: :edit, id: f[:working_dir]
 
-    .title.is-4
+    .title.is-size-4
       = "Processable archives (#{@files.size})"
       = link_to 'refresh list', {refresh: true}, class: 'button is-info is-small is-rounded', style: 'vertical-align: middle'
 

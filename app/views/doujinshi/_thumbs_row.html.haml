@@ -1,0 +1,14 @@
+.columns.thumbs
+  - doujinshi.each do |d|
+    - if short_label
+      - title = descr = d.label_name_latin
+      - title += "\n#{d.name}" if descr != d.name
+      - title += "\n#{d.score.to_i}⭐ / #{d.num_images} pages / #{number_to_human_size d.size, precision: 2}"
+    - else
+      - title = "#{d.file_dl_name omit_ext: true}\n#{d.score.to_i}⭐ / #{d.num_images} pages / #{number_to_human_size d.size, precision: 2}"
+    .column.is-2.has-text-centered(title=title)
+      %figure.image.is2by3
+        = link_to image_tag(doujin_path(d, format: :webp), title: title),
+          doujin_path(d, from_author: params[:author_id], from_circle: params[:circle_id]), target: :_blank
+      %progress.progress.is-warning{value: d.score.to_i, title: "#{d.score.to_i}⭐", max: 10}
+      .descr.is-size-7= short_label ? descr : d.name
