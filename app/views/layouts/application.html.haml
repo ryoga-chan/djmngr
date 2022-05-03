@@ -24,6 +24,13 @@
 
       #appNavbar.navbar-menu
         .navbar-start
+          %span.navbar-item{class: "#{params[:controller]}/#{params[:action]}" != 'home/settings' ? nil : 'is-current'}
+            = link_to home_settings_path do
+              %span.icon-text
+                %span.icon
+                  %i.mi settings
+                %span Setup
+          
           %span.navbar-item{class: params[:controller] != 'process' ? nil : 'is-current'}
             = link_to process_index_path do
               %span.icon-text
