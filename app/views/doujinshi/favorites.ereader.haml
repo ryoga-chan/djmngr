@@ -24,7 +24,7 @@
 = render partial: 'fav_js_links'
 
 - if params[:tab] == 'author'
-  %table.is-striped.block-links.w100
+  %table.doujinshi.is-striped.block-links.w100
     %thead
       %tr
         %th=   "Name (#{@authors.reselect('1').count})"
@@ -37,9 +37,9 @@
           %td.w1= link_to '&star;'.html_safe,
             fav_toggle_doujinshi_path(type: :Author, id: r.id),
             class: "fav is-favorite"
-            
+
 - elsif params[:tab] == 'circle'
-  %table.is-striped.block-links.w100
+  %table.doujinshi.is-striped.block-links.w100
     %thead
       %tr
         %th=   "Name (#{@circles.reselect('1').count})"
@@ -52,37 +52,6 @@
           %td= link_to '&star;'.html_safe,
             fav_toggle_doujinshi_path(type: :Circle, id: r.id),
             class: "fav is-favorite"
-            
+
 - else # params[:tab] == 'doujin'
-  - if session[:dj_index_detail] == 'table'
-    %table.doujinshi.is-striped.block-links.w100
-      %thead
-        %tr
-          %th.w1 Cover
-          %th.w1 &hearts;
-          %th=   "Name (#{@doujinshi.count})"
-          %th.w1 Pag.
-          %th.w1 Size
-          %th.w1 Fav
-      %tbody
-        - @doujinshi.to_a.each do |d|
-          %tr
-            %td= link_to 'show', '#',
-              data: { cover: doujin_path(d, format: :jpg)},
-              onclick: %Q|jQuery(this).hide().after(jQuery('<img>').attr('src', jQuery(this).data('cover'))); return false|
-            %td= "#{d.score.to_i}&hearts;".html_safe if d.score.to_i > 0
-            %td= link_to d.file_dl_name(omit_ext: true), doujin_path(d)
-            %td= d.num_images
-            %td= number_to_human_size(d.size, precision: 2).delete ' '
-            %td= link_to '&star;'.html_safe,
-              fav_toggle_doujinshi_path(type: :Doujin, id: d.id),
-              class: "fav #{'is-favorite' if d.favorite?}"
-  - else
-    .thumbs
-      - @doujinshi.each do |d|
-        .doujin
-          .cover= link_to image_tag(doujin_path(d, format: :jpg), class: :thumb), doujin_path(d)
-          .descr
-            - if d.score.to_i > 0
-              %span.score= "#{d.score.to_i}&hearts;".html_safe
-            %span.name= d.file_dl_name(omit_ext: true)
+  = render partial: 'thumbs_table', locals: { doujinshi: @doujinshi }

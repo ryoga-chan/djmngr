@@ -1,5 +1,8 @@
 class DoujinshiController < ApplicationController
-  before_action :set_index_detail, only: %i[ index favorites ]
+  BATCH_SIZE = 96
+  THUMBS_PER_ROW = 6
+  
+  before_action :set_index_detail, only: %i[ index favorites search ]
   before_action :set_doujin, only: %i[ show edit score read read_pages image update rehash destroy reprocess ]
 
   # browse doujinshi by author/circle/folder
@@ -55,6 +58,10 @@ class DoujinshiController < ApplicationController
       params[:letter] = @letters.first unless @letters.include?(params[:letter])
     end # ereader format
   end # index
+  
+  def search
+    @doujinshi = Doujin.search params[:term]
+  end # search
   
   def show
     msg = @doujin.check_hash?       ? [:notice,'same checksum'       ] : [:alert,'different checksum'] if params[:check_hash]

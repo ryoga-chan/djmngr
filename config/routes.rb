@@ -27,6 +27,7 @@ Rails.application.routes.draw do
       get  :epub
       get  :fav_toggle
       get  :favorites
+      get  :search
     end
     member do
       get  :read

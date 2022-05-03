@@ -39,8 +39,9 @@ class Doujin < ApplicationRecord
   def sanitize_fields
     self.scored_at = Time.now if score_changed?
     
-    self.name_kakasi = name.to_romaji   if name_changed?
-    self.notes       = notes.to_s.strip if notes_changed?
+    self.name_kakasi      = name     .to_romaji if name_changed?
+    self.name_orig_kakasi = name_orig.to_romaji if name_orig_changed?
+    self.notes            = notes.to_s.strip    if notes_changed?
   end # sanitize_fields
   
   def validates_rename_file
@@ -139,6 +140,17 @@ class Doujin < ApplicationRecord
     tmp_hash = `sha512sum -b #{file_path(full: true).shellescape}`.split(' ', 2)[0].to_s.strip
     tmp_hash.size == 128 ? update(checksum: tmp_hash) : false
   end # refresh_checksum!
+  
+  def self.search(term)
+    term = term.to_s.strip
+    
+    # tokenize_doujin_filename
+    # to_romaji
+    
+    return self.none if term.size < 3
+    
+    self.limit(10)
+  end # self.search
   
   
   private # ____________________________________________________________________

@@ -65,15 +65,24 @@
                   %span.icon.mr-2
                     %i.mi.mi-small construction
                   %span EPUBs
-
-        .navbar-end
-          .navbar-item
-            .buttons
-              - if true # Current.user
-                = link_to '#', class: 'button is-primary' do
-                  .span.icon.is-small
-                    %i.mi logout
-                  .span Logout
+          
+          %span.navbar-item
+            = form_with url: search_doujinshi_path, method: :get do |f|
+              .field.has-addons
+                .control= f.text_field :term, value: params[:term], placeholder: :search, class: 'input is-rounded'
+                -#.control
+                -#  = f.button class: 'button is-light is-rounded' do
+                -#    %span.icon
+                -#      %i.mi.mi-small search
+        
+        -#.navbar-end
+        -#  .navbar-item
+        -#    .buttons
+        -#      - if true # Current.user
+        -#        = link_to '#', class: 'button is-primary' do
+        -#          %span.icon.is-small
+        -#            %i.mi logout
+        -#          %span Logout
 
     %section.section.main-content
       -# NOTE: "notice" and "alert" are Rails defaults, "warn" is a custom key

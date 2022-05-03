@@ -1,0 +1,41 @@
+- short_label = false unless local_assigns.has_key?(:short_label)
+
+- unless doujinshi
+  %br/
+  %small
+    %i nothing to see here
+- else
+  - if session[:dj_index_detail] == 'table'
+    %table.doujinshi.is-striped.block-links.w100
+      %thead
+        %tr
+          %th.w1 Cover
+          %th.w1 &hearts;
+          %th=   "Name (#{@doujinshi.count})"
+          %th.w1 Pag.
+          %th.w1 Size
+          %th.w1 Fav
+      %tbody
+        - doujinshi.find_each(batch_size: DoujinshiController::BATCH_SIZE).each do |d|
+          - descr = short_label ? d.label_name_latin : d.file_dl_name(omit_ext: true)
+          %tr
+            %td= link_to 'show', '#',
+              data: { cover: doujin_path(d, format: :jpg)},
+              onclick: %Q|jQuery(this).hide().after(jQuery('<img>').attr('src', jQuery(this).data('cover'))); return false|
+            %td= "#{d.score.to_i}&hearts;".html_safe if d.score.to_i > 0
+            %td= link_to descr, doujin_path(d)
+            %td= d.num_images
+            %td= number_to_human_size(d.size, precision: 2).delete ' '
+            %td= link_to '&star;'.html_safe,
+              fav_toggle_doujinshi_path(type: :Doujin, id: d.id),
+              class: "fav #{'is-favorite' if d.favorite?}"
+  - else
+    .thumbs
+      - @doujinshi.find_each(batch_size: DoujinshiController::BATCH_SIZE).each do |d|
+        - descr = short_label ? d.label_name_latin : d.file_dl_name(omit_ext: true)
+        .doujin
+          .cover= link_to image_tag(doujin_path(d, format: :jpg), class: :thumb), doujin_path(d)
+          .descr
+            - if d.score.to_i > 0
+              %span.score= "#{d.score.to_i}&hearts;".html_safe
+            %span.name= descr
