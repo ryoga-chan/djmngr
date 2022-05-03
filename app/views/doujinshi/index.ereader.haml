@@ -28,41 +28,9 @@
 %hr/
 
 - if @doujinshi
-
-  - if session[:dj_index_detail] == 'table'
-    %table.doujinshi.is-striped.block-links.w100
-      %thead
-        %tr
-          %th.w1 Cover
-          %th.w1 &hearts;
-          %th    Name
-          %th.w1 Pag.
-          %th.w1 Size
-      %tbody
-        - @doujinshi.to_a.each do |d|
-          - descr = d.name_romaji.present? ? d.name_romaji : d.name_kakasi
-          - title = d.name if d.name != descr
-          %tr
-            %td= link_to 'show', '#',
-              data: { cover: doujin_path(d, format: :jpg)},
-              onclick: %Q|jQuery(this).hide().after(jQuery('<img>').attr('src', jQuery(this).data('cover'))); return false|
-            %td= "#{d.score.to_i}&hearts;".html_safe if d.score.to_i > 0
-            %td= link_to descr, doujin_path(d, from_author: params[:author_id], from_circle: params[:circle_id])
-            %td= d.num_images
-            %td= number_to_human_size(d.size, precision: 2).delete ' '
-  - else
-    .thumbs
-      - @doujinshi.each do |d|
-        .doujin
-          .cover= link_to image_tag(doujin_path(d, format: :jpg), class: :thumb),
-            doujin_path(d, from_author: params[:author_id], from_circle: params[:circle_id])
-          .descr
-            - if d.score.to_i > 0
-              %span.score= "#{d.score.to_i}&hearts;".html_safe
-            %span.name= d.label_name_latin
-
+  = render partial: 'fav_js_links'
+  = render partial: 'thumbs_table', locals: { doujinshi: @doujinshi, short_label: true }
 - elsif @parents
-
   %table.parents.block-links.is-striped.w100
     %tbody
       - @parents[params[:letter]].to_a.each_slice(4) do |s|

@@ -110,18 +110,18 @@ a.fav.is-favorite {
   background-color: #ccc;
 }
 
+table.doujinshi {
+  border-collapse: collapse;
+  
+  td {
+    vertical-align: top;
+    padding: 0.75rem 0.25rem;
+  }
+}
+
 body[data-ctrl="doujinshi"][data-action="index"] {
   li { margin-bottom: 1rem; }
 
-  table {
-    border-collapse: collapse;
-    
-    td {
-      vertical-align: top;
-      padding: 0.75rem 0.25rem;
-    }
-  }
-  
   table.parents {
     td {
       width: 25%;
