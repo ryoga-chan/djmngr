@@ -2,7 +2,7 @@
   .column.entries
     .columns.mb-0
       .column
-        %p.menu-label.mb-3= "Doujinshi by #{params[:sort]}"
+        %p.menu-label.mb-3= "Doujinshi by #{params[:sort]} (#{@doujinshi.count})"
       .column.is-3
         .field.has-addons
           - show_key = session[:dj_index_detail] == 'thumbs' ? 'table' : 'thumbs'
@@ -20,7 +20,7 @@
           
 
     - if session[:dj_index_detail] == 'thumbs'
-      - @doujinshi.to_a.each_slice(6) do |s|
+      - @doujinshi.each_slice(6) do |s|
         .columns.thumbs
           - s.each do |d|
             - title = "#{d.file_dl_name omit_ext: true}\n#{d.score.to_i}⭐ / #{d.num_images} pages / #{number_to_human_size d.size, precision: 2}"
@@ -43,7 +43,7 @@
               %th Size
               %th Fav
           %tbody
-            - @doujinshi.to_a.each do |d|
+            - @doujinshi.each do |d|
               %tr{data: {cover: doujin_path(d, format: :webp)}}
                 %td
                   - if d.score.to_i > 0
@@ -57,25 +57,27 @@
 
   
   .column.entries.is-3
-    %p.menu-label.mb-3 Authors
+    %p.menu-label.mb-3= "Authors (#{@authors.reselect('1').count})"
     
     %table.table.is-striped
       - @authors.find_each do |r|
         %tr
           %td
-            = link_to r.name, doujinshi_path({tab: 'author', author_id: r.id, anchor: "listing"})
+            = link_to "#{r.name} (#{r.doujinshi.count})",
+              doujinshi_path({tab: 'author', author_id: r.id, anchor: "listing"})
           %td.w1
             = link_to '&star;'.html_safe, fav_toggle_doujinshi_path(type: :Author, id: r.id),
               class: "fav #{'has-text-warning' if r.favorite?}"
   
   .column.entries.is-3
-    %p.menu-label.mb-3 Circles
+    %p.menu-label.mb-3= "Circles (#{@circles.reselect('1').count})"
     
     %table.table.is-striped
       - @circles.find_each do |r|
         %tr
           %td
-            = link_to r.name, doujinshi_path({tab: 'circle', circle_id: r.id, anchor: "listing"})
+            = link_to "#{r.name} (#{r.doujinshi.count})",
+              doujinshi_path({tab: 'circle', circle_id: r.id, anchor: "listing"})
           %td.w1
             = link_to '&star;'.html_safe, fav_toggle_doujinshi_path(type: :Circle, id: r.id),
               class: "fav #{'has-text-warning' if r.favorite?}"
