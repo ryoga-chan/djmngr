@@ -11,8 +11,8 @@ class CreateSettings < ActiveRecord::Migration[7.0]
     Setting.create key: 'dir.to_sort', value: Rails.root.join('dj-libray', 'to-sort').to_s, notes: 'folder containing doujinshi to process'
     Setting.create key: 'dir.sorting', value: Rails.root.join('dj-libray', 'sorting').to_s, notes: 'folder containing doujinshi under process'
     Setting.create key: 'dir.sorted' , value: Rails.root.join('dj-libray', 'sorted' ).to_s, notes: 'folder containing processed doujinshi'
-    Setting.create key: 'reading_direction', value: 'r2l' # r2l, l2r
-    Setting.create key: 'epub_img_width' , value: 768
-    Setting.create key: 'epub_img_height', value: 1024
+    Setting.create key: 'reading_direction', value: 'r2l', notes: 'default reading direction' # r2l, l2r
+    Setting.create key: 'epub_img_width' , value: 768 , notes: 'resize image to this width in epub creation'
+    Setting.create key: 'epub_img_height', value: 1024, notes: 'resize image to this height in epub creation'
   end
 end

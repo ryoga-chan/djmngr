@@ -1,6 +1,6 @@
 class DoujinshiController < ApplicationController
   before_action :set_index_detail, only: %i[ index favorites ]
-  before_action :set_doujin, only: %i[ show score read read_pages image update rehash destroy reprocess ]
+  before_action :set_doujin, only: %i[ show edit score read read_pages image update rehash destroy reprocess ]
 
   # browse doujinshi by author/circle/folder
   def index
