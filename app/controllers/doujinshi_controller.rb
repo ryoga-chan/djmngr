@@ -1,6 +1,6 @@
 class DoujinshiController < ApplicationController
-  BATCH_SIZE = 96
   THUMBS_PER_ROW = 6
+  BATCH_SIZE     = 15 * THUMBS_PER_ROW
   
   before_action :set_index_detail, only: %i[ index favorites search ]
   before_action :set_doujin, only: %i[ show edit score read read_pages image update rehash destroy reprocess ]
@@ -60,7 +60,20 @@ class DoujinshiController < ApplicationController
   end # index
   
   def search
-    @doujinshi = Doujin.search params[:term]
+    @doujinshi = Doujin.search(params[:term]).limit(THUMBS_PER_ROW * 5)
+    
+    respond_to do |format|
+      format.html
+      format.ereader
+      format.json { render json: @doujinshi }#json
+      format.tsv {
+        header = Doujin.column_names.join("\t")
+        data = @doujinshi.inject(header){|s, d| s += d.attributes.values.join("\t").prepend("\n") }
+        send_data data,
+          type: request.format.to_sym, disposition: :attachment,
+          filename: "search-results.#{request.format.to_sym}"
+      }#tsv
+    end
   end # search
   
   def show

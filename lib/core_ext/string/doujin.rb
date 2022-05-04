@@ -18,7 +18,7 @@ module CoreExt
         # extract authors/circles by splitting groups
         { ac_explicit:   ac1  .to_s.strip             .split(/\s*[,\|]\s*/),
           ac_implicit:   ac2  .to_s.strip[1...-1].to_s.split(/\s*[,\|]\s*/),
-          subjects:      fname.present? ? self.sub(/^\[([^\]]+)\].+/, '\1') : '',
+          subjects:      fname.present? ? self.sub(/^\[([^\]]+)\].+/, '\1') : '', # everything between []
           properties:    self.match(/.+\([a-z,]+\)\....$/) ?
                            self.sub(/.+\(([a-z,]+)\)\....$/, '\1').split(',') : '',
           fname:         fname.to_s.strip }

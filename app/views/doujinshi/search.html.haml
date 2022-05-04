@@ -9,4 +9,4 @@
           %i.mi.mi-small= session[:dj_index_detail] == 'thumbs' ? 'view_list' : 'image'
         %span= "show #{show_key}"
 
-= render partial: 'thumbs_table', locals: { doujinshi: @doujinshi }
+= render partial: 'thumbs_table', locals: { doujinshi: @doujinshi, show_name_orig: true }

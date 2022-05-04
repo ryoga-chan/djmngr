@@ -95,8 +95,9 @@ table.doujin {
   width: 170px;
   
   .descr {
-    height: 2.5rem;
+    height: 3rem;
     overflow: hidden;
+    font-size: 0.8rem;
   }
   
   .score { background-color: #ccc; }
@@ -117,6 +118,9 @@ table.doujinshi {
     vertical-align: top;
     padding: 0.75rem 0.25rem;
   }
+  
+  .name-orig, .name-orig-kakasi { font-size: smaller; }
+  .name-orig-kakasi { font-family: sans-serif; }
 }
 
 body[data-ctrl="doujinshi"][data-action="index"] {
