@@ -3,7 +3,7 @@ class CreateDoujinshi < ActiveRecord::Migration[7.0]
     create_table :doujinshi do |t|
       t.string   :name       , null: false
       t.string   :name_romaji
-      t.string   :name_kakasi
+      t.string   :name_kakasi, null: false
       t.string   :name_orig  , null: false
       t.string   :name_orig_kakasi, null: false
       t.integer  :size       , null: false

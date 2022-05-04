@@ -141,15 +141,38 @@ class Doujin < ApplicationRecord
     tmp_hash.size == 128 ? update(checksum: tmp_hash) : false
   end # refresh_checksum!
   
-  def self.search(term)
-    term = term.to_s.strip
+  def self.search(terms)
+    fname_info    = terms.to_s.strip    .parse_doujin_filename
+    tokens_orig   = terms.to_s          .tokenize_doujin_filename.join '%'
+    tokens_kakasi = terms.to_s.to_romaji.tokenize_doujin_filename.join '%'
     
-    # tokenize_doujin_filename
-    # to_romaji
+    return self.none if tokens_orig.size < 3
     
-    return self.none if term.size < 3
+    # search all term on the original filename
+    rel_conditions = [
+      Doujin.where("name_orig        LIKE ?", "%#{tokens_orig  }%"),
+      Doujin.where("name_orig_kakasi LIKE ?", "%#{tokens_orig  }%"),
+      Doujin.where("name_orig        LIKE ?", "%#{tokens_kakasi}%"),
+      Doujin.where("name_orig_kakasi LIKE ?", "%#{tokens_kakasi}%"),
+    ]
     
-    self.limit(10)
+    # search only filename terms on user filled fields
+    title_terms   = fname_info[:fname].present? ? fname_info[:fname] : terms
+    tokens_orig   = title_terms.to_s          .tokenize_doujin_filename.join '%'
+    tokens_kakasi = title_terms.to_s.to_romaji.tokenize_doujin_filename.join '%'
+    rel_conditions += [
+      Doujin.where("name        LIKE ?", "%#{tokens_orig  }%"),
+      Doujin.where("name        LIKE ?", "%#{tokens_kakasi}%"),
+      Doujin.where("name_romaji LIKE ?", "%#{tokens_orig  }%"),
+      Doujin.where("name_romaji LIKE ?", "%#{tokens_kakasi}%"),
+      Doujin.where("name_kakasi LIKE ?", "%#{tokens_kakasi}%"),
+    ]
+    
+    # build query with all conditions in OR
+    rel = rel_conditions.shift
+    rel_conditions.each{|cond| rel = rel.or cond }
+    
+    rel.order(Arel.sql "COALESCE(NULLIF(name_romaji, ''), NULLIF(name_kakasi, ''))")
   end # self.search
   
   

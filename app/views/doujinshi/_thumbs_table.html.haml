@@ -1,4 +1,5 @@
-- short_label = false unless local_assigns.has_key?(:short_label)
+- short_label    = false unless local_assigns.has_key?(:short_label)
+- show_name_orig = false unless local_assigns.has_key?(:show_name_orig)
 
 - unless doujinshi
   .mt-6.is-italic.has-text-centered nothing to see here
@@ -6,13 +7,15 @@
   - if session[:dj_index_detail] == 'thumbs'
     -# emulate doujinshi.each_slice because it's impossibile to write a pure HAML container with find_each
     - doujinshi_row = []
-    - doujinshi.find_each(batch_size: DoujinshiController::BATCH_SIZE) do |d|
+    - doujinshi.find_each_in_order(batch_size: DoujinshiController::BATCH_SIZE) do |d|
       - if doujinshi_row.size < DoujinshiController::THUMBS_PER_ROW
         - doujinshi_row << d
       - else
-        = render partial: 'thumbs_row', locals: {doujinshi: doujinshi_row, short_label: short_label}
-        - doujinshi_row = []
-    = render partial: 'thumbs_row', locals: {doujinshi: doujinshi_row, short_label: short_label} if doujinshi_row.any?
+        = render partial: 'thumbs_row',
+          locals: {doujinshi: doujinshi_row, short_label: short_label, show_name_orig: show_name_orig}
+        - doujinshi_row = [d]
+    = render partial: 'thumbs_row',
+      locals: {doujinshi: doujinshi_row, short_label: short_label, show_name_orig: show_name_orig} if doujinshi_row.any?
   - else
     %img#sample_cover.is-hidden
     
@@ -25,17 +28,17 @@
           %th Size
           %th Fav
       %tbody
-        - doujinshi.find_each(batch_size: DoujinshiController::BATCH_SIZE) do |d|
-          - if short_label
-            - descr = d.label_name_latin
-            - title = d.name if d.name != descr
-          - else
-            - descr = d.file_dl_name(omit_ext: true)
-          %tr{title: title, data: {cover: doujin_path(d, format: :webp)}}
+        - doujinshi.find_each_in_order(batch_size: DoujinshiController::BATCH_SIZE) do |d|
+          - descr = short_label ? d.label_name_latin : d.file_dl_name(omit_ext: true)
+          - title = d.name if d.name != descr
+          %tr{data: {cover: doujin_path(d, format: :webp)}}
             %td
               - if d.score.to_i > 0
                 %progress.progress.is-warning{value: d.score.to_i, title: "#{d.score.to_i}⭐", max: 10}
-            %td= link_to descr, doujin_path(d), target: :_blank
+            %td
+              = link_to descr, doujin_path(d), target: :_blank, title: title
+              - if show_name_orig
+                .name-orig.is-size-7{title: (d.name_orig_kakasi if d.name_orig_kakasi != d.name_orig)}= d.name_orig
             %td= d.num_images
             %td= number_to_human_size(d.size, precision: 2).delete ' '
             %td= link_to '&star;'.html_safe,

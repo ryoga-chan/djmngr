@@ -1,4 +1,10 @@
-%h3 browse doujinshi
+%h3 search catalog
+
+= form_with url: search_doujinshi_path, method: :get do |f|
+  = f.text_field :term, value: params[:term], placeholder: :search
+  = f.submit 'Search'
+
+%h3 browse catalog
 
 = link_to 'catalog', doujinshi_path, class: 'button'
 

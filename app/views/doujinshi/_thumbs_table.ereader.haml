@@ -1,4 +1,5 @@
 - short_label = false unless local_assigns.has_key?(:short_label)
+- show_name_orig = false unless local_assigns.has_key?(:show_name_orig)
 
 - unless doujinshi
   %br/
@@ -16,14 +17,19 @@
           %th.w1 Size
           %th.w1 Fav
       %tbody
-        - doujinshi.find_each(batch_size: DoujinshiController::BATCH_SIZE).each do |d|
+        - doujinshi.find_each_in_order(batch_size: DoujinshiController::BATCH_SIZE).each do |d|
           - descr = short_label ? d.label_name_latin : d.file_dl_name(omit_ext: true)
           %tr
             %td= link_to 'show', '#',
               data: { cover: doujin_path(d, format: :jpg)},
               onclick: %Q|jQuery(this).hide().after(jQuery('<img>').attr('src', jQuery(this).data('cover'))); return false|
             %td= "#{d.score.to_i}&hearts;".html_safe if d.score.to_i > 0
-            %td= link_to descr, doujin_path(d)
+            %td
+              = link_to descr, doujin_path(d)
+              - if show_name_orig
+                .name-orig= d.name_orig
+              - if d.name_orig_kakasi != d.name_orig
+                .name-orig-kakasi= d.name_orig_kakasi
             %td= d.num_images
             %td= number_to_human_size(d.size, precision: 2).delete ' '
             %td= link_to '&star;'.html_safe,
@@ -31,7 +37,7 @@
               class: "fav #{'is-favorite' if d.favorite?}"
   - else
     .thumbs
-      - @doujinshi.find_each(batch_size: DoujinshiController::BATCH_SIZE).each do |d|
+      - @doujinshi.find_each_in_order(batch_size: DoujinshiController::BATCH_SIZE).each do |d|
         - descr = short_label ? d.label_name_latin : d.file_dl_name(omit_ext: true)
         .doujin
           .cover= link_to image_tag(doujin_path(d, format: :jpg), class: :thumb), doujin_path(d)
