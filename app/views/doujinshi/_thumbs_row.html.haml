@@ -6,6 +6,9 @@
       - title += "\n#{d.score.to_i}⭐ / #{d.num_images} pages / #{number_to_human_size d.size, precision: 2}"
     - else
       - title = "#{d.file_dl_name omit_ext: true}\n#{d.score.to_i}⭐ / #{d.num_images} pages / #{number_to_human_size d.size, precision: 2}"
+    - if show_name_orig
+      - title += "\nORIGINAL:\n- #{d.name_orig}"
+      - title += "\n- #{d.name_orig_kakasi}" if d.name_orig != d.name_orig_kakasi
     .column.is-2.has-text-centered(title=title)
       %figure.image.is2by3
         = link_to image_tag(doujin_path(d, format: :webp), title: title),

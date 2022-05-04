@@ -1,0 +1,19 @@
+%h3
+  Search in collection
+  .actions{style: "float: right"}
+    = link_to 'home', root_path, class: :button
+
+= form_with url: search_doujinshi_path, method: :get do |f|
+  = f.text_field :term, value: params[:term], placeholder: :search
+  = f.submit 'Search'
+
+  &middot;
+
+  - cur_params = params.permit(%w{ format tab term }).to_h
+  - show_key = session[:dj_index_detail] == 'thumbs' ? 'table' : 'thumbs'
+  %small= link_to "show #{show_key}", cur_params.merge(detail: show_key)
+
+%hr/
+
+= render partial: 'fav_js_links'
+= render partial: 'thumbs_table', locals: { doujinshi: @doujinshi, show_name_orig: true }
