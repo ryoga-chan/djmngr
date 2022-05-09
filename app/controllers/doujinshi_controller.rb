@@ -224,7 +224,7 @@ class DoujinshiController < ApplicationController
     sql_name = "COALESCE(NULLIF(name_romaji, ''), NULLIF(name_kakasi, ''))"
     
     sql_sort_by = params[:sort] == 'date' ? {faved_at: :desc} : Arel.sql(sql_name)
-    sql_select  = Arel.sql "id, #{sql_name} AS name, favorite"
+    sql_select  = Arel.sql "id, #{sql_name} AS name, favorite, faved_at"
     @authors    = Author.select(sql_select).where(favorite: true).order(sql_sort_by)
     @circles    = Circle.select(sql_select).where(favorite: true).order(sql_sort_by)
 

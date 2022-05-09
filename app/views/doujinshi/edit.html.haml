@@ -1,10 +1,6 @@
 - versions = @doujin.versions.reverse
 
-- if @doujin.errors.any?
-  .is-size-5.notification.is-danger.content
-    %ul.mt-0
-      - @doujin.errors.full_messages.each do |message|
-        %li= message
+= render partial: 'record_errors', object: @doujin.errors.full_messages
 
 = form_for @doujin do |f|
   = hidden_field_tag :from_author, params[:from_author]

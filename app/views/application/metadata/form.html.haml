@@ -1,0 +1,51 @@
+.title.is-size-4
+  = "#{params[:action].capitalize} #{@model.name}"
+
+= render partial: 'record_errors', object: @record.errors.full_messages
+
+= form_for @record, as: :record do |f|
+  - %w{ name name_kana name_romaji name_kakasi }.each do |k|
+    .field.is-horizontal
+      .field-label.is-normal
+        %label.label= k.humanize
+      .field-body
+        .field
+          .control.is-expanded= f.text_field k, class: :input
+
+  - %w{ info aliases links }.each do |k|
+    .field.is-horizontal
+      .field-label.is-normal
+        %label.label= k.humanize
+      .field-body
+        .field
+          .control= f.text_area k, class: :textarea
+  
+  .field.is-horizontal
+    .field-label.is-normal
+      %label.label Dj.org ID
+    .field-body
+      .field
+        .control.is-expanded= f.number_field :doujinshi_org_id, class: :input
+  
+  .field.is-horizontal
+    .field-label.is-normal
+      %label.label Dj.org path
+    .field-body
+      .field
+        .control.is-expanded= f.text_field :doujinshi_org_url, class: :input
+  
+  - if @model.column_names.include?('favorite')
+    .field.is-horizontal
+      .field-label.is-normal
+        %label.label Favorite?
+      .field-body
+        .field
+          .select.is-fullwidth= f.select :favorite, options_for_select({'Yes' => true, 'No' => false}, @record.favorite?)
+  
+  .field.is-horizontal
+    .field-label.is-normal
+    .field-body
+      .field
+        .control= f.submit 'Save', class: 'button is-primary'
+
+= render 'application/metadata/actions'

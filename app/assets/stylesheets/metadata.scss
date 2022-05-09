@@ -1,0 +1,17 @@
+.letters {
+  a {
+    width: 1.5rem;
+    display: inline-block;
+    text-align: center;
+    border: 1px outset silver;
+    border-radius: 0.6rem;
+    margin-bottom: 0.3rem;
+  }
+  a:hover, a.selected { background-color: #555; }
+}
+
+body[data-ctrl="authors"][data-action="show"],
+body[data-ctrl="circles"][data-action="show"],
+body[data-ctrl="themes"][data-action="show"] {
+  pre { white-space: pre-line; }
+}

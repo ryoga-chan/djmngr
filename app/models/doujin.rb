@@ -148,7 +148,7 @@ class Doujin < ApplicationRecord
     
     return self.none if tokens_orig.size < 3
     
-    # search all term on the original filename
+    # search all terms on the original filename
     rel_conditions = [
       Doujin.where("name_orig        LIKE ?", "%#{tokens_orig  }%"),
       Doujin.where("name_orig_kakasi LIKE ?", "%#{tokens_orig  }%"),
