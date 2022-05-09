@@ -75,6 +75,34 @@
                 -#    %span.icon
                 -#      %i.mi.mi-small search
         
+          %span.navbar-item.has-dropdown{class: (%w{ authors circles themes }.include?(params[:controller]) ? 'is-current' : nil),
+            onclick: "jQuery(this).toggleClass('is-active')"}
+            %a.navbar-link
+              %span.icon-text
+                %span.icon.mr-2
+                  %i.mi folder_shared
+                %span Metadata
+            .navbar-dropdown
+              = link_to authors_path, class: 'navbar-item', style: 'display: inline' do
+                %span.icon-text
+                  %span.icon.mr-2
+                    %i.mi supervisor_account
+                  %span Authors
+              %br/
+              %br/
+              = link_to circles_path, class: 'navbar-item', style: 'display: inline' do
+                %span.icon-text
+                  %span.icon.mr-2
+                    %i.mi supervised_user_circle
+                  %span Circles
+              %br/
+              %br/
+              = link_to themes_path, class: 'navbar-item', style: 'display: inline' do
+                %span.icon-text
+                  %span.icon.mr-2
+                    %i.mi.mi-small local_offer
+                  %span Themes
+          
         -#.navbar-end
         -#  .navbar-item
         -#    .buttons
