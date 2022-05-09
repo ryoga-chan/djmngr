@@ -13,6 +13,8 @@ class Theme < ApplicationRecord
   has_many   :children, class_name: 'Theme', inverse_of: :parent, foreign_key: 'parent_id'
   belongs_to :parent  , class_name: 'Theme', inverse_of: :children, optional: true
   
-  include SearchJapaneseSubject
   include DoujinshiOrgReference
+  include JapaneseLabels
+  include MetadataManagement
+  include SearchJapaneseSubject
 end

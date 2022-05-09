@@ -43,4 +43,5 @@
             %td= number_to_human_size(d.size, precision: 2).delete ' '
             %td= link_to '&star;'.html_safe,
               fav_toggle_doujinshi_path(type: :Doujin, id: d.id),
+              title: ("faved @ #{l d.faved_at}" if d.favorite? && d.faved_at),
               class: "fav #{'has-text-warning' if d.favorite?}"

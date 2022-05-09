@@ -1,0 +1,9 @@
+- if record_errors.any?
+  .notification.is-danger.is-size-5
+    - if record_errors.one?
+      = record_errors.first
+    - else
+      .content
+        %ul.mt-0
+          - record_errors.each do |msg|
+            %li= msg

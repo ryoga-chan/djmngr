@@ -1,0 +1,14 @@
+.actions.mt-5
+  .actions.field.is-grouped
+    .field.has-addons
+      %p.control= link_to 'Back', {action: :index}, class: 'button is-info is-rounded'
+      
+      - if params[:action] == 'edit'
+        %p.control= link_to 'Show', {action: :show, id: @record.id}, class: 'button is-info is-rounded'
+
+      - if params[:action] == 'show'
+        %p.control
+          = link_to({action: :edit, id: @record.id}, class: 'button is-primary is-rounded') do
+            %span.icon
+              %i.mi.mi-small edit
+            %span Edit

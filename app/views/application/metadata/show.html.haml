@@ -1,0 +1,66 @@
+.title.is-size-4
+  = "#{@model.name} details"
+
+%table.table.is-striped
+  %tr
+    %th
+      .name Name Romaji
+      .name Name Kakasi
+    %td
+      .name-romaji=         link_to_exhentai_search(@record.name_romaji) if @record.name_romaji.present?
+      .name-kakasi.is-italic= @record.name_kakasi
+  %tr
+    %th
+      .name Name Kanji
+      .name Name Kana
+    %td
+      .name-kanji=          link_to_exhentai_search(@record.name       ) if @record.name.present?
+      .name-kana.is-italic= link_to_exhentai_search(@record.name_kana  ) if @record.name_kana.present?
+  - if @record.info.present?
+    %tr
+      %th Info
+      %td.content
+        %pre>= @record.info
+  - if @record.aliases.present?
+    %tr
+      %th Aliases
+      %td.content
+        %ul
+          - @record.aliases.split("\n").each do |a|
+            %li= link_to_exhentai_search a
+  - if @record.links.present?
+    %tr
+      %th Links
+      %td.content
+        %ul
+          - @record.links.split("\n").each do |l|
+            %li= l.start_with?('http') ? link_to(l, l, target: :_blank) : l
+  %tr
+    %th Other
+    %td
+      .field.is-grouped.is-grouped-multiline
+        .control
+          .tags.has-addons
+            %span.tag.is-info Dj.org
+            = link_to @record.doujinshi_org_id, @record.doujinshi_org_full_url, class: 'tag is-info is-light', target: :_blank
+        - if @model.column_names.include?('favorite')
+          .control
+            .tags.has-addons
+              %span.tag.is-info Favorite
+              = link_to '&star;'.html_safe, fav_toggle_doujinshi_path(type: @model, id: @record.id),
+                title: ("faved @ #{l @record.faved_at}" if @record.favorite? && @record.faved_at),
+                class: "tag is-info is-light fav #{'has-text-warning' if @record.favorite?}"
+  %tr
+    %th Timestamps
+    %td
+      .field.is-grouped.is-grouped-multiline
+        .control
+          .tags.has-addons
+            %span.tag.is-info Created at
+            %span.tag.is-info.is-light= l @record.created_at
+        .control
+          .tags.has-addons
+            %span.tag.is-info Updated at
+            %span.tag.is-info.is-light= l @record.updated_at
+
+= render 'application/metadata/actions'

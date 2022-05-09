@@ -31,6 +31,7 @@
               doujinshi_path({tab: 'author', author_id: r.id, anchor: "listing"})
           %td.w1
             = link_to '&star;'.html_safe, fav_toggle_doujinshi_path(type: :Author, id: r.id),
+              title: ("faved @ #{l r.faved_at}" if r.favorite? && r.faved_at),
               class: "fav #{'has-text-warning' if r.favorite?}"
   
   .column.entries.is-3
@@ -44,4 +45,5 @@
               doujinshi_path({tab: 'circle', circle_id: r.id, anchor: "listing"})
           %td.w1
             = link_to '&star;'.html_safe, fav_toggle_doujinshi_path(type: :Circle, id: r.id),
+              title: ("faved @ #{l r.faved_at}" if r.favorite? && r.faved_at),
               class: "fav #{'has-text-warning' if r.favorite?}"

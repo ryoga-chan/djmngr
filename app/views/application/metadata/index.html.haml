@@ -1,0 +1,83 @@
+- has_favorite_column = @model.column_names.include?('favorite')
+
+.title.is-size-4
+  = @model.name
+  - if params[:letter].present?
+    %span.is-size-7>= ", beginning with [#{params[:letter]}]"
+
+.columns
+  .column.is-4.is-align-self-center
+    = form_with url: {}, method: :get do |f|
+      .field.has-addons.is-justify-content-center
+        .control
+          .select= f.select :by,
+            options_for_select(%w{ linear sparse }, params[:by]),
+            {}, class: 'input is-rounded', onchange: 'this.form.submit()'
+        .control= f.text_field :term, value: params[:term], placeholder: :search, class: 'input is-rounded'
+        -#.control= f.submit 'Go', class: 'button is-rounded'
+            
+  .column
+    .letters.mb-3
+      - @model.distinct.select("UPPER(SUBSTR(name_kakasi, 1, 1)) AS letter").map(&:letter).sort.each do |lt|
+        - next if lt.blank?
+        = link_to lt, {letter: lt}, class: ('selected' if lt == params[:letter])
+
+= page_entries_info @records
+
+%table.table.is-striped.is-hoverable.is-fullwidth
+  %thead
+    %tr
+      %th.w1 Dj.org
+      - if has_favorite_column
+        %th.w1 Fav
+        %th.w1 #Dj
+      %th Name Rmj/Kks
+      %th Name Knj/Kan
+      %th Aliases
+      %th.w1.has-text-centered
+        = link_to({action: :new}, class: 'button is-small is-rounded') do
+          %span.icon-text
+            %span.icon.is-small
+              %i.mi.mi-small add
+            %span New
+  %tbody
+    - @records.each do |r|
+      %tr
+        %td
+          - if r.doujinshi_org_id
+            = link_to r.doujinshi_org_id, r.doujinshi_org_full_url, target: :_blank
+          - else
+            &minus;
+        - if has_favorite_column
+          %td
+            = link_to '&star;'.html_safe, fav_toggle_doujinshi_path(type: @model, id: r.id),
+              title: ("faved @ #{l r.faved_at}" if r.favorite? && r.faved_at),
+              class: "fav #{'has-text-warning' if r.favorite?}"
+          %td= r.doujinshi.count
+        %td
+          = link_to r do
+            .name-romaji=           r.name_romaji.present? ? r.name_romaji : '&minus;'.html_safe
+            .name-kakasi.is-italic= r.name_kakasi.present? ? r.name_kakasi : '&minus;'.html_safe
+        %td
+          .name-kanji=          r.name.present?      ? r.name      : '&minus;'.html_safe
+          .name-kana.is-italic= r.name_kana.present? ? r.name_kana : '&minus;'.html_safe
+        %td= r.aliases.gsub "\n", ', '
+        %td
+          .field.has-addons
+            .control
+              = link_to({action: :show, id: r.id}, class: 'button is-small is-rounded') do
+                %span.icon.is-small
+                  %i.mi.mi-small visibility
+            .control
+              = link_to({action: :edit, id: r.id}, class: 'button is-small is-rounded') do
+                %span.icon.is-small
+                  %i.mi.mi-small edit
+            .control
+              = link_to({action: :destroy, id: r.id},
+                method: :delete, data: { confirm: 'Delete this record?' },
+                class: 'button is-small is-rounded is-danger') do
+                %span.icon.is-small
+                  %i.mi.mi-small delete
+                
+
+= paginate @records
