@@ -133,3 +133,23 @@
     #loading.modal
       .modal-background
       .modal-content
+
+    #js-tagger-modal.modal
+      .modal-background
+      .modal-card(style="height: calc(100vh - 40px)")
+        %header.modal-card-head
+          %p.modal-card-title Add tags
+          %button.delete.js-tagger-cancel
+        %section.modal-card-body
+          .columns
+            .column.is-half
+              .field.is-grouped.is-grouped-multiline.current-tags
+            .column.is-half.search-area(style="border-left: 1px solid silver")
+              .control.has-icons-left
+                %input.input.is-rounded.js-tagger-term{type: :text, placeholder: :search}
+                %span.icon.is-small.is-left
+                  %i.mi.mi-small search
+                %nav.panel.lookup-results
+        %footer.modal-card-foot
+          %button.button.is-success.js-tagger-set Set
+          %button.button.js-tagger-cancel Cancel
