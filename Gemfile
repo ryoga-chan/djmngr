@@ -12,7 +12,6 @@ gem 'rails',       '~> 7.0',     # to use edge: gem 'rails', github: 'rails/rail
 gem 'sqlite3',     '~> 1.4'      # sqlite3 database for Active Record
 gem 'puma',        '~> 5.0'      # puma web server -- https://github.com/puma/puma
 gem 'rack-brotli', '~> 1.2'      # enable brotli compression
-gem 'bcrypt',      '~> 3.1'      # ActiveModel's has_secure_password -- https://guides.rubyonrails.org/active_model_basics.html#securepassword
 gem 'sassc-rails'                # sass to process CSS
 gem 'sprockets-rails'            # asset pipeline -- https://github.com/rails/sprockets-rails
 gem 'tzinfo-data', platforms: %i[ mingw mswin x64_mingw jruby ] # zoneinfo files for Windows
@@ -22,6 +21,7 @@ gem 'kakasi'                     # kanji kana simple inverter -- https://github.
 gem 'progressbar'                # cli progressbar -- https://github.com/jfelchner/ruby-progressbar
 gem 'rubyzip', '~> 2.3', require: 'zip' # manage ZIP files -- https://github.com/rubyzip/rubyzip
 gem 'paper_trail', '~> 12.3'     # track model changes -- https://github.com/paper-trail-gem/paper_trail
+#gem 'bcrypt',      '~> 3.1'      # ActiveModel's has_secure_password -- https://guides.rubyonrails.org/active_model_basics.html#securepassword
 #gem 'ferret', '0.11.9.0', source: 'https://rubygems.pkg.github.com/acavalin' # https://github.com/acavalin/ferret
 
 # image manipulation  ==>         https://github.com/janko/image_processing
