@@ -17,7 +17,7 @@
         -#.control= f.submit 'Go', class: 'button is-rounded'
             
   .column
-    .letters.mb-3
+    .metadata-letters.mb-3
       - @model.distinct.select("UPPER(SUBSTR(name_kakasi, 1, 1)) AS letter").map(&:letter).sort.each do |lt|
         - next if lt.blank?
         = link_to lt, {letter: lt}, class: ('selected' if lt == params[:letter])

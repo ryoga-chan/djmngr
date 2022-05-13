@@ -40,7 +40,13 @@ Rails.application.routes.draw do
     end
   end
   
-  resources :authors
-  resources :circles
-  resources :themes
+  resources :authors do
+    get :tags_lookup, on: :collection
+  end
+  resources :circles do
+    get :tags_lookup, on: :collection
+  end
+  resources :themes do
+    get :tags_lookup, on: :collection
+  end
 end
