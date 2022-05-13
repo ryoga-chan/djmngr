@@ -7,7 +7,8 @@ class CreateAuthorsCircles < ActiveRecord::Migration[7.0]
       t.datetime   :created_at
     end
     
-    # unique combo
-    add_index :authors_circles, %i{author_id circle_id}, unique: true
+    add_index :authors_circles, :author_id
+    add_index :authors_circles, :circle_id
+    add_index :authors_circles, %i{author_id circle_id}, unique: true # no duplicates
   end
 end

@@ -1,3 +1,5 @@
+# NOTE: sqlite LIKE is case insensitive! => we can skip LOWER() to speed up WHERE
+# https://www.sqlite.org/optoverview.html#the_like_optimization
 module SearchJapaneseSubject
   extend ActiveSupport::Concern
 
@@ -43,8 +45,6 @@ module SearchJapaneseSubject
       
       klass = self.name.downcase
       
-      # NOTE: sqlite LIKE is case insensitive! => we can skip LOWER() to speed up WHERE
-      # https://www.sqlite.org/optoverview.html#the_like_optimization
       query = <<~SQL
         SELECT
             t.*

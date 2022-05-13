@@ -5,16 +5,12 @@ module MetadataManagement
   include ActiveModel::Validations
   
   included do
-    before_validation :sanitize_fields
     validates :name, presence: true
     
-    # TODO: do not delete record if associated to someone
-    #       ask confirmation and remove associations
-    #before_destroy :check_if_associated
-
+    before_validation :sanitize_fields
     
     def sanitize_fields
-      self.name_kakasi = name.to_romaji if name_changed?
+      self.name_kakasi = name.to_romaji if name_changed? || name_kakasi.blank?
     end # sanitize_fields
   end
 end # MetadataManagement

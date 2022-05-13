@@ -1,4 +1,4 @@
-.letters {
+.metadata-letters {
   a {
     width: 1.5rem;
     display: inline-block;
@@ -8,6 +8,11 @@
     margin-bottom: 0.3rem;
   }
   a:hover, a.selected { background-color: #555; }
+}
+
+.metadata-relations {
+  .column { border-left: 1px solid silver; }
+  .column:first-child { border-width: 0; }
 }
 
 body[data-ctrl="authors"][data-action="show"],
