@@ -15,5 +15,7 @@ class CreateCircles < ActiveRecord::Migration[7.0]
 
       t.timestamps
     end
+
+    add_index :circles, :doujinshi_org_id
   end
 end
