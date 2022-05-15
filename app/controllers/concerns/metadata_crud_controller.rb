@@ -30,15 +30,19 @@ module MetadataCrudController
   def edit = render('application/metadata/form')
   
   def new
-    @record = @model.new
+    @record = @model.new name: params[:name]
     render('application/metadata/form')
   end # new
   
   def create
     @record = @model.new record_params
-    @record.save ?
-      redirect_to({action: :show, id: @record.id}, notice: "#{@model.name} [#{params[:id]} / #{@record.name}] created") :
+    if @record.save
+      params[:wip_hash] ?
+        redirect_to({controller: :process, action: :edit, id: params[:wip_hash], tab: :ident, term: @record.name}) :
+        redirect_to({action: :show, id: @record.id}, notice: "#{@model.name} [#{params[:id]} / #{@record.name}] created")
+    else
       render('application/metadata/form', status: :unprocessable_entity)
+    end
   end # end
   
   def update

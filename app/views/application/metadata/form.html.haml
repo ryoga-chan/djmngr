@@ -4,6 +4,8 @@
 = render partial: 'record_errors', object: @record.errors.full_messages
 
 = form_for @record, as: :record do |f|
+  = hidden_field_tag :wip_hash, params[:wip_hash]
+
   - %w{ name name_kana name_romaji name_kakasi }.each do |k|
     .field.is-horizontal
       .field-label.is-normal
@@ -22,17 +24,12 @@
   
   .field.is-horizontal
     .field-label.is-normal
-      %label.label Dj.org ID
+      %label.label Dj.org ID/Path
     .field-body
       .field
-        .control.is-expanded= f.number_field :doujinshi_org_id, class: :input
-  
-  .field.is-horizontal
-    .field-label.is-normal
-      %label.label Dj.org path
-    .field-body
+        .control= f.number_field :doujinshi_org_id, class: :input, placeholder: 'ID', size: 10
       .field
-        .control.is-expanded= f.text_field :doujinshi_org_url, class: :input
+        .control.is-expanded= f.text_field :doujinshi_org_url, class: :input, placeholder: :path
   
   - if @model.column_names.include?('favorite')
     .field.is-horizontal
@@ -54,7 +51,7 @@
           .column.is-half
             .js-tagger{data: {title: "Add relations whith #{rel_name}", url: url_for(controller: rel_name, action: :tags_lookup) }}
               .title.is-size-5.has-text-centered
-                %button.button.is-rounded.is-small.mr-2.js-tagger-search
+                %button.button.is-rounded.is-small.mr-2.js-tagger-search(type="button")
                   %span.icon.is-small
                     %i.mi.mi-small add
                   %span= rel_name
