@@ -10,7 +10,7 @@ module MetadataCrudController
     @records = @model
     
     if params[:term].present?
-      params[:by] = 'linear' unless %{ linear sparse }.include?(params[:by])
+      params[:by] = 'linear' unless %w{ linear sparse }.include?(params[:by])
       @records = @model.search(params[:term], search_method: params[:by])
     end
     

@@ -48,32 +48,41 @@ module SearchJapaneseSubject
       query = <<~SQL
         SELECT
             t.*
-          , CASE LOWER(name                   ) WHEN :term_d      THEN 1 ELSE 0   END +
-            CASE LOWER(name_kana              ) WHEN :term_d      THEN 1 ELSE 0   END +
-            CASE LOWER(name_romaji            ) WHEN :term_d      THEN 1 ELSE 0   END +
-            CASE LOWER(name_kakasi            ) WHEN :term_dk     THEN 1 ELSE 0   END +
-            CASE INSTR(LOWER(name             ), :term_d ) WHEN 0 THEN 0 ELSE 0.3 END +
-            CASE INSTR(LOWER(name_kana        ), :term_d ) WHEN 0 THEN 0 ELSE 0.3 END +
-            CASE INSTR(LOWER(name_romaji      ), :term_d ) WHEN 0 THEN 0 ELSE 0.3 END +
-            CASE INSTR(LOWER(name_kakasi      ), :term_dk) WHEN 0 THEN 0 ELSE 0.3 END +
-            CASE INSTR(LOWER(aliases          ), :term_d ) WHEN 0 THEN 0 ELSE 0.5 END +
-            CASE INSTR(LOWER(doujinshi_org_url), :term_d ) WHEN 0 THEN 0 ELSE 0.5 END
+          , CASE LOWER(name                   ) WHEN :term_weight      THEN 1 ELSE 0   END +
+            CASE LOWER(name_kana              ) WHEN :term_weight      THEN 1 ELSE 0   END +
+            CASE LOWER(name_romaji            ) WHEN :term_weight      THEN 1 ELSE 0   END +
+            CASE LOWER(name_kakasi            ) WHEN :term_weightk     THEN 1 ELSE 0   END +
+            CASE INSTR(LOWER(name             ), :term_weight ) WHEN 0 THEN 0 ELSE 0.3 END +
+            CASE INSTR(LOWER(name_kana        ), :term_weight ) WHEN 0 THEN 0 ELSE 0.3 END +
+            CASE INSTR(LOWER(name_romaji      ), :term_weight ) WHEN 0 THEN 0 ELSE 0.3 END +
+            CASE INSTR(LOWER(name_kakasi      ), :term_weightk) WHEN 0 THEN 0 ELSE 0.3 END +
+            CASE INSTR(LOWER(aliases          ), :term_weight ) WHEN 0 THEN 0 ELSE 0.5 END +
+            CASE INSTR(LOWER(doujinshi_org_url), :term_weight ) WHEN 0 THEN 0 ELSE 0.5 END +
+            CASE WHEN name              LIKE :term_where  THEN 0.1 ELSE 0 END +
+            CASE WHEN name_kana         LIKE :term_where  THEN 0.1 ELSE 0 END +
+            CASE WHEN name_romaji       LIKE :term_where  THEN 0.1 ELSE 0 END +
+            CASE WHEN name_kakasi       LIKE :term_wherek THEN 0.1 ELSE 0 END +
+            CASE WHEN aliases           LIKE :term_where  THEN 0.1 ELSE 0 END +
+            CASE WHEN doujinshi_org_url LIKE :term_where  THEN 0.1 ELSE 0 END
             AS weigth
           , (SELECT COUNT(1) FROM #{klass.pluralize}_doujinshi WHERE #{klass}_id = t.id) AS num_dj
         FROM #{self.table_name} t
-        WHERE name              LIKE :term_q
-           OR name_kana         LIKE :term_q
-           OR name_romaji       LIKE :term_q
-           OR name_kakasi       LIKE :term_qk
-           OR aliases           LIKE :term_q
-           OR doujinshi_org_url LIKE :term_q
+        WHERE name              LIKE :term_where
+           OR name_kana         LIKE :term_where
+           OR name_romaji       LIKE :term_where
+           OR name_kakasi       LIKE :term_wherek
+           OR aliases           LIKE :term_where
+           OR doujinshi_org_url LIKE :term_where
         ORDER BY weigth DESC, LOWER(name_romaji), id DESC
         LIMIT :limit
       SQL
       
-      term_d = term.downcase
-      query_params = { term_d: term_d, term_dk: term_d.to_romaji,
-                       term_q: "%#{term}%", term_qk: "%#{term.to_romaji}%", limit: limit }
+      term_weight = term.downcase
+      query_params = { term_weight:  term_weight,
+                       term_weightk: term_weight.to_romaji,
+                       term_where:   "%#{term.tr(' ', '%')          }%",
+                       term_wherek:  "%#{term.tr(' ', '%').to_romaji}%",
+                       limit:        limit }
       
       self.find_by_sql [query, query_params]
     end # search_by_name
