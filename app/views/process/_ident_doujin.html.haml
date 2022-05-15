@@ -41,7 +41,7 @@
 
 .columns.search-results.mt-3
   .column(class="associated")
-    .title.is-4 Associations
+    .title.is-4.mt-1 Associations
     
     = form_with url: set_property_process_path do |f|
       = f.hidden_field :tab , value: params[:tab]
@@ -60,17 +60,15 @@
                   checked: "#{type}-#{r.id}" == "#{@info[:doujin_dest_type]}-#{@info[:doujin_dest_id]}",
                   onchange: "this.form.submit()"
                 - name = r.name.present? ? r.name : r.name_kana
+                = link_to({action: :set_property, "#{type.singularize}_id" => r.id, tab: params[:tab], term: params[:term]},
+                  title: "remove association", method: :post, data: {confirm: 'remove association?'}) do
+                  %span.icon.in-text.has-text-primary
+                    %i.mi remove
+                - name_hl = h(name).gsub(term_re, %Q|<span class="has-text-warning">\\0</span>|).html_safe
                 - if r.doujinshi_org_id
-                  = link_to({action: :set_property, "#{type.singularize}_id" => r.id, tab: params[:tab], term: params[:term]},
-                    title: "remove association", method: :post, data: {confirm: 'remove association?'}) do
-                    %span.icon.in-text.has-text-primary
-                      %i.mi remove
-                  - name_hl = h(name).gsub(term_re, %Q|<span class="has-text-warning">\\0</span>|).html_safe
                   = link_to name_hl, r.doujinshi_org_full_url, target: :_blank, title: "view on doujinshi.org"
                 - else
-                  = link_to :A, Author.doujinshi_org_search_url(name), target: :_blank, title: "search author on doujinshi.org"
-                  = link_to :C, Circle.doujinshi_org_search_url(name), target: :_blank, title: "search circle on doujinshi.org"
-                  = name
+                  = link_to name_hl, {controller: type.pluralize, action: :show, id: r.id}, target: :_blank, title: "view local #{type}"
                 %span.is-size-7 /
                 %span.has-text-grey.is-size-7
                   - name = r.name_romaji.present? ? r.name_romaji : r.name_kakasi
@@ -78,7 +76,13 @@
   
   - %w{ circles authors }.each do |type|
     .column{class: type}
-      .title.is-4= "#{type.capitalize} search"
+      .columns
+        .column.is-2
+          = link_to({controller: type, action: :new, wip_hash: params[:id], name: params[:term]}, class: 'button is-small is-rounded') do
+            %span.icon.is-small
+              %i.mi.mi-small add
+        .column
+          .title.is-4.mt-1= "#{type.capitalize} search"
       
       - instance_variable_get("@#{type}").each do |r|
         - is_associated = @info["#{type.singularize}_ids".to_sym].to_a.include? r.id
@@ -86,19 +90,17 @@
         .block{class: "#{'associated has-background-grey-darker' if is_associated}"}
           %span.name_orig
             - name = r.label_name_kanji
+            = link_to({action: :set_property, "#{type.singularize}_id" => r.id, tab: params[:tab], term: params[:term]},
+              title: "#{is_associated ? :remove : :add} association", method: :post) do
+              %span.icon.in-text.has-text-primary
+                %i.mi= is_associated ? :remove : :add
+            - if r[:num_dj].to_i > 0
+              %span.tag.is-info(title="number of doujinshi associated")= r[:num_dj]
+            - name_hl = h(name).gsub(term_re, %Q|<span class="has-text-warning">\\0</span>|).html_safe
             - if r.doujinshi_org_id
-              = link_to({action: :set_property, "#{type.singularize}_id" => r.id, tab: params[:tab], term: params[:term]},
-                title: "#{is_associated ? :remove : :add} association", method: :post) do
-                %span.icon.in-text.has-text-primary
-                  %i.mi= is_associated ? :remove : :add
-              - if r[:num_dj].to_i > 0
-                %span.tag.is-info(title="number of doujinshi associated")= r[:num_dj]
-              - name_hl = h(name).gsub(term_re, %Q|<span class="has-text-warning">\\0</span>|).html_safe
               = link_to name_hl, r.doujinshi_org_full_url, target: :_blank, title: "view on doujinshi.org"
             - else
-              = link_to :A, Author.doujinshi_org_search_url(name), target: :_blank, title: "search author on doujinshi.org"
-              = link_to :C, Circle.doujinshi_org_search_url(name), target: :_blank, title: "search circle on doujinshi.org"
-              = name
+              = link_to name_hl, {controller: type, action: :show, id: r.id}, target: :_blank, title: "view local #{type.singularize}"
               
           %span.name_romaji.has-text-grey.is-size-7
             %span.has-text-info /
