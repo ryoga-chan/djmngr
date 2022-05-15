@@ -60,6 +60,10 @@ class DoujinshiController < ApplicationController
   end # index
   
   def search
+    if %w{ authors circles themes }.include?(params[:where])
+      return redirect_to(controller: params[:where], action: :index, term: params[:term])
+    end
+    
     @doujinshi = Doujin.search(params[:term]).limit(THUMBS_PER_ROW * 5)
     
     respond_to do |format|

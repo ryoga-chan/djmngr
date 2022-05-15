@@ -14,7 +14,10 @@
             options_for_select(%w{ linear sparse }, params[:by]),
             {}, class: 'input is-rounded', onchange: 'this.form.submit()'
         .control= f.text_field :term, value: params[:term], placeholder: :search, class: 'input is-rounded'
-        -#.control= f.submit 'Go', class: 'button is-rounded'
+        .control
+          = f.button class: 'button is-light is-rounded is-outlined', title: "search in #{@model}s" do
+            %span.icon
+              %i.mi.mi-small search
             
   .column
     .metadata-letters.mb-3
