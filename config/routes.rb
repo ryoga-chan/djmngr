@@ -42,11 +42,14 @@ Rails.application.routes.draw do
   
   resources :authors do
     get :tags_lookup, on: :collection
+    get :djorg_alias_check, on: :member
   end
   resources :circles do
     get :tags_lookup, on: :collection
+    get :djorg_alias_check, on: :member
   end
   resources :themes do
     get :tags_lookup, on: :collection
+    get :djorg_alias_check, on: :member
   end
 end

@@ -1,5 +1,7 @@
 .title.is-size-4
   = "#{@model.name} details"
+  - if @record.doujinshi_org_aka_id.present?
+    %span.tag.is-danger= link_to "deprecated by ID [#{@record.alias_parent.id}]", id: @record.alias_parent.id
 
 %table.table.is-striped.is-fullwidth
   %tr
@@ -51,6 +53,17 @@
               = link_to '&star;'.html_safe, fav_toggle_doujinshi_path(type: @model, id: @record.id),
                 title: ("faved @ #{l @record.faved_at}" if @record.favorite? && @record.faved_at),
                 class: "tag is-info is-light fav #{'has-text-warning' if @record.favorite?}"
+  
+  - if @record.alias_children.any?
+    %tr
+      %th Aliases (Local|Dj.org)
+      %td
+        .field.is-grouped.is-grouped-multiline
+          - @record.alias_children.each do |ac|
+            .control
+              .tags.has-addons
+                %span.tag.is-info= link_to ac.id, {id: ac.id}, target: :_blank
+                = link_to @record.doujinshi_org_id, @record.doujinshi_org_full_url, class: 'tag is-info is-light', target: :_blank
   
   - ([Author, Circle, Theme] - [@model]).each do |model|
     - rel_name = model.name.pluralize.downcase

@@ -1,0 +1,5 @@
+This
+= @model.name
+= link_to "[#{@record.id}]", action: :show, id: @record.id
+is aliased by ID 
+= link_to "[#{@record.alias_parent.id}]", action: :show, id: @record.alias_parent.id
