@@ -14,5 +14,7 @@ class CreateSettings < ActiveRecord::Migration[7.0]
     Setting.create key: 'reading_direction', value: 'r2l', notes: 'default reading direction' # r2l, l2r
     Setting.create key: 'epub_img_width' , value: 768 , notes: 'resize image to this width in epub creation'
     Setting.create key: 'epub_img_height', value: 1024, notes: 'resize image to this height in epub creation'
+    Setting.create key: 'scraper_useragent', notes: 'user agent used for doujinshi.org scraping',
+      value: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36'
   end
 end
