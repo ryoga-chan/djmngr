@@ -66,13 +66,17 @@
                     %i.mi remove
                 - name_hl = h(name).gsub(term_re, %Q|<span class="has-text-warning">\\0</span>|).html_safe
                 - if r.doujinshi_org_id
-                  = link_to name_hl, r.doujinshi_org_full_url, target: :_blank, title: "view on doujinshi.org"
+                  = link_to name_hl, {controller: type.pluralize, action: :djorg_alias_check, id: r.id},
+                    target: :_blank, title: "view on doujinshi.org"
                 - else
-                  = link_to name_hl, {controller: type.pluralize, action: :show, id: r.id}, target: :_blank, title: "view local #{type}"
+                  = link_to name_hl, {controller: type.pluralize, action: :show, id: r.id},
+                    target: :_blank, title: "view local #{type}"
                 %span.is-size-7 /
                 %span.has-text-grey.is-size-7
                   - name = r.name_romaji.present? ? r.name_romaji : r.name_kakasi
                   = h(name).gsub(term_re, %Q|<span class="has-text-warning">\\0</span>|).html_safe
+                - if r.doujinshi_org_aka_id.present?
+                  %span.tag.is-danger deprecated
   
   - %w{ circles authors }.each do |type|
     .column{class: type}
@@ -85,6 +89,7 @@
           .title.is-4.mt-1= "#{type.capitalize} search"
       
       - instance_variable_get("@#{type}").each do |r|
+        - next if r.doujinshi_org_aka_id.present?
         - is_associated = @info["#{type.singularize}_ids".to_sym].to_a.include? r.id
         
         .block{class: "#{'associated has-background-grey-darker' if is_associated}"}
@@ -98,7 +103,9 @@
               %span.tag.is-info(title="number of doujinshi associated")= r[:num_dj]
             - name_hl = h(name).gsub(term_re, %Q|<span class="has-text-warning">\\0</span>|).html_safe
             - if r.doujinshi_org_id
-              = link_to name_hl, r.doujinshi_org_full_url, target: :_blank, title: "view on doujinshi.org"
+              = link_to name_hl,
+                {controller: type, action: :djorg_alias_check, id: r.id},
+                target: :_blank, title: "view on doujinshi.org"
             - else
               = link_to name_hl, {controller: type, action: :show, id: r.id}, target: :_blank, title: "view local #{type.singularize}"
               
@@ -115,7 +122,8 @@
                   - am = instance_variable_get("@associated_#{members_name}")
                   - is_associated = am.any?{|i| i.doujinshi_org_id == m.doujinshi_org_id }
                   %li
-                    %span{class: ('associated' if is_associated)}= link_to m.label_name_kanji, m.doujinshi_org_full_url, target: :_blank,
+                    %span{class: ('associated' if is_associated)}= link_to m.label_name_kanji,
+                      {controller: members_name, action: :djorg_alias_check, id: m.id}, target: :_blank,
                       title: "view on doujinshi.org", class: 'has-text-white'
                     %span.has-text-info /
                     %span.has-text-grey= m.label_name_latin
