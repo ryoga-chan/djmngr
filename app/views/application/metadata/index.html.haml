@@ -1,12 +1,12 @@
 - has_favorite_column = @model.column_names.include?('favorite')
 
 .title.is-size-4
-  = @model.name
+  = params[:controller].capitalize
   - if params[:letter].present?
     %span.is-size-7>= ", beginning with [#{params[:letter]}]"
 
 .columns
-  .column.is-4.is-align-self-center
+  .column.is-5.is-align-self-center
     = form_with url: {}, method: :get do |f|
       .field.has-addons.is-justify-content-center
         .control
@@ -48,7 +48,7 @@
       %tr
         %td
           - if r.doujinshi_org_id
-            = link_to r.doujinshi_org_id, r.doujinshi_org_full_url, target: :_blank
+            = link_to r.doujinshi_org_id, {action: :djorg_alias_check, id: r.id}, target: :_blank
           - else
             &minus;
         - if has_favorite_column

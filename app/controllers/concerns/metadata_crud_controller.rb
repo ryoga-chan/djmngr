@@ -3,7 +3,7 @@ module MetadataCrudController
   
   included do
     before_action { @model = params[:controller].singularize.capitalize.constantize }
-    before_action :set_record, only: %i[ show edit update destroy ]
+    before_action :set_record, only: %i[ show edit update destroy djorg_alias_check ]
   end # included
 
   def index
@@ -67,6 +67,13 @@ module MetadataCrudController
       render json: {result: :err, msg: $!.to_s }
     end
   end # tags_lookup
+  
+  # alert if link is an alias otherwise redirect to it
+  def djorg_alias_check
+    return redirect_to(@record.doujinshi_org_full_url) unless @record.djorg_url_aliased?
+    flash.now[:alert] = "#{@model.name} [#{params[:id]} / #{@record.name}] deprecated"
+    render 'application/metadata/djorg_alias_check'
+  end # djorg_alias_check
   
   
   private # ____________________________________________________________________
