@@ -21,6 +21,7 @@ gem 'kakasi'                     # kanji kana simple inverter -- https://github.
 gem 'progressbar'                # cli progressbar -- https://github.com/jfelchner/ruby-progressbar
 gem 'rubyzip', '~> 2.3', require: 'zip' # manage ZIP files -- https://github.com/rubyzip/rubyzip
 gem 'paper_trail', '~> 12.3'     # track model changes -- https://github.com/paper-trail-gem/paper_trail
+gem 'httparty',    '~> 0.20'     # http requests made easy -- https://github.com/jnunemaker/httparty
 #gem 'bcrypt',      '~> 3.1'      # ActiveModel's has_secure_password -- https://guides.rubyonrails.org/active_model_basics.html#securepassword
 #gem 'ferret', '0.11.9.0', source: 'https://rubygems.pkg.github.com/acavalin' # https://github.com/acavalin/ferret
 
