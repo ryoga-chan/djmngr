@@ -8,6 +8,7 @@ class CreateCircles < ActiveRecord::Migration[7.0]
       t.text     :info
       t.text     :aliases
       t.text     :links
+      t.string   :notes
       t.integer  :doujinshi_org_id
       t.integer  :doujinshi_org_aka_id
       t.string   :doujinshi_org_url, null: false, default: ''

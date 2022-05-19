@@ -96,6 +96,11 @@ $('body').on('click', '#js-tagger-modal .lookup-results a', function (ev) {
       tagger = modal.data('tagger')
       result_tag = $(this);
   
+  // prevent another click while fading the tag
+  if (result_tag.data('clicked'))
+    return;
+  result_tag.data('clicked', true);
+  
   var html = tagger.data('html-template').
     replace(/RECORD_ID/g, result_tag.data('id')).
     replace(/LABEL/g, result_tag.text().trim());

@@ -90,6 +90,7 @@ module MetadataCrudController
     params.require(:record).permit \
       :name, :name_romaji, :name_kana, :name_kakasi, :favorite,
       :info, :aliases, :links, :doujinshi_org_id, :doujinshi_org_url,
+      :doujinshi_org_aka_id, :notes,
       {author_ids: []}, {circle_ids: []}, {theme_ids: []}
   end # record_params
 end

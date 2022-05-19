@@ -39,7 +39,7 @@ class Doujin < ApplicationRecord
   def sanitize_fields
     self.scored_at = Time.now if score_changed?
     
-    self.name_kakasi      = name     .to_romaji if name_changed?
+    self.name_kakasi      = name     .to_romaji if name_changed? || name_kakasi.blank?
     self.name_orig_kakasi = name_orig.to_romaji if name_orig_changed?
     self.notes            = notes.to_s.strip    if notes_changed?
   end # sanitize_fields
