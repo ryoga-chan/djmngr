@@ -4,7 +4,7 @@ module CoreExt
   module ActiveRecord
     module Batches
       def find_in_batches_in_order(batch_size: 1000)
-        num_records      = self.count
+        num_records      = self.reorder('').reselect('').count
         batches_interval = 0..(num_records/batch_size)
         
         if block_given?
