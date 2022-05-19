@@ -1,10 +1,10 @@
 class CreateCircles < ActiveRecord::Migration[7.0]
   def change
     create_table :circles do |t|
-      t.string   :name
+      t.string   :name       , null: false
       t.string   :name_romaji
       t.string   :name_kana
-      t.string   :name_kakasi
+      t.string   :name_kakasi, null: false
       t.text     :info
       t.text     :aliases
       t.text     :links
