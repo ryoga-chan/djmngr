@@ -72,6 +72,23 @@
   
   .field.is-horizontal
     .field-label.is-normal
+      %label.label Aliased by Dj.org ID
+    .field-body
+      .field
+        .control.is-expanded= f.number_field :doujinshi_org_aka_id, class: :input, min: 1, step: 1
+      - if @record.doujinshi_org_aka_id.present?
+        = link_to "view",
+          {action: :show, id: @record.alias_parent.id}, class: :button
+    
+  .field.is-horizontal
+    .field-label.is-normal
+      %label.label Notes
+    .field-body
+      .field
+        .control= f.text_area :notes, class: :textarea
+  
+  .field.is-horizontal
+    .field-label.is-normal
     .field-body
       .field
         .control= f.submit 'Save', class: 'button is-primary'
