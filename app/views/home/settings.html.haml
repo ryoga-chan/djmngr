@@ -10,18 +10,16 @@
     = f.hidden_field :id, value: s.id
     .field.is-horizontal
       .field-label.is-normal
-        %label.label= s.key
+        %label.label
+          = s.key
+          %span.icon.is-small.in-text-small{title: s.notes}
+            %i.mi.mi-small help
       .field-body
         .field
           .control.is-expanded.has-icons-left
             = f.text_field :value, value: s.value, class: :input
             %span.icon.is-small.is-left
               %i.mi.mi-small= icon
-        .field
-          .control.is-expanded.has-icons-left
-            = f.text_field :notes, value: s.notes, class: :input
-            %span.icon.is-small.is-left
-              %i.mi.mi-small edit_note
         = f.button class: 'button is-primary is-rounded' do
           %span.icon
             %i.mi.mi-small send
@@ -34,18 +32,16 @@
     = f.hidden_field :id, value: s.id
     .field.is-horizontal
       .field-label.is-normal
-        %label.label= s.key
+        %label.label
+          = s.key
+          %span.icon.is-small.in-text-small{title: s.notes}
+            %i.mi.mi-small help
       .field-body
         .field
           .control.is-expanded.has-icons-left
             = f.number_field :value, value: s.value, class: :input, min: 640, step: 1
             %span.icon.is-small.is-left
               %i.mi.mi-small= icon
-        .field
-          .control.is-expanded.has-icons-left
-            = f.text_field :notes, value: s.notes, class: :input
-            %span.icon.is-small.is-left
-              %i.mi.mi-small edit_note
         = f.button class: 'button is-primary is-rounded' do
           %span.icon
             %i.mi.mi-small send
@@ -55,7 +51,10 @@
   = f.hidden_field :id, value: s.id
   .field.is-horizontal
     .field-label.is-normal
-      %label.label= s.key
+      %label.label
+        = s.key
+        %span.icon.is-small.in-text-small{title: s.notes}
+          %i.mi.mi-small help
     .field-body
       .field
         .control.is-expanded.has-icons-left
@@ -63,11 +62,6 @@
             = f.select :value, options_for_select({'right to left' => 'r2l', 'left to right' => 'l2r'}, s.value)
           %span.icon.is-small.is-left
             %i.mi.mi-small sync_alt
-      .field
-        .control.is-expanded.has-icons-left
-          = f.text_field :notes, value: s.notes, class: :input
-          %span.icon.is-small.is-left
-            %i.mi.mi-small edit_note
       = f.button class: 'button is-primary is-rounded' do
         %span.icon
           %i.mi.mi-small send

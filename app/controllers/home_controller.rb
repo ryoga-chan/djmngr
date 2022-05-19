@@ -4,7 +4,7 @@ class HomeController < ApplicationController
   
   def settings
     if request.post? && s = Setting.find_by(id: params[:id])
-      s.update params.permit(:value, :notes)
+      s.update params.permit(:value)
       flash[:alert] = s.errors.full_messages if s.errors.any?
       return redirect_to home_settings_path
     end
