@@ -10,6 +10,8 @@ module MetadataManagement
     def alias_parent   = self.class.find_by(doujinshi_org_id: doujinshi_org_aka_id)
     def alias_children = self.class.where(doujinshi_org_aka_id: doujinshi_org_id)
     
+    has_paper_trail only: %i[ name name_romaji name_kana ], on: %i[ update ]
+    
     validates :name, presence: true
     
     before_validation :sanitize_fields

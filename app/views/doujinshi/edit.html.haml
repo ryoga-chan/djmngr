@@ -15,8 +15,8 @@
           = f.text_field :name, class: :input
           %span.icon.is-small.is-left
             %i.mi.mi-small local_offer
-      = render partial: 'versions_link', locals: {field: 'name'}
-  = render partial: 'versions', locals: {versions: versions, field: 'name'}
+      = render partial: 'field_versions_toggle', locals: {field: 'name'}
+  = render partial: 'field_versions', locals: {versions: versions, prefix: 'doujin', field: 'name'}
 
   .field.is-horizontal
     .field-label.is-normal
@@ -27,8 +27,8 @@
           = f.text_field :name_romaji, class: :input
           %span.icon.is-small.is-left
             %i.mi.mi-small translate
-      = render partial: 'versions_link', locals: {field: 'name_romaji'}
-  = render partial: 'versions', locals: {versions: versions, field: 'name_romaji'}
+      = render partial: 'field_versions_toggle', locals: {field: 'name_romaji'}
+  = render partial: 'field_versions', locals: {versions: versions, prefix: 'doujin', field: 'name_romaji'}
 
   .field.is-horizontal
     .field-label.is-normal
@@ -59,8 +59,8 @@
           = f.text_field :name_orig, class: :input
           %span.icon.is-small.is-left
             %i.mi.mi-small photo_filter
-      = render partial: 'versions_link', locals: {field: 'name_orig'}
-  = render partial: 'versions', locals: {versions: versions, field: 'name_orig'}
+      = render partial: 'field_versions_toggle', locals: {field: 'name_orig'}
+  = render partial: 'field_versions', locals: {versions: versions, prefix: 'doujin', field: 'name_orig'}
 
   .field.is-horizontal
     .field-label.is-normal
