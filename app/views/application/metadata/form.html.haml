@@ -1,3 +1,5 @@
+- versions = @record.versions.reverse
+
 .title.is-size-4
   = "#{params[:action].capitalize} #{@model.name}"
 
@@ -13,6 +15,9 @@
       .field-body
         .field
           .control.is-expanded= f.text_field k, class: :input
+        = render partial: 'field_versions_toggle', locals: {field: k} if k != 'name_kakasi'
+    = render partial: 'field_versions',
+      locals: {versions: versions, prefix: 'record', field: k} if k != 'name_kakasi'
   
   - %w{ info aliases links }.each do |k|
     .field.is-horizontal
