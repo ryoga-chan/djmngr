@@ -28,7 +28,7 @@ end # zip_databases ------------------------------------------------------------
 # place this code in lib/tasks/db.rake
 namespace :db do
   desc 'Archive all SQLITE databases'
-  task(backup2zip: :environment){ zip_databases onefile: true }
+  task(backup2zip: :environment){ zip_databases }
 
   # ----------------------------------------------------------------------------
   
