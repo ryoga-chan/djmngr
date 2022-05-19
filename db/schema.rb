@@ -12,10 +12,10 @@
 
 ActiveRecord::Schema[7.0].define(version: 2022_04_30_115038) do
   create_table "authors", force: :cascade do |t|
-    t.string "name"
+    t.string "name", null: false
     t.string "name_romaji"
     t.string "name_kana"
-    t.string "name_kakasi"
+    t.string "name_kakasi", null: false
     t.text "info"
     t.text "aliases"
     t.text "links"
@@ -25,6 +25,9 @@ ActiveRecord::Schema[7.0].define(version: 2022_04_30_115038) do
     t.datetime "updated_at", null: false
     t.boolean "favorite", default: false
     t.datetime "faved_at"
+    t.integer "doujinshi_org_aka_id"
+    t.index ["doujinshi_org_aka_id"], name: "index_authors_on_doujinshi_org_aka_id"
+    t.index ["doujinshi_org_id"], name: "index_authors_on_doujinshi_org_id"
   end
 
   create_table "authors_circles", id: false, force: :cascade do |t|
@@ -55,10 +58,10 @@ ActiveRecord::Schema[7.0].define(version: 2022_04_30_115038) do
   end
 
   create_table "circles", force: :cascade do |t|
-    t.string "name"
+    t.string "name", null: false
     t.string "name_romaji"
     t.string "name_kana"
-    t.string "name_kakasi"
+    t.string "name_kakasi", null: false
     t.text "info"
     t.text "aliases"
     t.text "links"
@@ -68,6 +71,9 @@ ActiveRecord::Schema[7.0].define(version: 2022_04_30_115038) do
     t.datetime "updated_at", null: false
     t.boolean "favorite", default: false
     t.datetime "faved_at"
+    t.integer "doujinshi_org_aka_id"
+    t.index ["doujinshi_org_aka_id"], name: "index_circles_on_doujinshi_org_aka_id"
+    t.index ["doujinshi_org_id"], name: "index_circles_on_doujinshi_org_id"
   end
 
   create_table "circles_doujinshi", id: false, force: :cascade do |t|
@@ -91,7 +97,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_04_30_115038) do
   create_table "doujinshi", force: :cascade do |t|
     t.string "name", null: false
     t.string "name_romaji"
-    t.string "name_kakasi"
+    t.string "name_kakasi", null: false
     t.integer "size", null: false
     t.string "checksum", null: false
     t.integer "num_images", null: false
@@ -124,10 +130,10 @@ ActiveRecord::Schema[7.0].define(version: 2022_04_30_115038) do
   end
 
   create_table "themes", force: :cascade do |t|
-    t.string "name"
+    t.string "name", null: false
     t.string "name_romaji"
     t.string "name_kana"
-    t.string "name_kakasi"
+    t.string "name_kakasi", null: false
     t.text "info"
     t.text "aliases"
     t.text "links"
@@ -136,6 +142,9 @@ ActiveRecord::Schema[7.0].define(version: 2022_04_30_115038) do
     t.string "doujinshi_org_url", default: "", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "doujinshi_org_aka_id"
+    t.index ["doujinshi_org_aka_id"], name: "index_themes_on_doujinshi_org_aka_id"
+    t.index ["doujinshi_org_id"], name: "index_themes_on_doujinshi_org_id"
   end
 
   create_table "versions", force: :cascade do |t|
