@@ -37,6 +37,11 @@
         %ul
           - @record.links.split("\n").each do |l|
             %li= l.start_with?('http') ? link_to(l, l, target: :_blank) : l
+  - if @record.notes.present?
+    %tr
+      %th Notes
+      %td.content
+        %pre>= @record.notes
   %tr
     %th Other
     %td

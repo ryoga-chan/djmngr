@@ -26,6 +26,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_04_30_115038) do
     t.boolean "favorite", default: false
     t.datetime "faved_at"
     t.integer "doujinshi_org_aka_id"
+    t.string "notes"
     t.index ["doujinshi_org_aka_id"], name: "index_authors_on_doujinshi_org_aka_id"
     t.index ["doujinshi_org_id"], name: "index_authors_on_doujinshi_org_id"
   end
@@ -72,6 +73,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_04_30_115038) do
     t.boolean "favorite", default: false
     t.datetime "faved_at"
     t.integer "doujinshi_org_aka_id"
+    t.string "notes"
     t.index ["doujinshi_org_aka_id"], name: "index_circles_on_doujinshi_org_aka_id"
     t.index ["doujinshi_org_id"], name: "index_circles_on_doujinshi_org_id"
   end
@@ -143,6 +145,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_04_30_115038) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "doujinshi_org_aka_id"
+    t.string "notes"
     t.index ["doujinshi_org_aka_id"], name: "index_themes_on_doujinshi_org_aka_id"
     t.index ["doujinshi_org_id"], name: "index_themes_on_doujinshi_org_id"
   end

@@ -15,7 +15,8 @@ module MetadataManagement
     before_validation :sanitize_fields
     
     def sanitize_fields
-      self.name_kakasi = name.to_romaji if name_changed? || name_kakasi.blank?
+      self.name_kakasi = name.to_romaji   if name_changed? || name_kakasi.blank?
+      self.notes       = notes.to_s.strip if notes_changed?
     end # sanitize_fields
     
     # test if the link redirects to another item, and
@@ -32,9 +33,10 @@ module MetadataManagement
           transaction do
             # mark this item as duplicate/alias
             update doujinshi_org_aka_id: $1.to_i
+            
             # download master item unless present on DB
             unless self.class.find_by(doujinshi_org_id: $1.to_i)
-              self.class.djorg_sync req.headers[:location].to_s
+              self.class.djorg_sync "#{::DOUJINSHI_ORG_BASE_URL}#{req.headers[:location]}"
             end
           end # transaction
           
@@ -50,6 +52,7 @@ module MetadataManagement
   class_methods do
     # download and parse a page from doujinshi.org
     def djorg_sync(url)
+      puts "##### URL: #{url}"
       true
     end # djorg_sync
   end # class_methods
