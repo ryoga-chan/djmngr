@@ -2,7 +2,7 @@
 
 = render partial: 'record_errors', object: @doujin.errors.full_messages
 
-= form_for @doujin do |f|
+= form_with model: @doujin do |f|
   = hidden_field_tag :from_author, params[:from_author]
   = hidden_field_tag :from_circle, params[:from_circle]
 
