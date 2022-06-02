@@ -5,7 +5,7 @@
 
 = render partial: 'record_errors', object: @record.errors.full_messages
 
-= form_for @record, as: :record do |f|
+= form_with model: @record, scope: :record do |f|
   = hidden_field_tag :wip_hash, params[:wip_hash]
 
   - %w{ name name_kana name_romaji name_kakasi }.each do |k|
