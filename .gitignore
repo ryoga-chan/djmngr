@@ -48,3 +48,5 @@ Gemfile.lock
 /public/epub/*.epub
 /public/epub/*.perc
 /public/epub/*.wip
+
+/docs/db-schema.pdf
