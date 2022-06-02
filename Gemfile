@@ -35,5 +35,6 @@ gem 'image_processing', '~> 1.2', require: %w{ ruby-vips image_processing }
 #gem 'bootsnap', require: false   # Reduces boot times through caching; required in config/boot.rb
 
 group :development do
+  gem 'rails-erd'                # DB ER diagram -- https://github.com/voormedia/rails-erd
   gem 'debug', platforms: %i[ mri mingw x64_mingw ] # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
 end
