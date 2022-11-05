@@ -21,41 +21,25 @@ module MetadataManagement
       self.notes       = notes.to_s.strip if notes_changed?
     end # sanitize_fields
     
-    # test if the link redirects to another item, and
-    # eventually mark this as alias
-    def djorg_url_aliased?
-      return true if doujinshi_org_aka_id.present?
-    
-      req = ::HTTParty.get doujinshi_org_full_url, follow_redirects: false,
-        headers: {'User-Agent' => Setting['scraper_useragent']}
-      
-      # /browse/(author|circle|contents)/NUMERIC_ID/item_name/
-      if req.code == 302 && req.headers[:location].to_s =~ /\/browse\/[^\/]+\/([0-9]+)\/.+/
-        begin
-          transaction do
-            # mark this item as duplicate/alias
-            update doujinshi_org_aka_id: $1.to_i
-            
-            # download master item unless present on DB
-            unless self.class.find_by(doujinshi_org_id: $1.to_i)
-              self.class.djorg_sync "#{::DOUJINSHI_ORG_BASE_URL}#{req.headers[:location]}"
-            end
-          end # transaction
-          
-          return true
-        rescue
-        end
+    # test if the link redirects to another item, and returns it
+    def fetch_djorg_alias_url
+      begin
+        req = ::HTTParty.get doujinshi_org_full_url,
+          follow_redirects: false, timeout: 5,
+          headers: {'User-Agent' => ::Setting['scraper_useragent']}
+        
+        return nil if req.code != 302
+        
+        # location header format: /browse/(author|circle|contents)/NUMERIC_ID/item_name/
+        return nil if req.headers[:location].to_s !~ /\/browse\/[^\/]+\/([0-9]+)\/.+/
+        
+        req.headers[:location]
+      rescue
+        nil
       end
-      
-      false
-    end # djorg_url_aliased?
+    end # fetch_djorg_alias_url
   end # included
 
-  class_methods do
-    # download and parse a page from doujinshi.org
-    def djorg_sync(url)
-      puts "##### URL: #{url}"
-      true
-    end # djorg_sync
-  end # class_methods
+  #class_methods do
+  #end # class_methods
 end # MetadataManagement
