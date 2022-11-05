@@ -1,5 +1,28 @@
-This
-= @model.name
-= link_to "[#{@record.id}]", action: :show, id: @record.id
-is aliased by ID
-= link_to "[#{@record.alias_parent.id}]", action: :show, id: @record.alias_parent.id
+- if @record.doujinshi_org_aka_id.present?
+
+  This
+  = @model.name
+  = link_to "[#{@record.id}]", action: :show, id: @record.id
+  is aliased by
+  - if parent = @record.alias_parent
+    = link_to "[#{parent.id}]", action: :show, id: parent.id
+  - else
+    %span.tag.is-danger NOT FOUND
+
+- elsif @alias_url.present?
+
+  TODO:
+  = link_to({ action: :djorg_dl, url: @alias_url, alias_for: @record.id },
+    class: 'button is-primary') do
+    %span Download metadata and set alias &nbsp;
+    %span.icon
+      %i.mi.mi-small cloud_download
+    %span.icon
+      %i.mi.mi-small add
+    %span.icon
+      %i.mi.mi-small add_link
+
+- else
+
+  %span.tag.is-danger YOU SOULD HAVE BEEN REDIRECTED TO
+  = link_to @record.doujinshi_org_full_url, @record.doujinshi_org_full_url, target: :_blank

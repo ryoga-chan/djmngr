@@ -39,7 +39,7 @@ module MetadataCrudController
     if @record.save
       params[:wip_hash] ?
         redirect_to({controller: :process, action: :edit, id: params[:wip_hash], tab: :ident, term: @record.name}) :
-        redirect_to({action: :show, id: @record.id}, notice: "#{@model.name} [#{params[:id]} / #{@record.name}] created")
+        redirect_to({action: :show, id: @record.id}, notice: "#{@model.name} [#{@record.id} / #{@record.name}] created")
     else
       render('application/metadata/form', status: :unprocessable_entity)
     end
@@ -47,14 +47,14 @@ module MetadataCrudController
   
   def update
     @record.update(record_params) ?
-      redirect_to({action: :show, id: @record.id}, notice: "#{@model.name} [#{params[:id]} / #{@record.name}] updated") :
+      redirect_to({action: :show, id: @record.id}, notice: "#{@model.name} [#{@record.id} / #{@record.name}] updated") :
       render('application/metadata/form', status: :unprocessable_entity)
   end # update
   
   def destroy
     @record.destroy ?
-      redirect_to({action: :index}, notice: "#{@model.name} [#{params[:id]} / #{@record.name}] deleted") :
-      redirect_to({action: :index}, alert:  "can't delete #{@model.name} [#{params[:id]} / #{@record.name}]")
+      redirect_to({action: :index}, notice: "#{@model.name} [#{@record.id} / #{@record.name}] deleted") :
+      redirect_to({action: :index}, alert:  "can't delete #{@model.name} [#{@record.id} / #{@record.name}]")
   end # destroy
   
   def tags_lookup
@@ -70,10 +70,30 @@ module MetadataCrudController
   
   # alert if link is an alias otherwise redirect to it
   def djorg_alias_check
-    return redirect_to(@record.doujinshi_org_full_url) unless @record.djorg_url_aliased?
-    flash.now[:alert] = "#{@model.name} [#{params[:id]} / #{@record.name}] deprecated"
-    render 'application/metadata/djorg_alias_check'
+    if @record.doujinshi_org_aka_id.present?
+      flash.now[:alert] = "#{@model.name} [#{@record.id} / #{@record.name}] deprecated"
+      render 'application/metadata/djorg_alias_check'
+    else
+      @alias_url = @record.fetch_djorg_alias_url
+      redirect_to(@record.doujinshi_org_full_url, allow_other_host: true) if @alias_url.blank?
+    end
   end # djorg_alias_check
+  
+  # show metadata download progress
+  def djorg_dl
+    raise 'TODO'
+    fname = DjorgScrapingJob.info_file_path @model.name.downcase, params[:url]
+    
+    unless File.exist?(fname)
+      DjorgScrapingJob.create_info_file
+      DjorgScrapingJob.perform_later @model.name.downcase, params[:url], params.permit(:alias_for).to_h
+    end
+    
+    # check progress file on disk + periodic page refresh
+    @info = YAML.load_file(fname) rescue {}
+    
+    render 'application/metadata/djorg_dl'
+  end # djorg_dl
   
   
   private # ____________________________________________________________________
