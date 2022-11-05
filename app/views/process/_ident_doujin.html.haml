@@ -107,7 +107,8 @@
                 {controller: type, action: :djorg_alias_check, id: r.id},
                 target: :_blank, title: "view on doujinshi.org"
             - else
-              = link_to name_hl, {controller: type, action: :show, id: r.id}, target: :_blank, title: "view local #{type.singularize}"
+              = link_to name_hl, {controller: type, action: :show, id: r.id},
+                target: :_blank, title: "view local #{type.singularize}"
               
           %span.name_romaji.has-text-grey.is-size-7
             %span.has-text-info /
@@ -122,8 +123,14 @@
                   - am = instance_variable_get("@associated_#{members_name}")
                   - is_associated = am.any?{|i| i.doujinshi_org_id == m.doujinshi_org_id }
                   %li
-                    %span{class: ('associated' if is_associated)}= link_to m.label_name_kanji,
-                      {controller: members_name, action: :djorg_alias_check, id: m.id}, target: :_blank,
-                      title: "view on doujinshi.org", class: 'has-text-white'
+                    %span{class: ('associated' if is_associated)}
+                      - if !m.doujinshi_org_id
+                        = link_to m.label_name_kanji,
+                          {controller: members_name, action: :djorg_alias_check, id: m.id},
+                          target: :_blank, title: "view on doujinshi.org", class: 'has-text-white'
+                      - else
+                        = link_to m.label_name_kanji,
+                          {controller: members_name, action: :show, id: m.id},
+                          target: :_blank, title: "view local #{members_name.to_s.singularize}", class: 'has-text-white'
                     %span.has-text-info /
                     %span.has-text-grey= m.label_name_latin

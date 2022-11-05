@@ -67,10 +67,10 @@
         %td= r.aliases.gsub "\n", ', '
         %td
           .field.has-addons
-            .control
-              = link_to({action: :show, id: r.id}, class: 'button is-small is-rounded') do
-                %span.icon.is-small
-                  %i.mi.mi-small visibility
+            -#.control
+            -#  = link_to({action: :show, id: r.id}, class: 'button is-small is-rounded') do
+            -#    %span.icon.is-small
+            -#      %i.mi.mi-small visibility
             .control
               = link_to({action: :edit, id: r.id}, class: 'button is-small is-rounded') do
                 %span.icon.is-small

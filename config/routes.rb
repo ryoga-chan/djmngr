@@ -41,8 +41,13 @@ Rails.application.routes.draw do
   end
   
   concern :metadata_crud do
-    get :tags_lookup, on: :collection
-    get :djorg_alias_check, on: :member
+    collection do
+      get  :djorg_dl
+      get  :tags_lookup
+    end
+    member do
+      get  :djorg_alias_check
+    end
   end
   resources :authors, concerns: :metadata_crud
   resources :circles, concerns: :metadata_crud

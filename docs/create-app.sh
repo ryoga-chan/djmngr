@@ -27,3 +27,5 @@ bin/rails g paper_trail:install --with-changes
 bin/rails db:migrate
 
 bin/rails db:schema:dump
+
+bin/rails db:erd # create DB graph (see lib/tasks/erd.rake)

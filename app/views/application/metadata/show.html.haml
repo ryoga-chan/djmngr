@@ -68,7 +68,7 @@
             .control
               .tags.has-addons
                 %span.tag.is-info= link_to ac.id, {id: ac.id}, target: :_blank
-                = link_to @record.doujinshi_org_id, @record.doujinshi_org_full_url, class: 'tag is-info is-light', target: :_blank
+                = link_to ac.doujinshi_org_id, ac.doujinshi_org_full_url, class: 'tag is-info is-light', target: :_blank
   
   - ([Author, Circle, Theme] - [@model]).each do |model|
     - rel_name = model.name.pluralize.downcase
