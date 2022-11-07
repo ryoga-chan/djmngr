@@ -9,15 +9,25 @@
       .name Name Romaji
       .name Name Kakasi
     %td
-      .name-romaji=         link_to_exhentai_search(@record.name_romaji) if @record.name_romaji.present?
-      .name-kakasi.is-italic= @record.name_kakasi
+      .columns
+        .column
+          .name-romaji=           @record.name_romaji if @record.name_romaji.present?
+          .name-kakasi.is-italic= @record.name_kakasi if @record.name_kakasi.present?
+        .column.is-3
+          .name-romaji= links_to_search_engines(@record.name_romaji) if @record.name_romaji.present?
+          .name-kakasi= links_to_search_engines(@record.name_kakasi) if @record.name_kakasi.present?
   %tr
     %th
       .name Name Kanji
       .name Name Kana
     %td
-      .name-kanji=          link_to_exhentai_search(@record.name       ) if @record.name.present?
-      .name-kana.is-italic= link_to_exhentai_search(@record.name_kana  ) if @record.name_kana.present?
+      .columns
+        .column
+          .name-kanji=          @record.name      if @record.name.present?
+          .name-kana.is-italic= @record.name_kana if @record.name_kana.present?
+        .column.is-3
+          .name-kanji= links_to_search_engines(@record.name     ) if @record.name.present?
+          .name-kana=  links_to_search_engines(@record.name_kana) if @record.name_kana.present?
   - if @record.info.present?
     %tr
       %th Info
