@@ -93,7 +93,7 @@
       .field
         .control.is-expanded.has-icons-left
           .select.is-fullwidth(title="read pages")
-            = f.select :read_pages, (0..@doujin.num_images).map{|i| [i+1, i] }
+            = f.select :read_pages, (1..@doujin.num_images).map{|i| [i, i] }.unshift([:unread, 0])
           %span.icon.is-small.is-left
             %i.mi.mi-small auto_stories
 
