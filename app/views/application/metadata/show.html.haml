@@ -36,17 +36,24 @@
   - if @record.aliases.present?
     %tr
       %th Aliases
-      %td.content
-        %ul
-          - @record.aliases.split("\n").each do |a|
-            %li= link_to_exhentai_search a
+      %td
+        .columns
+          .column
+            - @record.aliases.split("\n").each do |a|
+              .alias_term
+                &bull;
+                = a
+          .column.is-3
+            - @record.aliases.split("\n").each do |a|
+              .alias_search= links_to_search_engines a
   - if @record.links.present?
     %tr
       %th Links
-      %td.content
-        %ul
-          - @record.links.split("\n").each do |l|
-            %li= l.start_with?('http') ? link_to(l, l, target: :_blank) : l
+      %td
+        - @record.links.split("\n").each do |l|
+          .ext_link<
+            &bull;&nbsp;
+            = l.start_with?('http') ? link_to(l, l, target: :_blank) : l
   - if @record.notes.present?
     %tr
       %th Notes
