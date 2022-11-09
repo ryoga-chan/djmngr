@@ -44,7 +44,7 @@ class DoujinshiController < ApplicationController
         @doujinshi = rel.where(file_folder: params[:folder]).order(:name_kakasi) if params[:folder]
     end
     
-    if request.format.to_sym == :ereader
+    if request.format.ereader?
       @parent_name = Author.find_by(id: params[:author_id].to_i).try(:label_name_latin) if params[:author_id]
       @parent_name = Circle.find_by(id: params[:circle_id].to_i).try(:label_name_latin) if params[:circle_id]
       @parent_name = params[:folder] if params[:folder]
@@ -93,7 +93,7 @@ class DoujinshiController < ApplicationController
         params[:page] = 0 unless (0..3).include?(params[:page].to_i)
         fname = Rails.root.join('public', 'thumbs', "#{@doujin.id}.webp").to_s
         img = Vips::Image.webpload(fname, page: params[:page].to_i) # ImageProcessing::Vips.source(fname).call save: false
-        data = request.format.to_sym == :webp ?
+        data = request.format.webp? ?
           img.webpsave_buffer(Q: 70, lossless: false, min_size: true) :
           img.jpegsave_buffer(Q: 70, background: [255,255,255])
         send_data data,
@@ -239,7 +239,7 @@ class DoujinshiController < ApplicationController
     sql_sort_by = params[:sort] == 'date' ? {faved_at: :desc} : :name_kakasi
     @doujinshi  = Doujin.where(favorite: true).order(sql_sort_by)
     
-    if request.format.to_sym == :ereader
+    if request.format.ereader?
       params[:tab] = 'doujin' unless %w{ doujin author circle }.include?(params[:tab])
     end
   end # favorites
@@ -261,7 +261,7 @@ class DoujinshiController < ApplicationController
   end # set_index_detail
   
   def redirect_to_with_format(url_or_options)
-    return html_redirect_to(url_or_options) if request.format.to_sym == :ereader
+    return html_redirect_to(url_or_options) if request.format.ereader?
     redirect_to url_or_options
   end # redirect_to_with_format
 end
