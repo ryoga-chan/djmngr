@@ -3,6 +3,12 @@
     style: "display: inline-block; margin: 1rem 2rem 10rem 2rem; padding: 1rem; background-color: white; color: black; border: 2px outset silver; border-radius: 1rem;"
 
 %ul
+  %li
+    - unless request.format.ereader?
+      = link_to({format: :ereader}, class: 'button is-info is-rounded') do
+        %span.icon
+          %i.mi.mi-small tablet_android
+        %span switch to ereader format
   %li= link_to "TODO: view top scored", '#', class: 'button is-info is-rounded'
   %li
     view random:
