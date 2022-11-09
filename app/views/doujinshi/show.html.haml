@@ -86,7 +86,18 @@
                 = l @doujin.scored_at
       %tr
         %th Path
-        %td= @doujin.file_path
+        %td
+          .columns.is-vcentered
+            .column= @doujin.file_path
+            .column.is-2.has-text-centered
+              = link_to doujin_path(@doujin, run: :file_manager, format: :json),
+                  onclick: %Q|var bt=jQuery(this); bt.addClass('is-loading'); setTimeout(function(){ bt.removeClass('is-loading') }, 5000)|,
+                  title: 'open in file manager',
+                  remote: true, class: 'button is-info is-rounded' do
+                %span.icon
+                  %i.mi.mi-small folder
+                %span FM
+
       %tr
         %th Orig.
         %td= @doujin.name_orig
@@ -100,17 +111,19 @@
         .actions.field.is-grouped
           .field.has-addons
             %p.control
-              = link_to read_doujin_path(@doujin, format: :ereader, page: @doujin.read_pages.to_i, from_format: :html), class: 'button is-info is-rounded' do
+              = link_to read_doujin_path(@doujin, format: :ereader, page: @doujin.read_pages.to_i, from_format: :html),
+                class: 'button is-info is-rounded', title: 'read online' do
                 %span.icon
                   %i.mi.mi-small chrome_reader_mode
                 %span= @doujin.read_pages.to_i > 0 ? "Read (#{@doujin.percent_read.round}%)" : :Read
             %p.control
-              = link_to doujin_path(@doujin, run: :mcomix, format: :json),
+              = link_to doujin_path(@doujin, run: :comics_viewer, format: :json),
                   onclick: %Q|var bt=jQuery(this); bt.addClass('is-loading'); setTimeout(function(){ bt.removeClass('is-loading') }, 5000)|,
+                  title: 'read with external viewer',
                   remote: true, class: 'button is-info is-rounded' do
                 %span.icon
                   %i.mi.mi-small launch
-                %span Mcomix
+                %span Reader
             - if @doujin.num_images > 10
               %p.control
                 = link_to doujin_path(@doujin, sample: true), class: 'button is-info is-rounded' do
