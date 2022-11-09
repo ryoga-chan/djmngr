@@ -1,4 +1,7 @@
-%h3 search catalog
+%h3
+  search catalog
+  .actions{style: "float: right"}
+    = link_to 'full format', {format: :html}, class: :button
 
 = form_with url: search_doujinshi_path, method: :get do |f|
   = f.text_field :term, value: params[:term], placeholder: :search
