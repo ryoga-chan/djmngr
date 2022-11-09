@@ -32,6 +32,7 @@ class Doujin < ApplicationRecord
   before_destroy    :delete_versions
   after_update      :rename_file
   after_destroy     :delete_files
+  after_destroy     :save_deletion_data
   
   include JapaneseLabels
   include FavoriteManagement
@@ -192,4 +193,17 @@ class Doujin < ApplicationRecord
   def rename_file
     FileUtils.mv @old_file_path, file_path(full: true), force: true if @old_file_path
   end # rename_file
+  
+  def save_deletion_data
+    attrs = attributes.slice *%w{ size num_images num_files }
+    fname = file_dl_name omit_ext: true
+    
+    DeletedDoujin.create attrs.merge({
+      doujin_id:        id,
+      name:             name_orig,
+      name_kakasi:      name_orig_kakasi,
+      alt_name:         fname,
+      alt_name_kakasi:  fname.to_romaji,
+    })
+  end # save_deletion_data
 end

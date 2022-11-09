@@ -73,13 +73,38 @@ class ProcessController < ApplicationController
   end # prepare_archive
   
   def delete_archive
+    # count images and other files
+    file_counters = {num_images: 0, num_files: 0}
+    Zip::File.open(@fname) do |zip|
+      zip.entries.each do |e|
+        next unless e.file?
+        file_counters[e.name =~ ProcessArchiveDecompressJob::IMAGE_REGEXP ? :num_images : :num_files] += 1
+      end
+    end
+    # track deletion
+    name = params[:path].tr(File::SEPARATOR, ' ')
+    DeletedDoujin.create file_counters.merge({
+      name:             name,
+      name_kakasi:      name.to_romaji,
+      size:             File.size(@fname),
+    })
+    # remove file on disk
     File.unlink @fname
-    return redirect_to(process_index_path, notice: "file deleted: [#{@fname}]") 
+    return redirect_to(process_index_path, notice: "file deleted: [#{params[:path]}]")
   end # delete_archive
   
   def delete_archive_cwd
+    @info = YAML.load_file(File.join @dname, 'info.yml')
     if params[:archive_too] == 'true'
-      @info = YAML.load_file(File.join @dname, 'info.yml')
+      # track deletion unless stored in collection
+      DeletedDoujin.create({
+        name:             @info[:relative_path],
+        name_kakasi:      @info[:relative_path].to_romaji,
+        size:             @info[:file_size],
+        num_images:       @info[:images].to_h.size,
+        num_files:        @info[:files ].to_h.size,
+      }) unless @info[:db_doujin_id].present?
+      # remove file on disk
       File.unlink @info[:file_path]
       # update filelist
       ProcessIndexRefreshJob.remove_entry_from_cache @info[:relative_path]
@@ -87,10 +112,8 @@ class ProcessController < ApplicationController
     
     FileUtils.rm_rf @dname, secure: true
     
-    msg = params[:archive_too] == 'true' ?
-      "archive and folder deleted: [#{@info[:relative_path]}], [#{params[:id][0..10]}...]" :
-      "folder deleted: [#{params[:id][0..10]}...]"
-    return redirect_to(process_index_path, notice: msg)
+    msg = params[:archive_too] == 'true' ? "archive and folder deleted:" : "folder deleted for"
+    return redirect_to(process_index_path, notice: "#{msg} [#{@info[:relative_path]}] in [#{params[:id][0..10]}...]")
   end # delete_archive_cwd
   
   def delete_archive_files

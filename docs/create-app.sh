@@ -11,7 +11,7 @@ bin/rails g migration create_circles_themes  circle:references theme:references
 
 bin/rails g scaffold doujin name:string name_romaji:string name_kakasi:string \
   size:integer checksum:string num_images:integer num_files:integer score:integer \
-  path:text name_orig:text string:category
+  file_folder:text file_name:text name_orig:text string:category
 bin/rails g migration create_authors_doujinshi author:references doujin:references
 bin/rails g migration create_circles_doujinshi circle:references doujin:references
 
@@ -24,6 +24,11 @@ bin/rails g job process_index_refresh_job.rb
 wget -O config/locales/en.yml https://github.com/svenfuchs/rails-i18n/raw/master/rails/locale/en.yml
 
 bin/rails g paper_trail:install --with-changes
+bin/rails db:migrate
+
+bin/rails g model deleted_doujin \
+  name:string name_kakasi:string alt_name:string alt_name_kakasi:string \
+  size:integer num_images:integer num_files:integer doujin_id:integer
 bin/rails db:migrate
 
 bin/rails db:schema:dump
