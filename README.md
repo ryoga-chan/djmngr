@@ -30,7 +30,7 @@ apt install libvips-dev libkakasi2-dev webp zip unzip findutils grep coreutils
 
 ## Optional tools
 
-- [mcomix](https://packages.debian.org/stable/mcomix)
+- [mcomix](https://packages.debian.org/stable/mcomix) (CBZ/comic book viewer)
 - [thunar](https://packages.debian.org/stable/thunar)
 - [graphviz](https://packages.debian.org/stable/graphviz) (ER diagram generation)
 - [p7zip-full](https://packages.debian.org/stable/p7zip-full) (db+metadata.sql.7z decompression)
