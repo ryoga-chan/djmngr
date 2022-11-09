@@ -1,9 +1,9 @@
 class ApplicationController < ActionController::Base
-  layout -> { return 'ereader' if request.format.to_sym == :ereader }
+  layout -> { return 'ereader' if request.format.ereader? }
   
   def default_url_options
     opts = {}
-    opts.merge! format: :ereader if request.format.to_sym == :ereader
+    opts.merge! format: :ereader if request.format.ereader?
     opts
   end # default_url_options
   
