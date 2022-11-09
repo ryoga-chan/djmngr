@@ -1,0 +1,2 @@
+class DeletedDoujin < ApplicationRecord
+end

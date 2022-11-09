@@ -16,7 +16,7 @@
     %br
     = link_to({action: :delete_archive_cwd, id: params[:id], archive_too: true},
         method: :delete, data: { confirm: "Delete processing folder\nAND the original archive?" },
-        class: 'button is-danger is-rounded', title: 'delete processing folder') do
+        class: 'button is-danger is-rounded', title: 'delete processing folder AND original archive') do
       %span.icon
         %i.mi delete
       %span Delete ALL
