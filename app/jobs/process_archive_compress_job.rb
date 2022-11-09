@@ -102,12 +102,12 @@ class ProcessArchiveCompressJob < ApplicationJob
         
         # 5. create doujin thumbnail (webp animated image with sample pages)
         # select thumbnails
-        max_id = info[:images].size - 1
-        thumb_ids = max_id == 0 ? [0] : [
+        max_idx = info[:images].size - 1
+        thumb_ids = max_idx == 0 ? [0] : [
           0,
-          (max_id.to_f * 0.25).floor + 1,
-          (max_id.to_f * 0.50).floor + 1,
-          (max_id.to_f * 0.75).floor + 1,
+          (max_idx.to_f * 0.25).floor + 1,
+          (max_idx.to_f * 0.50).floor + 1,
+          (max_idx.to_f * 0.75).floor + 1,
         ].uniq
         thumb_src = thumb_ids.map{|i| File.join(src_dir, 'thumbs', info[:images][i][:thumb_path]).shellescape }
         if info[:landscape_cover] # replace original cover with cropped version

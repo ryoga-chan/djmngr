@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_04_30_115038) do
+ActiveRecord::Schema[7.0].define(version: 2022_11_09_212042) do
   create_table "authors", force: :cascade do |t|
     t.string "name", null: false
     t.string "name_romaji"
@@ -94,6 +94,18 @@ ActiveRecord::Schema[7.0].define(version: 2022_04_30_115038) do
     t.index ["circle_id", "theme_id"], name: "index_circles_themes_on_circle_id_and_theme_id", unique: true
     t.index ["circle_id"], name: "index_circles_themes_on_circle_id"
     t.index ["theme_id"], name: "index_circles_themes_on_theme_id"
+  end
+
+  create_table "deleted_doujinshi", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "name_kakasi", null: false
+    t.string "alt_name"
+    t.string "alt_name_kakasi"
+    t.integer "size", null: false
+    t.integer "num_images", null: false
+    t.integer "num_files", null: false
+    t.integer "doujin_id"
+    t.datetime "created_at"
   end
 
   create_table "doujinshi", force: :cascade do |t|
