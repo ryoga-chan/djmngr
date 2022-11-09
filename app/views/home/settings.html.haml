@@ -1,8 +1,10 @@
 .title.is-size-4 Settings
 
-- { 'dir.to_sort' => 'rule_folder',
-    'dir.sorting' => 'drive_file_move',
-    'dir.sorted'  => 'create_new_folder',
+- { 'dir.to_sort'   => 'rule_folder',
+    'dir.sorting'   => 'drive_file_move',
+    'dir.sorted'    => 'create_new_folder',
+    'comics_viewer' => 'menu_book',
+    'file_manager'  => 'folder',
     'scraper_useragent' => 'badge',
   }.each do |key, icon|
   - s = Setting.find_by key: key

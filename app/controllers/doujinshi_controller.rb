@@ -106,8 +106,12 @@ class DoujinshiController < ApplicationController
           filename: "#{@doujin.file_dl_name}.#{request.format.to_sym}"
       }# zip, cbz
       format.json {
-        if params[:run] == 'mcomix'
-          system %Q| mcomix -f #{@doujin.file_path(full: true).shellescape} & |
+        file_path = @doujin.file_path(full: true)
+        if params[:run] == 'comics_viewer'
+          system %Q| #{Setting[:comics_viewer]} #{file_path.shellescape} & |
+          return render json: {ris: :ok}
+        elsif params[:run] == 'file_manager'
+          system %Q| #{Setting[:file_manager]} #{file_path.shellescape} & |
           return render json: {ris: :ok}
         end
         render json: ''
