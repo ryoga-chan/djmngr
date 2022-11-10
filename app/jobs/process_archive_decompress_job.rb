@@ -72,12 +72,14 @@ class ProcessArchiveDecompressJob < ApplicationJob
     info[:censored ] = !name[:properties].include?('unc')
     info[:colorized] = info[:file_type] == 'artbook' || name[:properties].include?('col')
     
-    # identify files and resize images
+    # create folder and unzip archive
     path_thumbs   = File.join(dst_dir, 'thumbs')
     path_contents = File.join(dst_dir, 'contents')
+    path_cover    = File.join(dst_dir, 'cover')
     
     FileUtils.mkdir_p path_thumbs
     FileUtils.mkdir_p path_contents
+    FileUtils.mkdir_p path_cover
     
     system %Q| unzip -d #{path_contents.shellescape} #{info[:file_path].shellescape} |
     
