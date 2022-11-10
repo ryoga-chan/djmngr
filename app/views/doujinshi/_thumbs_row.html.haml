@@ -1,6 +1,6 @@
 .columns.thumbs
   - doujinshi.each do |d|
-    - details = "\n#{d.score.to_i > 0 ? d.score.to_i : '➖'}★ / #{d.num_images} 🗐 / #{number_to_human_size d.size, precision: 2} 🗄"
+    - details = "\n#{d.score.to_i > 0 ? d.score.to_i : '--'}★ / #{d.num_images} pics / #{number_to_human_size d.size, precision: 2}"
     
     - if short_label
       - title = descr = d.label_name_latin
