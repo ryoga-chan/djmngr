@@ -91,13 +91,16 @@ table.doujin {
 
 .thumbs .doujin {
   text-align: center;
+  vertical-align: top;
   display: inline-block;
   width: 170px;
+  margin: 0 0.5rem 0.5rem 0;
   
   .descr {
     height: 3rem;
     overflow: hidden;
-    font-size: 0.8rem;
+    font-size: 0.825rem;
+    padding: 0 5px;
   }
   
   .score { background-color: #ccc; }

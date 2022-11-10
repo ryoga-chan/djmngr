@@ -1,6 +1,6 @@
 class ProcessIndexRefreshJob < ApplicationJob
-  CACHE_FILE = Rails.root.join('tmp','files.to_sort').to_s
-  LOCK_FILE  = Rails.root.join('tmp','files.to_sort.lock').to_s
+  CACHE_FILE = File.join(Setting['dir.to_sort'], 'files.to_sort'     ).to_s
+  LOCK_FILE  = File.join(Setting['dir.to_sort'], 'files.to_sort.lock').to_s
   
   queue_as :tools
 
