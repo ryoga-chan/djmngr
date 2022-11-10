@@ -1,4 +1,7 @@
 class ProcessArchiveCompressJob < ApplicationJob
+  THUMB_WIDTH  = 240
+  THUMB_HEIGHT = 360
+
   queue_as :tools
 
   def perform(src_dir)
@@ -101,24 +104,34 @@ class ProcessArchiveCompressJob < ApplicationJob
         File.open(File.join(src_dir, 'finalize.perc'), 'w'){|f| f.write perc.round(2) }
         
         # 5. create doujin thumbnail (webp animated image with sample pages)
-        # select thumbnails
+        # select thumbnails in predefined positions
         max_idx = info[:images].size - 1
-        thumb_ids = max_idx == 0 ? [0] : [
+        img_indexes = max_idx == 0 ? [0] : [
           0,
           (max_idx.to_f * 0.25).floor + 1,
           (max_idx.to_f * 0.50).floor + 1,
           (max_idx.to_f * 0.75).floor + 1,
         ].uniq
-        thumb_src = thumb_ids.map{|i| File.join(src_dir, 'thumbs', info[:images][i][:thumb_path]).shellescape }
-        if info[:landscape_cover] # replace original cover with cropped version
-          thumb_src.shift
-          thumb_src.unshift File.join(src_dir, 'thumbs', '0000.webp').shellescape
-        end
+        # convert them to webp thumbnails
+        thumb_src = []
         thumb_dst = File.join(Rails.root, 'public', 'thumbs', "#{d.id}.webp")
+        img_indexes.each_with_index do |img_index, i|
+          dst_img = File.join(src_dir, 'cover', "cover-000#{i}.webp")
+          thumb_src << dst_img.shellescape
+          
+          vips = ImageProcessing::Vips.source( File.join(src_dir, 'contents', info[:images][img_index][:src_path]) )
+          vips = info[:landscape_cover] ?
+            vips.resize_to_fill(THUMB_WIDTH, THUMB_HEIGHT, crop: info[:cover_crop_method]) :
+            vips.resize_and_pad(THUMB_WIDTH, THUMB_HEIGHT, alpha: true)
+          vips.
+            convert('webp').saver(quality: 70).
+            call destination: dst_img
+        end
         # merge selected thumbnails
-        system %Q| img2webp -q 70 -lossy \
-          -d 2000 #{thumb_src[0]} -d 1000 #{thumb_src[1..-1].join ' '} \
-          -o #{thumb_dst.shellescape} |
+        cmd  = %Q| img2webp -q 70 -lossy -d 2000 #{thumb_src[0]} |
+        cmd += %Q| -d 1000 #{thumb_src[1..-1].join ' '} | if thumb_src.size > 1
+        cmd += %Q| -o #{thumb_dst.shellescape} |
+        system cmd
         if $?.to_i != 0 # remove thumbnail if it goes wrong
           File.unlink(thumb_dst) if File.exist?(thumb_dst)
           raise "error [#{$?.to_i}] while creating thumbnails"

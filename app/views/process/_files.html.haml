@@ -71,7 +71,7 @@
           %th Source
         - @info[:files].each do |f|
           %tr.files
-            %td= link_to('🗑', delete_archive_files_process_path(id: @info[:working_dir], path: f[:src_path]),
+            %td= link_to('🗑', delete_archive_files_process_path(id: @info[:working_dir], path: f[:src_path], tab: params[:tab]),
               method: :delete, data: { confirm: 'Delete this file?' },
               class: 'has-text-danger', title: 'delete file')
             %td.has-text-right= number_to_human_size f[:size]
@@ -105,7 +105,7 @@
         %th Source
       - @info[:images].each do |img|
         %tr.images
-          %td= link_to('🗑', delete_archive_files_process_path(id: @info[:working_dir], path: img[:src_path]),
+          %td= link_to('🗑', delete_archive_files_process_path(id: @info[:working_dir], path: img[:src_path], tab: params[:tab]),
             method: :delete, data: { confirm: 'Delete this file?' },
             class: 'has-text-danger', title: 'delete file')
           %td.has-text-right= number_to_human_size img[:size]

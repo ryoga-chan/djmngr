@@ -183,6 +183,7 @@ class ProcessController < ApplicationController
       censored
       colorized
       notes
+      cover_crop_method
     }.each do |k|
       if params[k] && params[k] != @info[k]
         @info[k] = params[k].strip
