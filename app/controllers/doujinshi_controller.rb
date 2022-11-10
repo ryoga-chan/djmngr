@@ -1,4 +1,7 @@
 class DoujinshiController < ApplicationController
+  # https://api.rubyonrails.org/classes/ActionController/Live.html#method-i-send_stream
+  include ActionController::Live
+  
   THUMBS_PER_ROW = 6
   BATCH_SIZE     = 15 * THUMBS_PER_ROW
   
@@ -66,16 +69,25 @@ class DoujinshiController < ApplicationController
     
     @doujinshi = Doujin.search(params[:term]).limit(THUMBS_PER_ROW * 5)
     
+    file_dl_opts = { type: request.format.to_sym, disposition: :attachment,
+                     filename: "search-results.#{request.format.to_sym}" }
+    
     respond_to do |format|
       format.html
       format.ereader
-      format.json { render json: @doujinshi }#json
+      format.json {
+        render json: @doujinshi
+        send_stream(**file_dl_opts) do |stream|
+          stream.write '['
+          @doujinshi.each_with_index{|d, i| stream.write d.to_json.prepend(i > 0 ? ',' : '') }
+          stream.write ']'
+        end
+      }#json
       format.tsv {
-        header = Doujin.column_names.join("\t")
-        data = @doujinshi.inject(header){|s, d| s += d.attributes.values.join("\t").prepend("\n") }
-        send_data data,
-          type: request.format.to_sym, disposition: :attachment,
-          filename: "search-results.#{request.format.to_sym}"
+        send_stream(**file_dl_opts) do |stream|
+          stream.write Doujin.column_names.join("\t")
+          @doujinshi.each{|d| stream.write d.attributes.values.join("\t").prepend("\n") }
+        end
       }#tsv
     end
   end # search
