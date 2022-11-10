@@ -22,7 +22,7 @@
           %tr
             %td= link_to 'show', '#',
               data: { cover: doujin_path(d, format: :jpg)},
-              onclick: %Q|jQuery(this).hide().after(jQuery('<img>').attr('src', jQuery(this).data('cover'))); return false|
+              onclick: %Q|jQuery(this).hide().after(jQuery('<img class="thumb">').attr('src', jQuery(this).data('cover'))); return false|
             %td= "#{d.score.to_i}&hearts;".html_safe if d.score.to_i > 0
             %td
               = link_to descr, doujin_path(d)
@@ -39,9 +39,9 @@
     .thumbs
       - @doujinshi.find_each_in_order(batch_size: DoujinshiController::BATCH_SIZE).each do |d|
         - descr = short_label ? d.label_name_latin : d.file_dl_name(omit_ext: true)
-        .doujin
-          .cover= link_to image_tag(doujin_path(d, format: :jpg), class: :thumb), doujin_path(d)
-          .descr
+        .doujin<>
+          .cover<>= link_to image_tag(doujin_path(d, format: :jpg), class: :thumb), doujin_path(d)
+          .descr<>
             - if d.score.to_i > 0
-              %span.score= "#{d.score.to_i}&hearts;".html_safe
-            %span.name= descr
+              %span.score<>= "#{d.score.to_i}&hearts;".html_safe
+            %span.name<>= descr
