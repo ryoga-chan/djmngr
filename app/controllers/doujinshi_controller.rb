@@ -81,6 +81,11 @@ class DoujinshiController < ApplicationController
         select(:id, :name, :name_kakasi, :size, :num_images).
         limit(max_results)
       
+      @processable_doujinshi = ProcessableDoujin.
+        search(params[:term]).
+        select(:id, :name, :name_kakasi, :size).
+        limit(max_results)
+      
       file_dl_opts = { type: request.format.to_sym, disposition: :attachment,
                        filename: "search-results.#{request.format.to_sym}" }
     end
@@ -98,6 +103,10 @@ class DoujinshiController < ApplicationController
           @deleted_doujinshi.each_with_index{|d, i|
             info = { id: d.id, name: d.name_kakasi, name_orig: d.name, size: d.size, pages: d.num_images }
             stream.write info.to_json.prepend(i != 0 ? ',' : '') }
+          stream.write %Q|],\n"todo":[|
+          @processable_doujinshi.each_with_index{|d, i|
+            info = { id: d.id, name: d.name_kakasi, name_orig: d.name, size: d.size, pages: 0 }
+            stream.write info.to_json.prepend(i != 0 ? ',' : '') }
           stream.write %Q|]\n}|
         end
       }#json
@@ -108,6 +117,8 @@ class DoujinshiController < ApplicationController
             stream.write [:saved, d.id, d.file_dl_name, d.name_orig, d.size, d.num_images].join("\t")+"\n" }
           @deleted_doujinshi.each_with_index{|d, i|
             stream.write [:deleted, d.id, d.name_kakasi, d.name, d.size, d.num_images].join("\t")+"\n" }
+          @processable_doujinshi.each_with_index{|d, i|
+            stream.write [:todo, d.id, d.name_kakasi, d.name, d.size, 0].join("\t")+"\n" }
         end
       }#tsv
     end

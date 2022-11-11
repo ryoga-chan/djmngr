@@ -15,7 +15,7 @@ class ProcessController < ApplicationController
     folders.each{|f| FileUtils.mkdir_p f }
     
     # create "to_sort" file list
-    if !ProcessIndexRefreshJob.cache_file? || params[:refresh]
+    if params[:refresh]
       ProcessIndexRefreshJob.lock_file!
       ProcessIndexRefreshJob.perform_later
       return redirect_to(action: :index)
@@ -25,10 +25,10 @@ class ProcessController < ApplicationController
       @refreshing = true
     else
       # read "to_sort" file list
-      @files = ProcessIndexRefreshJob.read_cache
-    
+      @files = ProcessIndexRefreshJob.entries
+      
       # read "sorting" file list
-      files_glob = File.join Setting['dir.sorting'], '**', 'info.yml'
+      files_glob = File.join Setting['dir.sorting'], '*', 'info.yml'
       @preparing = Dir[files_glob].map{|f|
         tot_size = Dir.glob("#{File.dirname f}/**/*").
           map{|f| f.ends_with?('/file.zip') ? 0 : File.size(f) }.sum
@@ -107,7 +107,7 @@ class ProcessController < ApplicationController
       # remove file on disk
       File.unlink @info[:file_path]
       # update filelist
-      ProcessIndexRefreshJob.remove_entry_from_cache @info[:relative_path]
+      ProcessIndexRefreshJob.rm_entry @info[:relative_path]
     end
     
     FileUtils.rm_rf @dname, secure: true

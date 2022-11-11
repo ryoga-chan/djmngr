@@ -30,13 +30,16 @@
     - else
       %table.table.is-striped.is-hoverable.ml-4
         %tbody
-          - @files.each do |fname, fsize|
+          - @files.each do |f|
             %tr
-              %td= link_to('🗑', {action: :delete_archive, path: fname},
+              %td= link_to('🗑', {action: :delete_archive, path: f.name},
                 method: :delete, data: { confirm: 'Delete this file?' },
                 class: 'has-text-danger', title: 'delete file')
-              %td.has-text-right= number_to_human_size fsize
+              %td.has-text-right= number_to_human_size f.size
               %td
-                - if @preparing_paths.include?(fname)
-                  %span.tag.is-info(title="processing") 🛠
-                = link_to fname, action: :prepare_archive, path: fname
+                .name
+                  - if @preparing_paths.include?(f.name)
+                    %span.tag.is-info(title="processing") 🛠
+                  = link_to f.name, action: :prepare_archive, path: f.name
+                - if f.name != f.name_kakasi
+                  .name_kakasi.is-size-7= f.name_kakasi
