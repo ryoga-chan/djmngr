@@ -73,12 +73,12 @@ class DoujinshiController < ApplicationController
       max_results = THUMBS_PER_ROW * 2
       
       @doujinshi = @doujinshi.
-        select(:id, :category, :file_folder, :name_kakasi, :name_orig, :size, :num_images).
+        select(:id, :category, :file_folder, :file_name, :name_orig, :size, :num_images).
         limit(max_results)
       
       @deleted_doujinshi = DeletedDoujin.
         search(params[:term]).
-        select(:id, :name_kakasi, :name, :size, :num_images).
+        select(:id, :name, :name_kakasi, :size, :num_images).
         limit(max_results)
       
       file_dl_opts = { type: request.format.to_sym, disposition: :attachment,
@@ -89,27 +89,25 @@ class DoujinshiController < ApplicationController
       format.html
       format.ereader
       format.json {
-        render json: @doujinshi
         send_stream(**file_dl_opts) do |stream|
-          stream.write '{"doujinshi":['
-          @doujinshi        .each_with_index{|d, i| stream.write d.to_json.prepend(i != 0 ? ',' : '') }
-          stream.write '],"deleted":['
-          @deleted_doujinshi.each_with_index{|d, i| stream.write d.to_json.prepend(i != 0 ? ',' : '') }
-          stream.write ']}'
+          stream.write %Q|{\n"saved":[|
+          @doujinshi.each_with_index{|d, i|
+            info = { id: d.id, name: d.file_dl_name, name_orig: d.name_orig, size: d.size, pages: d.num_images }
+            stream.write info.to_json.prepend(i != 0 ? ',' : '') }
+          stream.write %Q|],\n"deleted":[|
+          @deleted_doujinshi.each_with_index{|d, i|
+            info = { id: d.id, name: d.name_kakasi, name_orig: d.name, size: d.size, pages: d.num_images }
+            stream.write info.to_json.prepend(i != 0 ? ',' : '') }
+          stream.write %Q|]\n}|
         end
       }#json
       format.tsv {
         send_stream(**file_dl_opts) do |stream|
-          stream.write "[SAVED]\n"
-          @doujinshi.each_with_index do |r, i|
-            stream.write r.attribute_names.join("\t").upcase+"\n" if i == 0
-            stream.write r.attributes.values.join("\t")+"\n"
-          end
-          stream.write "[DELETED]\n"
-          @deleted_doujinshi.each_with_index do |r, i|
-            stream.write r.attribute_names.join("\t").upcase+"\n" if i == 0
-            stream.write r.attributes.values.join("\t")+"\n"
-          end
+          stream.write %w{ TYPE ID NAME NAME_ORIG SIZE PAGES }.join("\t")+"\n"
+          @doujinshi.each_with_index{|d, i|
+            stream.write [:saved, d.id, d.file_dl_name, d.name_orig, d.size, d.num_images].join("\t")+"\n" }
+          @deleted_doujinshi.each_with_index{|d, i|
+            stream.write [:deleted, d.id, d.name_kakasi, d.name, d.size, d.num_images].join("\t")+"\n" }
         end
       }#tsv
     end
