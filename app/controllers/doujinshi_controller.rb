@@ -69,8 +69,21 @@ class DoujinshiController < ApplicationController
     
     @doujinshi = Doujin.search(params[:term]).limit(THUMBS_PER_ROW * 5)
     
-    file_dl_opts = { type: request.format.to_sym, disposition: :attachment,
-                     filename: "search-results.#{request.format.to_sym}" }
+    if request.format.json? || request.format.tsv?
+      max_results = THUMBS_PER_ROW * 2
+      
+      @doujinshi = @doujinshi.
+        select(:id, :category, :file_folder, :name_kakasi, :name_orig, :size, :num_images).
+        limit(max_results)
+      
+      @deleted_doujinshi = DeletedDoujin.
+        search(params[:term]).
+        select(:id, :name_kakasi, :name, :size, :num_images).
+        limit(max_results)
+      
+      file_dl_opts = { type: request.format.to_sym, disposition: :attachment,
+                       filename: "search-results.#{request.format.to_sym}" }
+    end
     
     respond_to do |format|
       format.html
@@ -78,15 +91,25 @@ class DoujinshiController < ApplicationController
       format.json {
         render json: @doujinshi
         send_stream(**file_dl_opts) do |stream|
-          stream.write '['
-          @doujinshi.each_with_index{|d, i| stream.write d.to_json.prepend(i > 0 ? ',' : '') }
-          stream.write ']'
+          stream.write '{"doujinshi":['
+          @doujinshi        .each_with_index{|d, i| stream.write d.to_json.prepend(i != 0 ? ',' : '') }
+          stream.write '],"deleted":['
+          @deleted_doujinshi.each_with_index{|d, i| stream.write d.to_json.prepend(i != 0 ? ',' : '') }
+          stream.write ']}'
         end
       }#json
       format.tsv {
         send_stream(**file_dl_opts) do |stream|
-          stream.write Doujin.column_names.join("\t")
-          @doujinshi.each{|d| stream.write d.attributes.values.join("\t").prepend("\n") }
+          stream.write "[SAVED]\n"
+          @doujinshi.each_with_index do |r, i|
+            stream.write r.attribute_names.join("\t").upcase+"\n" if i == 0
+            stream.write r.attributes.values.join("\t")+"\n"
+          end
+          stream.write "[DELETED]\n"
+          @deleted_doujinshi.each_with_index do |r, i|
+            stream.write r.attribute_names.join("\t").upcase+"\n" if i == 0
+            stream.write r.attributes.values.join("\t")+"\n"
+          end
         end
       }#tsv
     end

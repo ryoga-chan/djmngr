@@ -152,8 +152,8 @@ class Doujin < ApplicationRecord
     # search all terms on the original filename
     rel_conditions = [
       Doujin.where("name_orig        LIKE ?", "%#{tokens_orig  }%"),
-      Doujin.where("name_orig_kakasi LIKE ?", "%#{tokens_orig  }%"),
-      Doujin.where("name_orig        LIKE ?", "%#{tokens_kakasi}%"),
+      Doujin.where("name_orig_kakasi LIKE ?", "%#{tokens_kakasi}%"),
+      Doujin.where("name_orig        LIKE ?", "%#{tokens_orig  }%"),
       Doujin.where("name_orig_kakasi LIKE ?", "%#{tokens_kakasi}%"),
     ]
     
