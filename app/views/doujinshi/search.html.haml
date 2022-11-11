@@ -2,11 +2,19 @@
   = "Search results (#{@doujinshi.count})"
   
   - show_key = session[:dj_index_detail] == 'thumbs' ? 'table' : 'thumbs'
-  .control{title: "show #{show_key}", style: "float: right;"}
-    = link_to({term: params[:term], detail: show_key}, class: 'button is-info is-small is-rounded') do
-      %span.icon-text
-        %span.icon.is-small
-          %i.mi.mi-small= session[:dj_index_detail] == 'thumbs' ? 'view_list' : 'image'
-        %span= "show #{show_key}"
+  .actions.field.is-grouped{style: "float: right;"}
+    .field.has-addons
+      %p.control
+        = link_to({term: params[:term], format: :tsv}, class: 'button is-info is-small is-rounded') do
+          %span.icon
+            %i.mi.mi-small download
+          %span TSV
+
+      %p.control{title: "show #{show_key}"}
+        = link_to({term: params[:term], detail: show_key}, class: 'button is-info is-small is-rounded') do
+          %span.icon-text
+            %span.icon.is-small
+              %i.mi.mi-small= session[:dj_index_detail] == 'thumbs' ? 'view_list' : 'image'
+            %span= "show #{show_key}"
 
 = render partial: 'thumbs_table', locals: { doujinshi: @doujinshi, show_name_orig: true }
