@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_11_09_212042) do
+ActiveRecord::Schema[7.0].define(version: 2022_11_11_192327) do
   create_table "authors", force: :cascade do |t|
     t.string "name", null: false
     t.string "name_romaji"
@@ -133,6 +133,13 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_09_212042) do
     t.boolean "favorite", default: false
     t.datetime "faved_at"
     t.string "name_orig_kakasi", null: false
+  end
+
+  create_table "processable_doujinshi", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "name_kakasi", null: false
+    t.integer "size", null: false
+    t.datetime "created_at"
   end
 
   create_table "settings", force: :cascade do |t|
