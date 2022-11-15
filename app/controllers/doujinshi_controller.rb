@@ -135,7 +135,7 @@ class DoujinshiController < ApplicationController
       format.any(:webp, :jpg) {
         # extract a frame (cli: `webpmux -get frame 1 out.webp -o -`)
         params[:page] = 0 unless (0..3).include?(params[:page].to_i)
-        fname = Rails.root.join('public', 'thumbs', "#{@doujin.id}.webp").to_s
+        fname = @doujin.thumb_disk_path
         img = Vips::Image.webpload(fname, page: params[:page].to_i) # ImageProcessing::Vips.source(fname).call save: false
         data = request.format.webp? ?
           img.webpsave_buffer(Q: 70, lossless: false, min_size: true) :

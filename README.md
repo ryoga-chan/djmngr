@@ -18,6 +18,8 @@
 
 - [libvips](https://packages.debian.org/stable/libvips-dev)
 - [libkakasi2-dev](https://packages.debian.org/stable/libkakasi2-dev)
+- [libjpeg-dev](https://packages.debian.org/stable/libjpeg-dev)
+- [libpng-dev](https://packages.debian.org/stable/libpng-dev)
 - [img2webp](https://packages.debian.org/stable/webp)
 - [zip](https://packages.debian.org/stable/zip), [unzip](https://packages.debian.org/stable/unzip)
 - [find](https://packages.debian.org/stable/findutils)
@@ -25,7 +27,7 @@
 - [sort](https://packages.debian.org/stable/coreutils), [sha512sum](https://packages.debian.org/stable/coreutils)
 
 ~~~shell
-apt install libvips-dev libkakasi2-dev webp zip unzip findutils grep coreutils
+apt install libvips-dev libkakasi2-dev libjpeg-dev libpng-dev webp zip unzip findutils grep coreutils
 ~~~
 
 ## Optional tools

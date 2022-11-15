@@ -124,8 +124,7 @@
 
     .column.has-text-centered
       - html_cover = capture do
-        - base_dir = File.join(Setting['dir.sorting'], @info[:working_dir], 'thumbs')
-        - cover = @info[:images].first
+        - base_dir = File.join(@dname, 'thumbs')
         
         - if @info[:landscape_cover] && @info[:landscape_cover_method] != :none
           = thumbnail_tag File.join(base_dir, '0000.webp'), title: "cropped cover"
@@ -137,7 +136,9 @@
             .icon.is-small.is-left
               %i.mi(title="crop landscape cover") crop
         - else
-          = thumbnail_tag File.join(base_dir, cover[:thumb_path]), title: "#{cover[:dst_path]} @ #{number_to_human_size cover[:size]}\n↪#{cover[:src_path]}"
+          - cover = @info[:images].first
+          = thumbnail_tag File.join(base_dir, cover[:thumb_path]),
+            title: "#{cover[:dst_path]} @ #{number_to_human_size cover[:size]}\n↪#{cover[:src_path]}"
       
       - if @collision_info
         .columns
