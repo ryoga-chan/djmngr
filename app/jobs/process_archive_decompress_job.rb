@@ -5,6 +5,11 @@ class ProcessArchiveDecompressJob < ApplicationJob
 
   queue_as :tools
   
+  def self.cover_path(dst_dir, info)
+    path = info[:landscape_cover] ? '0000.webp' : info[:images].first[:thumb_path]
+    File.join(dst_dir, 'thumbs', path).to_s
+  end # self.cover_path
+  
   # autogenerate portrait cover for landascape first image
   def self.crop_landscape_cover(dst_dir, info, crop_method = :low)
     # get image dimensions
@@ -128,6 +133,13 @@ class ProcessArchiveDecompressJob < ApplicationJob
       # write completion percentage
       perc = (i+1).to_f / info[:images].size * 100
       File.open(File.join(dst_dir, 'completion.perc'), 'w'){|f| f.write perc.round(2) }
+    end
+    
+    # run cover image hash matching
+    if info[:images].any?
+      cover_img_path = File.join(path_contents, info[:images].first[:src_path])
+      info[:cover_hash] = CoverMatchingJob.hash_image cover_img_path
+      CoverMatchingJob.perform_later info[:cover_hash]
     end
     
     info[:reading_direction] = Setting[:reading_direction]

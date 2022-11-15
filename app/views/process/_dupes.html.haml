@@ -1,8 +1,6 @@
 .columns{style: (@dupes.any? ? 'border-bottom: 1px dashed silver' : '')}
   .column
-    - base_dir = File.join(Setting['dir.sorting'], @info[:working_dir], 'thumbs')
-    - cover_name = @info[:landscape_cover] ? '0000.webp' : @info[:images].first[:thumb_path]
-    = thumbnail_tag File.join(base_dir, cover_name), title: "current cover"
+    = thumbnail_tag ProcessArchiveDecompressJob.cover_path(@dname, @info), title: 'current cover'
   
   .column.is-10
     .name_orig.mb-1
@@ -32,6 +30,14 @@
         %span.tag.is-danger= "#{@dupes.size} potential duplicate/s found in collection"
     - else
       %span.tag.mt-3.is-success= "NO duplicates found in collection"
+    
+    .tags.has-addons
+      %span.tag.is-info= "cover matching status: "
+      %span.tag.is-link= @info[:cover_status]
+      - if @info[:cover_status] != :completed
+        = link_to('refresh', {tab: :dupes}, class: :tag)
+      - else
+        = link_to('restart', {tab: :dupes, rematch_cover: true}, class: :tag)
 
 - @dupes.each_slice(2) do |s|
   .columns
@@ -39,6 +45,9 @@
       .column.is-2= image_tag doujin_path(d, format: :webp)
       .column
         .info
-          %span.tag.is-info= "#{d.num_images} pics/#{number_to_human_size d.size}"
+          .tags.has-addons
+            %span.tag.is-info= "#{d.num_images} pics/#{number_to_human_size d.size}"
+            - if d.cover_similarity
+              %span.tag.is-warning= "#{'%2d' % d.cover_similarity}% cover similarity"
         .now(title="collection path" style="border-bottom: 1px solid silver")= link_to "##{d.id} @ #{d.file_path}", doujin_path(d), target: :_blank
         .was(title="original name")= d.name_orig
