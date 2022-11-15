@@ -23,6 +23,7 @@ class CreateDoujinshi < ActiveRecord::Migration[7.0]
       t.boolean  :colorized,  default: false
       t.boolean  :favorite,   default: false
       t.datetime :faved_at
+      t.integer  :cover_phash
 
       t.timestamps
     end

@@ -23,7 +23,7 @@ gem 'rubyzip', '~> 2.3', require: 'zip' # manage ZIP files -- https://github.com
 gem 'paper_trail', '~> 12.3'     # track model changes -- https://github.com/paper-trail-gem/paper_trail
 gem 'httparty',    '~> 0.20'     # http requests made easy -- https://github.com/jnunemaker/httparty
                                  # https://www.rubydoc.info/gems/httparty/0.20.0/HTTParty/ClassMethods
-#gem 'bcrypt',      '~> 3.1'      # ActiveModel's has_secure_password -- https://guides.rubyonrails.org/active_model_basics.html#securepassword
+#gem 'bcrypt',      '~> 3.1'     # ActiveModel's has_secure_password -- https://guides.rubyonrails.org/active_model_basics.html#securepassword
 #gem 'ferret', '0.11.9.0', source: 'https://rubygems.pkg.github.com/acavalin' # https://github.com/acavalin/ferret
 
 # image manipulation  ==>         https://github.com/janko/image_processing
@@ -31,6 +31,8 @@ gem 'httparty',    '~> 0.20'     # http requests made easy -- https://github.com
 # api documentation:              https://github.com/janko/image_processing/blob/master/doc/vips.md#readme
 #                                 https://rubydoc.info/gems/ruby-vips/Vips/Image#webpsave-instance_method
 gem 'image_processing', '~> 1.2', require: %w{ ruby-vips image_processing }
+gem 'phashion',         '~> 1.2' # https://github.com/westonplatter/phashion -- pHash: image perceptual hashing
+
 
 #gem 'bootsnap', require: false   # Reduces boot times through caching; required in config/boot.rb
 

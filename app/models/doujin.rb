@@ -37,6 +37,9 @@ class Doujin < ApplicationRecord
   include JapaneseLabels
   include FavoriteManagement
   
+  # attribute used to store cover matching similarity based on hamming distance of pHashes
+  attr_internal_accessor :cover_similarity
+  
   def sanitize_fields
     self.scored_at = Time.now if score_changed?
     
@@ -121,7 +124,7 @@ class Doujin < ApplicationRecord
     end
   end # file_dl_name
   
-  def thumb_path = "/thumbs/#{id}.webp"
+  def thumb_disk_path = Rails.root.join('public', 'thumbs', "#{id}.webp").to_s
   
   def destroy_with_files
     @delete_files = true
@@ -175,6 +178,14 @@ class Doujin < ApplicationRecord
     
     rel.order(Arel.sql "COALESCE(NULLIF(name_romaji, ''), NULLIF(name_kakasi, ''))")
   end # self.search
+  
+  def cover_fingerprint = '%016x' % Phashion::Image.new(thumb_disk_path).fingerprint
+  
+  def cover_fingerprint!
+    f = cover_fingerprint
+    self.class.connection.execute %Q|UPDATE doujinshi SET cover_phash = 0x#{f} WHERE id = #{id}|
+    f
+  end # cover_fingerprint!
   
   
   private # ____________________________________________________________________

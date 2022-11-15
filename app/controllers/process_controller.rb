@@ -225,11 +225,46 @@ class ProcessController < ApplicationController
     
     case params[:tab]
       when 'dupes'
+        # refresh cover matching results
+        if params[:rematch_cover]
+          # update @info rehashing cover and run a new search
+          @info = @info.slice! :cover_hash, :cover_results, :cover_status # reset @info
+          cover_path = ProcessArchiveDecompressJob.cover_path @dname, @info
+          @info[:cover_hash] = CoverMatchingJob.hash_image cover_path
+          File.open(File.join(@dname, 'info.yml'), 'w'){|f| f.puts @info.to_yaml }
+          CoverMatchingJob.perform_later @info[:cover_hash]
+        end
+        
+        @dupes = []
+      
+        # search dupes by cover similarity
+        # check matching status/results
+        if @info[:cover_hash].present? && !@info[:cover_results].is_a?(Hash)
+          cover_matching = CoverMatchingJob.results @info[:cover_hash]
+          if cover_matching.is_a?(Hash)
+            @info[:cover_results] = cover_matching[:results]
+            @info[:cover_status ] = cover_matching[:status]
+            File.open(File.join(@dname, 'info.yml'), 'w'){|f| f.puts @info.to_yaml }
+          else
+            @info[:cover_status] = cover_matching
+          end
+        end
+        # find dupes and set similarity percent
+        @dupes += @info[:cover_results].map do |id, perc|
+          next unless d = Doujin.find_by(id: id)
+          d.cover_similarity = perc
+          d
+        end if @info[:cover_results].is_a?(Hash)
+        
+        # search dupes by filename
         @info[:dupe_search] ||= @info[:relative_path].tokenize_doujin_filename.join ' '
         params[:dupe_search] ||= @info[:dupe_search]
-        # NOTE: sqlite LIKE is case insensitive
-        @dupes = Doujin.where("name_orig LIKE ?", "%#{params[:dupe_search].tr ' ', '%'}%").order(:name_orig)
+        @dupes += Doujin. # NOTE: sqlite LIKE is case insensitive
+          where("name_orig LIKE ?", "%#{params[:dupe_search].tr ' ', '%'}%").
+          where.not(id: @dupes.map(&:id)).
+          order(:name_orig).limit(10).to_a
         
+        # current file stats
         f_size = helpers.number_to_human_size File.size(@info[:file_path])
         f_imgs = @info[:images].size
         @cur_info = "#{f_imgs} pics/#{f_size}"

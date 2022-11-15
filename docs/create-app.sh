@@ -15,9 +15,10 @@ bin/rails g scaffold doujin name:string name_romaji:string name_kakasi:string \
 bin/rails g migration create_authors_doujinshi author:references doujin:references
 bin/rails g migration create_circles_doujinshi circle:references doujin:references
 
-bin/rails g job process_archive_decompress_job.rb
-bin/rails g job process_archive_compress_job.rb
-bin/rails g job process_index_refresh_job.rb
+bin/rails g job process_archive_decompress
+bin/rails g job process_archive_compress
+bin/rails g job process_index_refresh
+bin/rails g job cover_matching
 
 wget -O config/locales/en.yml https://github.com/svenfuchs/rails-i18n/raw/master/rails/locale/en.yml
 
