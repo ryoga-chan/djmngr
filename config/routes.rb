@@ -28,6 +28,8 @@ Rails.application.routes.draw do
       get  :fav_toggle
       get  :favorites
       get  :search
+      post :search_cover
+      get  :search_cover
     end
     member do
       get  :read

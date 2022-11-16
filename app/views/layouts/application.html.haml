@@ -80,6 +80,18 @@
                     %span.icon
                       %i.mi.mi-small search
         
+          %span.navbar-item
+            = form_with url: search_cover_doujinshi_path, method: :post do |f|
+              .file
+                %label.file-label
+                  = f.file_field :cover, class: 'file-input', id: '',
+                    onchange: %Q|jQuery(this).next().find('i.mi').text('hourglass_bottom'); jQuery('section.main-content').html('loading...'); this.form.submit()|
+                  %span.file-cta
+                    %span.file-icon
+                      %i.mi image_search
+                    %span.file-label
+                      Cover
+          
           %span.navbar-item.has-dropdown{class: (%w{ authors circles themes }.include?(params[:controller]) ? 'is-current' : nil),
             onclick: "jQuery(this).toggleClass('is-active')"}
             %a.navbar-link
