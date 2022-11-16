@@ -36,7 +36,7 @@
       
       .actions
         - lbl_read = @doujin.read_pages.to_i > 0 ? "Read (#{@doujin.percent_read.round}%)" : :Read
-        = link_to lbl_read, read_doujin_path(@doujin, page: @doujin.read_pages.to_i, from_format: :ereader), class: :button
+        = link_to lbl_read, read_doujin_path(@doujin, page: @doujin.next_page_to_read, from_format: :ereader), class: :button
         = link_to '&star; Fave'.html_safe,
           fav_toggle_doujinshi_path(type: :Doujin, id: @doujin.id),
           class: "button fav #{'is-favorite' if @doujin.favorite?}"

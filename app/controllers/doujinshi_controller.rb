@@ -201,7 +201,8 @@ class DoujinshiController < ApplicationController
   end # read
   
   def read_pages
-    ris = @doujin.update read_pages: (params[:page].to_i + 1) if params[:page].present? && params[:page].to_i >= 0
+    p = params[:page].to_i == 0 ? 0 : (params[:page].to_i + 1) # don't count the first page
+    ris = @doujin.update read_pages: p if p >= 0
     render json: (ris == false ? :err : :ok)
   end # read_pages
   
