@@ -116,10 +116,12 @@
     if (ev.ctrlKey || ev.altKey || $(document.activeElement).is(':input'))
       return true;
     
-    if ($.inArray(ev.which, [37, 38, 33, 39, 40, 34, 32]) != -1)
+    if ($.inArray(ev.which, [8, 27, 37, 38, 33, 39, 40, 34, 32]) != -1)
       ev.preventDefault();
     
-    if (ev.which == 37 || ev.which == 38 || ev.which == 33) // left|up|pgUp
+    if (ev.which == 27) // ESC = exit reading
+      window.location = $('.back a').attr('href');
+    else if (ev.which == 8 || ev.which == 37 || ev.which == 38 || ev.which == 33) // bkspc|left|up|pgUp
       turnPage(cur_page - 1);
     else if (ev.which == 39 || ev.which == 40 || ev.which == 34 || ev.which == 32) // right|down|pgDn|space
       turnPage(cur_page + 1);
@@ -195,6 +197,7 @@
     men&ugrave;
   .jump
     = form_with url: read_doujin_path(@doujin), method: :get do |f|
+      = hidden_field_tag :from_format, params[:from_format]
       jump to
       = select_tag :page,
         options_for_select(@files.size.times.map{|i| [i+1, i] }, params[:page]),

@@ -23,4 +23,5 @@
     %span.tag.is-info= "cover matching status: "
     %span.tag.is-link= @result
     = link_to('refresh', params.permit(:hash), class: :tag)
-  = javascript_tag %Q|setTimeout("window.location.reload(true)", 2000)|
+  :javascript
+    setTimeout("window.location.reload(true)", 2000)
