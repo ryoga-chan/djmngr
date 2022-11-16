@@ -291,8 +291,20 @@ class DoujinshiController < ApplicationController
   
   # curl -L -F cover=@path/to/img.ext http://localhost:3000/doujinshi/search_cover.json
   def search_cover
-    if request.post?
+    if request.post? && params[:cover]
       cover_hash = CoverMatchingJob.hash_image params[:cover].tempfile.path
+    end
+    
+    # download and hash an image file
+    url = URI.parse(params[:url]) rescue nil
+    if url.is_a?(URI::HTTP)
+      image_data = URI.open(params[:url], read_timeout: 10).read rescue File.read(File.join Rails.root, 'public', 'img-not-found.png')
+      f = Tempfile.open{|f| f.write(image_data); f }
+      cover_hash = CoverMatchingJob.hash_image f.path
+      f.unlink
+    end
+    
+    if cover_hash
       CoverMatchingJob.perform_later cover_hash
       return redirect_to(hash: cover_hash, format: params[:format])
     end
