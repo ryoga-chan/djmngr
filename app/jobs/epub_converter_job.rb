@@ -16,11 +16,11 @@ class EpubConverterJob < ApplicationJob
     uuid = SecureRandom.uuid
     
     # target image dimensions
-    width_dst  = Setting[:epub_img_width ]
-    height_dst = Setting[:epub_img_height]
+    width_dst  = Setting[:epub_img_width ].to_i
+    height_dst = Setting[:epub_img_height].to_i
 
     fname_src  = doujin.file_path(full: true)
-    fname_dst  = File.join base_dir, doujin.file_dl_name.sub(/zip$/i, 'epub')
+    fname_dst  = File.join base_dir, doujin.file_dl_name.sub(/zip$/i, 'kepub.epub')
     author     = doujin.file_dl_info[:author]
     title      = doujin.file_dl_info[:filename]
     
@@ -131,15 +131,16 @@ class EpubConverterJob < ApplicationJob
       File.open("#{tmpd}/pages/#{num}.xhtml",'w') do |f|
         f.puts <<~XHTML
           <?xml version="1.0" encoding="UTF-8"?>
-          <html xmlns="http://www.w3.org/1999/xhtml">
+          <html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
           <head>
             <title>page #{num}</title>
             <link rel="stylesheet" type="text/css" href="../page.css"/>
             <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+            <meta name="viewport" content="width=#{width_dst}, height=#{height_dst}"/>
           </head>
           <body>
             <div class="main">
-              <img src="../images/#{img_name}" alt="page #{num}" class="page #{img_type}"/>
+              <img src="../images/#{img_name}" alt="page #{num}" class="page #{img_type}" width="#{width_dst}" height="#{height_dst}"/>
             </div>
           </body>
           </html>
@@ -159,6 +160,9 @@ class EpubConverterJob < ApplicationJob
             <dc:creator opf:role="aut">#{author.encode xml: :text}</dc:creator>
             <dc:identifier id="uuid_id" opf:scheme="uuid">#{uuid}</dc:identifier>
             <dc:language>en</dc:language>
+            <meta property="rendition:orientation">portrait</meta>
+            <meta property="rendition:spread">portrait</meta>
+            <meta property="rendition:layout">pre-paginated</meta>
             <meta name="cover" content="i0001"/>
           </metadata>
           <manifest>

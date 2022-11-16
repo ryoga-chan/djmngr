@@ -12,8 +12,9 @@
       %td.w1= link_to '🗑', epub_doujinshi_path(remove: File.basename(f)),
         data: { confirm: 'Delete this file?' },
         class: 'has-text-danger', title: 'delete file'
+      %td.w1 &mdash;
       %td
-        = "#{File.basename(f)[0..-6]} (#{File.read f}%)"
+        = "#{File.basename(f, '.perc')} (#{File.read f}%)"
         - error_log = f.sub(/\.perc$/, '.wip/error.log')
         - if File.exist?(error_log)
           %span.tag.is-danger= File.read error_log
@@ -22,7 +23,8 @@
       %td.w1= link_to '🗑', epub_doujinshi_path(remove: File.basename(f)),
         data: { confirm: 'Delete this file?' },
         class: 'has-text-danger', title: 'delete file'
-      %td= link_to File.basename(f), '/'+Pathname.new(f).relative_path_from(@pub_dir).to_s
+      %td.w1= number_to_human_size(File.size(f), precision: 2).delete ' '
+      %td= link_to File.basename(f, '.kepub.epub'), '/'+Pathname.new(f).relative_path_from(@pub_dir).to_s
 
 - if @wip.any?
   :javascript
