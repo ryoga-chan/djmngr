@@ -289,11 +289,12 @@ class DoujinshiController < ApplicationController
     end
   end # favorites
   
+  # curl -L -F cover=@path/to/img.ext http://localhost:3000/doujinshi/search_cover.json
   def search_cover
     if request.post?
       cover_hash = CoverMatchingJob.hash_image params[:cover].tempfile.path
       CoverMatchingJob.perform_later cover_hash
-      return redirect_to(hash: cover_hash)
+      return redirect_to(hash: cover_hash, format: params[:format])
     end
     
     fname = File.join(Setting['dir.sorting'], 'cover-search.yml').to_s
@@ -312,6 +313,29 @@ class DoujinshiController < ApplicationController
       d.cover_similarity = perc
       d
     end if @result.is_a?(Hash)
+
+    file_dl_opts = { type: request.format.to_sym, disposition: :attachment,
+                     filename: "search-results.#{request.format.to_sym}" }
+    respond_to do |format|
+      format.html
+      format.json {
+        send_stream(**file_dl_opts) do |stream|
+          stream.write %Q|[|
+          @doujinshi.each_with_index{|d, i|
+            info = { id: d.id, name: d.file_dl_name, name_orig: d.name_orig, size: d.size,
+                     pages: d.num_images, similarity: d.cover_similarity }
+            stream.write info.to_json.prepend(i != 0 ? ',' : '') }
+          stream.write %Q|]|
+        end
+      }#json
+      format.tsv {
+        send_stream(**file_dl_opts) do |stream|
+          stream.write %w{ ID NAME NAME_ORIG SIZE PAGES SIMILARITY }.join("\t")+"\n"
+          @doujinshi.each_with_index{|d, i|
+            stream.write [d.id, d.file_dl_name, d.name_orig, d.size, d.num_images, d.cover_similarity].join("\t")+"\n" }
+        end
+      }#tsv
+    end
   end # search_cover
 
 
