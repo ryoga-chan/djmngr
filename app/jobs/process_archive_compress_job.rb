@@ -128,8 +128,8 @@ class ProcessArchiveCompressJob < ApplicationJob
             call destination: dst_img
         end
         # merge selected thumbnails
-        cmd  = %Q| img2webp -q 70 -lossy -d 2000 #{thumb_src[0]} |
-        cmd += %Q| -d 1000 #{thumb_src[1..-1].join ' '} | if thumb_src.size > 1
+        cmd  = %Q| img2webp -q 70 -lossy -d 3000 #{thumb_src[0]} |
+        cmd += %Q| -d 2000 #{thumb_src[1..-1].join ' '} | if thumb_src.size > 1
         cmd += %Q| -o #{thumb_dst.shellescape} |
         system cmd
         if $?.to_i != 0 # remove thumbnail if it goes wrong
