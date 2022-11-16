@@ -187,6 +187,12 @@ class Doujin < ApplicationRecord
     f
   end # cover_fingerprint!
   
+  # next page numer for `/doujinshi/ID/read` action
+  def next_page_to_read
+    return 0 unless (0...(num_images-1)).include?(read_pages.to_i - 1)
+    read_pages.to_i - 1
+  end # next_page_to_read
+  
   
   private # ____________________________________________________________________
   
