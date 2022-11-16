@@ -1,0 +1,19 @@
+- descr = short_label ? d.label_name_latin : d.file_dl_name(omit_ext: true)
+- title = d.name if d.name != descr
+%tr{data: {cover: doujin_path(d, format: :webp)}}
+  %td
+    - if d.score.to_i > 0
+      %progress.progress.is-warning{value: d.score.to_i, title: "#{d.score.to_i}⭐", max: 10}
+  %td
+    = link_to(doujin_path(d), target: :_blank, title: title) do
+      - if d.cover_similarity.present?
+        %span.tag.is-warning.is-rounded= "#{'%2d' % d.cover_similarity}%"
+      = descr
+    - if show_name_orig
+      .name-orig.is-size-7{title: (d.name_orig_kakasi if d.name_orig_kakasi != d.name_orig)}= d.name_orig
+  %td= d.num_images
+  %td= number_to_human_size(d.size, precision: 2).delete ' '
+  %td= link_to '&star;'.html_safe,
+    fav_toggle_doujinshi_path(type: :Doujin, id: d.id),
+    title: ("faved @ #{l d.faved_at}" if d.favorite? && d.faved_at),
+    class: "fav #{'has-text-warning' if d.favorite?}"

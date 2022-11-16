@@ -5,17 +5,17 @@
   .mt-6.is-italic.has-text-centered nothing to see here
 - else
   - if session[:dj_index_detail] == 'thumbs'
-    -# emulate doujinshi.each_slice because it's impossibile to write a pure HAML container with find_each
-    - doujinshi_row = []
-    - doujinshi.find_each_in_order(batch_size: DoujinshiController::BATCH_SIZE) do |d|
-      - if doujinshi_row.size < DoujinshiController::THUMBS_PER_ROW
-        - doujinshi_row << d
-      - else
+    - if doujinshi.is_a?(ActiveRecord::Relation)
+      - doujinshi.find_each_slice_in_order(DoujinshiController::THUMBS_PER_ROW, batch_size: DoujinshiController::BATCH_SIZE) do |s|
         = render partial: 'thumbs_row',
-          locals: {doujinshi: doujinshi_row, short_label: short_label, show_name_orig: show_name_orig}
-        - doujinshi_row = [d]
-    = render partial: 'thumbs_row',
-      locals: {doujinshi: doujinshi_row, short_label: short_label, show_name_orig: show_name_orig} if doujinshi_row.any?
+          locals: {doujinshi: s, short_label: short_label, show_name_orig: show_name_orig}
+    - elsif doujinshi.is_a?(Array)
+      - doujinshi.each_slice(DoujinshiController::THUMBS_PER_ROW) do |s|
+        = render partial: 'thumbs_row', locals: {doujinshi: s, short_label: short_label, show_name_orig: show_name_orig}
+    - else
+      unknown object to render
+    
+
   - else
     %img#sample_cover.is-hidden
     
@@ -28,20 +28,11 @@
           %th Size
           %th Fav
       %tbody
-        - doujinshi.find_each_in_order(batch_size: DoujinshiController::BATCH_SIZE) do |d|
-          - descr = short_label ? d.label_name_latin : d.file_dl_name(omit_ext: true)
-          - title = d.name if d.name != descr
-          %tr{data: {cover: doujin_path(d, format: :webp)}}
-            %td
-              - if d.score.to_i > 0
-                %progress.progress.is-warning{value: d.score.to_i, title: "#{d.score.to_i}⭐", max: 10}
-            %td
-              = link_to descr, doujin_path(d), target: :_blank, title: title
-              - if show_name_orig
-                .name-orig.is-size-7{title: (d.name_orig_kakasi if d.name_orig_kakasi != d.name_orig)}= d.name_orig
-            %td= d.num_images
-            %td= number_to_human_size(d.size, precision: 2).delete ' '
-            %td= link_to '&star;'.html_safe,
-              fav_toggle_doujinshi_path(type: :Doujin, id: d.id),
-              title: ("faved @ #{l d.faved_at}" if d.favorite? && d.faved_at),
-              class: "fav #{'has-text-warning' if d.favorite?}"
+        - if doujinshi.is_a?(ActiveRecord::Relation)
+          - doujinshi.find_each_in_order(batch_size: DoujinshiController::BATCH_SIZE) do |d|
+            = render partial: 'thumbs_table_row', locals: {d: d, short_label: short_label, show_name_orig: show_name_orig}
+        - elsif doujinshi.is_a?(Array)
+          - doujinshi.each do |d|
+            = render partial: 'thumbs_table_row', locals: {d: d, short_label: short_label, show_name_orig: show_name_orig}
+        - else
+          unknown object to render
