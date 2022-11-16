@@ -5,7 +5,7 @@ class DoujinshiController < ApplicationController
   THUMBS_PER_ROW = 6
   BATCH_SIZE     = 15 * THUMBS_PER_ROW
   
-  before_action :set_index_detail, only: %i[ index favorites search ]
+  before_action :set_index_detail, only: %i[ index favorites search search_cover ]
   before_action :set_doujin, only: %i[ show edit score read read_pages image update rehash destroy reprocess ]
 
   # browse doujinshi by author/circle/folder
@@ -287,6 +287,31 @@ class DoujinshiController < ApplicationController
       params[:tab] = 'doujin' unless %w{ doujin author circle }.include?(params[:tab])
     end
   end # favorites
+  
+  def search_cover
+    if request.post?
+      cover_hash = CoverMatchingJob.hash_image params[:cover].tempfile.path
+      CoverMatchingJob.perform_later cover_hash
+      return redirect_to(hash: cover_hash)
+    end
+    
+    fname = File.join(Setting['dir.sorting'], 'cover-search.yml').to_s
+    
+    # save/load search data
+    @result = CoverMatchingJob.results params[:hash]
+    if @result.is_a?(Hash)       # save completed search results
+      File.open(fname, 'w'){|f| f.puts @result.to_yaml }
+    elsif @result == :not_found  # expired job, load last search results
+      @result = YAML.load_file(fname) rescue :not_found
+    end
+    
+    # find doujinshi
+    @doujinshi = @result[:results].map do |id, perc|
+      next unless d = Doujin.find_by(id: id)
+      d.cover_similarity = perc
+      d
+    end if @result.is_a?(Hash)
+  end # search_cover
 
 
   private # ____________________________________________________________________

@@ -18,4 +18,7 @@
         = link_to image_tag(doujin_path(d, format: :webp), title: title),
           doujin_path(d, from_author: params[:author_id], from_circle: params[:circle_id]), target: :_blank
       %progress.progress.is-warning{value: d.score.to_i, title: "#{d.score.to_i}⭐", max: 10}
-      .descr.is-size-7= short_label ? descr : d.name
+      .descr.is-size-7
+        - if d.cover_similarity.present?
+          %span.tag.is-warning.is-rounded= "#{'%2d' % d.cover_similarity}%"
+        = short_label ? descr : d.name
