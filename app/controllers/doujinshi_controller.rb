@@ -6,7 +6,8 @@ class DoujinshiController < ApplicationController
   BATCH_SIZE     = 15 * THUMBS_PER_ROW
   
   before_action :set_index_detail, only: %i[ index favorites search search_cover ]
-  before_action :set_doujin, only: %i[ show edit score read read_pages image update rehash destroy reprocess ]
+  before_action :set_doujin,
+    only: %i[ show edit score read read_pages image update rehash delete destroy reprocess ]
 
   # browse doujinshi by author/circle/folder
   def index
@@ -238,6 +239,9 @@ class DoujinshiController < ApplicationController
     msg = @doujin.refresh_checksum! ? {notice: 'checksum refreshed'} : {alert: 'checksum error'}
     redirect_to doujin_path(@doujin, params.permit(:from_author, :from_circle)), flash: msg
   end # rehash
+  
+  def delete
+  end # delete
   
   def destroy
     @doujin.destroy_with_files

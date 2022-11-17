@@ -1,7 +1,6 @@
 module ApplicationHelper
-  def is_ereader?
-    return true if request.user_agent.include?('Kobo')
-    false
+  def is_ereader_browser?
+    %w{ Kobo Kindle NOOK }.any?{|i| request.user_agent.include? i }
   end # is_ereader?
   
   def inline_image_tag(mime, b64_data, options = {})

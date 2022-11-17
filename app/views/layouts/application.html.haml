@@ -67,7 +67,8 @@
                   %span EPUBs
           
           %span.navbar-item
-            = form_with url: search_doujinshi_path, method: :get do |f|
+            = form_with url: search_doujinshi_path, method: :get,
+              html: {onsubmit: %Q|jQuery(this).find('button').addClass('is-loading'); jQuery.myapp.show_loading()|} do |f|
               .field.has-addons
                 .control= f.text_field :term, value: params[:term], placeholder: :search, class: 'input is-rounded'
                 .control
@@ -82,10 +83,10 @@
         
           %span.navbar-item
             = form_with url: search_cover_doujinshi_path, method: :post do |f|
-              .file
+              .file.is-primary
                 %label.file-label
                   = f.file_field :cover, class: 'file-input', id: '',
-                    onchange: %Q|jQuery(this).next().find('i.mi').text('hourglass_bottom'); jQuery('section.main-content').html('loading...'); this.form.submit()|
+                    onchange: %Q|jQuery(this).next().find('i.mi').text('hourglass_bottom'); jQuery.myapp.show_loading(); this.form.submit()|
                   %span.file-cta
                     %span.file-icon
                       %i.mi image_search
@@ -120,14 +121,18 @@
                     %i.mi.mi-small local_offer
                   %span Themes
           
-        -#.navbar-end
-        -#  .navbar-item
-        -#    .buttons
-        -#      - if true # Current.user
-        -#        = link_to '#', class: 'button is-primary' do
-        -#          %span.icon.is-small
-        -#            %i.mi logout
-        -#          %span Logout
+        .navbar-end
+          .navbar-item
+            .buttons
+              -#- if true # Current.user
+              -#  = link_to '#', class: 'button is-primary' do
+              -#    %span.icon.is-small
+              -#      %i.mi logout
+              -#    %span Logout
+              = link_to(root_path(format: :ereader), class: 'button is-primary') do
+                %span.icon
+                  %i.mi.mi-small tablet_android
+                %span e-reader
 
     %section.section.main-content
       -# NOTE: "notice" and "alert" are Rails defaults, "warn" is a custom key
