@@ -5,23 +5,20 @@
 
 
 %ul
-  %li= link_to "TODO: view top scored", '#', class: 'button is-info is-rounded'
-  %li
-    view random:
-    %ul
-      %li= link_to "TODO: view random book", '#', class: 'button is-info is-rounded'
-      %li= link_to "TODO: view random fav", '#', class: 'button is-info is-rounded'
-      %li= link_to "TODO: view random top scored", '#', class: 'button is-info is-rounded'
+  %li TODO: top scored graph
+  %li= link_to "TODO: view random book", '#', class: 'button is-info is-rounded'
+  %li= link_to "TODO: view random fav", '#', class: 'button is-info is-rounded'
+  %li= link_to "TODO: view random top scored", '#', class: 'button is-info is-rounded'
 
 %hr
 
-.tags.has-text-centered
+.tags
   .tags.has-addons.mr-4.mb-0
     %span.tag.is-info
       %span.icon-text
         %span.icon
           %i.mi book
-        %span= @stats[:dj]
+        %span= number_with_delimiter @stats[:dj], delimiter: "'"
     %span.tag.is-link doujinshi
   
   .tags.has-addons.mr-4.mb-0
@@ -29,12 +26,13 @@
       %span.icon-text
         %span.icon
           %i.mi auto_awesome
-        %span= @stats[:dj_fav]
+        %span= number_with_delimiter @stats[:dj_fav], delimiter: "'"
     %span.tag= link_to 'faved', favorites_doujinshi_path
   
+.tags
   - @stats[:dj_cat].each do |cat, n|
     .tags.has-addons.mr-2.mb-0
-      %span.tag.is-info= n
+      %span.tag.is-info= number_with_delimiter n, delimiter: "'"
       %span.tag= link_to cat.pluralize, doujinshi_path(tab: cat)
 
 .tags
@@ -43,7 +41,7 @@
       %span.icon-text
         %span.icon
           %i.mi swap_horiz
-        %span= @stats[:todo]
+        %span= number_with_delimiter @stats[:todo], delimiter: "'"
     %span.tag.is-link to process
   
   .tags.has-addons.mr-4.mb-0
@@ -69,27 +67,28 @@
       %span.icon-text
         %span.icon
           %i.mi folder_shared
-        %span= @stats[:md_tot]
+        %span= number_with_delimiter @stats[:md_tot], delimiter: "'"
     %span.tag.is-link metadata
   
+.tags
   .tags.has-addons.mr-2.mb-0
     %span.tag.is-info
       %span.icon-text
         %span.icon
           %i.mi supervisor_account
-        %span= @stats[:mda]
+        %span= number_with_delimiter @stats[:mda], delimiter: "'"
     %span.tag= link_to 'authors', authors_path
   .tags.has-addons.mr-2.mb-0
     %span.tag.is-info
       %span.icon-text
         %span.icon
           %i.mi supervised_user_circle
-        %span= @stats[:mdc]
+        %span= number_with_delimiter @stats[:mdc], delimiter: "'"
     %span.tag= link_to 'circles', circles_path
   .tags.has-addons.mr-2.mb-0
     %span.tag.is-info
       %span.icon-text
         %span.icon
           %i.mi local_offer
-        %span= @stats[:mdt]
+        %span= number_with_delimiter @stats[:mdt], delimiter: "'"
     %span.tag= link_to 'themes', themes_path

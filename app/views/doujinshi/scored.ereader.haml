@@ -1,0 +1,28 @@
+%h3
+  Score search results
+  .actions{style: "float: right"}
+    = link_to 'home', root_path, class: :button
+
+= form_with url: scored_doujinshi_path, method: :get, class: 'frm-search' do |f|
+  - numbers = (1..10).to_a.reverse
+  Score interval
+  = f.select :score_min, options_for_select(numbers, params[:score_min].to_i)
+  \~
+  = f.select :score_max, options_for_select(numbers, params[:score_max].to_i)
+  = f.submit 'Search', class: 'button'
+
+  &middot;
+
+  - cur_params = params.permit(%w{ format score_min score_max }).to_h
+  - show_key = session[:dj_index_detail] == 'thumbs' ? 'table' : 'thumbs'
+  %small= link_to "show #{show_key}", cur_params.merge(detail: show_key)
+
+%hr/
+
+.pagination-info= page_entries_info @doujinshi
+= paginate @doujinshi
+
+= render partial: 'fav_js_links'
+= render partial: 'thumbs_table', locals: { doujinshi: @doujinshi.to_a }
+
+= paginate @doujinshi

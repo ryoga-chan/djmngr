@@ -8,31 +8,24 @@
   = f.submit 'Search', class: 'button'
 
 %h3 Browse collection
-
-= link_to 'Catalog', doujinshi_path, class: 'button'
-
-= link_to 'Favorites', favorites_doujinshi_path, class: 'button'
-
+= link_to 'Catalog'   , doujinshi_path, class: 'button'
+= link_to 'Favorites' , favorites_doujinshi_path, class: 'button'
 = link_to 'EPUB files', epub_doujinshi_path, class: 'button'
-
-= link_to "!! Top scored", '#', class: 'button'
+= link_to 'Scored'    , scored_doujinshi_path, class: 'button'
 
 %h3 Random pick
-
 = link_to "!! Book", '#', class: 'button'
-
 = link_to "!! Fav", '#', class: 'button'
-
 = link_to "!! Top scored", '#', class: 'button'
 
 %h3 Statistics
-
 = @stats[:dj]
 Doujinshi /
 = @stats[:dj_fav]
 Faved
 
 %hr
+
 = @stats[:dj_cat].map{|cat, n| "#{n} #{cat.pluralize}" }.join ', '
 
 %hr
@@ -45,6 +38,7 @@ WIP,
 Epub generated
 
 %hr
+
 = @stats[:md_tot]
 Metadata:
 = @stats[:mda]

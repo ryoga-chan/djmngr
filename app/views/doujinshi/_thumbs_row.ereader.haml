@@ -1,0 +1,7 @@
+- descr = short_label ? d.label_name_latin : d.file_dl_name(omit_ext: true)
+.doujin<>
+  .cover<>= link_to image_tag(doujin_path(d, format: :jpg), class: :thumb), doujin_path(d)
+  .descr<>
+    - if d.score.to_i > 0
+      %span.score<>= "#{d.score.to_i}&hearts;".html_safe
+    %span.name<>= descr

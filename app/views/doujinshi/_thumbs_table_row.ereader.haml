@@ -1,0 +1,17 @@
+- descr = short_label ? d.label_name_latin : d.file_dl_name(omit_ext: true)
+%tr
+  %td= link_to 'show', '#',
+    data: { cover: doujin_path(d, format: :jpg)},
+    onclick: %Q|jQuery(this).hide().after(jQuery('<img class="thumb">').attr('src', jQuery(this).data('cover'))); return false|
+  %td= "#{d.score.to_i}&hearts;".html_safe if d.score.to_i > 0
+  %td
+    = link_to descr, doujin_path(d)
+    - if show_name_orig
+      .name-orig= d.name_orig
+    - if d.name_orig_kakasi != d.name_orig
+      .name-orig-kakasi= d.name_orig_kakasi
+  %td= d.num_images
+  %td= number_to_human_size(d.size, precision: 2).delete ' '
+  %td= link_to '&star;'.html_safe,
+    fav_toggle_doujinshi_path(type: :Doujin, id: d.id),
+    class: "fav #{'is-favorite' if d.favorite?}"

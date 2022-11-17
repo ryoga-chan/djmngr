@@ -30,6 +30,7 @@ Rails.application.routes.draw do
       get  :search
       post :search_cover
       get  :search_cover
+      get  :scored
     end
     member do
       get  :read
