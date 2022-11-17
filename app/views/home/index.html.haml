@@ -1,14 +1,10 @@
-- if is_ereader?
-  = link_to 'view ereader compatible pages', {format: :ereader},
+- if is_ereader_browser?
+  .has-text-centered= link_to 'view ereader compatible pages', {format: :ereader},
     style: "display: inline-block; margin: 1rem 2rem 10rem 2rem; padding: 1rem; background-color: white; color: black; border: 2px outset silver; border-radius: 1rem;"
 
+
+
 %ul
-  %li
-    - unless request.format.ereader?
-      = link_to({format: :ereader}, class: 'button is-info is-rounded') do
-        %span.icon
-          %i.mi.mi-small tablet_android
-        %span switch to ereader format
   %li= link_to "TODO: view top scored", '#', class: 'button is-info is-rounded'
   %li
     view random:
@@ -16,3 +12,84 @@
       %li= link_to "TODO: view random book", '#', class: 'button is-info is-rounded'
       %li= link_to "TODO: view random fav", '#', class: 'button is-info is-rounded'
       %li= link_to "TODO: view random top scored", '#', class: 'button is-info is-rounded'
+
+%hr
+
+.tags.has-text-centered
+  .tags.has-addons.mr-4.mb-0
+    %span.tag.is-info
+      %span.icon-text
+        %span.icon
+          %i.mi book
+        %span= @stats[:dj]
+    %span.tag.is-link doujinshi
+  
+  .tags.has-addons.mr-4.mb-0
+    %span.tag.is-info
+      %span.icon-text
+        %span.icon
+          %i.mi auto_awesome
+        %span= @stats[:dj_fav]
+    %span.tag= link_to 'faved', favorites_doujinshi_path
+  
+  - @stats[:dj_cat].each do |cat, n|
+    .tags.has-addons.mr-2.mb-0
+      %span.tag.is-info= n
+      %span.tag= link_to cat.pluralize, doujinshi_path(tab: cat)
+
+.tags
+  .tags.has-addons.mr-4.mb-0
+    %span.tag.is-info
+      %span.icon-text
+        %span.icon
+          %i.mi swap_horiz
+        %span= @stats[:todo]
+    %span.tag.is-link to process
+  
+  .tags.has-addons.mr-4.mb-0
+    %span.tag.is-info
+      %span.icon-text
+        %span.icon
+          %i.mi settings
+        %span= @stats[:wip]
+    %span.tag= link_to 'wip', process_index_path
+
+  .tags.has-addons.mr-4.mb-0
+    %span.tag.is-info
+      %span.icon-text
+        %span.icon
+          %i.mi library_books
+        %span= @stats[:epub]
+    %span.tag= link_to 'epub', epub_doujinshi_path
+
+
+.tags
+  .tags.has-addons.mr-4.mb-0
+    %span.tag.is-info
+      %span.icon-text
+        %span.icon
+          %i.mi folder_shared
+        %span= @stats[:md_tot]
+    %span.tag.is-link metadata
+  
+  .tags.has-addons.mr-2.mb-0
+    %span.tag.is-info
+      %span.icon-text
+        %span.icon
+          %i.mi supervisor_account
+        %span= @stats[:mda]
+    %span.tag= link_to 'authors', authors_path
+  .tags.has-addons.mr-2.mb-0
+    %span.tag.is-info
+      %span.icon-text
+        %span.icon
+          %i.mi supervised_user_circle
+        %span= @stats[:mdc]
+    %span.tag= link_to 'circles', circles_path
+  .tags.has-addons.mr-2.mb-0
+    %span.tag.is-info
+      %span.icon-text
+        %span.icon
+          %i.mi local_offer
+        %span= @stats[:mdt]
+    %span.tag= link_to 'themes', themes_path

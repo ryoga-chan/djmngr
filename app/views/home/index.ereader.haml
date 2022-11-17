@@ -1,26 +1,55 @@
 %h3
-  search catalog
+  Search in collection
   .actions{style: "float: right"}
-    = link_to 'full format', {format: :html}, class: :button
+    = link_to 'PC version', {format: :html}, class: :button
 
-= form_with url: search_doujinshi_path, method: :get do |f|
-  = f.text_field :term, value: params[:term], placeholder: :search
-  = f.submit 'Search'
+= form_with url: search_doujinshi_path, method: :get, class: 'frm-search' do |f|
+  = f.text_field :term, placeholder: :search
+  = f.submit 'Search', class: 'button'
 
-%h3 browse catalog
+%h3 Browse collection
 
-= link_to 'catalog', doujinshi_path, class: 'button'
+= link_to 'Catalog', doujinshi_path, class: 'button'
+
+= link_to 'Favorites', favorites_doujinshi_path, class: 'button'
 
 = link_to 'EPUB files', epub_doujinshi_path, class: 'button'
 
-= link_to "favorites", favorites_doujinshi_path, class: 'button'
+= link_to "!! Top scored", '#', class: 'button'
 
-= link_to "!!top scored", '#', class: 'button'
+%h3 Random pick
 
-%h3 random doujinshi
+= link_to "!! Book", '#', class: 'button'
 
-= link_to "!!random book", '#', class: 'button'
+= link_to "!! Fav", '#', class: 'button'
 
-= link_to "!!random fav", '#', class: 'button'
+= link_to "!! Top scored", '#', class: 'button'
 
-= link_to "!!random top scored", '#', class: 'button'
+%h3 Statistics
+
+= @stats[:dj]
+Doujinshi /
+= @stats[:dj_fav]
+Faved
+
+%hr
+= @stats[:dj_cat].map{|cat, n| "#{n} #{cat.pluralize}" }.join ', '
+
+%hr
+
+= @stats[:todo]
+To process,
+= @stats[:wip]
+WIP,
+= @stats[:epub]
+Epub generated
+
+%hr
+= @stats[:md_tot]
+Metadata:
+= @stats[:mda]
+Authors,
+= @stats[:mdc]
+Circles,
+= @stats[:mdt]
+Themes

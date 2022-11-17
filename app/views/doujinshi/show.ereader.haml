@@ -40,13 +40,13 @@
         = link_to '&star; Fave'.html_safe,
           fav_toggle_doujinshi_path(type: :Doujin, id: @doujin.id),
           class: "button fav #{'is-favorite' if @doujin.favorite?}"
+        &nbsp;&nbsp;&nbsp;
+        = link_to '&empty;Del' .html_safe, delete_doujin_path(@doujin, params.permit(:from_author, :from_circle).to_h), class: :button
 
       .actions
         = link_to '&nabla;EPUB'.html_safe, epub_doujinshi_path(convert: @doujin.id), class: :button
         = link_to '&nabla;CBZ' .html_safe, doujin_path(@doujin, format: :cbz ), class: :button
         = link_to '&nabla;ZIP' .html_safe, doujin_path(@doujin, format: :zip ), class: :button
-        &nbsp;&nbsp;&nbsp;&nbsp;
-        = link_to '&empty;Del' .html_safe, delete_doujin_path(@doujin, params.permit(:from_author, :from_circle).to_h), class: :button
         
   %tr
     %td.samples(colspan="2")

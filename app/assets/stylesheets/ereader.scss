@@ -28,11 +28,16 @@ table.is-striped thead tr { background-color: #aaa; }
 table.is-striped tbody tr:nth-child(even) { background-color: #ccc; }
 
 .button {
-  padding: 0.4rem;
+  padding: 0.4rem 1rem;
   border-radius: 1rem;
   border: 1px outset silver;
   background-color: #ddd;
   text-decoration: none;
+}
+
+.frm-search input[type="text"] {
+  height: 1.5rem;
+  border: 3px inset silver;
 }
 
 // set image size to prevent FOUC
