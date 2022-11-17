@@ -9,6 +9,8 @@ body[data-ctrl="doujinshi"] {
     }
   }
   
+  table.dj-details + nav.pagination { margin-top: calc(-400px + 1rem); }
+  
   table.dj-details {
     margin-bottom: 400px;
     
@@ -42,6 +44,7 @@ body[data-ctrl="doujinshi"] {
     position: absolute;
     border-radius: 1rem;
     border: 1px outset silver;
+    z-index: 10000;
   }
 }
 

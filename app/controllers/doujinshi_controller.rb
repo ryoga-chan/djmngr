@@ -5,7 +5,7 @@ class DoujinshiController < ApplicationController
   THUMBS_PER_ROW = 6
   BATCH_SIZE     = 15 * THUMBS_PER_ROW
   
-  before_action :set_index_detail, only: %i[ index favorites search search_cover ]
+  before_action :set_index_detail, only: %i[ index favorites search scored search_cover ]
   before_action :set_doujin,
     only: %i[ show edit score read read_pages image update rehash delete destroy reprocess ]
 
@@ -292,6 +292,19 @@ class DoujinshiController < ApplicationController
       params[:tab] = 'doujin' unless %w{ doujin author circle }.include?(params[:tab])
     end
   end # favorites
+  
+  def scored
+    # sanitize params
+    params[:score_max], params[:score_min] = params[:score_max].to_i, params[:score_min].to_i
+    params[:score_min] = 8  unless (1..10).include?(params[:score_min])
+    params[:score_max] = 10 unless (1..10).include?(params[:score_max])
+    params[:score_min] = params[:score_max] if params[:score_min] > params[:score_max]
+    
+    @doujinshi = Doujin.
+      where("? <= score AND score <= ?", params[:score_min], params[:score_max]).
+      order(score: :desc).
+      page(params[:page])#.per(2)
+  end # scored
   
   # curl -L -F cover=@path/to/img.ext http://localhost:3000/doujinshi/search_cover.json
   def search_cover

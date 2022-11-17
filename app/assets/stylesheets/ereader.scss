@@ -35,9 +35,16 @@ table.is-striped tbody tr:nth-child(even) { background-color: #ccc; }
   text-decoration: none;
 }
 
-.frm-search input[type="text"] {
-  height: 1.5rem;
-  border: 3px inset silver;
+.frm-search {
+  select {
+    padding: 0.2rem;
+    border: 3px outset silver;
+  }
+  
+  input[type="text"] {
+    height: 1.5rem;
+    border: 3px inset silver;
+  }
 }
 
 // set image size to prevent FOUC
@@ -121,6 +128,7 @@ a.fav.is-favorite {
 
 table.doujinshi {
   border-collapse: collapse;
+  border: 1px outset silver;
   
   td {
     vertical-align: top;
@@ -129,6 +137,27 @@ table.doujinshi {
   
   .name-orig, .name-orig-kakasi { font-size: smaller; }
   .name-orig-kakasi { font-family: sans-serif; }
+}
+
+.pagination-info { margin-bottom: 0.5rem; }
+nav.pagination {
+  margin: 0.75rem 0;
+  
+  a, .is-current {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid silver;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    font-family: monospace;
+  }
+  .is-current { background-color: #aaa; }
+  
+  ul.pagination-list {
+    float: right;
+    margin: 0;
+    
+    li { display: inline-block; }
+  }
 }
 
 body[data-ctrl="doujinshi"][data-action="index"] {

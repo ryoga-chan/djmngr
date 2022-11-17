@@ -1,0 +1,35 @@
+.title.is-size-4
+  Score interval
+  
+  = form_with url: scored_doujinshi_path, method: :get,
+    html: {class: 'ml-4', style: "display: inline-block; vertical-align: middle;"} do |f|
+    .field.has-addons
+      - numbers = (1..10).to_a.reverse
+      .control.has-icons-left
+        .select= f.select :score_min, options_for_select(numbers, params[:score_min].to_i), {}, class: 'input is-rounded'
+        .icon.is-small.is-left
+          %i.mi.mi-small minimize
+      .control.has-icons-left
+        .select= f.select :score_max, options_for_select(numbers, params[:score_max].to_i), {}, class: 'input is-rounded'
+        .icon.is-small.is-left
+          %i.mi.mi-small maximize
+      .control
+        = f.button class: 'button is-light is-rounded is-outlined' do
+          %span.icon
+            %i.mi.mi-small search
+  
+  - show_key = session[:dj_index_detail] == 'thumbs' ? 'table' : 'thumbs'
+  .actions.field.is-grouped{style: "float: right;"}
+    .field.has-addons
+      %p.control{title: "show #{show_key}"}
+        = link_to(params.permit(:score_max, :score_min).merge(detail: show_key), class: 'button is-info is-small is-rounded') do
+          %span.icon-text
+            %span.icon.is-small
+              %i.mi.mi-small= session[:dj_index_detail] == 'thumbs' ? 'view_list' : 'image'
+            %span= "show #{show_key}"
+
+= page_entries_info @doujinshi
+
+= render partial: 'thumbs_table', locals: { doujinshi: @doujinshi.to_a }
+
+= paginate @doujinshi
