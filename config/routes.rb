@@ -31,6 +31,7 @@ Rails.application.routes.draw do
       post :search_cover
       get  :search_cover
       get  :scored
+      get  :random_pick
     end
     member do
       get  :read

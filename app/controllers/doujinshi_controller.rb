@@ -368,6 +368,20 @@ class DoujinshiController < ApplicationController
       }#tsv
     end
   end # search_cover
+  
+  def random_pick
+    return redirect_to_with_format(root_path) unless %w{ book faved scored }.include?(params[:type])
+    
+    rel = case params[:type]
+      when 'book'  ; Doujin
+      when 'faved' ; Doujin.where favorite: true
+      when 'scored'; Doujin.where("8 <= score AND score <= 10")
+    end
+
+    n  = rand(rel.count)
+    id = rel.order(:id).offset(n).limit(1).pluck :id
+    redirect_to_with_format(doujin_path id: id)
+  end # random_pick
 
 
   private # ____________________________________________________________________

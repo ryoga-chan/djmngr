@@ -15,9 +15,9 @@
   = link_to ext_lbl, ext_url, class: 'button'
 
 %h3 Random pick
-= link_to "!! Book", '#', class: 'button'
-= link_to "!! Fav", '#', class: 'button'
-= link_to "!! Top scored", '#', class: 'button'
+= link_to 'Book' , random_pick_doujinshi_path(type: :book  ), class: 'button'
+= link_to 'Faved', random_pick_doujinshi_path(type: :faved ), class: 'button'
+= link_to 'Best' , random_pick_doujinshi_path(type: :scored), class: 'button'
 
 %h3
   Application counters:
