@@ -2,93 +2,113 @@
   .has-text-centered= link_to 'view ereader compatible pages', {format: :ereader},
     style: "display: inline-block; margin: 1rem 2rem 10rem 2rem; padding: 1rem; background-color: white; color: black; border: 2px outset silver; border-radius: 1rem;"
 
+.columns
+  .column.has-text-centered
+    %span.tag application counters
+    
+    .tags.mt-3
+      .tags.has-addons.mr-4.mb-0
+        %span.tag.is-info
+          %span.icon-text
+            %span.icon
+              %i.mi book
+            %span= number_with_delimiter @stats[:dj], delimiter: "'"
+        %span.tag.is-link.is-light= link_to 'doujinshi', doujinshi_path
+      
+      .tags.has-addons.mr-4.mb-0
+        %span.tag.is-info
+          %span.icon-text
+            %span.icon
+              %i.mi auto_awesome
+            %span= number_with_delimiter @stats[:dj_fav], delimiter: "'"
+        %span.tag= link_to 'faved', favorites_doujinshi_path
+      
+    .tags
+      - @stats[:dj_cat].each do |cat, n|
+        .tags.has-addons.mr-2.mb-0
+          %span.tag.is-info= number_with_delimiter n, delimiter: "'"
+          %span.tag= link_to cat.pluralize, doujinshi_path(tab: cat)
 
+    .tags
+      .tags.has-addons.mr-4.mb-0
+        %span.tag.is-info
+          %span.icon-text
+            %span.icon
+              %i.mi swap_horiz
+            %span= number_with_delimiter @stats[:todo], delimiter: "'"
+        %span.tag.is-link.is-light= link_to 'process', process_index_path
+      
+      .tags.has-addons.mr-4.mb-0
+        %span.tag.is-info
+          %span.icon-text
+            %span.icon
+              %i.mi settings
+            %span= @stats[:wip]
+        %span.tag= link_to 'wip', process_index_path
 
-%ul
-  %li TODO: top scored graph
-  %li= link_to "TODO: view random book", '#', class: 'button is-info is-rounded'
-  %li= link_to "TODO: view random fav", '#', class: 'button is-info is-rounded'
-  %li= link_to "TODO: view random top scored", '#', class: 'button is-info is-rounded'
+      .tags.has-addons.mr-4.mb-0
+        %span.tag.is-info
+          %span.icon-text
+            %span.icon
+              %i.mi library_books
+            %span= @stats[:epub]
+        %span.tag= link_to 'epub', epub_doujinshi_path
 
-%hr
+    .tags
+      .tags.has-addons.mr-4.mb-0
+        %span.tag.is-info
+          %span.icon-text
+            %span.icon
+              %i.mi folder_shared
+            %span= number_with_delimiter @stats[:md_tot], delimiter: "'"
+        %span.tag.is-link.is-light metadata
+      
+    .tags
+      .tags.has-addons.mr-2.mb-0
+        %span.tag.is-info
+          %span.icon-text
+            %span.icon
+              %i.mi supervisor_account
+            %span= number_with_delimiter @stats[:mda], delimiter: "'"
+        %span.tag= link_to 'authors', authors_path
+      .tags.has-addons.mr-2.mb-0
+        %span.tag.is-info
+          %span.icon-text
+            %span.icon
+              %i.mi supervised_user_circle
+            %span= number_with_delimiter @stats[:mdc], delimiter: "'"
+        %span.tag= link_to 'circles', circles_path
+      .tags.has-addons.mr-2.mb-0
+        %span.tag.is-info
+          %span.icon-text
+            %span.icon
+              %i.mi local_offer
+            %span= number_with_delimiter @stats[:mdt], delimiter: "'"
+        %span.tag= link_to 'themes', themes_path
 
-.tags
-  .tags.has-addons.mr-4.mb-0
-    %span.tag.is-info
-      %span.icon-text
-        %span.icon
-          %i.mi book
-        %span= number_with_delimiter @stats[:dj], delimiter: "'"
-    %span.tag.is-link.is-light= link_to 'doujinshi', doujinshi_path
+  .column.is-2.has-text-centered{style: "border: 1px solid grey; border-width: 0 1px;"}
+    %span.tag random pick
+    
+    %ul.mt-3
+      %li= link_to "book", '#', class: 'button is-info is-rounded'
+      %li= link_to "fav", '#', class: 'button is-info is-rounded'
+      %li= link_to "top scored", '#', class: 'button is-info is-rounded'
   
-  .tags.has-addons.mr-4.mb-0
-    %span.tag.is-info
-      %span.icon-text
-        %span.icon
-          %i.mi auto_awesome
-        %span= number_with_delimiter @stats[:dj_fav], delimiter: "'"
-    %span.tag= link_to 'faved', favorites_doujinshi_path
-  
-.tags
-  - @stats[:dj_cat].each do |cat, n|
-    .tags.has-addons.mr-2.mb-0
-      %span.tag.is-info= number_with_delimiter n, delimiter: "'"
-      %span.tag= link_to cat.pluralize, doujinshi_path(tab: cat)
+  .column.is-5.has-text-centered
+    %span.tag
+      scoring distribution over
+      = number_with_delimiter @stats[:dj], delimiter: "'"
+      doujinshi
+    
+    .columns.mt-3
+      .column.is-5
+        .pie-chart{style: "width: 12rem; height: 12rem; border-radius: 50%; margin: auto; background: conic-gradient(#{@pie_slices_css.join ', '})"}
 
-.tags
-  .tags.has-addons.mr-4.mb-0
-    %span.tag.is-info
-      %span.icon-text
-        %span.icon
-          %i.mi swap_horiz
-        %span= number_with_delimiter @stats[:todo], delimiter: "'"
-    %span.tag.is-link.is-light= link_to 'process', process_index_path
-  
-  .tags.has-addons.mr-4.mb-0
-    %span.tag.is-info
-      %span.icon-text
-        %span.icon
-          %i.mi settings
-        %span= @stats[:wip]
-    %span.tag= link_to 'wip', process_index_path
-
-  .tags.has-addons.mr-4.mb-0
-    %span.tag.is-info
-      %span.icon-text
-        %span.icon
-          %i.mi library_books
-        %span= @stats[:epub]
-    %span.tag= link_to 'epub', epub_doujinshi_path
-
-
-.tags
-  .tags.has-addons.mr-4.mb-0
-    %span.tag.is-info
-      %span.icon-text
-        %span.icon
-          %i.mi folder_shared
-        %span= number_with_delimiter @stats[:md_tot], delimiter: "'"
-    %span.tag.is-link.is-light metadata
-  
-.tags
-  .tags.has-addons.mr-2.mb-0
-    %span.tag.is-info
-      %span.icon-text
-        %span.icon
-          %i.mi supervisor_account
-        %span= number_with_delimiter @stats[:mda], delimiter: "'"
-    %span.tag= link_to 'authors', authors_path
-  .tags.has-addons.mr-2.mb-0
-    %span.tag.is-info
-      %span.icon-text
-        %span.icon
-          %i.mi supervised_user_circle
-        %span= number_with_delimiter @stats[:mdc], delimiter: "'"
-    %span.tag= link_to 'circles', circles_path
-  .tags.has-addons.mr-2.mb-0
-    %span.tag.is-info
-      %span.icon-text
-        %span.icon
-          %i.mi local_offer
-        %span= number_with_delimiter @stats[:mdt], delimiter: "'"
-    %span.tag= link_to 'themes', themes_path
+      .column.is-family-monospace
+        .pie-legend.tags
+          - @scores.each_with_index do |pair, i|
+            - score, data = pair
+            %span.tags.has-addons.mr-2.mb-0{title: "#{data[:n]} doujinshi"}
+              %span.tag.has-text-black{style: "background-color: ##{HomeController::PALETTE[i]}"}= link_to score,
+                scored_doujinshi_path(score_min: score, score_max: score)
+              %span.tag= '%.2f%%' % (data[:perc] * 100).round(2)

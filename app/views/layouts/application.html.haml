@@ -63,16 +63,8 @@
               = link_to epub_doujinshi_path, class: 'navbar-item', style: 'display: inline' do
                 %span.icon-text
                   %span.icon.mr-2
-                    %i.mi.mi-small construction
+                    %i.mi.mi-small library_books
                   %span EPUBs
-              - ext_lbl, ext_url = Setting[:external_link].to_s.split('|')
-              - if ext_lbl.present? && ext_lbl.present?
-                %hr.navbar-divider
-                = link_to ext_url, class: 'navbar-item', style: 'display: inline', target: :_blank do
-                  %span.icon-text
-                    %span.icon.mr-2
-                      %i.mi.mi-small launch
-                    %span= ext_lbl
           
           %span.navbar-item
             = form_with url: search_doujinshi_path, method: :get,
@@ -129,12 +121,27 @@
                     %i.mi.mi-small local_offer
                   %span Themes
           
-          %span.navbar-item{class: "#{params[:controller]}/#{params[:action]}" != 'home/settings' ? nil : 'is-current'}
-            = link_to home_settings_path do
+          %span.navbar-item.has-dropdown{class: ("#{params[:controller]}/#{params[:action]}" == 'home/settings' ? 'is-current' : nil),
+            onclick: "jQuery(this).toggleClass('is-active')"}
+            %a.navbar-link
               %span.icon-text
-                %span.icon
-                  %i.mi settings
-                %span Setup
+                %span.icon.mr-2
+                  %i.mi construction
+                %span Tools
+            .navbar-dropdown
+              = link_to home_settings_path, class: 'navbar-item', style: 'display: inline' do
+                %span.icon-text
+                  %span.icon.mr-2
+                    %i.mi settings
+                  %span Settings
+              - ext_lbl, ext_url = Setting[:external_link].to_s.split('|')
+              - if ext_lbl.present? && ext_lbl.present?
+                %hr.navbar-divider
+                = link_to ext_url, class: 'navbar-item', style: 'display: inline', target: :_blank do
+                  %span.icon-text
+                    %span.icon.mr-2
+                      %i.mi.mi-small launch
+                    %span= ext_lbl
           
         .navbar-end
           .navbar-item
