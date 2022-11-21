@@ -160,6 +160,25 @@ nav.pagination {
   }
 }
 
+body[data-ctrl="home"][data-action="index"] {
+  table.scoring-distro {
+    tr.bars {
+      td { vertical-align: bottom; }
+      
+      .bar {
+        display: inline-block;
+        border: 1px solid grey;
+        width: 2.5rem;
+      }
+    }//tr.bars
+    
+    tr.percs, tr.scores {
+      td { text-align: center; }
+      td:first-child { text-align: right; }
+    }
+  }//table.scoring-distro
+}
+
 body[data-ctrl="doujinshi"][data-action="index"] {
   li { margin-bottom: 1rem; }
 
