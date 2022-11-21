@@ -89,10 +89,9 @@
   .column.is-2.has-text-centered{style: "border: 1px solid grey; border-width: 0 1px;"}
     %span.tag random pick
     
-    %ul.mt-3
-      %li= link_to "book", '#', class: 'button is-info is-rounded'
-      %li= link_to "fav", '#', class: 'button is-info is-rounded'
-      %li= link_to "top scored", '#', class: 'button is-info is-rounded'
+    .pick= link_to :book , random_pick_doujinshi_path(type: :book  ), class: 'button is-info is-rounded mt-3'
+    .pick= link_to :faved, random_pick_doujinshi_path(type: :faved ), class: 'button is-info is-rounded mt-3'
+    .pick= link_to :best , random_pick_doujinshi_path(type: :scored), class: 'button is-info is-rounded mt-3'
   
   .column.is-5.has-text-centered
     %span.tag
