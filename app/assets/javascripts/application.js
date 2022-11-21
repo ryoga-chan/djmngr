@@ -14,6 +14,9 @@ $.myapp = {
   }// show_loading
 }//$.myapp
 
-$('#appNavbar a[href]').click($.myapp.show_loading);
+$('#appNavbar a[href]').click(function (ev) {
+  if (!ev.ctrlKey && !ev.altKey)
+    $.myapp.show_loading();
+});
 // ------------------------------------------------------------------------
 }); })(jQuery)
