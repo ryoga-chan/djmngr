@@ -18,5 +18,6 @@ class CreateSettings < ActiveRecord::Migration[7.0]
     Setting.create key: 'file_manager'     , value: 'thunar'   , notes: 'application for browsing files (file manager)'
     Setting.create key: 'scraper_useragent',                     notes: 'user agent used for doujinshi.org scraping',
       value: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36'
+    Setting.create key: 'external_link'    , value: 'DJ.org|https://www.doujinshi.org', notes: 'additional menu item in the form "text|url"'
   end
 end

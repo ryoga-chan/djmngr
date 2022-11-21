@@ -12,6 +12,9 @@
 = link_to 'Favorites' , favorites_doujinshi_path, class: 'button'
 = link_to 'EPUB files', epub_doujinshi_path, class: 'button'
 = link_to 'Scored'    , scored_doujinshi_path, class: 'button'
+- ext_lbl, ext_url = Setting[:external_link].to_s.split('|')
+- if ext_lbl.present? && ext_lbl.present?
+  = link_to ext_lbl, ext_url, class: 'button'
 
 %h3 Random pick
 = link_to "!! Book", '#', class: 'button'
