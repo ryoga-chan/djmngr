@@ -1,10 +1,8 @@
-%h3
-  Search in collection
-  .actions{style: "float: right"}
-    = link_to 'PC version', {format: :html}, class: :button
+.actions{style: "float: right"}
+  = link_to 'PC version', {format: :html}, class: :button
 
 = form_with url: search_doujinshi_path, method: :get, class: 'frm-search' do |f|
-  = f.text_field :term, placeholder: :search
+  = f.text_field :term, placeholder: :search, size: 25
   = f.submit 'Search', class: 'button'
 
 %h3 Browse collection
@@ -21,19 +19,19 @@
 = link_to "!! Fav", '#', class: 'button'
 = link_to "!! Top scored", '#', class: 'button'
 
-%h3 Statistics
-= @stats[:dj]
-Doujinshi /
-= @stats[:dj_fav]
-Faved
+%h3
+  Application counters:
+  = number_with_delimiter @stats[:dj], delimiter: "'"
+  Doujinshi
+
+
+= @stats[:dj_cat].map{|cat, n| "#{number_with_delimiter n, delimiter: "'"} #{cat.pluralize}" }.join ', '
 
 %hr
 
-= @stats[:dj_cat].map{|cat, n| "#{n} #{cat.pluralize}" }.join ', '
-
-%hr
-
-= @stats[:todo]
+= number_with_delimiter @stats[:dj_fav], delimiter: "'"
+Faved,
+= number_with_delimiter @stats[:todo], delimiter: "'"
 To process,
 = @stats[:wip]
 WIP,
@@ -42,11 +40,30 @@ Epub generated
 
 %hr
 
-= @stats[:md_tot]
-Metadata:
-= @stats[:mda]
+= number_with_delimiter @stats[:md_tot], delimiter: "'"
+Metadata /
+= number_with_delimiter @stats[:mda], delimiter: "'"
 Authors,
-= @stats[:mdc]
+= number_with_delimiter @stats[:mdc], delimiter: "'"
 Circles,
-= @stats[:mdt]
+= number_with_delimiter @stats[:mdt], delimiter: "'"
 Themes
+
+%h3 Scoring distribution
+
+%table.scoring-distro
+  %tr.bars
+    %td
+    - @scores.each_with_index do |pair, i|
+      - score, data = pair
+      - bar_size = (6 * data[:perc]).round 2
+      %td
+        .bar{style: "background-color: ##{HomeController::PALETTE[i]}; height: #{bar_size}rem"}
+  %tr.percs
+    %td %
+    - @scores.each do |score, data|
+      %td= '%.1f' % (data[:perc] * 100).round(2)
+  %tr.scores
+    %td score
+    - @scores.each do |score, data|
+      %td= score

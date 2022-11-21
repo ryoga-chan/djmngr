@@ -165,7 +165,9 @@ class DoujinshiController < ApplicationController
   end # show
   
   def score
-    flash[:alert] = "unable to update the score" unless @doujin.update(params.permit(:score))
+    score = params[:score].to_i
+    score = nil unless (1..10).include?(score)
+    flash[:alert] = "unable to update the score" unless @doujin.update(score: score)
     redirect_to_with_format doujin_path(@doujin, params.permit(%w{ from_author from_circle }).to_h)
   end # score
   
