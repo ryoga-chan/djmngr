@@ -24,13 +24,6 @@
 
       #appNavbar.navbar-menu
         .navbar-start
-          %span.navbar-item{class: "#{params[:controller]}/#{params[:action]}" != 'home/settings' ? nil : 'is-current'}
-            = link_to home_settings_path do
-              %span.icon-text
-                %span.icon
-                  %i.mi settings
-                %span Setup
-          
           %span.navbar-item{class: params[:controller] != 'process' ? nil : 'is-current'}
             = link_to process_index_path do
               %span.icon-text
@@ -72,6 +65,14 @@
                   %span.icon.mr-2
                     %i.mi.mi-small construction
                   %span EPUBs
+              - ext_lbl, ext_url = Setting[:external_link].to_s.split('|')
+              - if ext_lbl.present? && ext_lbl.present?
+                %hr.navbar-divider
+                = link_to ext_url, class: 'navbar-item', style: 'display: inline', target: :_blank do
+                  %span.icon-text
+                    %span.icon.mr-2
+                      %i.mi.mi-small launch
+                    %span= ext_lbl
           
           %span.navbar-item
             = form_with url: search_doujinshi_path, method: :get,
@@ -127,6 +128,13 @@
                   %span.icon.mr-2
                     %i.mi.mi-small local_offer
                   %span Themes
+          
+          %span.navbar-item{class: "#{params[:controller]}/#{params[:action]}" != 'home/settings' ? nil : 'is-current'}
+            = link_to home_settings_path do
+              %span.icon-text
+                %span.icon
+                  %i.mi settings
+                %span Setup
           
         .navbar-end
           .navbar-item

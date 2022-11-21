@@ -19,7 +19,7 @@
         %span.icon
           %i.mi book
         %span= number_with_delimiter @stats[:dj], delimiter: "'"
-    %span.tag.is-link doujinshi
+    %span.tag.is-link.is-light= link_to 'doujinshi', doujinshi_path
   
   .tags.has-addons.mr-4.mb-0
     %span.tag.is-info
@@ -42,7 +42,7 @@
         %span.icon
           %i.mi swap_horiz
         %span= number_with_delimiter @stats[:todo], delimiter: "'"
-    %span.tag.is-link to process
+    %span.tag.is-link.is-light= link_to 'process', process_index_path
   
   .tags.has-addons.mr-4.mb-0
     %span.tag.is-info
@@ -68,7 +68,7 @@
         %span.icon
           %i.mi folder_shared
         %span= number_with_delimiter @stats[:md_tot], delimiter: "'"
-    %span.tag.is-link metadata
+    %span.tag.is-link.is-light metadata
   
 .tags
   .tags.has-addons.mr-2.mb-0

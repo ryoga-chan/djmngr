@@ -6,6 +6,7 @@
     'comics_viewer' => 'menu_book',
     'file_manager'  => 'folder',
     'scraper_useragent' => 'badge',
+    'external_link' => 'launch',
   }.each do |key, icon|
   - s = Setting.find_by key: key
   = form_with url: home_settings_path do |f|
