@@ -17,8 +17,18 @@ class Setting < ApplicationRecord
     if key == 'reading_direction'
       errors.add :base, "#{key}: unsupported direction" unless %w{ r2l l2r }.include?(value)
     end
+    
+    if key == 'ext_cmd_env'
+      ris = JSON.parse(value) rescue nil
+      errors.add :base, "#{key}: invalid JSON" unless ris.is_a?(Hash)
+    end
+    
+    if key == 'external_link'
+      errors.add :base, %Q[#{key}: must be in the format "label|url"] unless value =~ /.+\|.+/
+    end
   end # validate_record
   
   def self.get(k)= find_by(key: k)
   def self.[] (k)= get(k)&.value
+  def self.get_json(k)= JSON.parse(get(k)&.value) rescue nil
 end

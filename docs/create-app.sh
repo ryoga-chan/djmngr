@@ -30,8 +30,14 @@ bin/rails g model deleted_doujin \
 
 bin/rails g model processable_doujin name:string name_kakasi:string size:integer
 
+bin/rails g scaffold shelf name:string
+bin/rails g model doujin_shelf doujin:references shelf:references position:integer
+
+# https://github.com/SortableJS/Sortable
+# https://github.com/SortableJS/jquery-sortablejs
+wget -O app/assets/javascripts/sortable.js        https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.js
+wget -O app/assets/javascripts/jquery-sortable.js https://cdn.jsdelivr.net/npm/jquery-sortablejs@latest/jquery-sortable.js
+
 bin/rails db:migrate
-
 bin/rails db:schema:dump
-
-bin/rails db:erd # create DB graph (see lib/tasks/erd.rake)
+bin/rails db:erd          # create DB graph (see lib/tasks/erd.rake)
