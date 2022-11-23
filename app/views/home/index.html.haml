@@ -87,29 +87,45 @@
         %span.tag= link_to 'themes', themes_path
 
   .column.is-2.has-text-centered{style: "border: 1px solid grey; border-width: 0 1px;"}
-    %span.tag(style="margin-bottom: 2rem;") random pick
+    %span.tag(style="margin-bottom: 2rem;") quick links
     
     .pick
       = link_to random_pick_doujinshi_path(type: :book  ), class: 'button is-info is-rounded mt-3' do
         %span.icon-text
           %span.icon
-            %i.mi book
+            %i.mi casino
           %span book
+          %span.icon
+            %i.mi book
 
     .pick
       = link_to random_pick_doujinshi_path(type: :faved ), class: 'button is-info is-rounded mt-3' do
         %span.icon-text
           %span.icon
-            %i.mi auto_awesome
+            %i.mi casino
           %span faved
+          %span.icon
+            %i.mi auto_awesome
 
     .pick
       = link_to random_pick_doujinshi_path(type: :scored), class: 'button is-info is-rounded mt-3' do
         %span.icon-text
           %span.icon
-            %i.mi star_half
+            %i.mi casino
           %span best
-      
+          %span.icon
+            %i.mi star_half
+
+    .pick
+      = link_to shelf_path(Shelf.order(created_at: :desc).first, run: :comics_viewer, format: :json),
+        onclick: %Q|var bt=jQuery(this); bt.addClass('is-loading'); setTimeout(function(){ bt.removeClass('is-loading') }, 5000)|,
+        remote: true, title: 'start slideshow', class: 'button is-info is-rounded mt-3' do
+        %span.icon-text
+          %span.icon
+            %i.mi new_releases
+          %span shelf
+          %span.icon
+            %i.mi shelves
   
   .column.is-5.has-text-centered
     %span.tag(style="margin-bottom: 2rem;")
