@@ -14,7 +14,7 @@
   %body{data: {ctrl: params[:controller], action: params[:action], id: params[:id]}}
     %nav.navbar{role: "navigation"}
       .navbar-brand
-        %a.navbar-item(href='/' title='vai alla home page')= image_tag 'logo-small.png'
+        %a.navbar-item(href='/' title='home page')= image_tag 'logo.webp', style: "border-radius: 0.5rem"
         %a.navbar-burger{:role => "button", :'data-target' => "appNavbar",
           :onclick => %Q|jQuery(this).add('#appNavbar').toggleClass('is-active') | }
           %span
