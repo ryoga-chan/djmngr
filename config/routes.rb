@@ -41,6 +41,7 @@ Rails.application.routes.draw do
       post :score
       post :rehash
       post :reprocess
+      get  :shelf
     end
   end
   
@@ -56,4 +57,6 @@ Rails.application.routes.draw do
   resources :authors, concerns: :metadata_crud
   resources :circles, concerns: :metadata_crud
   resources :themes , concerns: :metadata_crud
+
+  resources :shelves, except: %i[ new create ]
 end

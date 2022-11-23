@@ -10,7 +10,11 @@
 #   inflect.uncountable %w( fish sheep )
 # end
 ActiveSupport::Inflector.inflections(:en) do |inflect|
+  # one word terms
   inflect.irregular 'doujin', 'doujinshi'
+  
+  # two words terms
+  inflect.irregular 'doujin_shelf', 'doujinshi_shelves'
 end
 
 # These inflection rules are supported but not enabled by default:

@@ -5,7 +5,7 @@
     - if d.score.to_i > 0
       %progress.progress.is-warning{value: d.score.to_i, title: "#{d.score.to_i}⭐", max: 10}
   %td
-    = link_to(doujin_path(d), target: :_blank, title: title) do
+    = link_to(doujin_path(d), title: title) do
       - if d.cover_similarity.present?
         %span.tag.is-warning.is-rounded= "#{'%2d' % d.cover_similarity}%"
       = descr

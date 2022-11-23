@@ -4,6 +4,7 @@ class Doujin < ApplicationRecord
     'English'    => 'eng',
     'Chinese'    => 'chi',
     'Italian'    => 'ita',
+    'Korean'     => 'kor',
     'French'     => 'fra',
     'Spanish'    => 'spa',
     'Deutsch'    => 'deu',
@@ -20,6 +21,9 @@ class Doujin < ApplicationRecord
     d.errors.add :base, "circle already associated [#{c.id}: #{c.name}]"
     throw :abort
   }
+  
+  has_many :doujinshi_shelves, dependent: :delete_all
+  has_many :shelves, through: :doujinshi_shelves
   
   has_paper_trail only: %i[ name name_romaji name_orig ], on: %i[ update ]
   
