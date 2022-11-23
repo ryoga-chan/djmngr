@@ -6,7 +6,12 @@
   %thead
     %tr
       %th.w1 Created at
-      %th.w1 Dj
+      %th.w1
+        %span.icon.is-small(title="n. doujinshi")
+          %i.mi.mi-small book
+      %th.w1
+        %span.icon.is-small(title="total n. pages")
+          %i.mi.mi-small auto_stories
       %th Name
       %th.w1.has-text-centered Actions
   %tbody
@@ -14,6 +19,7 @@
       %tr
         %td.nowrap= l r.created_at
         %td= r.doujinshi_shelves.count
+        %td= r.num_images
         %td= link_to r.name, edit_shelf_path(r)
         %td
           .field.has-addons
