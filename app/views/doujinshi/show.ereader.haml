@@ -1,4 +1,7 @@
-%h3 Doujin details
+%h3
+  Doujin details
+  .actions{style: "float: right"}
+    = link_to 'home', root_path, class: :button
 
 = render partial: 'fav_js_links'
 
@@ -23,10 +26,6 @@
                 &nbsp;&nbsp;
                 %span.clear-score{data: {score: 0}}
                   &times;
-              - if @doujin.score.to_i > 0 && @doujin.scored_at
-                %small.scored_at
-                  scored at
-                  = l @doujin.scored_at
             :javascript
               jQuery(function () {
                 jQuery('.scoring span').click(function () {
@@ -40,13 +39,19 @@
         = link_to '&star; Fave'.html_safe,
           fav_toggle_doujinshi_path(type: :Doujin, id: @doujin.id),
           class: "button fav #{'is-favorite' if @doujin.favorite?}"
-        &nbsp;&nbsp;&nbsp;
-        = link_to '&empty;Del' .html_safe, delete_doujin_path(@doujin, params.permit(:from_author, :from_circle).to_h), class: :button
+        - s = Shelf.find_by(name: 'ereader')
+        - if s.try(:doujinshi_shelves).try(:find_by, doujin_id: @doujin.id)
+          = link_to '&minus;Shelf'.html_safe,
+            shelf_doujin_path(@doujin, rm_shelf_id: s.id), class: :button
+        - else
+          = link_to '&plus;Shelf'.html_safe,
+            shelf_doujin_path(@doujin, shelf_id: s.try(:id).to_i, shelf_name: 'ereader'), class: :button
 
       .actions
         = link_to '&nabla;EPUB'.html_safe, epub_doujinshi_path(convert: @doujin.id), class: :button
-        = link_to '&nabla;CBZ' .html_safe, doujin_path(@doujin, format: :cbz ), class: :button
-        = link_to '&nabla;ZIP' .html_safe, doujin_path(@doujin, format: :zip ), class: :button
+        = link_to '&nabla;CBZ' .html_safe, doujin_path(@doujin, format: :cbz), class: :button
+        &nbsp;&nbsp;&nbsp;
+        = link_to '&empty;Del' .html_safe, delete_doujin_path(@doujin, params.permit(:from_author, :from_circle).to_h), class: :button
         
   %tr
     %td.samples(colspan="2")

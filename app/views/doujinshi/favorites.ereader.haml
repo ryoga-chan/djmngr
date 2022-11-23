@@ -23,7 +23,9 @@
 
 = render partial: 'fav_js_links'
 
-- if params[:tab] == 'author'
+- if params[:tab] == 'doujin'
+  = render partial: 'thumbs_table', locals: { doujinshi: @doujinshi }
+- elsif params[:tab] == 'author'
   %table.doujinshi.is-striped.block-links.w100
     %thead
       %tr
@@ -53,5 +55,5 @@
             fav_toggle_doujinshi_path(type: :Circle, id: r.id),
             class: "fav is-favorite"
 
-- else # params[:tab] == 'doujin'
-  = render partial: 'thumbs_table', locals: { doujinshi: @doujinshi }
+- else
+  unknown tab to render

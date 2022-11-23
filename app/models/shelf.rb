@@ -6,6 +6,8 @@ class Shelf < ApplicationRecord
   
   after_save :update_num_images
   
+  validates_length_of :name, minimum: 3
+  
   def update_num_images
     update_columns num_images: doujinshi.pluck(:num_images).sum
   end # update_num_images

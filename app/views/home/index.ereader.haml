@@ -6,48 +6,20 @@
   = f.submit 'Search', class: 'button'
 
 %h3 Browse collection
-= link_to 'Catalog'   , doujinshi_path, class: 'button'
-= link_to 'Favorites' , favorites_doujinshi_path, class: 'button'
-= link_to 'EPUB files', epub_doujinshi_path, class: 'button'
-= link_to 'Scored'    , scored_doujinshi_path, class: 'button'
+= link_to 'Catalog', doujinshi_path          , class: 'button'
+= link_to 'Faves'  , favorites_doujinshi_path, class: 'button'
+= link_to 'EPUBs'  , epub_doujinshi_path     , class: 'button'
+= link_to 'Scored' , scored_doujinshi_path   , class: 'button'
+= link_to 'Shelves', shelves_path, class: 'button'
 - ext_lbl, ext_url = Setting[:external_link].to_s.split('|')
 - if ext_lbl.present? && ext_lbl.present?
   = link_to ext_lbl, ext_url, class: 'button'
 
-%h3 Random pick
+%h3 Single pick
 = link_to 'Book' , random_pick_doujinshi_path(type: :book  ), class: 'button'
 = link_to 'Faved', random_pick_doujinshi_path(type: :faved ), class: 'button'
-= link_to 'Best' , random_pick_doujinshi_path(type: :scored), class: 'button'
-
-%h3
-  Application counters:
-  = number_with_delimiter @stats[:dj], delimiter: "'"
-  Doujinshi
-
-
-= @stats[:dj_cat].map{|cat, n| "#{number_with_delimiter n, delimiter: "'"} #{cat.pluralize}" }.join ', '
-
-%hr
-
-= number_with_delimiter @stats[:dj_fav], delimiter: "'"
-Faved,
-= number_with_delimiter @stats[:todo], delimiter: "'"
-To process,
-= @stats[:wip]
-WIP,
-= @stats[:epub]
-Epub generated
-
-%hr
-
-= number_with_delimiter @stats[:md_tot], delimiter: "'"
-Metadata /
-= number_with_delimiter @stats[:mda], delimiter: "'"
-Authors,
-= number_with_delimiter @stats[:mdc], delimiter: "'"
-Circles,
-= number_with_delimiter @stats[:mdt], delimiter: "'"
-Themes
+= link_to 'Best Score' , random_pick_doujinshi_path(type: :scored), class: 'button'
+= link_to 'Latest Shelf', shelf_path(Shelf.order(created_at: :desc).first), class: 'button'
 
 %h3 Scoring distribution
 
@@ -67,3 +39,38 @@ Themes
     %td score
     - @scores.each do |score, data|
       %td= score
+
+%h3
+  Application counters:
+  = number_with_delimiter @stats[:dj], delimiter: "'"
+  Doujinshi
+
+= @stats[:dj_cat].map{|cat, n| "#{number_with_delimiter n, delimiter: "'"} #{cat.pluralize}" }.join ' | '
+
+%hr
+
+= number_with_delimiter @stats[:dj_fav], delimiter: "'"
+Faved
+\|
+= number_with_delimiter @stats[:todo], delimiter: "'"
+To process
+\|
+= @stats[:wip]
+WIP
+\|
+= @stats[:epub]
+EPUBs generated
+
+%hr
+
+= number_with_delimiter @stats[:md_tot], delimiter: "'"
+Metadata /
+= number_with_delimiter @stats[:mda], delimiter: "'"
+Authors
+\|
+= number_with_delimiter @stats[:mdc], delimiter: "'"
+Circles
+\|
+= number_with_delimiter @stats[:mdt], delimiter: "'"
+Themes
+
