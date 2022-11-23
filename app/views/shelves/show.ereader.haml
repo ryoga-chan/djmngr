@@ -1,0 +1,15 @@
+%h3
+  Shelf contents
+  .actions{style: "float: right"}
+    = link_to 'home', root_path, class: :button
+
+= @record.name
+&middot;
+- cur_params = params.permit(%w{ format }).to_h
+- show_key = session[:dj_index_detail] == 'thumbs' ? 'table' : 'thumbs'
+%small= link_to "show #{show_key}", cur_params.merge(detail: show_key)
+
+%hr
+
+= render partial: 'doujinshi/fav_js_links'
+= render partial: 'doujinshi/thumbs_table', locals: { doujinshi: @doujinshi }

@@ -10,9 +10,9 @@
     .thumbs
       - if doujinshi.is_a?(ActiveRecord::Relation)
         - doujinshi.find_each_in_order(batch_size: DoujinshiController::BATCH_SIZE) do |d|
-          = render partial: 'thumbs_row', locals: {d: d, short_label: short_label}
+          = render partial: 'doujinshi/thumbs_row', locals: {d: d, short_label: short_label}
       - elsif doujinshi.is_a?(Array)
-        = render partial: 'thumbs_row',
+        = render partial: 'doujinshi/thumbs_row',
           collection: doujinshi, as: :d, locals: {short_label: short_label}
       - else
         unknown object to render
@@ -29,10 +29,10 @@
       %tbody
         - if doujinshi.is_a?(ActiveRecord::Relation)
           - doujinshi.find_each_in_order(batch_size: DoujinshiController::BATCH_SIZE) do |d|
-            = render partial: 'thumbs_table_row',
+            = render partial: 'doujinshi/thumbs_table_row',
               locals: {d: d, short_label: short_label, show_name_orig: show_name_orig}
         - elsif doujinshi.is_a?(Array)
-          = render partial: 'thumbs_table_row', collection: doujinshi, as: :d,
+          = render partial: 'doujinshi/thumbs_table_row', collection: doujinshi, as: :d,
             locals: {short_label: short_label, show_name_orig: show_name_orig}
         - else
           unknown object to render

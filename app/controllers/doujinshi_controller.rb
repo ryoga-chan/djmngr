@@ -5,7 +5,7 @@ class DoujinshiController < ApplicationController
   THUMBS_PER_ROW = 6
   BATCH_SIZE     = 15 * THUMBS_PER_ROW
   
-  before_action :set_index_detail, only: %i[ index favorites search scored search_cover ]
+  before_action :set_doujin_list_detail, only: %i[ index favorites search scored search_cover ]
   before_action :set_doujin,
     only: %i[ show edit score read read_pages image update rehash delete destroy reprocess shelf ]
 
@@ -394,7 +394,7 @@ class DoujinshiController < ApplicationController
       Shelf.find_by(id: params[:shelf_id].to_i).try :add_doujin, @doujin.id
     end
     
-    redirect_to doujin_path(@doujin)
+    redirect_to_with_format doujin_path(@doujin)
   end # shelf
 
 
@@ -407,11 +407,6 @@ class DoujinshiController < ApplicationController
       return redirect_to_with_format(doujinshi_path)
     end
   end # set_doujin
-  
-  def set_index_detail
-    session[:dj_index_detail] = params[:detail] if %w{ thumbs table }.include?(params[:detail])
-    session[:dj_index_detail] ||= 'table'
-  end # set_index_detail
   
   def redirect_to_with_format(url_or_options)
     return html_redirect_to(url_or_options) if request.format.ereader?
