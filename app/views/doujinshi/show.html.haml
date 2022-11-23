@@ -19,14 +19,12 @@
         %tr
           %th Author
           %td= @doujin.authors.map{|i| link_to(i.label_name_latin,
-            doujinshi_path(tab: :author, author_id: i.id),
-            target: :_blank) }.sort.join(', ').html_safe
+            doujinshi_path(tab: :author, author_id: i.id)) }.sort.join(', ').html_safe
       - if @doujin.circles.any?
         %tr
           %th Circle
           %td= @doujin.circles.map{|i| link_to(i.label_name_latin,
-            doujinshi_path(tab: :circle, circle_id: i.id),
-            target: :_blank) }.sort.join(', ').html_safe
+            doujinshi_path(tab: :circle, circle_id: i.id)) }.sort.join(', ').html_safe
       %tr
         %th Info
         %td
@@ -101,6 +99,29 @@
       %tr
         %th Orig.
         %td= @doujin.name_orig
+      
+      %tr
+        %th Shelf
+        %td.shelves
+          .columns
+            .column
+              .tags
+                - @doujin.shelves.order(created_at: :desc).each do |s|
+                  %span.tags.has-addons.mr-2.mb-0
+                    = link_to '', shelf_doujin_path(@doujin, rm_shelf_id: s.id), class: 'tag is-danger is-delete'
+                    %span.tag.is-info= link_to s.name, edit_shelf_path(s)
+            .column.is-3
+              = form_with url: shelf_doujin_path(@doujin), method: :get do |f|
+                - shelves = Shelf.where.not(id: @doujin.shelf_ids).order(created_at: :desc).pluck(:name, :id)
+                - shelves.unshift(['&mdash; add &mdash;'.html_safe, nil]).push(['[ NEW Shelf ]', 0])
+                = f.hidden_field :shelf_name
+                .field
+                  .control.has-icons-left
+                    .select.is-fullwidth(title="add this doujin to a shelf")
+                      = f.select :shelf_id, options_for_select(shelves)
+                    %span.icon.is-small.is-left
+                      %i.mi.mi-small shelves
+      
       - if @doujin.notes.present?
         %tr
           %th Notes

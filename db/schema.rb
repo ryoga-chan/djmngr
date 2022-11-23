@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_11_11_192327) do
+ActiveRecord::Schema[7.0].define(version: 2022_11_22_131240) do
   create_table "authors", force: :cascade do |t|
     t.string "name", null: false
     t.string "name_romaji"
@@ -133,6 +133,16 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_11_192327) do
     t.boolean "favorite", default: false
     t.datetime "faved_at"
     t.string "name_orig_kakasi", null: false
+    t.integer "cover_phash"
+  end
+
+  create_table "doujinshi_shelves", force: :cascade do |t|
+    t.integer "doujin_id", null: false
+    t.integer "shelf_id", null: false
+    t.integer "position"
+    t.datetime "created_at"
+    t.index ["doujin_id"], name: "index_doujinshi_shelves_on_doujin_id"
+    t.index ["shelf_id"], name: "index_doujinshi_shelves_on_shelf_id"
   end
 
   create_table "processable_doujinshi", force: :cascade do |t|
@@ -148,6 +158,11 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_11_192327) do
     t.string "notes"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "shelves", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at"
   end
 
   create_table "themes", force: :cascade do |t|
@@ -189,4 +204,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_11_192327) do
   add_foreign_key "circles_doujinshi", "doujinshi"
   add_foreign_key "circles_themes", "circles"
   add_foreign_key "circles_themes", "themes"
+  add_foreign_key "doujinshi_shelves", "doujinshi"
+  add_foreign_key "doujinshi_shelves", "shelves"
 end

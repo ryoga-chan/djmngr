@@ -1,0 +1,15 @@
+body[data-ctrl="shelves"][data-action="edit"],
+body[data-ctrl="shelves"][data-action="update"] {
+  .doujin {
+    display: inline-block;
+    border: 1px outset white;
+    border-radius: 0.5rem;
+    
+    figure {
+      width: 6rem;
+      margin: auto;
+    }
+  }
+  
+  .doujin.removed { opacity: 0.3; }
+}

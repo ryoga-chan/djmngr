@@ -4,9 +4,9 @@
 
 .columns
   .column.has-text-centered
-    %span.tag application counters
+    %span.tag(style="margin-bottom: 2rem;") application counters
     
-    .tags.mt-3
+    .tags
       .tags.has-addons.mr-4.mb-0
         %span.tag.is-info
           %span.icon-text
@@ -87,14 +87,32 @@
         %span.tag= link_to 'themes', themes_path
 
   .column.is-2.has-text-centered{style: "border: 1px solid grey; border-width: 0 1px;"}
-    %span.tag random pick
+    %span.tag(style="margin-bottom: 2rem;") random pick
     
-    .pick= link_to :book , random_pick_doujinshi_path(type: :book  ), class: 'button is-info is-rounded mt-3'
-    .pick= link_to :faved, random_pick_doujinshi_path(type: :faved ), class: 'button is-info is-rounded mt-3'
-    .pick= link_to :best , random_pick_doujinshi_path(type: :scored), class: 'button is-info is-rounded mt-3'
+    .pick
+      = link_to random_pick_doujinshi_path(type: :book  ), class: 'button is-info is-rounded mt-3' do
+        %span.icon-text
+          %span.icon
+            %i.mi book
+          %span book
+
+    .pick
+      = link_to random_pick_doujinshi_path(type: :faved ), class: 'button is-info is-rounded mt-3' do
+        %span.icon-text
+          %span.icon
+            %i.mi auto_awesome
+          %span faved
+
+    .pick
+      = link_to random_pick_doujinshi_path(type: :scored), class: 'button is-info is-rounded mt-3' do
+        %span.icon-text
+          %span.icon
+            %i.mi star_half
+          %span best
+      
   
   .column.is-5.has-text-centered
-    %span.tag
+    %span.tag(style="margin-bottom: 2rem;")
       scoring distribution over
       = number_with_delimiter @stats[:dj], delimiter: "'"
       doujinshi

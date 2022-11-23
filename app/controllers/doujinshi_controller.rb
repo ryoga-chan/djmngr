@@ -7,7 +7,7 @@ class DoujinshiController < ApplicationController
   
   before_action :set_index_detail, only: %i[ index favorites search scored search_cover ]
   before_action :set_doujin,
-    only: %i[ show edit score read read_pages image update rehash delete destroy reprocess ]
+    only: %i[ show edit score read read_pages image update rehash delete destroy reprocess shelf ]
 
   # browse doujinshi by author/circle/folder
   def index
@@ -153,10 +153,10 @@ class DoujinshiController < ApplicationController
       format.json {
         file_path = @doujin.file_path(full: true)
         if params[:run] == 'comics_viewer'
-          system %Q| #{Setting[:comics_viewer]} #{file_path.shellescape} & |
+          system Setting.get_json(:ext_cmd_env).to_h, %Q| #{Setting[:comics_viewer]} #{file_path.shellescape} & |
           return render json: {ris: :ok}
         elsif params[:run] == 'file_manager'
-          system %Q| #{Setting[:file_manager]} #{file_path.shellescape} & |
+          system Setting.get_json(:ext_cmd_env).to_h, %Q| #{Setting[:file_manager]} #{file_path.shellescape} & |
           return render json: {ris: :ok}
         end
         render json: ''
@@ -382,6 +382,26 @@ class DoujinshiController < ApplicationController
     id = rel.order(:id).offset(n).limit(1).pluck :id
     redirect_to_with_format(doujin_path id: id)
   end # random_pick
+  
+  # add/remove doujin from a shelf (creates a new shelf if requested)
+  def shelf
+    # remove from shelf
+    s = Shelf.find_by(id: params[:rm_shelf_id].to_i)
+    s.doujin_ids -= [@doujin.id] if s
+    
+    # create new shelf and add doujin to it
+    if params[:shelf_id].to_i == 0 && params[:shelf_name].present?
+      Shelf.transaction do
+        s = Shelf.create(name: params[:shelf_name].strip)
+        s.doujin_ids += [@doujin.id]
+      end
+    # add to existing shelf
+    elsif s = Shelf.find_by(id: params[:shelf_id].to_i)
+      s.doujin_ids += [@doujin.id]
+    end
+    
+    redirect_to doujin_path(@doujin)
+  end # shelf
 
 
   private # ____________________________________________________________________

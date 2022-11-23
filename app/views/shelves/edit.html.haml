@@ -1,0 +1,54 @@
+.title.is-size-4 Edit Shelf
+
+= render partial: 'record_errors', object: @record.errors.full_messages
+
+= form_with model: @record, scope: :record do |f|
+  .field.is-horizontal
+    .field-label.is-normal
+      %label.label Name
+    .field-body
+      .field
+        .control.is-expanded= f.text_field :name, class: :input
+  
+  .field.is-horizontal
+    .field-label.is-normal
+      %label.label Doujinshi
+    .field-body
+      .field.sortable
+        - @record.doujinshi_shelves.eager_load(:doujin).order(:position).each_with_index do |ds, i|
+          = f.fields_for :doujinshi_shelves, ds do |sf|
+            .doujin.has-text-centered.mr-3.mb-3.px-4.pt-2.pb-2{title: ds.doujin.file_dl_name(omit_ext: true) }
+              = sf.hidden_field :position, value: (ds.position || i), class: 'position'
+              = sf.hidden_field :_destroy, value: true, disabled: true, class: 'destroy'
+              
+              %figure.image.is2by3
+                = image_tag doujin_path(ds.doujin, format: :webp)
+              
+              .actions.mt-1
+                = link_to '🗑', '#', class: 'has-text-danger toggle-remove', title: 'toggle removal'
+                &nbsp;
+                %span.tag= "#{ds.doujin.num_images}p"
+                &nbsp;
+                = link_to '👁', doujin_path(ds.doujin), title: :details
+
+  .field.is-horizontal
+    .field-label.is-normal
+    .field-body
+      .field
+        .control= f.submit 'Save', class: 'button is-primary'
+
+.actions.mt-5
+  .columns
+    .column.is-half
+      .actions.field.is-grouped
+        .field.has-addons
+          %p.control= link_to 'Back', {action: :index}, class: 'button is-info is-rounded'
+    .column
+      .actions.field
+        .field.has-addons.is-justify-content-flex-end
+          %p.control
+            = link_to(@record, method: :delete, data: { confirm: 'Are you sure?' },
+              class: 'button is-danger is-rounded') do
+              %span.icon
+                %i.mi.mi-small delete
+              %span Delete

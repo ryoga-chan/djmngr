@@ -31,6 +31,33 @@ if ($('body').data('action') == 'show') {
     $('.scoring').hide().after(p_bar);
     $('#score').val( $(this).data('score') ).get(0).form.submit();
   });
+  
+  // add doujin to a shelf
+  $('#shelf_id').change(function (ev) {
+    var sel = $(this);
+    
+    if (sel.val() == '0') {
+      var name = (prompt('New shelf name:') || '').trim();
+      
+      // NOOP if empty
+      if (name.length == 0) {
+        sel.val('');
+        return;
+      }//if
+      
+      $('#shelf_name').val(name);
+    }//if
+    
+    // show spinner
+    $('td.shelves .columns').hide().after(p_bar);
+    
+    this.form.submit();
+  });
+  
+  // remove doujin from shelf: show spinner
+  $('td.shelves .columns a.is-delete').click(function () {
+    $('td.shelves .columns').hide().after(p_bar);
+  });
 }// action show
 // ------------------------------------------------------------------------
 }); })(jQuery)
