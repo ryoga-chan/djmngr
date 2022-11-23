@@ -44,6 +44,16 @@
       .actions.field.is-grouped
         .field.has-addons
           %p.control= link_to 'Back', {action: :index}, class: 'button is-info is-rounded'
+          %p.control
+            = link_to shelf_path(@record, run: :comics_viewer, format: :json),
+                onclick: %Q|var bt=jQuery(this); bt.addClass('is-loading'); setTimeout(function(){ bt.removeClass('is-loading') }, 5000)|,
+                title: 'start slideshow',
+                remote: true, class: 'button is-info is-rounded' do
+              %span.icon-text
+                %span.icon
+                  %i.mi slideshow
+                %span Play
+                
     .column
       .actions.field
         .field.has-addons.is-justify-content-flex-end
