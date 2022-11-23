@@ -14,7 +14,7 @@
     .field-label.is-normal
       %label.label Doujinshi
     .field-body
-      .field.sortable
+      .field.sortable.freezeframe
         - @record.doujinshi_shelves.eager_load(:doujin).order(:position).each_with_index do |ds, i|
           = f.fields_for :doujinshi_shelves, ds do |sf|
             .doujin.has-text-centered.mr-3.mb-3.px-4.pt-2.pb-2{title: ds.doujin.file_dl_name(omit_ext: true) }
@@ -22,7 +22,8 @@
               = sf.hidden_field :_destroy, value: true, disabled: true, class: 'destroy'
               
               %figure.image.is2by3
-                = image_tag doujin_path(ds.doujin, format: :webp)
+                -#= image_tag doujin_path(ds.doujin, format: :webp)
+                = image_tag "/thumbs/#{ds.doujin_id}.webp"
               
               .actions.mt-1
                 = link_to '🗑', '#', class: 'has-text-danger toggle-remove', title: 'toggle removal'
