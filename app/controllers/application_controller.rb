@@ -16,4 +16,14 @@ class ApplicationController < ActionController::Base
       </head><body>redirecting to <a href="#{url}">#{url}</a> ...</body></html>
     HTML
   end # html_redirect_to
+  
+  
+  private
+  
+  
+  # used with before_action to set detail level (thumbs or table)
+  def set_doujin_list_detail
+    session[:dj_index_detail] = params[:detail] if %w{ thumbs table }.include?(params[:detail])
+    session[:dj_index_detail] ||= 'table'
+  end # set_doujin_list_detail
 end

@@ -13,7 +13,7 @@
  */
 .w1   { width: 1% }
 .w100 { width: 100% }
-
+.nowrap { white-space: nowrap; }
 .hidden { display: none; }
 
 .notification {
@@ -30,9 +30,11 @@ table.is-striped tbody tr:nth-child(even) { background-color: #ccc; }
 .button {
   padding: 0.4rem 1rem;
   border-radius: 1rem;
-  border: 1px outset silver;
+  border: 2px outset silver;
   background-color: #ddd;
   text-decoration: none;
+  display: inline-block;
+  margin-bottom: 0.2rem;
 }
 
 .frm-search {
@@ -84,7 +86,7 @@ table.doujin {
   
   .kanji { background-color: #eee; }
   
-  .actions { padding: 1rem; }
+  .actions { margin-top: 1rem; }
   
   .scoring {
     .set { background-color: #bbb; }
@@ -92,11 +94,13 @@ table.doujin {
       padding: 0.2rem;
       padding-left: 0.35rem;
       border-radius: 1rem;
+      display: inline-block;
     }
     .clear-score {
       border-radius: 0.5rem;
       padding: 0.2rem 0.5rem;
       border: 1px outset silver;
+      display: inline-block;
     }
   }
 }
@@ -162,6 +166,8 @@ nav.pagination {
 
 body[data-ctrl="home"][data-action="index"] {
   table.scoring-distro {
+    border-collapse: collapse;
+    
     tr.bars {
       td { vertical-align: bottom; }
       
@@ -171,6 +177,15 @@ body[data-ctrl="home"][data-action="index"] {
         width: 2.5rem;
       }
     }//tr.bars
+    
+    tr.scores td { border-top: 1px solid black; }
+    
+    tr.bars   td:first-child,
+    tr.percs  td,
+    tr.scores td { border-right: 1px solid black; }
+    
+    tr.percs  td:last-child,
+    tr.scores td:last-child { border-right: 0 solid black; }
     
     tr.percs, tr.scores {
       td { text-align: center; }

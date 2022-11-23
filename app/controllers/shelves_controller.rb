@@ -1,12 +1,16 @@
 class ShelvesController < ApplicationController
+  before_action :set_doujin_list_detail, only: %i[ show ]
   before_action :set_record, only: %i[ show edit update destroy ]
 
   def index = @records = Shelf.order(created_at: :desc).page(params[:page]).per(10)
   
   def show
+    @doujinshi = @record.doujinshi.order(:position)
+  
     respond_to do |format|
+      format.ereader
       format.json {
-        files = @record.doujinshi.order(:position).map{|d| d.file_path.shellescape }
+        files = @doujinshi.map{|d| d.file_path.shellescape }
         
         system Setting.get_json(:ext_cmd_env).to_h,
           %Q| #{Setting[:comics_viewer]} #{files.join ' '} & |,
