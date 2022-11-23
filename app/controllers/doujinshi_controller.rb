@@ -386,18 +386,12 @@ class DoujinshiController < ApplicationController
   # add/remove doujin from a shelf (creates a new shelf if requested)
   def shelf
     # remove from shelf
-    s = Shelf.find_by(id: params[:rm_shelf_id].to_i)
-    s.doujin_ids -= [@doujin.id] if s
+    Shelf.find_by(id: params[:rm_shelf_id].to_i).try :rm_doujin, @doujin.id
     
-    # create new shelf and add doujin to it
-    if params[:shelf_id].to_i == 0 && params[:shelf_name].present?
-      Shelf.transaction do
-        s = Shelf.create(name: params[:shelf_name].strip)
-        s.doujin_ids += [@doujin.id]
-      end
-    # add to existing shelf
-    elsif s = Shelf.find_by(id: params[:shelf_id].to_i)
-      s.doujin_ids += [@doujin.id]
+    if params[:shelf_id].to_i == 0 && params[:shelf_name].present? # create shelf and add
+      Shelf.create(name: params[:shelf_name].strip).add_doujin @doujin.id
+    else # add to existing shelf
+      Shelf.find_by(id: params[:shelf_id].to_i).try :add_doujin, @doujin.id
     end
     
     redirect_to doujin_path(@doujin)
