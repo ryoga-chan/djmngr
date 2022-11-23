@@ -37,6 +37,7 @@ bin/rails g model doujin_shelf doujin:references shelf:references position:integ
 # https://github.com/SortableJS/jquery-sortablejs
 wget -O app/assets/javascripts/sortable.js        https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.js
 wget -O app/assets/javascripts/jquery-sortable.js https://cdn.jsdelivr.net/npm/jquery-sortablejs@latest/jquery-sortable.js
+wget -O app/assets/javascripts/freezeframe.js     https://cdn.jsdelivr.net/npm/freezeframe@latest/dist/freezeframe.min.js
 
 bin/rails db:migrate
 bin/rails db:schema:dump

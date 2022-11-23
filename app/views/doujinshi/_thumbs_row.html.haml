@@ -1,4 +1,4 @@
-.columns.thumbs
+.columns.thumbs.freezeframe
   - doujinshi.each do |d|
     - details = "\n#{d.score.to_i > 0 ? d.score.to_i : '--'}★ / #{d.num_images} pics / #{number_to_human_size d.size, precision: 2}"
     
@@ -15,7 +15,7 @@
     
     .column.is-2.has-text-centered(title=title)
       %figure.image.is2by3
-        = link_to image_tag(doujin_path(d, format: :webp), title: title),
+        = link_to image_tag("/thumbs/#{d.id}.webp", title: title),
           doujin_path(d, from_author: params[:author_id], from_circle: params[:circle_id])
       %progress.progress.is-warning{value: d.score.to_i, title: "#{d.score.to_i}⭐", max: 10}
       .descr.is-size-7

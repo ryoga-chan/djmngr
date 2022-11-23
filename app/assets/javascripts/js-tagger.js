@@ -42,7 +42,7 @@ MODAL DIALOG
         %button.button.js-tagger-cancel Cancel
 */
 (function ($) { $(function () {
-// ------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // save template in memory and remove it from DOM
 $('.js-tagger').each(function () {
   var html = $(this).find('.js-tagger-template').detach().
@@ -194,5 +194,5 @@ $('body').on('keydown', '#js-tagger-modal .js-tagger-term', function (ev) {
   }, 1000);
   modal.data('timeout-id', timeout_id);
 });
-// ------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 }); })(jQuery)
