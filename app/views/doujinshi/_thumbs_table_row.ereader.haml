@@ -1,9 +1,17 @@
+- short_label    = false unless local_assigns.has_key?(:short_label)
+- show_name_orig = false unless local_assigns.has_key?(:show_name_orig)
+- show_perc_read = false unless local_assigns.has_key?(:show_perc_read)
+
 - descr = short_label ? d.label_name_latin : d.file_dl_name(omit_ext: true)
 %tr
   %td= link_to 'show', '#',
     data: { cover: doujin_path(d, format: :jpg)},
     onclick: %Q|jQuery(this).hide().after(jQuery('<img class="thumb">').attr('src', jQuery(this).data('cover'))); return false|
-  %td= "#{d.score.to_i}&hearts;".html_safe if d.score.to_i > 0
+  %td.aright
+    - if show_perc_read
+      = "#{d.percent_read.round}%" if d.read_pages.to_i > 0
+    - else
+      = "#{d.score.to_i}&hearts;".html_safe if d.score.to_i > 0
   %td
     = link_to descr, doujin_path(d)
     - if show_name_orig

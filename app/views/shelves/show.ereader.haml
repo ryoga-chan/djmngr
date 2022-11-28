@@ -12,4 +12,5 @@
 %hr
 
 = render partial: 'doujinshi/fav_js_links'
-= render partial: 'doujinshi/thumbs_table', locals: { doujinshi: @doujinshi }
+= render partial: 'doujinshi/thumbs_table',
+  locals: { doujinshi: @doujinshi, show_perc_read: true }
