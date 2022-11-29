@@ -40,36 +40,11 @@ class ProcessController < ApplicationController
   
   # prepare ZIP working folder and redirects to edit
   def prepare_archive
-    if Marcel::MimeType.for(Pathname.new @fname) != 'application/zip'
-      return redirect_to(process_index_path, alert: "incorrect MIME type, it's not a ZIP file!")
-    end
+    hash = ProcessArchiveDecompressJob.prepare_and_perform @fname
     
-    file_size = File.size @fname
-    
-    # create WIP folder named as the hash
-    hash = Digest::SHA256.hexdigest "djmngr|#{File.basename @fname}|#{file_size}"
-    dst_dir = File.join Setting['dir.sorting'], hash
-    FileUtils.mkdir_p dst_dir
-    
-    if Dir.empty?(dst_dir)
-      # create metadata file
-      File.open(File.join(dst_dir, 'info.yml'), 'w') do |f|
-        f.puts({
-          file_path:     @fname,
-          file_size:     file_size,
-          relative_path: params[:path],
-          working_dir:   hash,
-          prepared_at:   nil,
-        }.to_yaml)
-      end
-      
-      # create a symlink just in case of manual folder inspection (unsupported on windows)
-      File.symlink @fname, File.join(dst_dir, 'file.zip') if OS_LINUX
-      
-      ProcessArchiveDecompressJob.perform_later dst_dir
-    end
-    
-    redirect_to edit_process_path(id: hash)
+    hash == :invalid_zip ?
+      redirect_to(process_index_path, alert: "invalid MIME type: not a ZIP file!") :
+      redirect_to(edit_process_path id: hash)
   end # prepare_archive
   
   def delete_archive
