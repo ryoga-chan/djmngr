@@ -97,7 +97,7 @@ class ProcessArchiveCompressJob < ApplicationJob
           d.circle_ids = info[:circle_ids] if info[:circle_ids].try(:any?)
         end
         
-        # user in ProcessController#finalize_volume to skip the redirect to edit
+        # used in ProcessController#finalize_volume to skip the redirect to edit
         info[:db_doujin_id] = d.id
         
         perc = (cur_step+=1).to_f / tot_steps * 100
