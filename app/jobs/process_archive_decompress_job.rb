@@ -5,6 +5,40 @@ class ProcessArchiveDecompressJob < ApplicationJob
 
   queue_as :tools
   
+  def self.prepare_and_perform(fname, perform_when: :later)
+    raise :invalid_method unless %i[ later now ].include?(perform_when)
+    raise :file_not_found unless File.exist?(fname)
+    
+    return :invalid_zip if Marcel::MimeType.for(Pathname.new fname) != 'application/zip'
+    
+    file_size = File.size fname
+    
+    # create WIP folder named as the hash
+    hash = Digest::SHA256.hexdigest "djmngr|#{File.basename fname}|#{file_size}"
+    dst_dir = File.join Setting['dir.sorting'], hash
+    FileUtils.mkdir_p dst_dir
+    
+    if Dir.empty?(dst_dir)
+      # create metadata file
+      File.open(File.join(dst_dir, 'info.yml'), 'w') do |f|
+        f.puts({
+          file_path:     fname,
+          file_size:     file_size,
+          relative_path: Pathname.new(fname).relative_path_from(Setting['dir.to_sort']).to_s,
+          working_dir:   hash,
+          prepared_at:   nil,
+        }.to_yaml)
+      end
+      
+      # create a symlink just in case of manual folder inspection (unsupported on windows)
+      File.symlink fname, File.join(dst_dir, 'file.zip') if OS_LINUX
+      
+      ProcessArchiveDecompressJob.send "perform_#{perform_when}", dst_dir
+    end
+    
+    hash
+  end # self.prepare_and_perform
+  
   def self.cover_path(dst_dir, info)
     path = info[:landscape_cover] ? '0000.webp' : info[:images].first[:thumb_path]
     File.join(dst_dir, 'thumbs', path).to_s
