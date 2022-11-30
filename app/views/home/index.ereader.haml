@@ -19,7 +19,8 @@
 = link_to 'Book' , random_pick_doujinshi_path(type: :book  ), class: 'button'
 = link_to 'Faved', random_pick_doujinshi_path(type: :faved ), class: 'button'
 = link_to 'Best Score' , random_pick_doujinshi_path(type: :scored), class: 'button'
-= link_to 'Latest Shelf', shelf_path(Shelf.order(created_at: :desc).first), class: 'button'
+- if s = Shelf.order(created_at: :desc).first
+  = link_to 'Latest Shelf', shelf_path(s), class: 'button'
 
 %h3 Scoring distribution
 
