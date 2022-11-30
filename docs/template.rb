@@ -53,10 +53,6 @@ environment 'config.assets.css_compressor = :scss'  , env: 'production'
 append_to_file 'config/initializers/assets.rb', "Sprockets.export_concurrent = false\n"
 
 # --- config app ----------------------------------------------------------
-# https://wiki.mozilla.org/Security/Server_Side_TLS
-# https://cipherlist.eu/
-environment "config.force_ssl = ENV['NOSSL'].blank? ? true : false", env: 'production'
-
 after_bundle do
   # convert layout from ERB to HAML
   rails_command 'generate haml:application_layout convert'
