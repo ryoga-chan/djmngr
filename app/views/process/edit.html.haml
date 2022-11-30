@@ -40,6 +40,11 @@
             %span.icon.is-small
               %i.mi edit_note
             %span File names
+            - if @info[:files].any?
+              %span.tag.is-warning.ml-2
+                %span.icon.is-small
+                  %i.mi warning
+
         %li{class: (:'is-active' if params[:tab] == 'images') }
           = link_to tab: :images do
             %span.icon.is-small
