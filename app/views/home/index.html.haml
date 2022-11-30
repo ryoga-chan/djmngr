@@ -116,16 +116,17 @@
           %span.icon
             %i.mi star_half
 
-    .pick
-      = link_to shelf_path(Shelf.order(created_at: :desc).first, run: :comics_viewer, format: :json),
-        onclick: %Q|var bt=jQuery(this); bt.addClass('is-loading'); setTimeout(function(){ bt.removeClass('is-loading') }, 5000)|,
-        remote: true, title: 'start slideshow', class: 'button is-info is-rounded mt-3' do
-        %span.icon-text
-          %span.icon
-            %i.mi new_releases
-          %span shelf
-          %span.icon
-            %i.mi shelves
+    - if s = Shelf.order(created_at: :desc).first
+      .pick
+        = link_to shelf_path(s, run: :comics_viewer, format: :json),
+          onclick: %Q|var bt=jQuery(this); bt.addClass('is-loading'); setTimeout(function(){ bt.removeClass('is-loading') }, 5000)|,
+          remote: true, title: 'start slideshow', class: 'button is-info is-rounded mt-3' do
+          %span.icon-text
+            %span.icon
+              %i.mi new_releases
+            %span shelf
+            %span.icon
+              %i.mi shelves
   
   .column.is-5.has-text-centered
     %span.tag(style="margin-bottom: 2rem;")
@@ -135,7 +136,8 @@
     
     .columns.mt-3
       .column.is-5
-        .pie-chart{style: "width: 12rem; height: 12rem; border-radius: 50%; margin: auto; background: conic-gradient(#{@pie_slices_css.join ', '})"}
+        - if @pie_slices_css
+          .pie-chart{style: "width: 12rem; height: 12rem; border-radius: 50%; margin: auto; background: conic-gradient(#{@pie_slices_css.join ', '})"}
 
       .column.is-family-monospace
         .pie-legend.tags
