@@ -75,8 +75,8 @@ $('.scoring span.icon[data-score]').click(function () {
     $(this).nextAll('span.icon[data-score]:not(.clear-score)').removeClass('has-text-warning').find('i').text('star_outline');
   }//if-else
   
-  //$('.scoring').after(p_bar);
-  //$(this).parents('form:first').submit();
+  $('.scoring').after(p_bar);
+  $(this).parents('form:first').submit();
 });
 // -----------------------------------------------------------------------------
 }); })(jQuery)
