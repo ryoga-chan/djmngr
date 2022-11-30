@@ -431,17 +431,20 @@ class ProcessController < ApplicationController
     perc_file = File.join(@dname, 'finalize.perc')
     @perc = File.read(perc_file).to_f rescue 0.0
     
-    if params[:undo] && File.exist?(perc_file)
-      File.unlink(perc_file)
-      fname = "#{@info[:collection_full_path]}.NEW"
-      File.unlink(fname) if File.exist?(fname)
-      return redirect_to(edit_process_path(id: params[:id]), notice: "finalize processing halted")
-    end
-    
-    unless File.exist?(perc_file)
-      FileUtils.touch perc_file
-      ProcessArchiveCompressJob.perform_later @dname
-    end
+    if request.post? # perform actions only via POST
+      if params[:undo] && File.exist?(perc_file)
+        File.unlink(perc_file)
+        fname = "#{@info[:collection_full_path]}.NEW"
+        File.unlink(fname) if File.exist?(fname)
+        return redirect_to(edit_process_path(id: params[:id]), notice: "finalize processing halted")
+      end
+      
+      unless File.exist?(perc_file)
+        FileUtils.touch perc_file
+        ProcessArchiveCompressJob.perform_later @dname
+        return redirect_to(finalize_volume_process_path(id: params[:id]))
+      end
+    end # if request.post?
   end # finalize_volume
   
   

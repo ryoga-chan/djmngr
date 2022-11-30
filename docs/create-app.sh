@@ -42,3 +42,6 @@ wget -O app/assets/javascripts/freezeframe.js     https://cdn.jsdelivr.net/npm/f
 bin/rails db:migrate
 bin/rails db:schema:dump
 bin/rails db:erd          # create DB graph (see lib/tasks/erd.rake)
+
+bin/rails assets:precompile
+bin/server -p
