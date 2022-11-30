@@ -1,4 +1,5 @@
 - has_favorite_column = @model.column_names.include?('favorite')
+- target_model = params[:controller].singularize
 
 .title.is-size-4
   = params[:controller].capitalize
@@ -56,7 +57,10 @@
             = link_to '&star;'.html_safe, fav_toggle_doujinshi_path(type: @model, id: r.id),
               title: ("faved @ #{l r.faved_at}" if r.favorite? && r.faved_at),
               class: "fav #{'has-text-warning' if r.favorite?}"
-          %td= r.doujinshi.count
+          %td
+            - dj_count = r.doujinshi.count
+            = link_to dj_count, controller: :doujinshi, action: :index, tab: target_model,
+              "#{target_model}_id" => r.id if dj_count > 0
         %td
           = link_to r do
             .name-romaji=           r.name_romaji.present? ? r.name_romaji : '&minus;'.html_safe
