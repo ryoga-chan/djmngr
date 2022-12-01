@@ -87,6 +87,8 @@ class ProcessController < ApplicationController
     
     FileUtils.rm_rf @dname, secure: true
     
+    CoverMatchingJob.rm_results_file info[:cover_hash]
+    
     msg = params[:archive_too] == 'true' ? "archive and folder deleted:" : "folder deleted for"
     return redirect_to(process_index_path, notice: "#{msg} [#{@info[:relative_path]}] in [#{params[:id][0..10]}...]")
   end # delete_archive_cwd

@@ -45,6 +45,10 @@ class CoverMatchingJob < ApplicationJob
     info
   end # self.results
 
+  def self.rm_results_file(image_hash)
+    FileUtils.rm_f File.join(Setting['dir.sorting'], "#{image_hash}.yml").to_s
+  end # self.rm_results_file
+
   # read image data from temp file and do a matching against all saved doujinshi
   # by computing hamming distance between pHashes
   def perform(image_hash, max_distance: 13)
