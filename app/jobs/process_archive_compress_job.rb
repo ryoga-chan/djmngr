@@ -145,6 +145,8 @@ class ProcessArchiveCompressJob < ApplicationJob
         perc = (cur_step+=1).to_f / tot_steps * 100
         File.open(File.join(src_dir, 'finalize.perc'), 'w'){|f| f.write perc.round(2) }
       end
+      
+      CoverMatchingJob.rm_results_file info[:cover_hash]
     rescue
       info[:finalize_error    ] = $!.to_s
       info[:finalize_backtrace] = $!.backtrace
