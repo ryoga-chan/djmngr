@@ -34,9 +34,10 @@ gem 'image_processing', '~> 1.2', require: %w{ ruby-vips image_processing }
 gem 'phashion',         '~> 1.2' # https://github.com/westonplatter/phashion -- pHash: image perceptual hashing
 
 
-#gem 'bootsnap', require: false   # Reduces boot times through caching; required in config/boot.rb
+#gem 'bootsnap', require: false  # Reduces boot times through caching; required in config/boot.rb
 
 group :development do
-  gem 'rails-erd'                # DB ER diagram -- https://github.com/voormedia/rails-erd
   gem 'debug', platforms: %i[ mri mingw x64_mingw ] # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
+  gem 'rails-erd'                # DB ER diagram -- https://github.com/voormedia/rails-erd
+  gem 'rails_real_favicon'       # https://realfavicongenerator.net/favicon/ruby_on_rails
 end

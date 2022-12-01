@@ -43,5 +43,10 @@ bin/rails db:migrate
 bin/rails db:schema:dump
 bin/rails db:erd          # create DB graph (see lib/tasks/erd.rake)
 
+# create `config/favicon.json` from https://realfavicongenerator.net/favicon/ruby_on_rails
+# and place the master image in app/assets/images/master_favicon.jpg
+rails g favicon
+echo "//= link favicon/browserconfig.xml" >> app/assets/config/manifest.js
+
 bin/rails assets:precompile
 bin/server -p
