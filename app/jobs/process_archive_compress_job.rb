@@ -56,7 +56,7 @@ class ProcessArchiveCompressJob < ApplicationJob
       FileUtils.mkdir_p File.dirname(info[:collection_full_path])
       # compress and sort files alphabetically within archive, overwrite already processed file
       File.unlink "#{info[:collection_full_path]}.NEW" if File.exist?("#{info[:collection_full_path]}.NEW")
-      system %Q[ find -type f | sort | zip -r #{info[:collection_full_path].shellescape}.NEW -@ ], chdir: out_dir
+      system %Q[ find -type f | sort | zip -q -r #{info[:collection_full_path].shellescape}.NEW -@ ], chdir: out_dir
       
       perc = (cur_step+=1).to_f / tot_steps * 100
       File.open(File.join(src_dir, 'finalize.perc'), 'w'){|f| f.write perc.round(2) }
@@ -131,8 +131,9 @@ class ProcessArchiveCompressJob < ApplicationJob
         cmd  = %Q| img2webp -q 70 -lossy -d 3000 #{thumb_src[0]} |
         cmd += %Q| -d 2000 #{thumb_src[1..-1].join ' '} | if thumb_src.size > 1
         cmd += %Q| -o #{thumb_dst.shellescape} |
-        system cmd
-        if $?.to_i != 0 # remove thumbnail if it goes wrong
+        # https://docs.ruby-lang.org/en/3.0/Open3.html#method-c-capture2e
+        sh_output, sh_status = Open3.capture2e cmd  # hide STDOUT (instead of "system cmd")
+        if sh_status.exitstatus != 0 # remove thumbnail if it goes wrong
           File.unlink(thumb_dst) if File.exist?(thumb_dst)
           raise "error [#{$?.to_i}] while creating thumbnails"
         end

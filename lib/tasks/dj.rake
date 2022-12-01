@@ -39,7 +39,7 @@ namespace :dj do
     # remaining arguments are files to process
     ARGV.each do |dj_fname|
       puts '-'*70
-      puts "FNAME: #{dj_fname}\n\n"
+      puts "FILE: #{dj_fname}"
       
       fname = File.expand_path dj_fname
       die %Q|ERROR: file not found| unless File.exist?(fname)
@@ -51,7 +51,7 @@ namespace :dj do
       dname = File.expand_path File.join(Setting['dir.sorting'], hash)
       info_fname = File.join dname, 'info.yml'
       info  = YAML.load_file info_fname
-      puts "\nHASH: #{hash}"
+      puts "HASH: #{hash}"
       
       puts "\n[DST]     [SRC]"
       puts info[:images].map{|i| "#{i[:dst_path]}  #{i[:src_path]}"}
@@ -87,7 +87,7 @@ namespace :dj do
         
         info = YAML.load_file info_fname
         if info[:finalize_error].blank?
-          puts "\nDOUJIN_ID: #{info[:db_doujin_id]}"
+          puts "DjID: #{info[:db_doujin_id]}"
           # remove file on disk and WIP folder
           File.unlink info[:file_path]
           FileUtils.rm_rf dname, secure: true

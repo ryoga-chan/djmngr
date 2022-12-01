@@ -120,7 +120,7 @@ class ProcessArchiveDecompressJob < ApplicationJob
     FileUtils.mkdir_p path_contents
     FileUtils.mkdir_p path_cover
     
-    system %Q| unzip -d #{path_contents.shellescape} #{info[:file_path].shellescape} |
+    system %Q| unzip -q -d #{path_contents.shellescape} #{info[:file_path].shellescape} |
     
     # reset file/folder permissions
     if OS_LINUX
