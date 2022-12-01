@@ -8,6 +8,7 @@
       class: "input is-small", style: 'width: 15rem', onchange: "this.form.submit()"
     %span.ml-4
       - term = @info[:relative_path].tokenize_doujin_filename.join(' ').gsub(/[^a-z0-9\- ]/i, '')
+      %br.is-hidden-tablet
       = links_to_search_engines term, target: :_blank
 
 = render partial: "ident_#{@info[:file_type]}"

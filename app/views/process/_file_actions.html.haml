@@ -1,0 +1,13 @@
+.field.has-addons.is-inline-flex
+  %p.control
+    = link_to show_externally_process_index_path(path: fname, run: :comics_viewer, format: :json),
+      title: 'read with external viewer',
+      remote: true, class: 'button run-progr is-info is-rounded is-small tiny-bt' do
+      %span.icon.is-small
+        %i.mi.mi-small launch
+  %p.control
+    = link_to show_externally_process_index_path(path: fname, run: :file_manager, format: :json),
+        title: 'open in file manager',
+        remote: true, class: 'button run-progr is-info is-rounded is-small tiny-bt' do
+      %span.icon.is-small
+        %i.mi.mi-small folder

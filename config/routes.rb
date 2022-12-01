@@ -8,6 +8,7 @@ Rails.application.routes.draw do
   
   resources :process, only: %i[ index edit ] do
     collection do
+      get     :show_externally
       get     :prepare_archive
       delete  :delete_archive
     end
