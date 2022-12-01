@@ -46,8 +46,7 @@
                 class: "entry #{'is-active' if p.id == params["#{type}_id"].to_i}"
               = link_to '&star;'.html_safe, fav_toggle_doujinshi_path(type: p.class.name, id: p.id),
                 class: "fav #{'has-text-warning' if p.favorite?}"
-    
-    %a(name="listing")
 
   .column.doujinshi
+    %a(name="listing")
     = render partial: 'thumbs_table', locals: { doujinshi: @doujinshi, short_label: true }

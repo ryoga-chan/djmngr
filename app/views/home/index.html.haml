@@ -4,7 +4,7 @@
 
 .columns
   .column.has-text-centered
-    %span.tag(style="margin-bottom: 2rem;") application counters
+    %span.tag.is-hidden-mobile(style="margin-bottom: 2rem;") application counters
     
     .tags
       .tags.has-addons.mr-4.mb-0
@@ -87,34 +87,33 @@
         %span.tag= link_to 'themes', themes_path
 
   .column.is-2.has-text-centered{style: "border: 1px solid grey; border-width: 0 1px;"}
-    %span.tag(style="margin-bottom: 2rem;") quick links
+    %span.tag.is-hidden-mobile(style="margin-bottom: 2rem;") quick links
     
-    .pick
-      = link_to random_pick_doujinshi_path(type: :book  ), class: 'button is-info is-rounded mt-3' do
-        %span.icon-text
-          %span.icon
-            %i.mi casino
-          %span book
-          %span.icon
-            %i.mi book
+    .spacer.is-hidden-touch
+    
+    = link_to random_pick_doujinshi_path(type: :book  ), class: 'button is-info is-rounded mt-3 mx-1' do
+      %span.icon-text
+        %span.icon
+          %i.mi casino
+        %span book
+        %span.icon
+          %i.mi book
 
-    .pick
-      = link_to random_pick_doujinshi_path(type: :faved ), class: 'button is-info is-rounded mt-3' do
-        %span.icon-text
-          %span.icon
-            %i.mi casino
-          %span faved
-          %span.icon
-            %i.mi auto_awesome
+    = link_to random_pick_doujinshi_path(type: :faved ), class: 'button is-info is-rounded mt-3 mx-1' do
+      %span.icon-text
+        %span.icon
+          %i.mi casino
+        %span faved
+        %span.icon
+          %i.mi auto_awesome
 
-    .pick
-      = link_to random_pick_doujinshi_path(type: :scored), class: 'button is-info is-rounded mt-3' do
-        %span.icon-text
-          %span.icon
-            %i.mi casino
-          %span best
-          %span.icon
-            %i.mi star_half
+    = link_to random_pick_doujinshi_path(type: :scored), class: 'button is-info is-rounded mt-3 mx-1' do
+      %span.icon-text
+        %span.icon
+          %i.mi casino
+        %span best
+        %span.icon
+          %i.mi star_half
 
     - if s = Shelf.order(created_at: :desc).first
       .pick
@@ -129,7 +128,7 @@
               %i.mi shelves
   
   .column.is-5.has-text-centered
-    %span.tag(style="margin-bottom: 2rem;")
+    %span.tag.is-hidden-mobile(style="margin-bottom: 2rem;")
       scoring distribution over
       = number_with_delimiter @stats[:dj], delimiter: "'"
       doujinshi

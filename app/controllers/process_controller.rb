@@ -1,5 +1,9 @@
 class ProcessController < ApplicationController
-  before_action :check_archive_file  , only: [:prepare_archive, :delete_archive]
+  INDEX_MAX_ENTRIES = 100
+
+  before_action :check_archive_file  , only: [
+    :show_externally, :prepare_archive, :delete_archive
+  ]
   before_action :check_archive_folder, only: [
     :edit, :set_property, :finalize_volume,
     :show_image, :rename_images, :rename_file,
@@ -448,6 +452,15 @@ class ProcessController < ApplicationController
       end
     end # if request.post?
   end # finalize_volume
+  
+  def show_externally
+    respond_to do |format|
+      format.json {
+        ExternalProgramRunner.run params[:run], @fname
+        render json: {ris: :done}
+      }#json
+    end
+  end # show_externally
   
   
   private # ____________________________________________________________________

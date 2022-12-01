@@ -151,15 +151,8 @@ class DoujinshiController < ApplicationController
           filename: "#{@doujin.file_dl_name}.#{request.format.to_sym}"
       }# zip, cbz
       format.json {
-        file_path = @doujin.file_path(full: true)
-        if params[:run] == 'comics_viewer'
-          system Setting.get_json(:ext_cmd_env).to_h, %Q| #{Setting[:comics_viewer]} #{file_path.shellescape} & |
-          return render json: {ris: :ok}
-        elsif params[:run] == 'file_manager'
-          system Setting.get_json(:ext_cmd_env).to_h, %Q| #{Setting[:file_manager]} #{file_path.shellescape} & |
-          return render json: {ris: :ok}
-        end
-        render json: ''
+        ExternalProgramRunner.run params[:run], @doujin.file_path(full: true)
+        render json: {ris: :done}
       }#json
     end
   end # show

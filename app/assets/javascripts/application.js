@@ -31,5 +31,11 @@ $('#appNavbar a[href]').click(function (ev) {
   if (!ev.ctrlKey && !ev.altKey)
     $.myapp.show_loading();
 });
+
+// temporary disable "run external program" button
+$('body').on('click', '.run-progr', function (ev) {
+  var bt = $(this).addClass('is-loading');
+  setTimeout(function () { bt.removeClass('is-loading') }, 5000);
+});
 // -----------------------------------------------------------------------------
 }); })(jQuery)

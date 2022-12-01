@@ -19,12 +19,12 @@
         %tr
           %th Author
           %td= @doujin.authors.map{|i| link_to(i.label_name_latin,
-            doujinshi_path(tab: :author, author_id: i.id)) }.sort.join(', ').html_safe
+            doujinshi_path(tab: :author, author_id: i.id, anchor: :listing)) }.sort.join(', ').html_safe
       - if @doujin.circles.any?
         %tr
           %th Circle
           %td= @doujin.circles.map{|i| link_to(i.label_name_latin,
-            doujinshi_path(tab: :circle, circle_id: i.id)) }.sort.join(', ').html_safe
+            doujinshi_path(tab: :circle, circle_id: i.id, anchor: :listing)) }.sort.join(', ').html_safe
       %tr
         %th Info
         %td
@@ -87,11 +87,10 @@
         %td
           .columns.is-vcentered
             .column= @doujin.file_path
-            .column.is-2.has-text-centered
+            .column.is-2.has-text-centered.is-hidden-mobile
               = link_to doujin_path(@doujin, run: :file_manager, format: :json),
-                  onclick: %Q|var bt=jQuery(this); bt.addClass('is-loading'); setTimeout(function(){ bt.removeClass('is-loading') }, 5000)|,
                   title: 'open in file manager',
-                  remote: true, class: 'button is-info is-rounded' do
+                  remote: true, class: 'button run-progr is-info is-rounded' do
                 %span.icon
                   %i.mi.mi-small folder
                 %span FM
@@ -137,11 +136,10 @@
                 %span.icon
                   %i.mi.mi-small chrome_reader_mode
                 %span= @doujin.read_pages.to_i > 0 ? "Read (#{@doujin.percent_read.round}%)" : :Read
-            %p.control
+            %p.control.is-hidden-mobile
               = link_to doujin_path(@doujin, run: :comics_viewer, format: :json),
-                  onclick: %Q|var bt=jQuery(this); bt.addClass('is-loading'); setTimeout(function(){ bt.removeClass('is-loading') }, 5000)|,
                   title: 'read with external viewer',
-                  remote: true, class: 'button is-info is-rounded' do
+                  remote: true, class: 'button run-progr is-info is-rounded' do
                 %span.icon
                   %i.mi.mi-small launch
                 %span Reader
