@@ -87,6 +87,7 @@ namespace :dj do
         
         info = YAML.load_file info_fname
         if info[:finalize_error].blank?
+          puts "\nDOUJIN_ID: #{info[:db_doujin_id]}"
           # remove file on disk and WIP folder
           File.unlink info[:file_path]
           FileUtils.rm_rf dname, secure: true

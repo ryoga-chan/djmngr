@@ -142,7 +142,8 @@
                   %span Settings
               - ext_lbl, ext_url = Setting[:external_link].to_s.split('|')
               - if ext_lbl.present? && ext_lbl.present?
-                %hr.navbar-divider
+                %br/
+                %br/
                 = link_to ext_url, class: 'navbar-item', style: 'display: inline', target: :_blank do
                   %span.icon-text
                     %span.icon.mr-2
