@@ -80,8 +80,8 @@ class ProcessController < ApplicationController
         name:             @info[:relative_path],
         name_kakasi:      @info[:relative_path].to_romaji,
         size:             @info[:file_size],
-        num_images:       @info[:images].to_h.size,
-        num_files:        @info[:files ].to_h.size,
+        num_images:       @info[:images].to_a.size,
+        num_files:        @info[:files ].to_a.size,
       }) unless @info[:db_doujin_id].present?
       # remove file on disk
       File.unlink @info[:file_path]
