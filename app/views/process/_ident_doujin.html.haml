@@ -31,6 +31,7 @@
     = f.button class: 'button is-small' do
       %span.icon
         %i.mi.mi-small(title="search") person_search
+    %br.is-hidden-tablet
     %span.mx-4
       = links_to_search_engines params[:term], target: :_blank
       \|
