@@ -23,7 +23,7 @@
       #appNavbar.navbar-menu
         .navbar-start
           %span.navbar-item{class: params[:controller] != 'process' ? nil : 'is-current'}
-            = link_to process_index_path do
+            = link_to process_index_path, class: 'has-text-white' do
               %span.icon-text
                 %span.icon
                   %i.mi swap_horiz
