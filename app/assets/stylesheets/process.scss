@@ -1,4 +1,8 @@
 body[data-ctrl="process"][data-action="edit"] {
+  .src-fname { font-size: x-small; }
+  .files-info    { float: left;  }
+  .files-actions { float: right; }
+
   .ident {
     .search-results .column.associated .subject {
       border-radius: 0.5rem;
