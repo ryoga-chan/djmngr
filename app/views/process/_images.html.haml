@@ -1,3 +1,5 @@
+%a(name="page-top")
+
 = form_with url: delete_archive_files_process_path(id: @info[:working_dir]), method: :delete do |f|
   = hidden_field_tag :tab, params[:tab]
 
@@ -16,13 +18,24 @@
   - @info[:images].each_slice(6).each do |s|
     .columns
       - s.each do |img|
-        .column.is-2.has-text-centered
-          = text_field_tag :img_name, img[:dst_path], id: '', size: 7,
+        .column.is-2.has-text-centered.nowrap<>
+          = text_field_tag :img_name, img[:dst_path], id: '', size: 11,
             data: { url: rename_file_process_path, path: img[:src_path] }
-          = link_to '🔎',
-            show_image_process_path(id: @info[:working_dir], path: img[:src_path]),
-            target: :_blank
+          = link_to show_image_process_path(id: @info[:working_dir], path: img[:src_path]),
+            class: "button is-small", target: :_blank do
+            %span.icon.is-small
+              %i.mi zoom_out_map
           .mt-1= thumbnail_tag File.join(base_dir, img[:thumb_path]), title: "#{img[:dst_path]} @ #{number_to_human_size img[:size]}\n↪#{img[:src_path]}"
           = check_box_tag 'path[]', img[:src_path], false, id: '', class: 'is-hidden'
+      
+      .is-hidden-tablet.has-text-right
+        %a.button.is-small(href="#page-top")
+          %span.icon.is-small
+            %i.mi vertical_align_top
+        %a.button.is-small(href="#page-bottom")
+          %span.icon.is-small
+            %i.mi vertical_align_bottom
 
   = action_buttons
+
+%a(name="page-bottom")

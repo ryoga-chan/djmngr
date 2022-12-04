@@ -32,7 +32,7 @@ $('#rename_with').change(function () {
 
 // select images to delete
 $('.images .columns .column').click(function (ev) {
-  if ($(ev.target).is(':input, a'))
+  if ($(ev.target).is(':input, .button, span, i'))
     return;
   
   $(this).toggleClass('has-background-warning');
