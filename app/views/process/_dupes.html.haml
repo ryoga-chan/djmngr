@@ -1,6 +1,7 @@
 .columns{style: (@dupes.any? ? 'border-bottom: 1px dashed silver' : '')}
   .column
-    = thumbnail_tag ProcessArchiveDecompressJob.cover_path(@dname, @info), title: 'current cover'
+    = link_to show_image_process_path(id: @info[:working_dir], path: @info[:images].first[:src_path]), target: :_blank do
+      = thumbnail_tag ProcessArchiveDecompressJob.cover_path(@dname, @info), title: 'current cover'
   
   .column.is-10
     .name_orig.mb-1
@@ -43,7 +44,8 @@
 - @dupes.each_slice(2) do |s|
   .columns
     - s.each do |d|
-      .column.is-2= image_tag doujin_path(d, format: :webp)
+      .column.is-2= link_to image_tag(doujin_path(d, format: :webp)),
+        image_doujin_path(d, page: 0), target: :_blank
       .column
         .info
           .tags.has-addons
