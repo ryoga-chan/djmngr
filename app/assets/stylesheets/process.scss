@@ -3,6 +3,12 @@ body[data-ctrl="process"][data-action="edit"] {
   .files-info    { float: left;  }
   .files-actions { float: right; }
 
+  .images {
+    input { height: 2rem; }
+    
+    .column { border-bottom: 1px dotted silver;  }
+  }
+
   .ident {
     .search-results .column.associated .subject {
       border-radius: 0.5rem;
