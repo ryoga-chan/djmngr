@@ -69,3 +69,23 @@
       = f.button class: 'button is-primary is-rounded' do
         %span.icon
           %i.mi.mi-small send
+
+- s = Setting.find_by key: :reading_bg_color
+= form_with url: home_settings_path do |f|
+  = f.hidden_field :id, value: s.id
+  .field.is-horizontal
+    .field-label.is-normal
+      %label.label
+        = s.key
+        %span.icon.is-small.in-text-small{title: s.notes}
+          %i.mi.mi-small help
+    .field-body
+      .field
+        .control.is-expanded.has-icons-left
+          .select.is-fullwidth
+            = f.select :value, options_for_select(Setting::READING_BG_COLORS, s.value)
+          %span.icon.is-small.is-left
+            %i.mi.mi-small palette
+      = f.button class: 'button is-primary is-rounded' do
+        %span.icon
+          %i.mi.mi-small send
