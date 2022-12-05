@@ -130,20 +130,28 @@ class ProcessController < ApplicationController
 
     # toggle associated author/circle ID
     %w{ author circle }.each do |k|
+      key = "#{k}_ids".to_sym
+      @info[key] ||= []
       tmp_id = params["#{k}_id".to_sym].to_i
       
       if tmp_id > 0
-        key = "#{k}_ids".to_sym
-        @info[key] ||= []
         method = @info[key].to_a.include?(tmp_id) ? :delete : :push
         @info[key].send method, tmp_id
         # remove destination if deleting it
-        @info[:doujin_dest_id] = nil if method == :delete && @info[:doujin_dest_id] == "#{k}-#{tmp_id}"
+        is_same_dj = "#{@info[:doujin_dest_type]}-#{@info[:doujin_dest_id]}" == "#{k}-#{tmp_id}"
+        @info[:doujin_dest_id] = nil if method == :delete && is_same_dj
         info_changed = true
       end
     end
     
-    # select a main/destination author/circle
+    # set destination author/circle when only one ID is present
+    if    @info[:author_ids].size == 1 && @info[:circle_ids].size == 0
+      params[:doujin_dest_id] = "author-#{@info[:author_ids].first}"
+    elsif @info[:author_ids].size == 0 && @info[:circle_ids].size == 1
+      params[:doujin_dest_id] = "circle-#{@info[:circle_ids].first}"
+    end
+    
+    # select a destination author/circle
     if params[:doujin_dest_id] && params[:doujin_dest_id] != "#{@info[:doujin_dest_type]}-#{@info[:doujin_dest_id]}"
       # store type and ID
       @info[:doujin_dest_type], @info[:doujin_dest_id] = params[:doujin_dest_id].split('-')
