@@ -1,0 +1,3 @@
+#!/bin/bash
+CMD="bin/rails c"
+[ "$1" = "-p" ] && exec $CMD -e production || exec $CMD
