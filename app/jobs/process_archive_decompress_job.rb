@@ -169,13 +169,6 @@ class ProcessArchiveDecompressJob < ApplicationJob
       File.open(File.join(dst_dir, 'completion.perc'), 'w'){|f| f.write perc.round(2) }
     end
     
-    # run cover image hash matching
-    if info[:images].any?
-      cover_img_path = File.join(path_contents, info[:images].first[:src_path])
-      info[:cover_hash] = CoverMatchingJob.hash_image cover_img_path
-      CoverMatchingJob.perform_later info[:cover_hash]
-    end
-    
     info[:reading_direction] = Setting[:reading_direction]
     info[:prepared_at] = Time.now
     

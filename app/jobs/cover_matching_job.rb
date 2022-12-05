@@ -92,7 +92,8 @@ class CoverMatchingJob < ApplicationJob
     info.merge! \
       status:      :completed,
       finished_at: Time.now,
-      results:     Doujin.find_by_sql(query).inject({}){|h, d| h.merge d.id => ((1 - d.hamming_distance.to_f / 64) * 100).round }
+      results:     Doujin.find_by_sql(query).
+        inject({}){|h, d| h.merge d.id => ((1 - d.hamming_distance.to_f / 64) * 100).round }
     File.open(fname, 'w'){|f| f.puts info.to_yaml }
   end # perform
 end

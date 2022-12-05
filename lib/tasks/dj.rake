@@ -53,6 +53,18 @@ namespace :dj do
       info  = YAML.load_file info_fname
       puts "HASH: #{hash}"
       
+      die "ERROR: no images found!" if info[:images].empty?
+      
+      # run cover image hash matching
+      cover_path = ProcessArchiveDecompressJob.cover_path dname, info
+      info[:cover_hash] = CoverMatchingJob.hash_image cover_path
+      CoverMatchingJob.perform_now info[:cover_hash]
+      cover_matching = CoverMatchingJob.results info[:cover_hash]
+      info[:cover_results] = cover_matching[:results]
+      info[:cover_status ] = cover_matching[:status]
+      File.open(info_fname, 'w'){|f| f.puts info.to_yaml }
+      die "ERROR: matching cover(s) found!" if info[:cover_results].any?
+      
       puts "\n[DST]     [SRC]"
       puts info[:images].map{|i| "#{i[:dst_path]}  #{i[:src_path]}"}
       if info[:files].any?

@@ -137,6 +137,8 @@ class ProcessArchiveCompressJob < ApplicationJob
           File.unlink(thumb_dst) if File.exist?(thumb_dst)
           raise "error [#{$?.to_i}] while creating thumbnails"
         end
+        # save hash cover image to DB
+        d.cover_fingerprint!
         
         # delete the eventual file already in collection
         prev_doujin.try(:destroy_with_files)
