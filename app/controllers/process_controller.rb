@@ -60,6 +60,7 @@ class ProcessController < ApplicationController
         file_counters[e.name =~ ProcessArchiveDecompressJob::IMAGE_REGEXP ? :num_images : :num_files] += 1
       end
     end
+    
     # track deletion
     name = params[:path].tr(File::SEPARATOR, ' ')
     DeletedDoujin.create file_counters.merge({
@@ -67,8 +68,11 @@ class ProcessController < ApplicationController
       name_kakasi:      name.to_romaji,
       size:             File.size(@fname),
     })
-    # remove file on disk
+    
+    # remove file from disk and DB
     File.unlink @fname
+    ProcessIndexRefreshJob.rm_entry params[:path]
+    
     return redirect_to(process_index_path, notice: "file deleted: [#{params[:path]}]")
   end # delete_archive
   
@@ -211,6 +215,9 @@ class ProcessController < ApplicationController
     @fname = File.basename(@info[:relative_path].to_s)
     
     return render unless @info[:prepared_at]
+    
+    # run cover image hash matching for the first time
+    params[:rematch_cover] = true if @info[:cover_hash].blank?
     
     case params[:tab]
       when 'dupes'
