@@ -12,6 +12,7 @@ class CreateSettings < ActiveRecord::Migration[7.0]
     Setting.create key: 'dir.sorting'      , value: Rails.root.join('dj-libray', 'sorting').to_s, notes: 'folder containing doujinshi under process'
     Setting.create key: 'dir.sorted'       , value: Rails.root.join('dj-libray', 'sorted' ).to_s, notes: 'folder containing processed doujinshi'
     Setting.create key: 'reading_direction', value: 'r2l'      , notes: 'default reading direction' # r2l, l2r
+    Setting.create key: 'reading_bg_color' , value: 'dark'     , notes: 'default reading background color' # white, smoke, dark, black
     Setting.create key: 'epub_img_width'   , value: 768        , notes: 'resize image to this width in epub creation'
     Setting.create key: 'epub_img_height'  , value: 1024       , notes: 'resize image to this height in epub creation'
     Setting.create key: 'comics_viewer'    , value: 'mcomix -f', notes: 'application for reading CBZ files (comic book viewer)'

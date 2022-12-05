@@ -225,6 +225,17 @@ body[data-ctrl="doujinshi"][data-action="read"] {
   margin: 0; padding: 0;
   overflow: hidden;
   
+  .bg-white { background-color: #ffffff; }
+  .bg-smoke { background-color: #696969; }
+  .bg-dark  { background-color: #222222; }
+  .bg-black { background-color: #000000; }
+  
+  a.set-bg-color {
+    color: white;
+    font-family: monospace;
+  }
+  a.set-bg-color.bg-white { color: black; }
+  
   div.main, div.main img { margin: 0; padding:0; }
   div.main {
     width:  100vw;

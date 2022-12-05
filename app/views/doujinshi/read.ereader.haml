@@ -127,20 +127,21 @@
       turnPage(cur_page + 1);
   }//turnPageByKey
   
+  function zoomImageToLevel (level) {
+    $('#zoom').data('level', level);
+    $('.main').css('width', level+'vw').css('height', level+'vh');
+    $('body').css('overflow', level == 100 ? 'hidden' : 'auto');
+    $('#zoom .perc').text(level == 100 ? '' : level+'%');
+  }//zoomImageToLevel
+  
   function zoomImage (ev) {
     ev.stopImmediatePropagation();
     
     var increment = $(ev.target).hasClass('inc') ? 50 : -50;
     var level     = parseInt($('#zoom').data('level')) + increment;
     
-    if (100 <= level && level <= 300) {
-      console.log(level);
-      $('#zoom').data('level', level);
-      $('.main').css('width', level+'vw').css('height', level+'vh');
-      $('body').css('overflow', level == 100 ? 'hidden' : 'auto');
-      $('#zoom .perc').text(level == 100 ? '' : level+'%')
-      
-    }//if
+    if (100 <= level && level <= 300)
+      zoomImageToLevel(level);
   }//zoomImage
   
   (function($){ $(function () {
@@ -158,9 +159,20 @@
     
     // bind zoom control
     $('#zoom span').on('click', zoomImage);
+    
+    // bind background color change
+    $('a.set-bg-color').click(function (ev) {
+      ev.preventDefault();
+      $('div.main').attr('class', 'main bg-' + $(this).data('color'));
+    });
+    
+    // fix a Google Chrome mobile glitch that sometimes clips the bottom of portrait images
+    setTimeout(function () { zoomImageToLevel(100) }, 250);
   }); })(jQuery)
 
-.main{data: { image_url: image_doujin_path(@doujin, format: ''),
+- cur_bg_color = is_ereader_browser? ? Setting::READING_BG_COLORS.first : Setting[:reading_bg_color]
+.main{class: "bg-#{cur_bg_color}",
+      data: { image_url: image_doujin_path(@doujin, format: ''),
               pages_url: read_pages_doujin_path(@doujin) }}
   %img.prev(src="" class="page hidden" onload="setImgClass(this)")
   %img.curr(src="" class="page hidden" onload="setImgClass(this)")
@@ -202,4 +214,8 @@
       = select_tag :page,
         options_for_select(@files.size.times.map{|i| [i+1, i] }, params[:page]),
         onchange: %Q|this.form.submit()|
+  
+  - Setting::READING_BG_COLORS.each do |color|
+    %a.set-bg-color.button{href: '#', class: "bg-#{color}", data: {color: color}}<>= color[0].upcase
+  
   .back= link_to 'back to details', doujin_path(@doujin, format: params[:from_format]), class: :button
