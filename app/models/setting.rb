@@ -1,4 +1,6 @@
 class Setting < ApplicationRecord
+  READING_BG_COLORS = %w{ white smoke dark black }
+
   serialize :value, JSON
   
   validate  :validate_record, on: :update
