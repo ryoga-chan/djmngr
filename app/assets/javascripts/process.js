@@ -78,5 +78,8 @@ $('.scoring span.icon[data-score]').click(function () {
   $('.scoring').after(p_bar);
   $(this).parents('form:first').submit();
 });
+
+// scroll tabs container to active tab (for mobile users)
+$('.tabs.is-boxed').scrollLeft( $('.tabs.is-boxed li.is-active').position().left );
 // -----------------------------------------------------------------------------
 }); })(jQuery)
