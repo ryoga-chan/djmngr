@@ -2,6 +2,7 @@ class ProcessArchiveDecompressJob < ApplicationJob
   THUMB_WIDTH  = 160
   THUMB_HEIGHT = 240
   IMAGE_REGEXP = /\.(jpe*g|gif|png)$/i
+  CROP_METHODS = %i{ low centre attention entropy high }
 
   queue_as :tools
   
@@ -45,11 +46,11 @@ class ProcessArchiveDecompressJob < ApplicationJob
   end # self.cover_path
   
   # autogenerate portrait cover for landascape first image
-  def self.crop_landscape_cover(dst_dir, info, crop_method = :low)
+  def self.crop_landscape_cover(dst_dir, info, crop_method = :attention)
     # get image dimensions
     cover_img = Vips::Image.new_from_file File.join(dst_dir, 'contents', info[:images].first[:src_path])
     info[:landscape_cover] = cover_img.width > cover_img.height
-    info[:landscape_cover_method] = crop_method # [:low, :centre, :attention, :entropy, :high]
+    info[:landscape_cover_method] = crop_method # see CROP_METHODS
     
     # generate cover
     if info[:landscape_cover]
