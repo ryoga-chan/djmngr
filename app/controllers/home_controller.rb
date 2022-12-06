@@ -43,6 +43,8 @@ class HomeController < ApplicationController
   end # index
   
   def settings
+    @page_title = :settings
+    
     if request.post? && s = Setting.find_by(id: params[:id])
       s.update params.permit(:value)
       flash[:alert] = s.errors.full_messages if s.errors.any?

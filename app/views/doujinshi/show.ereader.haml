@@ -52,12 +52,12 @@
         = link_to '&nabla;CBZ' .html_safe, doujin_path(@doujin, format: :cbz), class: :button
         &nbsp;&nbsp;&nbsp;
         = link_to '&empty;Del' .html_safe, delete_doujin_path(@doujin, params.permit(:from_author, :from_circle).to_h), class: :button
-        
-  %tr
-    %td.samples(colspan="2")
-      = image_tag doujin_path(@doujin, format: :jpg, page: 1), class: :thumb
-      = image_tag doujin_path(@doujin, format: :jpg, page: 2), class: :thumb
-      = image_tag doujin_path(@doujin, format: :jpg, page: 3), class: :thumb
+  
+  - if @doujin.num_images > 1
+    %tr
+      %td.samples(colspan="2")
+        - 1.upto([3, @doujin.num_images - 1].min).each do |i|
+          = image_tag doujin_path(@doujin, format: :jpg, page: i), class: :thumb
 
 %br
 
