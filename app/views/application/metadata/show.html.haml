@@ -1,3 +1,5 @@
+- item_type = @model.name.downcase
+
 .title.is-size-4
   = "#{@model.name} details"
   - if @record.doujinshi_org_aka_id.present?
@@ -75,6 +77,12 @@
               = link_to '&star;'.html_safe, fav_toggle_doujinshi_path(type: @model, id: @record.id),
                 title: ("faved @ #{l @record.faved_at}" if @record.favorite? && @record.faved_at),
                 class: "tag is-info is-light fav #{'has-text-warning' if @record.favorite?}"
+        - if (num_dj = @record.doujinshi.count) > 0
+          .control
+            .tags.has-addons
+              %span.tag.is-info Doujinshi associated
+              = link_to num_dj, doujinshi_path(tab: item_type, "#{item_type}_id" => @record.id, anchor: :listing),
+                class: "tag is-info is-light"
   
   - if @record.alias_children.any?
     %tr
