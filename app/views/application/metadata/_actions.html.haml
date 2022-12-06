@@ -15,11 +15,12 @@
               %span Edit
   .column
     .actions.field
-      .field.has-addons.is-justify-content-flex-end
-        %p.control
-          = link_to({action: :destroy, id: @record.id},
-            method: :delete, data: { confirm: 'Are you sure?' },
-            class: 'button is-danger is-rounded') do
-            %span.icon
-              %i.mi.mi-small delete
-            %span Delete
+      - if @record.persisted?
+        .field.has-addons.is-justify-content-flex-end
+          %p.control
+            = link_to({action: :destroy, id: @record.id},
+              method: :delete, data: { confirm: 'Are you sure?' },
+              class: 'button is-danger is-rounded') do
+              %span.icon
+                %i.mi.mi-small delete
+              %span Delete
