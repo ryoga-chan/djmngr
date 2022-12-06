@@ -21,7 +21,7 @@ module MetadataCrudController
     
     @records = @records.
       order(Arel.sql "COALESCE(NULLIF(name_romaji, ''), NULLIF(name_kakasi, ''))").
-      page(params[:page])#.per(10)
+      page(params[:page]).per(10)
     
     render 'application/metadata/index'
   end # index

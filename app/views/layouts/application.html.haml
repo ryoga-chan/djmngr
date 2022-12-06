@@ -5,7 +5,7 @@
     %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
     %meta{:content => "width=device-width,initial-scale=1", :name => "viewport"}/
     = render "application/favicon"
-    %title doujinshi manager
+    %title= "DjMngr | #{@page_title || params[:controller]}"
     = csrf_meta_tags
     = csp_meta_tag
     = stylesheet_link_tag "application"
