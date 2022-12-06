@@ -7,8 +7,8 @@ module MetadataManagement
   included do
     #belongs_to :alias_parent  , foreign_key: :doujinshi_org_aka_id, primary_key: :doujinshi_org_id, class_name: self.class.name
     #has_many   :alias_children, foreign_key: :doujinshi_org_aka_id, primary_key: :doujinshi_org_id, class_name: self.class.name
-    def alias_parent   = self.class.find_by(doujinshi_org_id: doujinshi_org_aka_id)
-    def alias_children = self.class.where(doujinshi_org_aka_id: doujinshi_org_id)
+    def alias_parent   = self.class.find_by(doujinshi_org_id: doujinshi_org_aka_id.to_i)
+    def alias_children = self.class.where(doujinshi_org_aka_id: doujinshi_org_id.to_i)
     
     has_paper_trail only: %i[ name name_romaji name_kana ], on: %i[ update ]
     
