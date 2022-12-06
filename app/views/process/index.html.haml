@@ -28,9 +28,11 @@
     - if @files.empty?
       %em no files to process
     - else
+      = page_entries_info @files
+
       %table.table.is-striped.is-hoverable.ml-4
         %tbody
-          - @files.limit(ProcessController::INDEX_MAX_ENTRIES).each do |f|
+          - @files.each do |f|
             %tr
               %td= link_to('🗑', {action: :delete_archive, path: f.name},
                 method: :delete, data: { confirm: 'Delete this file?' },
@@ -44,6 +46,5 @@
                   = link_to f.name, action: :prepare_archive, path: f.name
                 - if f.name != f.name_kakasi
                   .name_kakasi.is-size-7= f.name_kakasi
-          - if @files.count > ProcessController::INDEX_MAX_ENTRIES
-            %tr
-              %td(colspan="4")= "...another #{@files.count - ProcessController::INDEX_MAX_ENTRIES} file(s)"
+      
+      = paginate @files
