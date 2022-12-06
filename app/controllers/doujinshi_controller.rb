@@ -11,6 +11,8 @@ class DoujinshiController < ApplicationController
 
   # browse doujinshi by author/circle/folder
   def index
+    @page_title = :collection
+    
     return redirect_to(process_index_path, flash: {warn: 'collection is empty'}) unless Doujin.any?
     
     params[:tab] = 'author' unless %w{ author circle artbook magazine }.include?(params[:tab])
@@ -64,6 +66,8 @@ class DoujinshiController < ApplicationController
   end # index
   
   def search
+    @page_title = 'doujin search'
+    
     if %w{ authors circles themes }.include?(params[:where])
       return redirect_to(controller: params[:where], action: :index, term: params[:term])
     end
@@ -126,6 +130,8 @@ class DoujinshiController < ApplicationController
   end # search
   
   def show
+    @page_title = 'doujin details'
+    
     msg = @doujin.check_hash?       ? [:notice,'same checksum'       ] : [:alert,'different checksum'] if params[:check_hash]
     msg = @doujin.check_zip?        ? [:notice,'zip test successfull'] : [:alert,'zip test failed'   ] if params[:check_zip]
     flash.now.send '[]=', *msg if msg
@@ -166,6 +172,8 @@ class DoujinshiController < ApplicationController
   
   # run new conversions and manage converted files
   def epub
+    @page_title = :epub
+    
     @pub_dir = Rails.root.join('public').to_s
     
     if params[:convert]
@@ -188,6 +196,8 @@ class DoujinshiController < ApplicationController
   
   # online reading
   def read
+    @page_title = :reader
+    
     Zip::File.open(@doujin.file_path full: true) do |zip|
       @files = zip.glob('*.{jpg,jpeg,png,gif}').map(&:name).sort
     end
@@ -221,6 +231,8 @@ class DoujinshiController < ApplicationController
   end # image
 
   def update
+    @page_title = 'edit doujin'
+    
     doujin_params = params.require(:doujin).
       permit(:name, :name_romaji, :name_kakasi, :name_orig, :reading_direction,
              :read_pages, :language, :censored, :colorized, :notes, :file_name)
@@ -271,6 +283,8 @@ class DoujinshiController < ApplicationController
   end # fav_toggle
   
   def favorites
+    @page_title = :faves
+    
     params[:sort] = 'date' unless %w{ name date }.include?(params[:sort])
     
     sql_name = "COALESCE(NULLIF(name_romaji, ''), NULLIF(name_kakasi, ''))"
@@ -289,6 +303,8 @@ class DoujinshiController < ApplicationController
   end # favorites
   
   def scored
+    @page_title = :scores
+    
     # sanitize params
     params[:score_max], params[:score_min] = params[:score_max].to_i, params[:score_min].to_i
     params[:score_min] = 8  unless (1..10).include?(params[:score_min])
@@ -303,6 +319,8 @@ class DoujinshiController < ApplicationController
   
   # curl -L -F cover=@path/to/img.ext http://localhost:3000/doujinshi/search_cover.json
   def search_cover
+    @page_title = 'cover search'
+    
     if request.post? && params[:cover]
       cover_hash = CoverMatchingJob.hash_image params[:cover].tempfile.path
     end
