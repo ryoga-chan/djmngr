@@ -26,12 +26,18 @@
           %span.icon
             %i.mi.mi-small(title="restore initial search term") restore
 
-    - if @dupes.any?
-      .tags.has-addons.mt-3
-        %span.tag.is-info= "this file: #{@cur_info}"
-        %span.tag.is-danger= "#{@dupes.size} potential duplicate/s found in collection"
-    - else
-      %span.tag.mt-3.is-success= "NO duplicates found in collection"
+      .columns.mt-3
+        .column
+          - if @dupes.any?
+            .tags.has-addons
+              %span.tag.is-info= "this file: #{@cur_info}"
+              %span.tag.is-danger= "#{@dupes.size} potential duplicate/s found in collection"
+          - else
+            %span.tag.is-success= "NO duplicates found in collection"
+        
+        .column.is-5
+          - term = @info[:relative_path].tokenize_doujin_filename.join(' ').gsub(/[^a-z0-9\- ]/i, '')
+          = links_to_search_engines term, target: :_blank
     
     .tags.has-addons.mt-3
       %span.tag.is-info= "cover matching status: "
