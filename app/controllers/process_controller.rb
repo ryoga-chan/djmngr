@@ -1,6 +1,4 @@
 class ProcessController < ApplicationController
-  INDEX_MAX_ENTRIES = 100
-
   before_action :check_archive_file  , only: [
     :show_externally, :prepare_archive, :delete_archive
   ]
@@ -29,7 +27,7 @@ class ProcessController < ApplicationController
       @refreshing = true
     else
       # read "to_sort" file list
-      @files = ProcessIndexRefreshJob.entries
+      @files = ProcessIndexRefreshJob.entries.page(params[:page])#.per(10)
       
       # read "sorting" file list
       files_glob = File.join Setting['dir.sorting'], '*', 'info.yml'
