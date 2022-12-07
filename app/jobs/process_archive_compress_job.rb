@@ -83,7 +83,7 @@ class ProcessArchiveCompressJob < ApplicationJob
           category:     (info[:file_type] == 'doujin' ? info[:doujin_dest_type] : info[:file_type]),
           file_folder:  File.dirname(info[:collection_relative_path]),
           file_name:    File.basename(info[:collection_relative_path]),
-          name_orig:    info[:relative_path],
+          name_orig:    info[:relative_path].sub(/^reprocess\//, ''),
           reading_direction: info[:reading_direction],
           language:     info[:language ],
           censored:     info[:censored ],
