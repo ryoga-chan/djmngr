@@ -119,13 +119,15 @@ class ProcessArchiveCompressJob < ApplicationJob
           dst_img = File.join(src_dir, 'cover', "cover-000#{i}.webp")
           thumb_src << dst_img.shellescape
           
-          vips = ImageProcessing::Vips.source( File.join(src_dir, 'contents', info[:images][img_index][:src_path]) )
-          vips = info[:landscape_cover] ?
-            vips.resize_to_fill(THUMB_WIDTH, THUMB_HEIGHT, crop: info[:cover_crop_method]) :
-            vips.resize_and_pad(THUMB_WIDTH, THUMB_HEIGHT, alpha: true)
-          vips.
-            convert('webp').saver(quality: 70).
-            call destination: dst_img
+          vips_img = Vips::Image.new_from_file File.join(src_dir, 'contents', info[:images][img_index][:src_path])
+          vips = ImageProcessing::Vips.source vips_img
+          if vips_img.width > vips_img.height # is a landscape image
+            crop_method = i == 0 ? info[:landscape_cover_method] : :attention
+            vips = vips.resize_to_fill(THUMB_WIDTH, THUMB_HEIGHT, crop: crop_method)
+          else
+            vips = vips.resize_and_pad(THUMB_WIDTH, THUMB_HEIGHT, alpha: true)
+          end
+          vips.convert('webp').saver(quality: 70).call destination: dst_img
         end
         # merge selected thumbnails
         cmd  = %Q| img2webp -q 70 -lossy -d 3000 #{thumb_src[0]} |
