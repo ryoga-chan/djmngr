@@ -77,7 +77,7 @@
               = link_to '&star;'.html_safe, fav_toggle_doujinshi_path(type: @model, id: @record.id),
                 title: ("faved @ #{l @record.faved_at}" if @record.favorite? && @record.faved_at),
                 class: "tag is-info is-light fav #{'has-text-warning' if @record.favorite?}"
-        - if (num_dj = @record.doujinshi.count) > 0
+        - if (num_dj = @record.try(:doujinshi).try(:count).to_i) > 0
           .control
             .tags.has-addons
               %span.tag.is-info Doujinshi associated
