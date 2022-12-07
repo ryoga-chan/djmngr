@@ -37,7 +37,8 @@ class CoverMatchingJob < ApplicationJob
   # return final results and delete temp file after matching completed
   def self.results(image_hash)
     fname = File.join(Setting['dir.sorting'], "#{image_hash}.yml").to_s
-    info  = YAML::load_file(fname) rescue {status: :not_found}
+    info  = YAML::load_file(fname) rescue nil
+    info  = {status: :not_found} unless info.is_a?(Hash)
     
     return info[:status] if info[:status] != :completed
     
