@@ -12,7 +12,10 @@
           %span.icon-text
             %span.icon
               %i.mi book
-            %span= number_with_delimiter @stats[:dj], delimiter: "'"
+            %span
+              = number_with_delimiter @stats[:dj], delimiter: "'"
+              \/
+              = number_to_human_size @stats[:dj_size]
         %span.tag.is-link.is-light= link_to 'doujinshi', doujinshi_path
       
       .tags.has-addons.mr-4.mb-0
@@ -35,7 +38,10 @@
           %span.icon-text
             %span.icon
               %i.mi swap_horiz
-            %span= number_with_delimiter @stats[:todo], delimiter: "'"
+            %span
+              = number_with_delimiter @stats[:todo], delimiter: "'"
+              \/
+              = number_to_human_size @stats[:todo_size]
         %span.tag.is-link.is-light= link_to 'process', process_index_path
       
       .tags.has-addons.mr-4.mb-0

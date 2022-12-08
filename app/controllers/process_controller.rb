@@ -159,7 +159,7 @@ class ProcessController < ApplicationController
       @info[:doujin_dest_type], @info[:doujin_dest_id] = params[:doujin_dest_id].split('-')
       # set destination folder to subject romaji name
       subject = @info[:doujin_dest_type].capitalize.constantize.find_by(id: @info[:doujin_dest_id])
-      @info[:dest_folder] = (subject.name_romaji || subject.name_kakasi).downcase.strip
+      @info[:dest_folder] = (subject.name_romaji.present? ? subject.name_romaji : subject.name_kakasi).downcase.strip
       info_changed = true
     end
     
