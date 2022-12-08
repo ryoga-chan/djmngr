@@ -127,7 +127,7 @@
         - base_dir = File.join(@dname, 'thumbs')
         
         - if @info[:landscape_cover] && @info[:landscape_cover_method] != :none
-          = thumbnail_tag File.join(base_dir, '0000.webp'), title: "cropped cover"
+          %figure.image.is2by3= thumbnail_tag File.join(base_dir, '0000.webp'), title: "cropped cover"
           .control.has-icons-left
             - crop_methods = ProcessArchiveDecompressJob::CROP_METHODS.map{|m| ["crop #{m}", m] }
             .select.w100= f.select :cover_crop_method,
@@ -137,7 +137,7 @@
               %i.mi(title="crop landscape cover") crop
         - else
           - cover = @info[:images].first
-          = thumbnail_tag File.join(base_dir, cover[:thumb_path]),
+          %figure.image.is2by3= thumbnail_tag File.join(base_dir, cover[:thumb_path]),
             title: "#{cover[:dst_path]} @ #{number_to_human_size cover[:size]}\n↪#{cover[:src_path]}"
       
       - if @collision_info
@@ -152,7 +152,7 @@
                 = link_to "collection ##{dj_id}", doujin_path(id: dj_id), target: :_blank
               - else
                 collection
-            .coll_cover= image_tag doujin_path(id: @collision_info[:doujin].try(:id).to_i, format: :webp), title: "collision cover"
+            %figure.image.is2by3.coll_cover= image_tag doujin_path(id: @collision_info[:doujin].try(:id).to_i, format: :webp), title: "collision cover"
             %span.tag.is-info= @collision_info[:collection]
       - else
         = html_cover
