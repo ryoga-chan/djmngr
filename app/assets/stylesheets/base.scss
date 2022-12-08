@@ -25,3 +25,31 @@
 .scoring { margin-left: 1rem; }
 
 .button.tiny-bt { font-size: 0.5rem; }
+
+#mobile-toolbar {
+  position: absolute;
+  top:  0.7rem;
+  left: calc(50% - 1rem);
+  z-index: 1000;
+}
+
+body:not(.nsfw-mode) {
+  // hide table row's pop-up thumbnail
+  img#sample_cover:not(:hover) { visibility: hidden; }
+  
+  // blur all images except the app logo
+  img:not(.app-logo) { opacity: 0.1; }
+
+  // hide figure images showing a nice background
+  figure:not(:hover) {
+    //box-shadow:  0.1rem  0.1rem 0.25rem #606dbc,
+    //            -0.1rem -0.1rem 0.25rem #465298;
+    border-radius: 0.5rem;
+    border: 2px outset #465298;
+    background-color: #444;
+    background: repeating-linear-gradient(45deg, #606dbc, #606dbc 10px, #465298 10px, #465298 20px);
+    
+    img, canvas { visibility: hidden; }
+  }
+  figure:hover { img, canvas { opacity: 1; } }
+}

@@ -45,6 +45,7 @@
   Application counters:
   = number_with_delimiter @stats[:dj], delimiter: "'"
   Doujinshi
+  = "(#{number_to_human_size @stats[:dj_size]})"
 
 = @stats[:dj_cat].map{|cat, n| "#{number_with_delimiter n, delimiter: "'"} #{cat.pluralize}" }.join ' | '
 
@@ -54,6 +55,8 @@
 Faved
 \|
 = number_with_delimiter @stats[:todo], delimiter: "'"
+\/
+= number_to_human_size @stats[:todo_size]
 To process
 \|
 = @stats[:wip]

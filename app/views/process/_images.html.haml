@@ -25,7 +25,7 @@
             class: "button is-small", target: :_blank do
             %span.icon.is-small
               %i.mi zoom_out_map
-          .mt-1= thumbnail_tag File.join(base_dir, img[:thumb_path]), title: "#{img[:dst_path]} @ #{number_to_human_size img[:size]}\n↪#{img[:src_path]}"
+          %figure.image.is2by3.mt-1= thumbnail_tag File.join(base_dir, img[:thumb_path]), title: "#{img[:dst_path]} @ #{number_to_human_size img[:size]}\n↪#{img[:src_path]}"
           = check_box_tag 'path[]', img[:src_path], false, id: '', class: 'is-hidden'
       
       .is-hidden-tablet.has-text-right
