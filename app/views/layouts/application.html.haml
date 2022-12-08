@@ -13,7 +13,7 @@
   %body{data: {ctrl: params[:controller], action: params[:action], id: params[:id]}}
     %nav.navbar{role: "navigation"}
       .navbar-brand
-        %a.navbar-item(href='/' title='home page')= image_tag 'logo.webp', style: "border-radius: 0.5rem"
+        %a.navbar-item(href='/' title='home page')= image_tag 'logo.webp', style: "border-radius: 0.5rem", class: 'app-logo'
         %a.navbar-burger{:role => "button", :'data-target' => "appNavbar",
           :onclick => %Q|jQuery(this).add('#appNavbar').toggleClass('is-active') | }
           %span
@@ -33,41 +33,33 @@
             onclick: "jQuery(this).toggleClass('is-active')"}
             %a.navbar-link
               %span.icon-text
-                %span.icon.mr-2
+                %span.icon
                   %i.mi book
-                %span Doujin
+                %span Doujinshi
             .navbar-dropdown
-              = link_to doujinshi_path, class: 'navbar-item', style: 'display: inline' do
+              = link_to doujinshi_path, class: 'navbar-item' do
                 %span.icon-text
-                  %span.icon.mr-2
+                  %span.icon
                     %i.mi apps
-                  %span Collection
-              %br/
-              %br/
-              = link_to favorites_doujinshi_path, class: 'navbar-item', style: 'display: inline' do
+                  %span Browse
+              = link_to favorites_doujinshi_path, class: 'navbar-item' do
                 %span.icon-text
-                  %span.icon.mr-2
+                  %span.icon
                     %i.mi auto_awesome
                   %span Favorites
-              %br/
-              %br/
-              = link_to scored_doujinshi_path, class: 'navbar-item', style: 'display: inline' do
+              = link_to scored_doujinshi_path, class: 'navbar-item' do
                 %span.icon-text
-                  %span.icon.mr-2
+                  %span.icon
                     %i.mi star_half
                   %span Scores
-              %br/
-              %br/
-              = link_to shelves_path, class: 'navbar-item', style: 'display: inline' do
+              = link_to shelves_path, class: 'navbar-item' do
                 %span.icon-text
-                  %span.icon.mr-2
+                  %span.icon
                     %i.mi shelves
                   %span Shelves
-              %br/
-              %br/
-              = link_to epub_doujinshi_path, class: 'navbar-item', style: 'display: inline' do
+              = link_to epub_doujinshi_path, class: 'navbar-item' do
                 %span.icon-text
-                  %span.icon.mr-2
+                  %span.icon
                     %i.mi.mi-small library_books
                   %span EPUBs
           
@@ -86,43 +78,27 @@
                     %span.icon
                       %i.mi.mi-small search
         
-          %span.navbar-item
-            = form_with url: search_cover_doujinshi_path, method: :post do |f|
-              .file.is-primary
-                %label.file-label
-                  = f.file_field :cover, class: 'file-input', id: '',
-                    onchange: %Q|jQuery(this).next().find('i.mi').text('hourglass_bottom'); jQuery.myapp.show_loading(); this.form.submit()|
-                  %span.file-cta
-                    %span.file-icon
-                      %i.mi image_search
-                    %span.file-label
-                      Cover
-          
           %span.navbar-item.has-dropdown{class: (%w{ authors circles themes }.include?(params[:controller]) ? 'is-current' : nil),
             onclick: "jQuery(this).toggleClass('is-active')"}
             %a.navbar-link
               %span.icon-text
-                %span.icon.mr-2
+                %span.icon
                   %i.mi folder_shared
                 %span Metadata
             .navbar-dropdown
-              = link_to authors_path, class: 'navbar-item', style: 'display: inline' do
+              = link_to authors_path, class: 'navbar-item' do
                 %span.icon-text
-                  %span.icon.mr-2
+                  %span.icon
                     %i.mi supervisor_account
                   %span Authors
-              %br/
-              %br/
-              = link_to circles_path, class: 'navbar-item', style: 'display: inline' do
+              = link_to circles_path, class: 'navbar-item' do
                 %span.icon-text
-                  %span.icon.mr-2
+                  %span.icon
                     %i.mi supervised_user_circle
                   %span Circles
-              %br/
-              %br/
-              = link_to themes_path, class: 'navbar-item', style: 'display: inline' do
+              = link_to themes_path, class: 'navbar-item' do
                 %span.icon-text
-                  %span.icon.mr-2
+                  %span.icon
                     %i.mi.mi-small local_offer
                   %span Themes
           
@@ -130,37 +106,52 @@
             onclick: "jQuery(this).toggleClass('is-active')"}
             %a.navbar-link
               %span.icon-text
-                %span.icon.mr-2
+                %span.icon
                   %i.mi construction
                 %span Tools
             .navbar-dropdown
-              = link_to home_settings_path, class: 'navbar-item', style: 'display: inline' do
+              = link_to home_settings_path, class: 'navbar-item' do
                 %span.icon-text
-                  %span.icon.mr-2
+                  %span.icon
                     %i.mi settings
                   %span Settings
+
+              %span.navbar-item
+                = form_with url: search_cover_doujinshi_path, method: :post, html: {style: 'margin-left: -0.6rem'} do |f|
+                  .file.is-primary
+                    %label.file-label
+                      = f.file_field :cover, class: 'file-input', id: '',
+                        onchange: %Q|jQuery(this).next().find('i.mi').text('hourglass_bottom'); jQuery.myapp.show_loading(); this.form.submit()|
+                      %span.file-cta
+                        %span.file-icon
+                          %i.mi image_search
+                        %span.file-label
+                          Cover match
+              
               - ext_lbl, ext_url = Setting[:external_link].to_s.split('|')
               - if ext_lbl.present? && ext_lbl.present?
-                %br/
-                %br/
-                = link_to ext_url, class: 'navbar-item', style: 'display: inline', target: :_blank do
+                = link_to ext_url, class: 'navbar-item', target: :_blank do
                   %span.icon-text
-                    %span.icon.mr-2
+                    %span.icon
                       %i.mi.mi-small launch
                     %span= ext_lbl
           
         .navbar-end
           .navbar-item
             .buttons
+              = link_to '#', class: 'button is-primary no-spinner nsfw-mode-toggle', title: 'toggle NSFW mode' do
+                %span.icon-text
+                  %span.icon
+                    %i.mi shield
               -#- if true # Current.user
               -#  = link_to '#', class: 'button is-primary' do
               -#    %span.icon.is-small
               -#      %i.mi logout
               -#    %span Logout
-              = link_to(root_path(format: :ereader), class: 'button is-primary') do
+              = link_to(root_path(format: :ereader), class: 'button is-primary', title: 'view in e-reader format') do
                 %span.icon
                   %i.mi.mi-small tablet_android
-                %span e-reader
+                -#%span e-reader
 
     %section.section.main-content
       -# NOTE: "notice" and "alert" are Rails defaults, "warn" is a custom key
@@ -203,3 +194,9 @@
         %footer.modal-card-foot
           %button.button.is-success.js-tagger-set Set
           %button.button.js-tagger-cancel Cancel
+
+    #mobile-toolbar.is-hidden-tablet
+      = link_to '#', class: 'button is-primary nsfw-mode-toggle' do
+        %span.icon-text
+          %span.icon
+            %i.mi shield
