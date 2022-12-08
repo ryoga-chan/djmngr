@@ -93,7 +93,7 @@ class ProcessArchiveDecompressJob < ApplicationJob
       # set destination folder to subject romaji name
       if info[:doujin_dest_type] && info[:doujin_dest_id]
         subject = info[:doujin_dest_type].capitalize.constantize.find_by(id: info[:doujin_dest_id])
-        info[:dest_folder] = (subject.name_romaji || subject.name_kakasi).downcase
+        info[:dest_folder] = (subject.name_romaji.present? ? subject.name_romaji : subject.name_kakasi).downcase.strip
       end
       
       # suggest the romaji title
