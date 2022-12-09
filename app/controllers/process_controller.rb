@@ -6,6 +6,7 @@ class ProcessController < ApplicationController
     :edit, :set_property, :finalize_volume,
     :show_image, :rename_images, :rename_file,
     :delete_archive_cwd, :delete_archive_files,
+    :edit_cover, :inspect_folder,
   ]
 
   # list processable files
@@ -474,6 +475,70 @@ class ProcessController < ApplicationController
       }#json
     end
   end # show_externally
+  
+  def edit_cover
+    @info = YAML.load_file(File.join @dname, 'info.yml')
+    
+    respond_to do |format|
+      format.html {
+        # refresh image thumb and master image
+        ProcessArchiveDecompressJob.generate_thumbnail \
+          File.join(@dname, 'contents', @info[:images].first[:src_path  ]),
+          File.join(@dname, 'thumbs'  , @info[:images].first[:thumb_path])
+        FileUtils.cp_f \
+          File.join(@dname, 'thumbs'  , @info[:images].first[:thumb_path]),
+          File.join(@dname, 'thumbs'  , '0000.webp')
+        # update data file
+        @info[:landscape_cover] = false
+        File.open(File.join(@dname, 'info.yml'), 'w'){|f| f.puts @info.to_yaml }
+        
+        redirect_to edit_process_path(id: params[:id], tab: params[:tab])
+      }#html
+      format.json {
+        return render json: {ris: :noop} if params[:run] != 'image_editor'
+        
+        # duplicate first image in "xxx_dup_a"
+        dst_data = @info[:images].first.clone
+        dst_data[:src_path  ] = dst_data[:src_path  ].add_suffix_to_filename :_dup_a
+        dst_data[:dst_path  ] = dst_data[:dst_path  ].add_suffix_to_filename :_dup_a
+        dst_data[:thumb_path] = dst_data[:thumb_path].add_suffix_to_filename :_dup_a
+        FileUtils.cp_f File.join(@dname, 'contents', @info[:images].first[:src_path]),
+                       File.join(@dname, 'contents', dst_data[:src_path])
+        FileUtils.cp_f File.join(@dname, 'thumbs'  , @info[:images].first[:thumb_path]),
+                       File.join(@dname, 'thumbs'  , dst_data[:thumb_path])
+        # rename original image in "xxx_dup_b"
+        src_data = @info[:images].first.clone
+        src_data[:src_path  ] = src_data[:src_path  ].add_suffix_to_filename :_dup_b
+        src_data[:dst_path  ] = src_data[:dst_path  ].add_suffix_to_filename :_dup_b
+        src_data[:thumb_path] = src_data[:thumb_path].add_suffix_to_filename :_dup_b
+        FileUtils.mv File.join(@dname, 'contents', @info[:images].first[:src_path]),
+                     File.join(@dname, 'contents', src_data[:src_path]), force: true
+        FileUtils.mv File.join(@dname, 'thumbs'  , @info[:images].first[:thumb_path]),
+                     File.join(@dname, 'thumbs'  , src_data[:thumb_path]), force: true
+        # update current cover image data
+        @info[:images].first.merge! src_data
+        # prepend duplicate image details to images array
+        @info[:images].unshift dst_data
+        # update data file
+        File.open(File.join(@dname, 'info.yml'), 'w'){|f| f.puts @info.to_yaml }
+
+        # open image editor
+        fname = File.join @dname, 'contents', @info[:images].first[:src_path]
+        ExternalProgramRunner.run 'image_editor', fname
+        
+        render json: {ris: :done}
+      }#json
+    end
+  end # edit_cover
+  
+  def inspect_folder
+    respond_to do |format|
+      format.json {
+        ExternalProgramRunner.run params[:run], @dname
+        render json: {ris: :done}
+      }#json
+    end
+  end # inspect_folder
   
   
   private # ____________________________________________________________________

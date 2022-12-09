@@ -41,7 +41,8 @@ $('#appNavbar a[href]:not(.no-spinner)').click(function (ev) {
 // temporarily disable "run external program" button when clicked
 $('body').on('click', '.run-progr', function (ev) {
   var bt = $(this).addClass('is-loading');
-  setTimeout(function () { bt.removeClass('is-loading') }, 5000);
+  var s = bt.data('spin-time') ? parseInt(bt.data('spin-time')) : 5;
+  setTimeout(function () { bt.removeClass('is-loading') }, s * 1000);
 });
 
 // apply sfw-mode if previously selected
