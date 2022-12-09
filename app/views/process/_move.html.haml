@@ -135,6 +135,18 @@
               class: 'w100', onchange: %Q| this.form.submit() |
             .icon.is-small.is-left
               %i.mi(title="crop landscape cover") crop
+          .control.is-hidden-mobile
+            = link_to edit_cover_process_path(run: :image_editor, format: :json), remote: true, data: {spin_time: 15},
+              class: "button run-progr is-small is-rounded", target: :_blank do
+              %span.icon.is-small
+                %i.mi add_photo_alternate
+              %span duplicate & edit
+          .control.is-hidden-mobile
+            = link_to edit_cover_process_path(tab: params[:tab]),
+              class: "button run-progr is-small is-rounded" do
+              %span.icon.is-small
+                %i.mi refresh
+              %span refresh thumb
         - else
           - cover = @info[:images].first
           %figure.image.is2by3= thumbnail_tag File.join(base_dir, cover[:thumb_path]),
@@ -144,15 +156,15 @@
         .columns
           .column.is-6(style="border-right: 1px solid transparent")
             .descr this file
+            %span.tag.is-info.mb-1= @collision_info[:current]
             .this_cover= html_cover
-            %span.tag.is-info= @collision_info[:current]
           .column.is-6(style="border-left: 1px solid red")
             .descr
               - if dj_id = @collision_info[:doujin].try(:id)
                 = link_to "collection ##{dj_id}", doujin_path(id: dj_id), target: :_blank
               - else
                 collection
+            %span.tag.is-info.mb-1= @collision_info[:collection]
             %figure.image.is2by3.coll_cover= image_tag doujin_path(id: @collision_info[:doujin].try(:id).to_i, format: :webp), title: "collision cover"
-            %span.tag.is-info= @collision_info[:collection]
       - else
         = html_cover

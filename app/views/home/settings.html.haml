@@ -3,11 +3,13 @@
 - { 'dir.to_sort'   => 'rule_folder',
     'dir.sorting'   => 'drive_file_move',
     'dir.sorted'    => 'create_new_folder',
+    'ext_cmd_env'   => 'holiday_village',
     'comics_viewer' => 'menu_book',
     'file_manager'  => 'folder',
-    'ext_cmd_env'   => 'holiday_village',
-    'scraper_useragent' => 'badge',
+    'image_editor'  => 'draw',
+    'terminal'      => 'terminal',
     'external_link' => 'launch',
+    'scraper_useragent' => 'badge',
   }.each do |key, icon|
   - s = Setting.find_by key: key
   = form_with url: home_settings_path do |f|
