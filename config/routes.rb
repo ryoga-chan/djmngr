@@ -21,6 +21,8 @@ Rails.application.routes.draw do
       get     :finalize_volume
       delete  :delete_archive_cwd
       delete  :delete_archive_files
+      get     :edit_cover
+      get     :inspect_folder
     end
   end # process
 
