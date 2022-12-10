@@ -121,12 +121,20 @@ class ProcessArchiveCompressJob < ApplicationJob
           
           vips_img = Vips::Image.new_from_file File.join(src_dir, 'contents', info[:images][img_index][:src_path])
           vips = ImageProcessing::Vips.source vips_img
-          if vips_img.width > vips_img.height # is a landscape image
-            crop_method = i == 0 ? info[:landscape_cover_method] : :attention
-            vips = vips.resize_to_fill(THUMB_WIDTH, THUMB_HEIGHT, crop: crop_method)
-          else
-            vips = vips.resize_and_pad(THUMB_WIDTH, THUMB_HEIGHT, alpha: true)
-          end
+          vips = \
+            if vips_img.width > vips_img.height # is a landscape image
+              if i > 0 # first image is the cover
+                vips.resize_to_fill(THUMB_WIDTH, THUMB_HEIGHT, crop: :attention)
+              elsif ProcessArchiveDecompressJob::CROP_METHODS.include?(info[:landscape_cover_method].to_sym)
+                vips.resize_to_fill(THUMB_WIDTH, THUMB_HEIGHT, crop: info[:landscape_cover_method])
+              else
+                ImageProcessing::Vips.source vips_img.
+                  scale_and_crop_to_offset_perc(THUMB_WIDTH, THUMB_HEIGHT, info[:landscape_cover_method].to_s.to_i)
+              end
+            else
+              vips.resize_and_pad(THUMB_WIDTH, THUMB_HEIGHT, alpha: true)
+            end
+          
           vips.convert('webp').saver(quality: 70).call destination: dst_img
         end
         # merge selected thumbnails
@@ -137,7 +145,7 @@ class ProcessArchiveCompressJob < ApplicationJob
         sh_output, sh_status = Open3.capture2e cmd  # hide STDOUT (instead of "system cmd")
         if sh_status.exitstatus != 0 # remove thumbnail if it goes wrong
           File.unlink(thumb_dst) if File.exist?(thumb_dst)
-          raise "error [#{$?.to_i}] while creating thumbnails"
+          raise "merge thumbnails exit code [#{sh_status.exitstatus}] != 0"
         end
         # save hash cover image to DB
         d.cover_fingerprint!
@@ -149,7 +157,7 @@ class ProcessArchiveCompressJob < ApplicationJob
         
         perc = (cur_step+=1).to_f / tot_steps * 100
         File.open(File.join(src_dir, 'finalize.perc'), 'w'){|f| f.write perc.round(2) }
-      end
+      end # Doujin.transaction
       
       CoverMatchingJob.rm_results_file info[:cover_hash]
     rescue
