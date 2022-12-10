@@ -130,6 +130,7 @@
           %figure.image.is2by3= thumbnail_tag File.join(base_dir, '0000.webp'), title: "cropped cover"
           .control.has-icons-left
             - crop_methods = ProcessArchiveDecompressJob::CROP_METHODS.map{|m| ["crop #{m}", m] }
+            - crop_methods += (1..99).map{|p| ["crop @ #{p}%", p] }
             .select.w100= f.select :cover_crop_method,
               options_for_select(crop_methods, @info[:landscape_cover_method].to_s), {},
               class: 'w100', onchange: %Q| this.form.submit() |
