@@ -54,10 +54,20 @@ class ProcessArchiveDecompressJob < ApplicationJob
     
     # generate cover
     if info[:landscape_cover]
-      ImageProcessing::Vips.source(cover_img).
-        # NOTE: using ProcessArchiveCompressJob sizes because the final output depend on resolution too!!
-        resize_to_fill(ProcessArchiveCompressJob::THUMB_WIDTH, ProcessArchiveCompressJob::THUMB_HEIGHT, crop: crop_method).
-        convert('webp').saver(quality: 70).call destination: File.join(dst_dir, 'thumbs', '0000.webp')
+      vips = \
+        if CROP_METHODS.include?(crop_method.to_sym)
+          # crop with standard VIPS methods
+          # NOTE: using ProcessArchiveCompressJob sizes because the final output depends on resolution too!!
+          ImageProcessing::Vips.source(cover_img).
+            resize_to_fill(ProcessArchiveCompressJob::THUMB_WIDTH,
+                           ProcessArchiveCompressJob::THUMB_HEIGHT,
+                           crop: crop_method)
+        else # crop at a specific percentage
+          ImageProcessing::Vips.source cover_img.
+            scale_and_crop_to_offset_perc(THUMB_WIDTH, THUMB_HEIGHT, crop_method.to_s.to_i)
+        end
+      
+      vips.convert('webp').saver(quality: 70).call destination: File.join(dst_dir, 'thumbs', '0000.webp')
     end
   end # self.crop_landscape_cover
   
