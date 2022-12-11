@@ -1,4 +1,5 @@
 require 'optparse'
+require 'colorize'
 
 # bin/rails dj:process -- ...
 namespace :dj do
@@ -36,24 +37,47 @@ namespace :dj do
     doujin_id = ARGV.shift.to_i
     die %Q|ERROR: doujin ID [#{doujin_id}] not found| unless dj = Doujin.find_by(id: doujin_id)
     
+    results = {}
+    def add_error(h, key, msg)
+      h[key][:errors] ||= []
+      h[key][:errors] << msg
+      print 'ERROR'.black.on_red
+      puts " #{msg}".red
+    end # add_error
+    
     # remaining arguments are files to process
     ARGV.each do |dj_fname|
       puts '-'*70
       puts "FILE: #{dj_fname}"
       
       fname = File.expand_path dj_fname
-      die %Q|ERROR: file not found| unless File.exist?(fname)
-      die %Q|ERROR: file not in "to_sort" folder| unless fname.start_with?(Setting['dir.to_sort'])
+      results[fname] = {}
       
-      hash  = ProcessArchiveDecompressJob.prepare_and_perform fname, perform_when: :now
-      die "ERROR: invalid MIME type: not a ZIP file!" if hash == :invalid_zip
+      unless File.exist?(fname)
+        add_error results, fname, "not found"
+        next
+      end
+      
+      unless fname.start_with?(Setting['dir.to_sort'])
+        add_error results, fname, %Q|outside "to_sort"|
+        next
+      end
+      
+      hash = ProcessArchiveDecompressJob.prepare_and_perform fname, perform_when: :now
+      if hash == :invalid_zip
+        add_error results, fname, "not a ZIP file"
+        next
+      end
       
       dname = File.expand_path File.join(Setting['dir.sorting'], hash)
       info_fname = File.join dname, 'info.yml'
       info  = YAML.load_file info_fname
       puts "HASH: #{hash}"
       
-      die "ERROR: no images found!" if info[:images].empty?
+      if info[:images].empty?
+        add_error results, fname, "no images found"
+        next
+      end
       
       # run cover image hash matching
       cover_path = ProcessArchiveDecompressJob.cover_path dname, info
@@ -63,7 +87,10 @@ namespace :dj do
       info[:cover_results] = cover_matching[:results]
       info[:cover_status ] = cover_matching[:status]
       File.open(info_fname, 'w'){|f| f.puts info.to_yaml }
-      die "ERROR: matching cover(s) found!" if info[:cover_results].any?
+      if info[:cover_results].any?
+        add_error results, fname, "cover matching"
+        next
+      end
       
       puts "\n[DST]     [SRC]"
       puts info[:images].map{|i| "#{i[:dst_path]}  #{i[:src_path]}"}
@@ -88,7 +115,7 @@ namespace :dj do
       File.open(info_fname, 'w'){|f| f.puts info.to_yaml }
       
       if !options[:overwrite] && File.exist?(Doujin.dest_path_by_process_params(info, full_path: true))
-        puts "ERROR: file already exists in collection"
+        add_error results, fname, "already exists"
         next
       end
       
@@ -100,16 +127,37 @@ namespace :dj do
         info = YAML.load_file info_fname
         if info[:finalize_error].blank?
           puts "DjID: #{info[:db_doujin_id]}"
+          results[fname][:id] = info[:db_doujin_id].to_i
           # remove file on disk, WIP folder, index entry
           File.unlink info[:file_path]
           FileUtils.rm_rf dname, secure: true
           ProcessIndexRefreshJob.rm_entry info[:relative_path]
         else
-          puts "ERROR: processing errors [#{info[:finalize_error]}]"
+          add_error results, fname, "processing errors" # [#{info[:finalize_error]}]
           next
         end
       end
     end # each filename
+    
+    # print final report
+    if ARGV.many?
+      puts '~~~~~ o ~~~~~ o ~~~~~ o ~~~~~ o ~~~~~ o ~~~~~ o ~~~~~ o ~~~~~ o ~~~~~'
+      base_dir, max_len = Setting['dir.to_sort'], 18
+      results.keys.sort.partition{|k| results[k][:id] }.flatten.each do |k|
+        fname = Pathname.new(k).relative_path_from(base_dir).to_s
+        if results[k][:id]
+          print 'OK'.white.on_green
+          print " #{results[k][:id].to_s.ljust max_len}".green
+          puts  "| #{fname}"
+        end
+        
+        results[k][:errors].to_a.each do |msg|
+          print 'KO'.black.on_red
+          print " #{msg.ljust max_len}".red
+          puts"| #{fname}"
+        end
+      end
+    end
     
     exit 0 # make sure that the extra arguments won't be interpreted as Rake task
   end # process

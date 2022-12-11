@@ -40,4 +40,5 @@ group :development do
   gem 'debug', platforms: %i[ mri mingw x64_mingw ] # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem 'rails-erd'                # DB ER diagram -- https://github.com/voormedia/rails-erd
   gem 'rails_real_favicon'       # https://realfavicongenerator.net/favicon/ruby_on_rails
+  gem 'colorize'                 # terminal colors -- https://github.com/fazibear/colorize
 end
