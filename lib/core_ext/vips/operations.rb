@@ -3,14 +3,17 @@ module CoreExt
     module Operations
       def scale_and_crop_to_offset_perc(w, h, p)
         raise 'percentage not in 0..100' unless (0..100).include?(p)
+        raise 'not a landscape image' if self.width <= self.height
         
         # https://www.libvips.org/API/current/libvips-resample.html#vips-thumbnail
-        img_scaled = self.thumbnail_image(self.height*w/h, height: h)
+        # the first parameter is the width of a square of size `width`x`width`
+        # and we want a max height of `h`, so:
+        #   x / 360 = image_w / image_h  ==>  x = image_w*360/image_h
+        img_scaled = self.thumbnail_image self.width*h/self.height, height: h
 
         # https://stackoverflow.com/questions/10853119/chop-image-into-tiles-using-vips-command-line/11098420#11098420
-        crop_width = (img_scaled.height*w/h).to_i
-        x_offset   = (img_scaled.width - crop_width) * p / 100
-        img_scaled.extract_area x_offset, 0, crop_width, img_scaled.height
+        x_offset   = (img_scaled.width - w) * p / 100
+        img_scaled.extract_area x_offset, 0, w, h
       end
     end
   end
