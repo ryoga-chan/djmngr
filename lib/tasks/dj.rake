@@ -19,6 +19,11 @@ namespace :dj do
       op.on("-n filename", "--name {filename}", "use a custom file name", String) do |v|
         die "empty filename" if v.blank?
         options[:dest_filename] = v
+      end # --name
+      
+      op.on("-t title", "--title {titlename}", "use a custom title name", String) do |v|
+        die "empty titlename" if v.blank?
+        options[:dest_title] = v
       end # --title
       
       op.on("-k", "--keep-filename", "keep filename"){ options[:keep_filename] = true }
@@ -110,10 +115,16 @@ namespace :dj do
         info[:doujin_dest_type] = dj.category
       end
       info[:dest_folder  ], info[:subfolder] = dj.file_folder.split('/')
+      info[:dest_title   ] = options[:dest_title] if options[:dest_title].present?
       info[:score        ] = options[:score] if options[:score]
-      info[:colorized    ] = true  if options[:col]
-      info[:hcg          ] = true  if options[:hcg]
-      info[:censored     ] = false if options[:unc]
+      info[:language         ] = dj.language
+      info[:reading_direction] = dj.reading_direction
+     #info[:censored         ] = dj.censored
+     #info[:colorized        ] = dj.colorized
+      info[:censored         ] = false if options[:unc]
+      info[:colorized        ] = true  if options[:col]
+      info[:hcg              ] = true  if options[:hcg]
+
       info[:overwrite    ] = options[:overwrite] if options[:overwrite]
       info[:dest_filename] = options[:dest_filename] if options[:dest_filename]
       info[:dest_filename] = File.basename(fname).sub(/ *\.zip$/i, '.zip') if options[:keep_filename]

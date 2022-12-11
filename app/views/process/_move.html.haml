@@ -43,8 +43,8 @@
           options_for_select({'right2left' => 'r2l', 'left2right' => 'l2r'}, @info[:reading_direction]),
           {}, class: "input is-small vmiddle"
         
-        .select(title="HCG?")= f.select :hcg,
-          options_for_select({'manga' => false, 'HCG' => true}, @info[:hcg]),
+        .select(title="book/CG")= f.select :hcg,
+          options_for_select({'book' => false, 'CG' => true}, @info[:hcg]),
           {}, class: "input is-small vmiddle"
         
       .notes.mb-1
@@ -88,6 +88,14 @@
           onclick: %Q|$('#dest_filename').val($('#dest_filename').data('orig-name')); return false| do
           %span.icon
             %i.mi.mi-small(title="restore initial filename") restore
+      
+      .dest-titlename.mb-1
+        %span.icon.in-text-small.mr-2
+          %i.mi.mi-small(title="destination title") title
+        - ph_dest_title = @info[:dest_filename].present? ? File.basename(@info[:dest_filename], File.extname(@info[:dest_filename])) : 'destination title'
+        = f.text_field :dest_title, value: @info[:dest_title],
+          placeholder: ph_dest_title,
+          class: 'input is-small', style: 'width: 30.25rem'
       
       - if @suggestions
         .suggested-filenames.mb1.ml-6(title="suggested filenames" style="max-height: 10rem; overflow: auto;")

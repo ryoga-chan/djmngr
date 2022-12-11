@@ -71,7 +71,9 @@ class ProcessArchiveCompressJob < ApplicationJob
         prev_doujin = Doujin.find_by_process_params info
         
         # 4. save record on database
-        name = File.basename info[:dest_filename], File.extname(info[:dest_filename])
+        name = info[:dest_title].present? ?
+          info[:dest_title] :
+          File.basename(info[:dest_filename], File.extname(info[:dest_filename]))
         d = Doujin.new \
           name:         name,
           name_kakasi:  name.to_romaji,
