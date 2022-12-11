@@ -58,18 +58,18 @@ namespace :dj do
       results[fname] = {}
       
       unless File.exist?(fname)
-        add_error results, fname, "not found"
+        add_error results, fname, 'not found'
         next
       end
       
       unless fname.start_with?(Setting['dir.to_sort'])
-        add_error results, fname, %Q|outside "to_sort"|
+        add_error results, fname, 'outside "to_sort"'
         next
       end
       
       hash = ProcessArchiveDecompressJob.prepare_and_perform fname, perform_when: :now
       if hash == :invalid_zip
-        add_error results, fname, "not a ZIP file"
+        add_error results, fname, 'not a ZIP file'
         next
       end
       
@@ -79,7 +79,7 @@ namespace :dj do
       puts "HASH: #{hash}"
       
       if info[:images].empty?
-        add_error results, fname, "no images found"
+        add_error results, fname, 'no images found'
         next
       end
       
@@ -92,7 +92,7 @@ namespace :dj do
       info[:cover_status ] = cover_matching[:status]
       File.open(info_fname, 'w'){|f| f.puts info.to_yaml }
       if info[:cover_results].any?
-        add_error results, fname, "cover matching"
+        add_error results, fname, 'cover matching'
         next
       end
       
@@ -122,7 +122,12 @@ namespace :dj do
       File.open(info_fname, 'w'){|f| f.puts info.to_yaml }
       
       if !options[:overwrite] && File.exist?(Doujin.dest_path_by_process_params(info, full_path: true))
-        add_error results, fname, "already exists"
+        add_error results, fname, 'already exists'
+        next
+      end
+      
+      if info[:landscape_cover]
+        add_error results, fname, 'landscape cover'
         next
       end
       
