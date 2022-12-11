@@ -91,6 +91,12 @@
           %span.icon.is-small.is-left
             %i.mi.mi-small format_paint
       .field
+        .control.has-icons-left
+          .select.is-fullwidth(title="manga or game HCG")
+            = f.select :hcg, {'manga' => false, 'HCG' => true}
+          %span.icon.is-small.is-left
+            %i.mi.mi-small sports_esports
+      .field
         .control.is-expanded.has-icons-left
           .select.is-fullwidth(title="read pages")
             = f.select :read_pages, (1..@doujin.num_images).map{|i| [i, i] }.unshift([:unread, 0])

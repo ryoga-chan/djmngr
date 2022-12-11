@@ -32,17 +32,21 @@
           {}, class: "input is-small vmiddle"
         
         .select(title="censored?")= f.select :censored,
-          options_for_select({'uncensored' => false, 'censored' => true}, @info[:censored]),
+          options_for_select({'uncens' => false, 'cens' => true}, @info[:censored]),
           {}, class: "input is-small vmiddle"
         
         .select(title="colorized?")= f.select :colorized,
-          options_for_select({'black & white' => false, 'colorized' => true}, @info[:colorized]),
+          options_for_select({'B&W' => false, 'color' => true}, @info[:colorized]),
           {}, class: "input is-small vmiddle"
         
         .select(title="reading direction")= f.select :reading_direction,
-          options_for_select({'right to left' => 'r2l', 'left to right' => 'l2r'}, @info[:reading_direction]),
+          options_for_select({'right2left' => 'r2l', 'left2right' => 'l2r'}, @info[:reading_direction]),
           {}, class: "input is-small vmiddle"
-
+        
+        .select(title="HCG?")= f.select :hcg,
+          options_for_select({'manga' => false, 'HCG' => true}, @info[:hcg]),
+          {}, class: "input is-small vmiddle"
+        
       .notes.mb-1
         %span.icon.in-text-small.mr-2
           %i.mi.mi-small(title="notes") comment

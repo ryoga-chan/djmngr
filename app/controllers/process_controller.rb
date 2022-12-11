@@ -174,6 +174,7 @@ class ProcessController < ApplicationController
       language
       censored
       colorized
+      hcg
       notes
       cover_crop_method
     }.each do |k|

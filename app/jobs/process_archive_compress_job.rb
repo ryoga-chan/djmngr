@@ -88,6 +88,7 @@ class ProcessArchiveCompressJob < ApplicationJob
           language:     info[:language ],
           censored:     info[:censored ],
           colorized:    info[:colorized],
+          hcg:          info[:hcg      ],
           notes:        info[:notes    ]
         d.file_folder = Pathname.new(d.file_folder).relative_path_from("/#{d.category}").to_s
         d.save!
