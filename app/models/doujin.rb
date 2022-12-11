@@ -50,6 +50,8 @@ class Doujin < ApplicationRecord
     self.name_kakasi      = name     .to_romaji if name_changed? || name_kakasi.blank?
     self.name_orig_kakasi = name_orig.to_romaji if name_orig_changed?
     self.notes            = notes.to_s.strip    if notes_changed?
+    
+    self.colorized = true if hcg?
   end # sanitize_fields
   
   def validates_rename_file
