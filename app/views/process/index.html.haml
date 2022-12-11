@@ -22,7 +22,7 @@
               %td= link_to f[:relative_path], action: :edit, id: f[:working_dir]
 
     .title.is-size-4
-      = "Processable archives (#{@files.total_count})"
+      %span.mr-3= "Processable archives (#{@files.total_count})"
       = link_to 'refresh list', {refresh: true}, class: 'button is-info is-small is-rounded', style: 'vertical-align: middle'
 
     - if @files.empty?
