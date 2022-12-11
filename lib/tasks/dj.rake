@@ -27,6 +27,10 @@ namespace :dj do
         die "invalid score" unless (1..10).include?(v.to_i)
         options[:score] = v.to_i
       end # --score
+      
+      op.on("-c", "--color", "is colorized" ){ options[:col] = true }
+      op.on("-g", "--game" , "is game HCG"  ){ options[:hcg] = true }
+      op.on("-u", "--unc"  , "is uncensored"){ options[:unc] = true }
 
       op.on('-h', '--help', "show help") do
         die "USAGE: rails dj:process -- [switches] doujin_id file1 file2 ... #{op}\n", 0
@@ -107,6 +111,9 @@ namespace :dj do
       end
       info[:dest_folder  ], info[:subfolder] = dj.file_folder.split('/')
       info[:score        ] = options[:score] if options[:score]
+      info[:colorized    ] = true  if options[:col]
+      info[:hcg          ] = true  if options[:hcg]
+      info[:censored     ] = false if options[:unc]
       info[:overwrite    ] = options[:overwrite] if options[:overwrite]
       info[:dest_filename] = options[:dest_filename] if options[:dest_filename]
       info[:dest_filename] = File.basename(fname).sub(/ *\.zip$/i, '.zip') if options[:keep_filename]
