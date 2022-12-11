@@ -157,7 +157,9 @@ class DoujinshiController < ApplicationController
           filename: "#{@doujin.file_dl_name}.#{request.format.to_sym}"
       }# zip, cbz
       format.json {
-        ExternalProgramRunner.run params[:run], @doujin.file_path(full: true)
+        target = @doujin.file_path(full: true)
+        target = File.dirname target if params[:run] == 'terminal'
+        ExternalProgramRunner.run params[:run], target
         render json: {ris: :done}
       }#json
     end

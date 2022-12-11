@@ -95,13 +95,22 @@
         %td
           .columns.is-vcentered
             .column= @doujin.file_path
-            .column.is-2.has-text-centered.is-hidden-mobile
-              = link_to doujin_path(@doujin, run: :file_manager, format: :json),
-                  title: 'open in file manager',
-                  remote: true, class: 'button run-progr is-info is-rounded' do
-                %span.icon
-                  %i.mi.mi-small folder
-                %span FM
+            .column.is-3.has-text-centered.is-hidden-mobile
+              .field.has-addons
+                %p.control
+                  = link_to doujin_path(@doujin, run: :file_manager, format: :json),
+                      title: 'open folder in file manager',
+                      remote: true, class: 'button run-progr is-info is-rounded' do
+                    %span.icon
+                      %i.mi.mi-small folder
+                    %span FM
+                %p.control
+                  = link_to doujin_path(@doujin, run: :terminal, format: :json),
+                      title: 'open folder in terminal',
+                      remote: true, class: 'button run-progr is-info is-rounded' do
+                    %span.icon
+                      %i.mi.mi-small terminal
+                    %span SH
 
       %tr
         %th Orig.
