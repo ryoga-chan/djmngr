@@ -17,7 +17,7 @@ class CoverMatchingJob < ApplicationJob
       call destination: fname
     
     # calculate its pHash
-    phash = '%016x' % Phashion::Image.new(fname).fingerprint
+    phash = Kernel.suppress_output{ '%016x' % Phashion::Image.new(fname).fingerprint }
     
     # create metadata + embedded image
     File.open(File.join(Setting['dir.sorting'], "#{phash}.yml").to_s, 'w') do |f|

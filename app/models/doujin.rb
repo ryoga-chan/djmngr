@@ -183,7 +183,7 @@ class Doujin < ApplicationRecord
     rel.order(Arel.sql "COALESCE(NULLIF(name_romaji, ''), NULLIF(name_kakasi, ''))")
   end # self.search
   
-  def cover_fingerprint = '%016x' % Phashion::Image.new(thumb_disk_path).fingerprint
+  def cover_fingerprint = Kernel.suppress_output{ '%016x' % Phashion::Image.new(thumb_disk_path).fingerprint }
   
   def cover_fingerprint!
     f = cover_fingerprint

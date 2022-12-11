@@ -10,7 +10,7 @@ module CoreExt
         def cp_f(src, dst)
           File.unlink dst if File.exist?(dst)
           ::FileUtils.cp src, dst
-        end # self.cp_f
+        end # cp_f
       end
     end
   end
