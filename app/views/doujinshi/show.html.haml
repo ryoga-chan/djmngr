@@ -67,6 +67,11 @@
                 %i.mi.mi-small format_paint
               %span col
             
+            - if @doujin.hcg?
+              %span.icon.is-small.ml-5
+                %i.mi.mi-small sports_esports
+              %span hcg
+            
             - if @doujin.score.to_i > 0
               %span.icon.is-small.ml-5
                 %i.mi star_rate
