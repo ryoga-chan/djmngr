@@ -45,7 +45,8 @@
 
 .columns.search-results.mt-3
   .column(class="associated")
-    .title.is-4.mt-1 Associations
+    .title-bar.mt-1.mb-3
+      %span.is-size-4.ml-5 Associations
     
     = form_with url: set_property_process_path do |f|
       = f.hidden_field :tab , value: params[:tab]
@@ -86,13 +87,12 @@
   
   - %w{ circles authors }.each do |type|
     .column{class: type}
-      .columns
-        .column.is-2
-          = link_to({controller: type, action: :new, wip_hash: params[:id], name: params[:term]}, class: 'button is-small is-rounded') do
-            %span.icon.is-small
-              %i.mi.mi-small add
-        .column
-          .title.is-4.mt-1= "#{type.capitalize} search"
+      .title-bar.mt-1.mb-3
+        = link_to({controller: type, action: :new, wip_hash: params[:id], name: params[:term]},
+          class: 'button is-small is-rounded') do
+          %span.icon.is-small
+            %i.mi.mi-small add
+        %span.is-size-4.ml-2= "#{type.capitalize} search"
       
       - instance_variable_get("@#{type}").each do |r|
         - next if r.doujinshi_org_aka_id.present?
