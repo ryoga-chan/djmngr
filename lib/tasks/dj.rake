@@ -100,9 +100,10 @@ namespace :dj do
         info = YAML.load_file info_fname
         if info[:finalize_error].blank?
           puts "DjID: #{info[:db_doujin_id]}"
-          # remove file on disk and WIP folder
+          # remove file on disk, WIP folder, index entry
           File.unlink info[:file_path]
           FileUtils.rm_rf dname, secure: true
+          ProcessIndexRefreshJob.rm_entry info[:relative_path]
         else
           puts "ERROR: processing errors [#{info[:finalize_error]}]"
           next
