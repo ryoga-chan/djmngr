@@ -169,6 +169,7 @@ class ProcessController < ApplicationController
       file_type
       dest_folder
       subfolder
+      dest_title
       dest_filename
       reading_direction
       language
