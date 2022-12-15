@@ -85,7 +85,7 @@
             = f.hidden_field :score, value: @doujin.score.to_i
             .scoring
               - (1..10).each do |i|
-                %span.icon.is-medium.set-score{data: {score: i},
+                %span.icon.is-medium.set-score.mr-4.mb-5{data: {score: i},
                   class: (i <= @doujin.score.to_i ? 'has-text-warning' : ''), title: i}
                   %i.mi.mi-medium= i <= @doujin.score.to_i ? :star_rate : :star_outline
                   %span= i
