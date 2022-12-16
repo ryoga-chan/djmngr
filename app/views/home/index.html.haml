@@ -4,7 +4,7 @@
 
 .columns
   .column.has-text-centered
-    %span.tag.is-hidden-mobile(style="margin-bottom: 2rem;") application counters
+    %span.tag.is-hidden-mobile.mb-5 application counters
     
     .tags
       .tags.has-addons.mr-4.mb-0
@@ -92,10 +92,10 @@
             %span= number_with_delimiter @stats[:mdt], delimiter: "'"
         %span.tag= link_to 'themes', themes_path
 
-  .column.is-2.has-text-centered{style: "border: 1px solid grey; border-width: 0 1px;"}
-    %span.tag.is-hidden-mobile(style="margin-bottom: 2rem;") quick links
+  .column.is-2.has-text-centered
+    %span.tag.is-hidden-mobile.mb-5 quick links
     
-    .spacer.is-hidden-touch
+    %hr.is-hidden-tablet.my-0
     
     = link_to random_pick_doujinshi_path(type: :book  ), class: 'button is-info is-rounded mt-3 mx-1' do
       %span.icon-text
@@ -133,13 +133,17 @@
             %span.icon
               %i.mi shelves
   
+    %hr.is-hidden-tablet.my-0.mt-3
+    
   .column.is-5.has-text-centered
-    %span.tag.is-hidden-mobile(style="margin-bottom: 2rem;")
+    %span.tag.is-hidden-mobile.mb-5
       scoring distribution over
       = number_with_delimiter @stats[:dj], delimiter: "'"
       doujinshi
     
-    .columns.mt-3
+    .mt-3.is-hidden-mobile
+    
+    .columns
       .column.is-5
         - if @pie_slices_css
           .pie-chart{style: "width: 12rem; height: 12rem; border-radius: 50%; margin: auto; background: conic-gradient(#{@pie_slices_css.join ', '})"}
