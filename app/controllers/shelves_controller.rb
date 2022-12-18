@@ -10,12 +10,9 @@ class ShelvesController < ApplicationController
     respond_to do |format|
       format.ereader
       format.json {
-        files = @doujinshi.map{|d| d.file_path.shellescape }
-        
-        system Setting.get_json(:ext_cmd_env).to_h,
-          %Q| #{Setting[:comics_viewer]} #{files.join ' '} & |,
+        ExternalProgramRunner.run params[:run],
+          @doujinshi.map{|d| d.file_path },
           chdir: Setting['dir.sorted']
-        
         render json: {ris: :ok}
       }#json
     end
