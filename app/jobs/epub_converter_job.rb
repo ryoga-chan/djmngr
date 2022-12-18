@@ -46,7 +46,7 @@ class EpubConverterJob < ApplicationJob
         puts entry.name
         
         perc = (i+1).to_f / entries.size * 100
-        File.open(perc_file, 'w'){|f| f.write perc.round(2) }
+        File.atomic_write(perc_file){|f| f.write perc.round(2) }
         
         img_dst = "#{tmpd}/images/#{'%04d' % (i+1)}.jpg"
         ext = File.extname(entry.name).downcase

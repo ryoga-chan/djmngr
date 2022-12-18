@@ -18,6 +18,8 @@ bin/rails g migration create_circles_doujinshi circle:references doujin:referenc
 bin/rails g job process_archive_decompress
 bin/rails g job process_archive_compress
 bin/rails g job process_index_refresh
+bin/rails g job process_batch
+bin/rails g job process_batch_inspect
 bin/rails g job cover_matching
 
 wget -O config/locales/en.yml https://github.com/svenfuchs/rails-i18n/raw/master/rails/locale/en.yml

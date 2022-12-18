@@ -24,8 +24,8 @@
   - if @info[:prepared_at]
 
     .title
-      Archive processing started
-      %span.is-1= "on #{@info[:prepared_at].strftime '%F %H:%M'}"
+      Archive processing started at
+      %span.is-1= @info[:prepared_at].strftime '%F %H:%M'
     .subtitle= @info[:relative_path]
     
     .tabs.is-boxed
@@ -67,7 +67,7 @@
     
   - else
 
-    .title= "Archive processing"
+    .title Archive processing
     .title.is-4= @info[:relative_path]
     .title.is-6= "Preparing archive, please wait ... #{@perc}%"
     

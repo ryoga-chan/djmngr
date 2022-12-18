@@ -1,0 +1,157 @@
+.container.is-max-desktop
+  .actions-danger.has-text-centered(style="float: right")
+    = link_to(batch_process_path(id: params[:id]),
+        method: :delete, data: { confirm: 'Delete this batch job?' },
+        class: 'button is-danger is-light is-rounded mb-2', title: 'delete batch job') do
+      %span.icon
+        %i.mi delete
+      %span Delete
+
+  - if @info[:started_at]
+    - @info[:progress] ||= {}
+
+    .title
+      Batch processing
+      - if ts = @info[:progress][:completed_at]
+        completed at
+        %span.is-1= ts.strftime '%F %H:%M'
+      - else
+        started at
+        %span.is-1= @info[:started_at].strftime '%F %H:%M'
+    .subtitle= "#{@info[:files].size} archives"
+    
+    - unless @info[:progress].key?(:completed_at)
+      .batch-status
+        = "#{@info[:progress].size} / #{@info[:files].size} archives processed"
+        
+        = link_to(batch_process_path(id: params[:id], undo: true), method: :delete,
+          class: 'button is-success is-light is-rounded mt-2 mr-3', title: 'undo batch processing')  do
+          %span.icon
+            %i.mi.mi-small undo
+          %span Stalled? Undo!
+      
+      :javascript
+        setTimeout(function () { window.location.reload(); }, 5000)
+      
+    %table.table.is-fullwidth
+      - @info[:progress].each do |name, result|
+        - next if name == :completed_at
+        - fname = Pathname.new(name).relative_path_from(Setting['dir.to_sort']).to_s
+        %tr
+          - if result[:id]
+            %td.w1
+              .tags.has-addons.is-flex-wrap-nowrap
+                %span.tag.is-success OK
+                %span.tag.is-info= result[:id]
+            %td= link_to fname, doujin_path(id: result[:id])
+          - else
+            %td.w1
+              - result[:errors].to_a.each do |err|
+                .tags.has-addons.is-flex-wrap-nowrap
+                  %span.tag.is-danger KO
+                  %span.tag.is-info= err
+            %td= link_to fname, action: :edit, id: ProcessArchiveDecompressJob.file_hash(name)
+
+    %hr
+    
+  - elsif @info[:prepared_at]
+
+    .title
+      Batch processing prepared at
+      %span.is-1= @info[:prepared_at].strftime '%F %H:%M'
+    .subtitle= "#{@info[:files].size} archives"
+    
+    = form_with url: batch_process_path(id: params[:id]), scope: :options, method: :get,
+      html: { class: "mb-4" } do |f|
+      .columns.mb-0
+        .column.field.has-addons.mb-0
+          .control
+            = f.number_field :doujin_id, value: @info[:options].try('[]', :doujin_id),
+              placeholder: 'doujin ID', class: "input is-rounded is-small"
+          - if dj = Doujin.order(:created_at).last
+            .control
+              = link_to dj, title: "use ID #{dj.id}", target: :_blank,
+                onclick: %Q|jQuery('#options_doujin_id').val(#{dj.id}); return false|,
+                class: 'button is-small' do
+                %span.icon
+                  %i.mi content_copy
+            .control
+              = link_to dj, title: "view ID #{dj.id}: #{dj.file_dl_name(omit_ext: true)}", target: :_blank,
+                class: 'button is-small' do
+                %span.icon
+                  %i.mi visibility
+          .control
+            - list = (1..10).map{|i| ["&star; #{i}".html_safe,i] }.unshift(['[score=none]', nil])
+            .select= f.select :score,
+              options_for_select(list, @info[:options].try('[]', :score)), {},
+              class: "input is-rounded is-small"
+        
+        .column.field.has-addons.mb-0
+          .control
+            - list = [['[chroma=auto]', nil], ['B&W', false], ['color', true]]
+            .select= f.select :col,
+              options_for_select(list, @info[:options].try('[]', :col)), {},
+              class: "input is-rounded is-small"
+          .control
+            - list = [['[media=auto]', nil], ['book', false], ['game', true]]
+            .select= f.select :hcg,
+              options_for_select(list, @info[:options].try('[]', :hcg)), {},
+              class: "input is-rounded is-small"
+          .control
+            - list = [['[cens=auto]', nil], ['censored', false], ['uncensored', true]]
+            .select= f.select :unc,
+              options_for_select(list, @info[:options].try('[]', :unc)), {},
+              class: "input is-rounded is-small"
+          .control
+            - list = [['[collision=abort]', false], ['overwrite', true]]
+            .select= f.select :overwrite,
+              options_for_select(list, @info[:options].try('[]', :overwrite)), {},
+              class: "input is-rounded is-small"
+      .field.has-addons.is-justify-content-center
+        .control
+          = link_to '#', onclick: %Q|jQuery('.column.cover').toggleClass('is-hidden')|,
+            class: 'button is-rounded is-small' do
+            %span.icon.is-small
+              %i.mi compare
+            %span Toggle covers
+        .control
+          = f.button type: :submit, value: :save, class: 'button is-rounded is-link is-small' do
+            %span.icon.is-small
+              %i.mi save
+            %span Save
+        .control
+          = f.button type: :submit, value: :start, class: 'button is-rounded is-primary is-small' do
+            %span.icon.is-small
+              %i.mi send
+            %span Start
+    
+    - @info[:files].each do |name, files|
+      .columns
+        .column.is-2.cover.is-hidden
+          %figure.image.is2by3= inline_image_tag :'image/webp', @info[:thumbs][name]
+        .column
+          .name
+            = link_to('🗑', batch_process_path(id: params[:id], remove: name),
+              method: :delete, data: { confirm: 'Remove this entry?' },
+              class: 'has-text-danger', title: 'remove from batch')
+            = name
+          .files
+            %pre= files.join "\n"
+    
+    %hr
+    
+  - else
+
+    .title Batch processing
+    .title.is-4= "#{@info[:files].size} archives"
+    - done = @info[:files].select{|name, entries| entries }
+    .title.is-6= "Analyzing file names, please wait ... #{done.size}/#{@info[:files].size}"
+    
+    :javascript
+      setTimeout(function () { window.location.reload(); }, 5000)
+
+  = link_to 'show metadata', '#', class: 'button is-info',
+    onclick: %Q|$(this).hide().next().removeClass('is-hidden'); return false|
+  - @info.delete :files
+  - @info.delete :thumbs
+  %pre.debug-info.is-hidden= PP.pp @info, ''

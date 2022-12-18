@@ -33,11 +33,11 @@ class ProcessArchiveCompressJob < ApplicationJob
         end
         
         perc = (cur_step+=1).to_f / tot_steps * 100
-        File.open(File.join(src_dir, 'finalize.perc'), 'w'){|f| f.write perc.round(2) }
+        File.atomic_write(File.join(src_dir, 'finalize.perc')){|f| f.write perc.round(2) }
       end
       
       # 1. add metadata file
-      File.open(File.join(out_dir, 'metadata.yml'), 'w'){|f| f.write({
+      File.atomic_write(File.join(out_dir, 'metadata.yml')){|f| f.write({
         source_file:    File.basename(info[:relative_path]),
         file_size:      info[:file_size],
         file_type:      info[:file_type],
@@ -48,7 +48,7 @@ class ProcessArchiveCompressJob < ApplicationJob
         files:  info[:files ].map{|i| "#{i[:dst_path]}\t#{i[:src_path]}" },
       }.to_yaml) }
       perc = (cur_step+=1).to_f / tot_steps * 100
-      File.open(File.join(src_dir, 'finalize.perc'), 'w'){|f| f.write perc.round(2) }
+      File.atomic_write(File.join(src_dir, 'finalize.perc')){|f| f.write perc.round(2) }
       
       # 2. create zip file
       info[:collection_relative_path] = Doujin.dest_path_by_process_params info
@@ -59,12 +59,12 @@ class ProcessArchiveCompressJob < ApplicationJob
       system %Q[ find -type f | sort | zip -q -r #{info[:collection_full_path].shellescape}.NEW -@ ], chdir: out_dir
       
       perc = (cur_step+=1).to_f / tot_steps * 100
-      File.open(File.join(src_dir, 'finalize.perc'), 'w'){|f| f.write perc.round(2) }
+      File.atomic_write(File.join(src_dir, 'finalize.perc')){|f| f.write perc.round(2) }
       
       # 3. calculate checksum
       info[:dest_checksum] = `sha512sum -b #{info[:collection_full_path].shellescape}.NEW`.split(' ', 2)[0]
       perc = (cur_step+=1).to_f / tot_steps * 100
-      File.open(File.join(src_dir, 'finalize.perc'), 'w'){|f| f.write perc.round(2) }
+      File.atomic_write(File.join(src_dir, 'finalize.perc')){|f| f.write perc.round(2) }
 
       Doujin.transaction do
         # look for the eventual file already in collection
@@ -104,7 +104,7 @@ class ProcessArchiveCompressJob < ApplicationJob
         info[:db_doujin_id] = d.id
         
         perc = (cur_step+=1).to_f / tot_steps * 100
-        File.open(File.join(src_dir, 'finalize.perc'), 'w'){|f| f.write perc.round(2) }
+        File.atomic_write(File.join(src_dir, 'finalize.perc')){|f| f.write perc.round(2) }
         
         # 5. create doujin thumbnail (webp animated image with sample pages)
         # select thumbnails in predefined positions
@@ -159,7 +159,7 @@ class ProcessArchiveCompressJob < ApplicationJob
         FileUtils.mv "#{info[:collection_full_path]}.NEW", info[:collection_full_path], force: true
         
         perc = (cur_step+=1).to_f / tot_steps * 100
-        File.open(File.join(src_dir, 'finalize.perc'), 'w'){|f| f.write perc.round(2) }
+        File.atomic_write(File.join(src_dir, 'finalize.perc')){|f| f.write perc.round(2) }
       end # Doujin.transaction
       
       CoverMatchingJob.rm_results_file info[:cover_hash]
@@ -168,6 +168,6 @@ class ProcessArchiveCompressJob < ApplicationJob
       info[:finalize_backtrace] = $!.backtrace
     end
     
-    File.open(File.join(src_dir, 'info.yml'), 'w'){|f| f.puts info.to_yaml }
+    File.atomic_write(File.join(src_dir, 'info.yml')){|f| f.puts info.to_yaml }
   end # perform
 end
