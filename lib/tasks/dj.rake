@@ -1,5 +1,4 @@
 require 'optparse'
-require 'colorize'
 
 # bin/rails dj:process -- ...
 namespace :dj do
