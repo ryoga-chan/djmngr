@@ -1,5 +1,6 @@
 .columns
   .column.is-2.has-text-centered
+    %span.tag= "ID# #{@doujin.id}"
     %figure.image.is2by3
       = image_tag("/thumbs/#{@doujin.id}.webp")
     = link_to '&star; fave'.html_safe,

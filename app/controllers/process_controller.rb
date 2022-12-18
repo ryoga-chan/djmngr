@@ -39,6 +39,11 @@ class ProcessController < ApplicationController
       }.sort{|a,b| a[:relative_path] <=> b[:relative_path] }
       @preparing_paths = @preparing.map{|i| i[:relative_path] }
     end
+    
+    files_glob = File.join Setting['dir.sorting'], 'batch_*.yml'
+    @batches = Dir[files_glob].map{|f|
+      { hash: File.basename(f).sub(/batch_(.+).yml/, '\1'), time: File.ctime(f) }
+    }.sort{|a,b| a[:time] <=> b[:time] }
   end # index
   
   # prepare ZIP working folder and redirects to edit
@@ -49,6 +54,73 @@ class ProcessController < ApplicationController
       redirect_to(process_index_path, alert: "invalid MIME type: not a ZIP file!") :
       redirect_to(edit_process_path id: hash)
   end # prepare_archive
+  
+  # prepare working YML file and redirects to batch action
+  def prepare_batch
+    if params[:file_ids].to_a.any?
+      hash = ProcessBatchJob.prepare params[:file_ids]
+      redirect_to batch_process_path(id: hash)
+    else
+      redirect_to process_index_path, alert: "no files selected!"
+    end
+  end # prepare_batch
+  
+  # start/monitor batch processing files
+  def batch
+    info_path = ProcessBatchJob.info_path params[:id]
+    return redirect_to(process_index_path, alert: "batch not found!") unless File.exist?(info_path)
+    
+    @info = YAML.load_file info_path
+
+    # remove single entry or entire batch data file
+    if request.delete?
+      if params[:undo]
+        @info.delete :started_at
+        File.atomic_write(info_path){|f| f.puts @info.to_yaml }
+        return redirect_to(batch_process_path(id: params[:id]), notice: "batch processing halted")
+      elsif params[:remove].present?
+        @info[:files].delete params[:remove]
+        File.atomic_write(info_path){|f| f.puts @info.to_yaml }
+        return redirect_to(batch_process_path(id: params[:id]), notice: "entry removed: [#{params[:remove]}]")
+      else
+        File.unlink info_path
+        return redirect_to(process_index_path, notice: "batch deleted: [#{params[:id][0..10]}...]")
+      end
+    end
+    
+    # update options
+    if params[:options]
+      @info[:options] = { hash: params[:id] }
+      
+      if dj = Doujin.find_by(id: params[:options][:doujin_id].to_i)
+        @info[:options][:doujin_id] = params[:options][:doujin_id].to_i
+      end
+      
+      @info[:options][:score] = params[:options][:score].present? ? params[:options][:score].to_i : nil
+      
+      %i[ col unc hcg overwrite ].each do |k|
+        @info[:options][k] = params[:options][k].present? ? (params[:options][k] == 'true') : nil
+      end
+      
+      File.atomic_write(info_path){|f| f.puts @info.to_yaml }
+      
+      if params[:button] == 'start'
+        if dj
+          @info[:started_at] = Time.now
+          File.atomic_write(info_path){|f| f.puts @info.to_yaml }
+          
+          files = @info[:files].keys.map{|f| File.join Setting['dir.to_sort'], f }
+          ProcessBatchJob.perform_later dj.id, files, @info[:options]
+
+          flash[:notice] = 'batch processing started'
+        else
+          flash[:notice] = 'no doujin ID specified'
+        end
+      end
+      
+      return redirect_to(batch_process_path(id: params[:id]))
+    end
+  end # batch
   
   def delete_archive
     # count images and other files

@@ -6,25 +6,27 @@ class ProcessArchiveDecompressJob < ApplicationJob
 
   queue_as :tools
   
+  def self.file_hash(fname)
+    Digest::SHA256.hexdigest "djmngr|#{File.basename fname}|#{File.size fname}"
+  end # self.file_hash
+  
   def self.prepare_and_perform(fname, perform_when: :later)
     raise :invalid_method unless %i[ later now ].include?(perform_when)
     raise :file_not_found unless File.exist?(fname)
     
     return :invalid_zip if Marcel::MimeType.for(Pathname.new fname) != 'application/zip'
     
-    file_size = File.size fname
-    
     # create WIP folder named as the hash
-    hash = Digest::SHA256.hexdigest "djmngr|#{File.basename fname}|#{file_size}"
+    hash = file_hash fname
     dst_dir = File.join Setting['dir.sorting'], hash
     FileUtils.mkdir_p dst_dir
     
     if Dir.empty?(dst_dir)
       # create metadata file
-      File.open(File.join(dst_dir, 'info.yml'), 'w') do |f|
+      File.atomic_write(File.join(dst_dir, 'info.yml')) do |f|
         f.puts({
           file_path:     fname,
-          file_size:     file_size,
+          file_size:     File.size(fname),
           relative_path: Pathname.new(fname).relative_path_from(Setting['dir.to_sort']).to_s,
           working_dir:   hash,
           prepared_at:   nil,
@@ -129,6 +131,7 @@ class ProcessArchiveDecompressJob < ApplicationJob
     info[:language ] = Doujin::LANGUAGES.values.detect{|v| name[:properties].include?(v) } || Doujin::LANGUAGES.values.first
     info[:censored ] = !name[:properties].include?('unc')
     info[:colorized] = info[:file_type] == 'artbook' || name[:properties].include?('col')
+    info[:hcg      ] = fname =~ /hcg/i
     
     # create folder and unzip archive
     path_thumbs   = File.join(dst_dir, 'thumbs')
@@ -182,12 +185,12 @@ class ProcessArchiveDecompressJob < ApplicationJob
       
       # write completion percentage
       perc = (i+1).to_f / info[:images].size * 100
-      File.open(File.join(dst_dir, 'completion.perc'), 'w'){|f| f.write perc.round(2) }
+      File.atomic_write(File.join(dst_dir, 'completion.perc')){|f| f.write perc.round(2) }
     end
     
     info[:reading_direction] = Setting[:reading_direction]
     info[:prepared_at] = Time.now
     
-    File.open(File.join(dst_dir, 'info.yml'), 'w'){|f| f.puts info.to_yaml }
+    File.atomic_write(File.join(dst_dir, 'info.yml')){|f| f.puts info.to_yaml }
   end # perform
 end

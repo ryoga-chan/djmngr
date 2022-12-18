@@ -9,8 +9,9 @@ Rails.application.routes.draw do
   resources :process, only: %i[ index edit ] do
     collection do
       get     :show_externally
-      get     :prepare_archive
+      get     :prepare_archive  # prepare processing of single file
       delete  :delete_archive
+      post    :prepare_batch    # prepare mass processing of selected files
     end
     member do
       get     :show_image
@@ -23,6 +24,8 @@ Rails.application.routes.draw do
       delete  :delete_archive_files
       get     :edit_cover
       get     :inspect_folder
+      get     :batch            # manage mass processing
+      delete  :batch
     end
   end # process
 

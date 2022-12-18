@@ -8,12 +8,27 @@
     :javascript
       setTimeout(function () { window.location.reload(); }, 5000)
   - else
+    - if @batches.any?
+      .title.is-size-4= "Batch processing (#{@batches.size})"
+
+      %table.table.is-striped.is-hoverable.ml-4
+        %tbody
+          - @batches.each do |f|
+            %tr
+              %td= link_to('🗑', batch_process_path(id: f[:hash]),
+                method: :delete, data: { confirm: 'Delete this batch job?' },
+                class: 'has-text-danger', title: 'delete batch job')
+              %td
+                = link_to batch_process_path(id: f[:hash]) do
+                  #{f[:time].strftime('%F %T')} / 
+                  %span.is-family-monospace #{f[:hash][0..10]}...
+
     - if @preparing.any?
       .title.is-size-4= "Processing archives (#{@preparing.size})"
 
       %table.table.is-striped.is-hoverable.ml-4
         %tbody
-          - @preparing.each_with_index do |f, i|
+          - @preparing.each do |f|
             %tr
               %td= link_to('🗑', {action: :delete_archive_cwd, id: f[:working_dir]},
                 method: :delete, data: { confirm: 'Delete this processing folder?' },
@@ -21,30 +36,42 @@
               %td.has-text-right= number_to_human_size f[:tot_size]
               %td= link_to f[:relative_path], action: :edit, id: f[:working_dir]
 
-    .title.is-size-4
-      %span.mr-3= "Processable archives (#{@files.total_count})"
-      = link_to 'refresh list', {refresh: true}, class: 'button is-info is-small is-rounded', style: 'vertical-align: middle'
-
-    - if @files.empty?
-      %em no files to process
-    - else
-      = page_entries_info @files
-
-      %table.table.is-striped.is-hoverable.ml-4
-        %tbody
-          - @files.each do |f|
-            %tr
-              %td= link_to('🗑', {action: :delete_archive, path: f.name},
-                method: :delete, data: { confirm: 'Delete this file?' },
-                class: 'has-text-danger', title: 'delete file')
-              %td.has-text-right= number_to_human_size f.size
-              %td.is-hidden-mobile= render partial: 'file_actions', locals: {fname: f.name}
-              %td
-                .name
-                  - if @preparing_paths.include?(f.name)
-                    %span.tag.is-warning(title="processing") 🛠
-                  = link_to f.name, action: :prepare_archive, path: f.name
-                - if f.name != f.name_kakasi
-                  .name_kakasi.is-size-7= f.name_kakasi
+    = form_with url: prepare_batch_process_index_path, method: :post do |f|
+      .title.is-size-4= "Processable archives (#{@files.total_count})"
       
-      = paginate @files
+      .actions
+        .field.has-addons.mb-4.is-justify-content-end
+          .control= link_to 'batch mode', '#', class: 'button is-link is-small is-rounded',
+            onclick: %Q|jQuery('.batch-submit, td.rm-or-batch > *').toggleClass('is-hidden'); return false|
+          .control.batch-submit.is-hidden
+            = f.button type: :submit, class: 'button is-rounded is-small' do
+              %span.icon.is-small
+                %i.mi send
+              %span prepare batch
+          .control= link_to 'refresh list', {refresh: true}, class: 'button is-info is-small is-rounded'
+      
+      - if @files.empty?
+        %em no files to process
+      - else
+        = page_entries_info @files
+
+        %table.to_process.table.is-striped.is-hoverable.ml-4
+          %tbody
+            - @files.each do |f|
+              %tr
+                %td.rm-or-batch
+                  = link_to('🗑', {action: :delete_archive, path: f.name},
+                    method: :delete, data: { confirm: 'Delete this file?' },
+                    class: 'has-text-danger', title: 'delete file')
+                  .is-hidden= check_box_tag 'file_ids[]', f.id, false, id: ''
+                %td.has-text-right= number_to_human_size f.size
+                %td.is-hidden-mobile= render partial: 'file_actions', locals: {fname: f.name}
+                %td
+                  .name
+                    - if @preparing_paths.include?(f.name)
+                      %span.tag.is-warning(title="processing") 🛠
+                    = link_to f.name, action: :prepare_archive, path: f.name
+                  - if f.name != f.name_kakasi
+                    .name_kakasi.is-size-7= f.name_kakasi
+        
+        = paginate @files
