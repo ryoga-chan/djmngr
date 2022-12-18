@@ -42,8 +42,8 @@ class ProcessBatchJob < ApplicationJob
       
       update_batch_info results, opts
       
-      print 'ERROR'.black.on_red
-      puts " #{msg}".red
+      print ColorizedString['ERROR'].black.on_red
+      puts  ColorizedString[" #{msg}"].red
     end # add_error
     
     results = {}
@@ -165,14 +165,14 @@ class ProcessBatchJob < ApplicationJob
       results.keys.sort.partition{|k| results[k][:id] }.flatten.each do |k|
         fname = Pathname.new(k).relative_path_from(base_dir).to_s
         if results[k][:id]
-          print 'OK'.white.on_green
-          print " #{results[k][:id].to_s.ljust max_len}".green
+          print ColorizedString['OK'].white.on_green
+          print ColorizedString[" #{results[k][:id].to_s.ljust max_len}"].green
           puts  "| #{fname}"
         end
         
         results[k][:errors].to_a.each do |msg|
-          print 'KO'.black.on_red
-          print " #{msg.ljust max_len}".red
+          print ColorizedString['KO'].black.on_red
+          print ColorizedString[" #{msg.ljust max_len}"].red
           puts"| #{fname}"
         end
       end

@@ -23,6 +23,7 @@ gem 'rubyzip', '~> 2.3', require: 'zip' # manage ZIP files -- https://github.com
 gem 'paper_trail', '~> 12.3'     # track model changes -- https://github.com/paper-trail-gem/paper_trail
 gem 'httparty',    '~> 0.20'     # http requests made easy -- https://github.com/jnunemaker/httparty
                                  # https://www.rubydoc.info/gems/httparty/0.20.0/HTTParty/ClassMethods
+gem 'colorize', require: 'colorized_string' # terminal colors -- https://github.com/fazibear/colorize
 #gem 'bcrypt',      '~> 3.1'     # ActiveModel's has_secure_password -- https://guides.rubyonrails.org/active_model_basics.html#securepassword
 #gem 'ferret', '0.11.9.0', source: 'https://rubygems.pkg.github.com/acavalin' # https://github.com/acavalin/ferret
 
@@ -40,5 +41,4 @@ group :development do
   gem 'debug', platforms: %i[ mri mingw x64_mingw ] # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem 'rails-erd'                # DB ER diagram -- https://github.com/voormedia/rails-erd
   gem 'rails_real_favicon'       # https://realfavicongenerator.net/favicon/ruby_on_rails
-  gem 'colorize'                 # terminal colors -- https://github.com/fazibear/colorize
 end
