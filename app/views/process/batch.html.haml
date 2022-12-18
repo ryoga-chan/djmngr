@@ -22,9 +22,9 @@
     
     - unless @info[:progress].key?(:completed_at)
       .batch-status
-        = "#{@info[:progress].size} / #{@info[:files].size} archives processed"
+        .perc= "#{@info[:progress].size} / #{@info[:files].size} archives processed"
         
-        = link_to(batch_process_path(id: params[:id], undo: true), method: :delete,
+        .actions= link_to(batch_process_path(id: params[:id], undo: true), method: :delete,
           class: 'button is-success is-light is-rounded mt-2 mr-3', title: 'undo batch processing')  do
           %span.icon
             %i.mi.mi-small undo
