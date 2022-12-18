@@ -120,6 +120,15 @@ class ProcessController < ApplicationController
       
       return redirect_to(batch_process_path(id: params[:id]))
     end
+    
+    respond_to do |format|
+      format.html
+      format.json {
+        ExternalProgramRunner.run params[:run],
+          @info[:files].keys, chdir: Setting['dir.to_sort']
+        render json: {ris: :done}
+      }#json
+    end
   end # batch
   
   def delete_archive

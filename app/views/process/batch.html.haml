@@ -113,7 +113,14 @@
             class: 'button is-rounded is-small' do
             %span.icon.is-small
               %i.mi compare
-            %span Toggle covers
+            %span Covers
+        .control.is-hidden-mobile
+          = link_to batch_process_path(id: params[:id], run: :batch_comics_viewer, format: :json),
+            title: 'read all with external viewer',
+            remote: true, class: 'button run-progr is-info is-rounded is-small' do
+            %span.icon.is-small
+              %i.mi.mi-small slideshow
+            %span Play
         .control
           = f.button type: :submit, value: :save, class: 'button is-rounded is-link is-small' do
             %span.icon.is-small
@@ -134,6 +141,11 @@
             = link_to('🗑', batch_process_path(id: params[:id], remove: name),
               method: :delete, data: { confirm: 'Remove this entry?' },
               class: 'has-text-danger', title: 'remove from batch')
+            = link_to show_externally_process_index_path(path: name, run: :comics_viewer, format: :json),
+              title: 'read with external viewer',
+              remote: true, class: 'button run-progr is-info is-rounded is-small tiny-bt mr-2 is-hidden-mobile' do
+              %span.icon.is-small
+                %i.mi.mi-small launch
             = name
           .files
             %pre= files.join "\n"
