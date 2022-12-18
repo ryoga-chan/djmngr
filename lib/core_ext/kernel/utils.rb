@@ -24,7 +24,7 @@ module CoreExt
           $stdout.reopen orig_stdout if stdout
           $stderr.reopen orig_stderr if stderr
         end # suppress_output
-      end
+      end # ClassMethods
     end
   end
 end

@@ -3,29 +3,27 @@ class CoverMatchingJob < ApplicationJob
 
   # return the image's hash for `perform`
   def self.hash_image(image_path)
-    fkey  = Digest::MD5.hexdigest File.read(image_path)
+    image_data = File.read image_path
+    fkey  = Digest::MD5.hexdigest image_data
     fname = File.join(Setting['dir.sorting'], "#{fkey}.webp").to_s
-    img   = Vips::Image.new_from_file image_path
     
     # resize image to a temporary thumbnail
-    vips = ImageProcessing::Vips.source(image_path)
-    vips = img.width > img.height ? # landscape
-      vips.resize_to_fill(ProcessArchiveCompressJob::THUMB_WIDTH, ProcessArchiveCompressJob::THUMB_HEIGHT, crop: :attention) :
-      vips.resize_and_pad(ProcessArchiveCompressJob::THUMB_WIDTH, ProcessArchiveCompressJob::THUMB_HEIGHT, alpha: true)
-    vips.
-      convert('webp').saver(quality: 70).
-      call destination: fname
+    image_data = Vips::Image.webp_cropped_thumb_from_buffer image_data,
+      src_name: File.basename(image_path),
+      width:  ProcessArchiveCompressJob::THUMB_WIDTH,
+      height: ProcessArchiveCompressJob::THUMB_HEIGHT
+    File.open(fname, 'wb'){|f| f.write image_data }
     
     # calculate its pHash
     phash = Kernel.suppress_output{ '%016x' % Phashion::Image.new(fname).fingerprint }
     
     # create metadata + embedded image
-    File.open(File.join(Setting['dir.sorting'], "#{phash}.yml").to_s, 'w') do |f|
+    File.atomic_write(File.join(Setting['dir.sorting'], "#{phash}.yml").to_s) do |f|
       f.puts({
         phash:      phash,
         status:     :comparing,
         started_at: Time.now,
-        image:      Base64.encode64(File.read fname).chomp,
+        image:      Base64.encode64(image_data).chomp,
       }.to_yaml)
     end
     
@@ -95,6 +93,6 @@ class CoverMatchingJob < ApplicationJob
       finished_at: Time.now,
       results:     Doujin.find_by_sql(query).
         inject({}){|h, d| h.merge d.id => ((1 - d.hamming_distance.to_f / 64) * 100).round }
-    File.open(fname, 'w'){|f| f.puts info.to_yaml }
+    File.atomic_write(fname){|f| f.puts info.to_yaml }
   end # perform
 end
