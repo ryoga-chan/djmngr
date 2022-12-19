@@ -168,6 +168,32 @@ nav.pagination {
   }
 }
 
+body:not([data-env="production"])::before {
+  content: "DEVELOPMENT";
+  display: block;
+  margin:  0;
+  padding: 0;
+  height: 2rem;
+  margin: -0.5rem 0 1rem 0;
+  color: white;
+  text-align: center;
+  font-size: 1.5rem;
+  font-family: monospace;
+
+  // striped background
+  background: repeating-linear-gradient(
+    -45deg,
+    #FFAD00,
+    #FFAD00 4rem,
+    #1D1D1D 4rem,
+    #1D1D1D 8rem
+  );
+}
+
+body:not([data-env="production"]) {
+  border: 2px dashed black;
+}
+
 body[data-ctrl="home"][data-action="index"] {
   table.scoring-distro {
     border-collapse: collapse;

@@ -33,6 +33,19 @@
   z-index: 1000;
 }
 
+body:not([data-env="production"]) {
+  // striped background on title bar
+  nav.navbar {
+    background: repeating-linear-gradient(
+      -45deg,
+      #FFAD00,
+      #FFAD00 4rem,
+      #1D1D1D 4rem,
+      #1D1D1D 8rem
+    );
+  }
+}
+
 body:not(.nsfw-mode) {
   // hide table row's pop-up thumbnail
   img#sample_cover:not(:hover) { visibility: hidden; }
