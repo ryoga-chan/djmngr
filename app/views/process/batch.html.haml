@@ -24,11 +24,12 @@
       .batch-status
         .perc= "#{@info[:progress].size} / #{@info[:files].size} archives processed"
         
-        .actions= link_to(batch_process_path(id: params[:id], undo: true), method: :delete,
-          class: 'button is-success is-light is-rounded mt-2 mr-3', title: 'undo batch processing')  do
-          %span.icon
-            %i.mi.mi-small undo
-          %span Stalled? Undo!
+        .actions
+          = link_to(batch_process_path(id: params[:id], undo: true), method: :delete,
+            class: 'button is-success is-light is-rounded mt-2 mr-3', title: 'undo batch processing')  do
+            %span.icon
+              %i.mi.mi-small undo
+            %span Stalled? Undo!
       
       :javascript
         setTimeout(function () { window.location.reload(); }, 5000)
@@ -50,7 +51,11 @@
                 .tags.has-addons.is-flex-wrap-nowrap
                   %span.tag.is-danger KO
                   %span.tag.is-info= err
-            %td= link_to fname, action: :edit, id: ProcessArchiveDecompressJob.file_hash(name)
+            %td
+              - if File.exist?(name)
+                = link_to fname, action: :edit, id: ProcessArchiveDecompressJob.file_hash(name)
+              - else
+                = fname
 
     %hr
     
