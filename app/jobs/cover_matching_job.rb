@@ -5,17 +5,18 @@ class CoverMatchingJob < ApplicationJob
   def self.hash_image(image_path)
     image_data = File.read image_path
     fkey  = Digest::MD5.hexdigest image_data
-    fname = File.join(Setting['dir.sorting'], "#{fkey}.webp").to_s
     
     # resize image to a temporary thumbnail
     image_data = Vips::Image.webp_cropped_thumb_from_buffer image_data,
       src_name: File.basename(image_path),
       width:  ProcessArchiveCompressJob::THUMB_WIDTH,
       height: ProcessArchiveCompressJob::THUMB_HEIGHT
-    File.open(fname, 'wb'){|f| f.write image_data }
     
     # calculate its pHash
+    fname = File.join(Setting['dir.sorting'], "#{fkey}.webp").to_s
+    File.open(fname, 'wb'){|f| f.write image_data }
     phash = Kernel.suppress_output{ '%016x' % Phashion::Image.new(fname).fingerprint }
+    FileUtils.rm_f fname # remove temp image
     
     # create metadata + embedded image
     File.atomic_write(File.join(Setting['dir.sorting'], "#{phash}.yml").to_s) do |f|
@@ -26,8 +27,6 @@ class CoverMatchingJob < ApplicationJob
         image:      Base64.encode64(image_data).chomp,
       }.to_yaml)
     end
-    
-    FileUtils.rm_f fname # remove temp image
     
     phash
   end # self.hash_image
