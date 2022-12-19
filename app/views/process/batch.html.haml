@@ -20,6 +20,14 @@
         %span.is-1= @info[:started_at].strftime '%F %H:%M'
     .subtitle= "#{@info[:files].size} archives"
     
+    .field.has-addons.is-justify-content-right
+      .control
+        = link_to '#', onclick: %Q|jQuery('.column .cover').toggleClass('is-hidden')|,
+          class: 'button is-rounded is-small' do
+          %span.icon.is-small
+            %i.mi compare
+          %span Covers
+    
     - unless @info[:progress].key?(:completed_at)
       .batch-status
         .perc= "#{@info[:progress].size} / #{@info[:files].size} archives processed"
@@ -34,30 +42,31 @@
       :javascript
         setTimeout(function () { window.location.reload(); }, 5000)
       
-    %table.table.is-fullwidth
-      -# show errors on top
-      - names = (@info[:progress].keys - [:completed_at]).sort
-      - names.partition{|k| @info[:progress][k][:errors] }.flatten.each do |name|
-        - result = @info[:progress][name]
-        - fname = Pathname.new(name).relative_path_from(Setting['dir.to_sort']).to_s
-        %tr
+    -# show errors on top
+    - names = (@info[:progress].keys - [:completed_at]).sort
+    - names.partition{|k| @info[:progress][k][:errors] }.flatten.each do |name|
+      - result = @info[:progress][name]
+      - fname = Pathname.new(name).relative_path_from(Setting['dir.to_sort']).to_s
+      .columns.mx-0.my-0.pt-2{class: cycle('has-background-dark', '')}
+        .column.py-0.is-2
           - if result[:id]
-            %td.w1
-              .tags.has-addons.is-flex-wrap-nowrap
-                %span.tag.is-success OK
-                %span.tag.is-info= result[:id]
-            %td= link_to fname, doujin_path(id: result[:id])
+            .tags.has-addons.is-flex-wrap-nowrap.mx-0.my-0
+              %span.tag.is-success OK
+              %span.tag.is-info= result[:id]
           - else
-            %td.w1
-              - result[:errors].to_a.each do |err|
-                .tags.has-addons.is-flex-wrap-nowrap
-                  %span.tag.is-danger KO
-                  %span.tag.is-info= err
-            %td
-              - if File.exist?(name)
-                = link_to fname, action: :edit, id: ProcessArchiveDecompressJob.file_hash(name)
-              - else
-                = fname
+            - result[:errors].to_a.each do |err|
+              .tags.has-addons.is-flex-wrap-nowrap.mx-0.my-0
+                %span.tag.is-danger KO
+                %span.tag.is-info= err
+          %figure.image.is2by3.cover.is-hidden= inline_image_tag :'image/webp', @info[:thumbs][fname]
+        .column.py-0
+          - if result[:id]
+            = link_to fname, doujin_path(id: result[:id])
+          - else
+            - if File.exist?(name)
+              = link_to fname, action: :edit, id: ProcessArchiveDecompressJob.file_hash(name)
+            - else
+              = fname
 
     %hr
     
