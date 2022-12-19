@@ -26,7 +26,7 @@
         
         .actions
           = link_to(batch_process_path(id: params[:id], undo: true), method: :delete,
-            class: 'button is-success is-light is-rounded mt-2 mr-3', title: 'undo batch processing')  do
+            class: 'button is-success is-light is-rounded my-2', title: 'undo batch processing')  do
             %span.icon
               %i.mi.mi-small undo
             %span Stalled? Undo!
@@ -35,8 +35,10 @@
         setTimeout(function () { window.location.reload(); }, 5000)
       
     %table.table.is-fullwidth
-      - @info[:progress].each do |name, result|
-        - next if name == :completed_at
+      -# show errors on top
+      - names = (@info[:progress].keys - [:completed_at]).sort
+      - names.partition{|k| @info[:progress][k][:errors] }.flatten.each do |name|
+        - result = @info[:progress][name]
         - fname = Pathname.new(name).relative_path_from(Setting['dir.to_sort']).to_s
         %tr
           - if result[:id]
