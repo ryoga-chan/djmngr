@@ -10,7 +10,7 @@
     = csp_meta_tag
     = stylesheet_link_tag "application"
     = javascript_include_tag "application"
-  %body{data: {ctrl: params[:controller], action: params[:action], id: params[:id]}}
+  %body{data: {env: Rails.env.to_s, ctrl: params[:controller], action: params[:action], id: params[:id]}}
     %nav.navbar{role: "navigation"}
       .navbar-brand
         %a.navbar-item(href='/' title='home page')= image_tag 'logo.webp', style: "border-radius: 0.5rem", class: 'app-logo'

@@ -12,7 +12,7 @@
     = csp_meta_tag
     = stylesheet_link_tag "ereader"
     = javascript_include_tag "ereader"
-  %body{data: {ctrl: params[:controller], action: params[:action], id: params[:id]}}
+  %body{data: {env: Rails.env.to_s, ctrl: params[:controller], action: params[:action], id: params[:id]}}
     -# NOTE: "notice" and "alert" are Rails defaults, "warn" is a custom key
     - {notice: 'is-info', warn: 'is-warning', alert: 'is-danger'}.each do |key, css_class|
       - if flash[key].present?
