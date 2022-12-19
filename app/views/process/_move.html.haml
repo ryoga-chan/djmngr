@@ -123,16 +123,20 @@
       .actions.field.is-grouped.ml-6
         .field.has-addons
           %p.control
-            = f.button class: 'button is-primary is-rounded' do
+            = f.button class: 'button is-primary is-rounded', value: :save do
               %span.icon
                 %i.mi.mi-small send
               %span update
           %p.control
-            = link_to finalize_volume_process_path, method: :post,
-              class: 'button is-success is-rounded' do
+            = f.button class: 'button is-success is-rounded', value: :finalize do
               %span.icon
                 %i.mi.mi-small gavel
               %span finalize
+            -#= link_to finalize_volume_process_path, method: :post,
+            -#  class: 'button is-success is-rounded' do
+            -#  %span.icon
+            -#    %i.mi.mi-small gavel
+            -#  %span finalize
 
     .column.has-text-centered
       - html_cover = capture do

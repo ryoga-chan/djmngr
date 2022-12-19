@@ -41,14 +41,20 @@
       
       .actions
         .field.has-addons.mb-4.is-justify-content-end
-          .control= link_to 'batch mode', '#', class: 'button is-link is-small is-rounded',
-            onclick: %Q|jQuery('.batch-submit, td.rm-or-batch > *').toggleClass('is-hidden'); return false|
-          .control.batch-submit.is-hidden
+          .control= link_to 'batch', '#', class: 'button is-link is-small is-rounded',
+            onclick: %Q|jQuery('.batch-bt, td.rm-or-batch > *').toggleClass('is-hidden'); return false|
+          .control.batch-bt.is-hidden
+            = link_to '#', class: 'button is-rounded is-small',
+              onclick: %Q|jQuery('td.rm-or-batch :checkbox').each(function(){ $(this).prop('checked', !$(this).prop('checked')) }); return false| do
+              %span.icon.is-small
+                %i.mi select_all
+              %span toggle
+          .control.batch-bt.is-hidden
             = f.button type: :submit, class: 'button is-rounded is-small' do
               %span.icon.is-small
                 %i.mi send
-              %span prepare batch
-          .control= link_to 'refresh list', {refresh: true}, class: 'button is-info is-small is-rounded'
+              %span prepare
+          .control= link_to :refresh, {refresh: true}, class: 'button is-info is-small is-rounded'
       
       - if @files.empty?
         %em no files to process
