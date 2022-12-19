@@ -285,7 +285,11 @@ class ProcessController < ApplicationController
     
     File.open(File.join(@dname, 'info.yml'), 'w'){|f| f.puts @info.to_yaml } if info_changed
     
-    redirect_to edit_process_path(id: params[:id], tab: params[:tab], term: params[:term])
+    if params[:button] == 'finalize'
+      redirect_to finalize_volume_process_path(id: params[:id], confirm: true)
+    else
+      redirect_to edit_process_path(id: params[:id], tab: params[:tab], term: params[:term])
+    end
   end # set_property
   
   # manage archive operations (sanitize filenames, delete extra images, identify author)
@@ -534,7 +538,7 @@ class ProcessController < ApplicationController
     perc_file = File.join(@dname, 'finalize.perc')
     @perc = File.read(perc_file).to_f rescue 0.0
     
-    if request.post? # perform actions only via POST
+    if request.post? || params[:confirm] == 'true' # perform actions only via POST or param
       if params[:undo] && File.exist?(perc_file)
         File.unlink(perc_file)
         fname = "#{@info[:collection_full_path]}.NEW"
