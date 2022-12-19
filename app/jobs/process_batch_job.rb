@@ -82,19 +82,6 @@ class ProcessBatchJob < ApplicationJob
         next
       end
       
-      # run cover image hash matching
-      cover_path = ProcessArchiveDecompressJob.cover_path dname, info
-      info[:cover_hash] = CoverMatchingJob.hash_image cover_path
-      CoverMatchingJob.perform_now info[:cover_hash]
-      cover_matching = CoverMatchingJob.results info[:cover_hash]
-      info[:cover_results] = cover_matching[:results]
-      info[:cover_status ] = cover_matching[:status]
-      File.open(info_fname, 'w'){|f| f.puts info.to_yaml }
-      if info[:cover_results].any?
-        add_error results, fname, 'cover matching', options
-        next
-      end
-      
       puts "\n[DST]     [SRC]"
       puts info[:images].map{|i| "#{i[:dst_path]}  #{i[:src_path]}"}
       if info[:files].any?
@@ -125,6 +112,19 @@ class ProcessBatchJob < ApplicationJob
       info[:author_ids   ] = dj.author_ids
       info[:circle_ids   ] = dj.circle_ids
       File.open(info_fname, 'w'){|f| f.puts info.to_yaml }
+      
+      # run cover image hash matching
+      cover_path = ProcessArchiveDecompressJob.cover_path dname, info
+      info[:cover_hash] = CoverMatchingJob.hash_image cover_path
+      CoverMatchingJob.perform_now info[:cover_hash]
+      cover_matching = CoverMatchingJob.results info[:cover_hash]
+      info[:cover_results] = cover_matching[:results]
+      info[:cover_status ] = cover_matching[:status]
+      File.open(info_fname, 'w'){|f| f.puts info.to_yaml }
+      if info[:cover_results].any?
+        add_error results, fname, 'cover matching', options
+        next
+      end
       
       if !options[:overwrite] && File.exist?(Doujin.dest_path_by_process_params(info, full_path: true))
         add_error results, fname, 'already exists', options
