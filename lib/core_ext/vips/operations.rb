@@ -7,7 +7,9 @@ module CoreExt
       
       module ClassMethods
         def webp_cropped_thumb(buffer_or_img, buffer_fname: 'a.jpg', width: 160, height: 240)
-          vips = buffer_or_img.is_a?(::Vips::Image) ? buffer_or_img : new_from_buffer(buffer_or_img, buffer_fname)
+          vips = buffer_or_img.is_a?(::Vips::Image) ?
+            buffer_or_img :
+            ::Kernel.suppress_output{ new_from_buffer(buffer_or_img, buffer_fname) }
           im = ::ImageProcessing::Vips.source vips
           im = vips.is_landscape? ?
             im.resize_to_fill(width, height, crop: :attention) :
