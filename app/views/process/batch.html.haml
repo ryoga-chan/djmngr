@@ -97,32 +97,27 @@
                 %span.icon
                   %i.mi visibility
           .control
-            - list = (1..10).map{|i| ["&star; #{i}".html_safe,i] }.unshift(['[score=none]', nil])
+            - list = (1..10).map{|i| ["&star; #{i}".html_safe,i] }.unshift(['score=none', nil])
             .select= f.select :score,
               options_for_select(list, @info[:options].try('[]', :score)), {},
               class: "input is-rounded is-small"
         
         .column.field.has-addons.mb-0
           .control
-            - list = [['[chroma=auto]', nil], ['B&W', false], ['color', true]]
-            .select= f.select :col,
-              options_for_select(list, @info[:options].try('[]', :col)), {},
-              class: "input is-rounded is-small"
+            - list, cur = {'lang=auto' => nil}.merge(Doujin::LANGUAGES), @info[:options].try('[]', :lang)
+            .select= f.select :lang, options_for_select(list, cur), {}, class: "input is-rounded is-small"
           .control
-            - list = [['[media=auto]', nil], ['book', false], ['game', true]]
-            .select= f.select :hcg,
-              options_for_select(list, @info[:options].try('[]', :hcg)), {},
-              class: "input is-rounded is-small"
+            - list, cur = [['chroma=auto', nil], ['B&W', false], ['color', true]], @info[:options].try('[]', :col)
+            .select= f.select :col, options_for_select(list, cur), {}, class: "input is-rounded is-small"
           .control
-            - list = [['[cens=auto]', nil], ['censored', false], ['uncensored', true]]
-            .select= f.select :unc,
-              options_for_select(list, @info[:options].try('[]', :unc)), {},
-              class: "input is-rounded is-small"
+            - list, cur = [['media=auto', nil], ['book', false], ['CG', true]], @info[:options].try('[]', :hcg)
+            .select= f.select :hcg, options_for_select(list, cur), {}, class: "input is-rounded is-small"
           .control
-            - list = [['[collision=abort]', false], ['overwrite', true]]
-            .select= f.select :overwrite,
-              options_for_select(list, @info[:options].try('[]', :overwrite)), {},
-              class: "input is-rounded is-small"
+            - list, cur = [['cens=auto', nil], ['censored', false], ['uncensored', true]], @info[:options].try('[]', :unc)
+            .select= f.select :unc, options_for_select(list, cur), {}, class: "input is-rounded is-small"
+          .control
+            - list, cur = [['collision=abort', false], ['overwrite', true]], @info[:options].try('[]', :overwrite)
+            .select= f.select :overwrite, options_for_select(list, cur), {}, class: "input is-rounded is-small"
       .field.has-addons.is-justify-content-center
         .control
           = link_to '#', onclick: %Q|jQuery('.column.cover').toggleClass('is-hidden')|,
