@@ -4,7 +4,7 @@
 
 .columns
   .column.has-text-centered
-    %span.tag.is-hidden-mobile.mb-5 application counters
+    %span.tag.is-hidden-mobile.mb-5 counters
     
     .tags
       .tags.has-addons.mr-4.mb-0
@@ -122,7 +122,7 @@
           %i.mi star_half
 
     - if s = Shelf.order(created_at: :desc).first
-      .pick
+      .pick.is-hidden-mobile
         = link_to shelf_path(s, run: :comics_viewer, format: :json),
           onclick: %Q|var bt=jQuery(this); bt.addClass('is-loading'); setTimeout(function(){ bt.removeClass('is-loading') }, 5000)|,
           remote: true, title: 'start slideshow', class: 'button is-info is-rounded mt-3' do
