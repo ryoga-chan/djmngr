@@ -13,10 +13,12 @@ class ProcessIndexRefreshJob < ApplicationJob
     self.class.lock_file!
     
     ProcessableDoujin.transaction do
-      ProcessableDoujin.delete_all
+      ProcessableDoujin.truncate_and_restart_sequence
       
       files_glob = File.join Setting['dir.to_sort'], '**', '*.zip'
-      Dir[files_glob].sort.each do |f|
+      list = Dir[files_glob].sort
+      list = list[0...100] unless Rails.env.production?
+      list.each do |f|
         rel_name = Pathname.new(f).relative_path_from(Setting['dir.to_sort']).to_s
         ProcessableDoujin.create name: rel_name, name_kakasi: rel_name.to_romaji, size: File.size(f)
       end
