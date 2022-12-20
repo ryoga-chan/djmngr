@@ -95,18 +95,17 @@ class ProcessBatchJob < ApplicationJob
         info[:file_type       ] = 'doujin'
         info[:doujin_dest_type] = dj.category
       end
-      info[:dest_folder  ], info[:subfolder] = dj.file_folder.split('/')
+      info[:dest_folder  ], info[:subfolder] = dj.file_folder.split(File::SEPARATOR)
       info[:dest_title   ] = options[:dest_title] if options[:dest_title].present?
       info[:score        ] = options[:score] if options[:score]
-      info[:language         ] = dj.language
       info[:reading_direction] = dj.reading_direction
-     #info[:censored         ] = dj.censored
-     #info[:colorized        ] = dj.colorized
-      info[:censored         ] = false if options[:unc]
-      info[:colorized        ] = true  if options[:col]
-      info[:hcg              ] = true  if options[:hcg]
-
-      info[:overwrite    ] = options[:overwrite] if options[:overwrite]
+      
+      info[:language         ] = options[:lang] if options[:lang].present? # dj.language
+      info[:censored         ] = options[:unc ] if options[:unc ].present? # dj.censored
+      info[:colorized        ] = options[:col ] if options[:col ].present? # dj.colorized
+      info[:hcg              ] = options[:hcg ] if options[:hcg ].present? # dj.hcg
+      info[:overwrite        ] = true if options[:overwrite]
+      
       info[:dest_filename] = options[:dest_filename] if options[:dest_filename]
       info[:dest_filename] = File.basename(fname).sub(/ *\.zip$/i, '.zip') if options[:keep_filename]
       info[:author_ids   ] = dj.author_ids
