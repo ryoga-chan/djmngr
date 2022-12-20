@@ -110,6 +110,10 @@ class ProcessController < ApplicationController
           @info[:started_at] = Time.now
           File.atomic_write(info_path){|f| f.puts @info.to_yaml }
           
+          # list of files to keep cover auto cropped
+          @info[:options][:keep_cover] = @info[:thumbs].
+            map{|name, data| File.join(Setting['dir.to_sort'], name) if data[:keep_cover] }.compact
+          
           files = @info[:files].keys.map{|f| File.join Setting['dir.to_sort'], f }
           ProcessBatchJob.perform_later dj.id, files, @info[:options]
 
@@ -120,6 +124,12 @@ class ProcessController < ApplicationController
       end
       
       return redirect_to(batch_process_path(id: params[:id]))
+    end
+    
+    if params[:keep_cover].present? && @info[:thumbs][params[:keep_cover]]
+      @info[:thumbs][params[:keep_cover]][:keep_cover] = !@info[:thumbs][params[:keep_cover]][:keep_cover]
+      File.atomic_write(info_path){|f| f.puts @info.to_yaml }
+      return redirect_to(batch_process_path(id: params[:id], anchor: Digest::MD5.hexdigest(params[:keep_cover])))
     end
     
     respond_to do |format|
