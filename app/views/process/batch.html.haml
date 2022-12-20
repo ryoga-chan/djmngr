@@ -58,7 +58,7 @@
               .tags.has-addons.is-flex-wrap-nowrap.mx-0.my-0
                 %span.tag.is-danger KO
                 %span.tag.is-info= err
-          %figure.image.is2by3.cover.is-hidden= inline_image_tag :'image/webp', @info[:thumbs][fname]
+          %figure.image.is2by3.cover.is-hidden= inline_image_tag :'image/webp', @info[:thumbs][fname][:base64]
         .column.py-0
           - if result[:id]
             = link_to fname, doujin_path(id: result[:id])
@@ -146,9 +146,10 @@
     - @info[:files].each do |name, files|
       .columns
         .column.is-2.cover.is-hidden
-          %figure.image.is2by3= inline_image_tag :'image/webp', @info[:thumbs][name]
+          %figure.image.is2by3= inline_image_tag :'image/webp', @info[:thumbs][name][:base64]
         .column
           .name
+            %a{name: Digest::MD5.hexdigest(name)}
             = link_to('🗑', batch_process_path(id: params[:id], remove: name),
               method: :delete, data: { confirm: 'Remove this entry?' },
               class: 'has-text-danger', title: 'remove from batch')
@@ -158,6 +159,16 @@
               %span.icon.is-small
                 %i.mi.mi-small launch
             = name
+          - if @info[:thumbs][name][:landscape]
+            .actions.my-1
+              .tags.has-addons
+                %span.tag.is-danger LANDSCAPE COVER
+                %span.tag
+                  = link_to batch_process_path(id: params[:id], keep_cover: name) do
+                    %span.icon-text
+                      %span.icon
+                        %i.mi= @info[:thumbs][name][:keep_cover] ? :check_box : :check_box_outline_blank
+                      %span keep it cropped like this
           .files
             %pre= files.join "\n"
     

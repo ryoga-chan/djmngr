@@ -16,6 +16,8 @@
   .columns
     .column.is-2.has-text-centered{style: "border-right: 1px dotted #999"}
       %figure.image.is2by3= inline_image_tag :'image/webp', @result[:image]
+      - if !@result[:landscape]
+        %span.tag.is-warning.is-light.mt-2 landscape image
     .column
       = render partial: 'thumbs_table', locals: { doujinshi: @doujinshi, show_name_orig: true }
 - elsif @result != :completed
