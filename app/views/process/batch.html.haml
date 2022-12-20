@@ -145,7 +145,7 @@
     
     - @info[:files].each do |name, files|
       .columns
-        .column.is-2.cover.is-hidden
+        .column.is-2.cover
           %figure.image.is2by3= inline_image_tag :'image/webp', @info[:thumbs][name][:base64]
         .column
           .name
