@@ -190,10 +190,6 @@ body:not([data-env="production"])::before {
   );
 }
 
-body:not([data-env="production"]) {
-  border: 2px dashed black;
-}
-
 body[data-ctrl="home"][data-action="index"] {
   table.scoring-distro {
     border-collapse: collapse;
