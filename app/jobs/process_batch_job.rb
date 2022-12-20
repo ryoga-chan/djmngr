@@ -130,7 +130,7 @@ class ProcessBatchJob < ApplicationJob
         next
       end
       
-      if info[:landscape_cover]
+      if info[:landscape_cover] && !options[:keep_cover].include?(dj_fname)
         add_error results, fname, 'landscape cover', options
         next
       end

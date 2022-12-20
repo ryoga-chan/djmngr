@@ -17,8 +17,10 @@ class ProcessBatchInspectJob < ApplicationJob
         info[:files][name] = image_entries.map &:name
         
         if cover = image_entries.first # extract cover image
-          info[:thumbs][name] = Base64.encode64 Vips::Image.
-            webp_cropped_thumb_from_buffer(cover.get_input_stream.read, src_name: File.basename(cover.name))
+          thumb = Vips::Image.webp_cropped_thumb cover.get_input_stream.read,
+                                                 buffer_fname: File.basename(cover.name)
+          info[:thumbs][name] = { landscape: thumb[:landscape],
+                                  base64:    Base64.encode64(thumb[:buffer]).chomp }
         end
       end
       

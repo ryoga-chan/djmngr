@@ -7,14 +7,14 @@ class CoverMatchingJob < ApplicationJob
     fkey  = Digest::MD5.hexdigest image_data
     
     # resize image to a temporary thumbnail
-    image_data = Vips::Image.webp_cropped_thumb_from_buffer image_data,
-      src_name: File.basename(image_path),
+    thumb = Vips::Image.webp_cropped_thumb image_data,
+      buffer_fname: File.basename(image_path),
       width:  ProcessArchiveCompressJob::THUMB_WIDTH,
       height: ProcessArchiveCompressJob::THUMB_HEIGHT
     
     # calculate its pHash
     fname = File.join(Setting['dir.sorting'], "#{fkey}.webp").to_s
-    File.open(fname, 'wb'){|f| f.write image_data }
+    File.open(fname, 'wb'){|f| f.write thumb[:buffer] }
     phash = Kernel.suppress_output{ '%016x' % Phashion::Image.new(fname).fingerprint }
     FileUtils.rm_f fname # remove temp image
     
@@ -24,7 +24,8 @@ class CoverMatchingJob < ApplicationJob
         phash:      phash,
         status:     :comparing,
         started_at: Time.now,
-        image:      Base64.encode64(image_data).chomp,
+        landscape:  thumb[:landscape],
+        image:      Base64.encode64(thumb[:buffer]).chomp,
       }.to_yaml)
     end
     
