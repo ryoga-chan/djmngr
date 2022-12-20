@@ -32,9 +32,9 @@ namespace :dj do
         options[:score] = v.to_i
       end # --score
       
-      op.on("-c", "--color", "is colorized" ){ options[:col] = true }
-      op.on("-g", "--game" , "is game HCG"  ){ options[:hcg] = true }
-      op.on("-u", "--unc"  , "is uncensored"){ options[:unc] = true }
+      op.on("-c", "--color", "is colorized"        ){ options[:col] = true }
+      op.on("-g", "--cg"   , "is computer graphics"){ options[:hcg] = true }
+      op.on("-u", "--unc"  , "is uncensored"       ){ options[:unc] = true }
 
       op.on('-h', '--help', "show help") do
         die "USAGE: rails dj:process -- [switches] doujin_id file1 file2 ... #{op}\n", 0
