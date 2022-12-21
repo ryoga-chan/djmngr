@@ -343,11 +343,11 @@ class ProcessController < ApplicationController
           end
         end
         # find dupes and set similarity percent
-        @dupes += @info[:cover_results].map do |id, perc|
+        @dupes += @info[:cover_results].map{|id, perc|
           next unless d = Doujin.find_by(id: id)
           d.cover_similarity = perc
           d
-        end if @info[:cover_results].is_a?(Hash)
+        }.compact if @info[:cover_results].is_a?(Hash)
         
         # search dupes by filename
         @info[:dupe_search] ||= @info[:relative_path].tokenize_doujin_filename.join ' '
