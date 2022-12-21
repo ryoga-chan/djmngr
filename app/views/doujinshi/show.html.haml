@@ -10,7 +10,10 @@
     %table.table.is-striped.is-fullwidth
       %tr
         %th.w1 Title
-        %td= @doujin.label_name_latin
+        %td
+          = @doujin.label_name_latin
+          - if @doujin.name_eng.present?
+            .eng.is-italic.is-size-7= @doujin.name_eng
       - if @doujin.name != @doujin.label_name_latin
         %tr
           %th Alt.

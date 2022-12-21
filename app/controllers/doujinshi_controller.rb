@@ -236,7 +236,7 @@ class DoujinshiController < ApplicationController
     @page_title = 'edit doujin'
     
     doujin_params = params.require(:doujin).
-      permit(:name, :name_romaji, :name_kakasi, :name_orig, :reading_direction,
+      permit(:name, :name_romaji, :name_kakasi, :name_orig, :name_eng, :reading_direction,
              :read_pages, :language, :censored, :colorized, :hcg, :notes, :file_name)
     
     @doujin.update(doujin_params) ?
