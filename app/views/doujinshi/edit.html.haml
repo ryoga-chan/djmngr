@@ -42,6 +42,16 @@
 
   .field.is-horizontal
     .field-label.is-normal
+      %label.label Name Eng
+    .field-body
+      .field
+        .control.is-expanded.has-icons-left
+          = f.text_field :name_eng, class: :input
+          %span.icon.is-small.is-left
+            %i.mi.mi-small translate
+
+  .field.is-horizontal
+    .field-label.is-normal
       %label.label File name
     .field-body
       .field
