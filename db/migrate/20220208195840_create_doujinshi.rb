@@ -6,6 +6,7 @@ class CreateDoujinshi < ActiveRecord::Migration[7.0]
       t.string   :name_kakasi, null: false
       t.string   :name_orig  , null: false
       t.string   :name_orig_kakasi, null: false
+      t.string   :name_eng
       t.integer  :size       , null: false
       t.string   :checksum   , null: false
       t.integer  :num_images , null: false

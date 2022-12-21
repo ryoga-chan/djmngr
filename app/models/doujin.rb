@@ -164,6 +164,7 @@ class Doujin < ApplicationRecord
       Doujin.where("name_orig_kakasi LIKE ?", "%#{tokens_kakasi}%"),
       Doujin.where("name_orig        LIKE ?", "%#{tokens_orig  }%"),
       Doujin.where("name_orig_kakasi LIKE ?", "%#{tokens_kakasi}%"),
+      Doujin.where("name_eng         LIKE ?", "%#{tokens_orig  }%"),
     ]
     
     # search only filename terms on user filled fields
@@ -176,6 +177,7 @@ class Doujin < ApplicationRecord
       Doujin.where("name_romaji LIKE ?", "%#{tokens_orig  }%"),
       Doujin.where("name_romaji LIKE ?", "%#{tokens_kakasi}%"),
       Doujin.where("name_kakasi LIKE ?", "%#{tokens_kakasi}%"),
+      Doujin.where("name_eng    LIKE ?", "%#{tokens_orig  }%"),
     ]
     
     # build query with all conditions in OR
