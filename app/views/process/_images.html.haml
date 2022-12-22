@@ -9,7 +9,7 @@
         %span.icon.is-small
           %i.mi select_all
         %span Toggle all images
-      = f.button type: :submit, class: 'button is-rounded is-danger', data: { confirm: 'Delete selected images?' } do
+      = f.button type: :submit, class: 'button is-rounded is-danger delete-images', data: { confirm: 'Delete selected images?' } do
         %span.icon.is-small
           %i.mi delete
         %span Delete selected images
@@ -28,13 +28,13 @@
           %figure.image.is2by3.mt-1= thumbnail_tag File.join(base_dir, img[:thumb_path]), title: "#{img[:dst_path]} @ #{number_to_human_size img[:size]}\n↪#{img[:src_path]}"
           = check_box_tag 'path[]', img[:src_path], false, id: '', class: 'is-hidden'
       
-      .is-hidden-tablet.has-text-right
-        %a.button.is-small(href="#page-top")
-          %span.icon.is-small
-            %i.mi vertical_align_top
-        %a.button.is-small(href="#page-bottom")
-          %span.icon.is-small
-            %i.mi vertical_align_bottom
+        .is-hidden-tablet.has-text-right
+          %a.button.is-small(href="#page-top")
+            %span.icon.is-small
+              %i.mi vertical_align_top
+          %a.button.is-small(href="#page-bottom")
+            %span.icon.is-small
+              %i.mi vertical_align_bottom
 
   = action_buttons
 
