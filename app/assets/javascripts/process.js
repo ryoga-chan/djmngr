@@ -31,14 +31,13 @@ $('#rename_with').change(function () {
 });
 
 // select images to delete
-$('.images .columns .column').click(function (ev) {
-  if ($(ev.target).is(':input, .button, span, i'))
-    return;
-  
-  $(this).toggleClass('has-background-warning');
+$('.images .button.select-image').click(function (ev) {
+  // toggle column background color and button icon
+  $(this).parent().toggleClass('has-background-warning');
+  $(this).find('i').text( $(this).parent().hasClass('has-background-warning') ? 'check_box' : 'check_box_outline_blank');
   
   // toggle hidden checkbox
-  var cb = $(this).find(':checkbox');
+  var cb = $(this).parent().find(':checkbox');
   cb.prop('checked', !cb.prop('checked'));
   
   // update counter message
