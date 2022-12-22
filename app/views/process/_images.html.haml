@@ -21,11 +21,15 @@
         .column.is-2.has-text-centered.nowrap<>
           = text_field_tag :img_name, img[:dst_path], id: '', size: 11,
             data: { url: rename_file_process_path, path: img[:src_path] }
-          = link_to show_image_process_path(id: @info[:working_dir], path: img[:src_path]),
-            class: "button is-small", target: :_blank do
+          
+          %span.button.is-small.select-image
             %span.icon.is-small
-              %i.mi zoom_out_map
-          %figure.image.is2by3.mt-1= thumbnail_tag File.join(base_dir, img[:thumb_path]), title: "#{img[:dst_path]} @ #{number_to_human_size img[:size]}\n↪#{img[:src_path]}"
+              %i.mi check_box_outline_blank
+          
+          = link_to show_image_process_path(id: @info[:working_dir], path: img[:src_path]), target: :_blank do
+            %figure.image.is2by3.mt-1= thumbnail_tag File.join(base_dir, img[:thumb_path]),
+              title: "#{img[:dst_path]} @ #{number_to_human_size img[:size]}\n↪#{img[:src_path]}"
+          
           = check_box_tag 'path[]', img[:src_path], false, id: '', class: 'is-hidden'
       
         .is-hidden-tablet.has-text-right
