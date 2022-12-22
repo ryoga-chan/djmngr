@@ -50,5 +50,6 @@ bin/rails db:erd          # create DB graph (see lib/tasks/erd.rake)
 rails g favicon
 echo "//= link favicon/browserconfig.xml" >> app/assets/config/manifest.js
 
+bin/rails assets:clobber
 bin/rails assets:precompile
 bin/server -p
