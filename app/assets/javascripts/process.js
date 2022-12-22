@@ -37,8 +37,13 @@ $('.images .columns .column').click(function (ev) {
   
   $(this).toggleClass('has-background-warning');
   
+  // toggle hidden checkbox
   var cb = $(this).find(':checkbox');
   cb.prop('checked', !cb.prop('checked'));
+  
+  // update counter message
+  var num_images = $('.images .columns .column.has-background-warning').length;
+  $('button.delete-images').attr('data-confirm', 'Delete '+num_images+' selected images?');
 });
 
 // update the single image name in "files"
