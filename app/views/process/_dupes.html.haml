@@ -8,7 +8,7 @@
     .name_orig.mb-1
       %span.icon.in-text-small.mr-2
         %i.mi.mi-small(title="original filename") photo_filter
-      %span.is-hidden-mobile= render partial: 'file_actions', locals: {fname: @info[:relative_path]}
+      %span= render partial: 'file_actions', locals: {fname: @info[:relative_path]}
       = @fname
 
     .dest-filename.mb-1

@@ -1,0 +1,9 @@
+- if @images.any?
+  - @images.each_slice(2) do |slice|
+    .columns
+      - slice.each do |img|
+        .column.has-text-centered
+          .is-size-8= img[:name]
+          %figure.image.is2by3= inline_image_tag :'image/webp', img[:data]
+- else
+  .is-text-italic no images found
