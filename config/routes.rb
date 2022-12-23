@@ -12,6 +12,7 @@ Rails.application.routes.draw do
       get     :prepare_archive  # prepare processing of single file
       delete  :delete_archive
       post    :prepare_batch    # prepare mass processing of selected files
+      get     :sample_images
     end
     member do
       get     :show_image

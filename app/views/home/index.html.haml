@@ -30,7 +30,7 @@
       - @stats[:dj_cat].each do |cat, n|
         .tags.has-addons.mr-2.mb-0
           %span.tag.is-info= number_with_delimiter n, delimiter: "'"
-          %span.tag= link_to cat.pluralize, doujinshi_path(tab: cat)
+          %span.tag= link_to "in #{cat.pluralize}", doujinshi_path(tab: cat)
 
     .tags
       .tags.has-addons.mr-4.mb-0
