@@ -1,6 +1,6 @@
 class ProcessController < ApplicationController
   before_action :check_archive_file  , only: [
-    :show_externally, :prepare_archive, :delete_archive
+    :show_externally, :prepare_archive, :delete_archive, :sample_images,
   ]
   before_action :check_archive_folder, only: [
     :edit, :set_property, :finalize_volume,
@@ -54,6 +54,22 @@ class ProcessController < ApplicationController
       redirect_to(process_index_path, alert: "invalid MIME type: not a ZIP file!") :
       redirect_to(edit_process_path id: hash)
   end # prepare_archive
+  
+  # return the selected image extracting it from the ZIP file
+  def sample_images
+    @images = []
+    
+    Zip::File.open(@fname) do |zip|
+      zip.entries.
+        select{|e| e.file? && e.name =~ /\.(jpe*g|png|gif)$/i }.
+        shuffle[0..5].each do |e|
+          thumb = Vips::Image.webp_cropped_thumb e.get_input_stream.read,
+            buffer_fname: File.basename(e.name),
+            width: 480, height: 960, padding: false
+          @images << { name: e.name, data: Base64.encode64(thumb[:buffer]).chomp }
+        end
+    end
+  end # sample_images
   
   # prepare working YML file and redirects to batch action
   def prepare_batch

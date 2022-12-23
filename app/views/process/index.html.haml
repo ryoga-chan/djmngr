@@ -36,6 +36,7 @@
               %td.has-text-right= number_to_human_size f[:tot_size]
               %td= link_to f[:relative_path], action: :edit, id: f[:working_dir]
 
+    -# files listing
     = form_with url: prepare_batch_process_index_path, method: :post do |f|
       .title.is-size-4= "Processable archives (#{@files.total_count})"
       
@@ -71,7 +72,7 @@
                     class: 'has-text-danger', title: 'delete file')
                   .is-hidden= check_box_tag 'file_ids[]', f.id, false, id: ''
                 %td.has-text-right= number_to_human_size f.size
-                %td.is-hidden-mobile= render partial: 'file_actions', locals: {fname: f.name}
+                %td= render partial: 'file_actions', locals: {fname: f.name}
                 %td
                   .name
                     - if @preparing_paths.include?(f.name)
