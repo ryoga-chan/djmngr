@@ -127,6 +127,14 @@ class ProcessArchiveDecompressJob < ApplicationJob
       info[:dest_filename] = File.basename(fname)
     end
     
+    # restore reprocessing metadata
+    md_path = File.join File.dirname(info[:file_path]), "#{File.basename info[:file_path], File.extname(info[:file_path])}.yml"
+    md_info = YAML.load_file(md_path) rescue {}
+    if File.exist?(md_path) && md_info.is_a?(Hash)
+      info.merge! md_info
+      File.unlink md_path
+    end
+    
     # set properties
     info[:language ] = Doujin::LANGUAGES.values.detect{|v| name[:properties].include?(v) } || Doujin::LANGUAGES.values.first
     info[:censored ] = !name[:properties].include?('unc')
