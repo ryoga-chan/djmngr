@@ -216,7 +216,10 @@ class Doujin < ApplicationRecord
   def delete_versions = versions.destroy_all
   
   def rename_file
-    FileUtils.mv @old_file_path, file_path(full: true), force: true if @old_file_path
+    if @old_file_path
+      FileUtils.mkdir_p File.dirname(file_path(full: true))
+      FileUtils.mv @old_file_path, file_path(full: true), force: true
+    end
   end # rename_file
   
   def save_deletion_data
