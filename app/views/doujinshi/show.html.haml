@@ -171,7 +171,7 @@
                 %span Reader
             - if @doujin.num_images > 10
               %p.control
-                = link_to doujin_path(@doujin, sample: true), class: 'button is-info is-rounded' do
+                = link_to doujin_path(@doujin, sample: true, anchor: :sample), class: 'button is-info is-rounded' do
                   %span.icon
                     %i.mi.mi-small casino
                   %span Sample
@@ -216,6 +216,7 @@
 = render partial: 'actions'
 
 - if @doujin.num_images > 10 && params[:sample]
+  %a(name="sample")
   .columns
     - start_idx = (rand(@doujin.num_images - 1 - 5) + 1).to_i
     - (start_idx...(start_idx+3)).each do |i|

@@ -544,6 +544,7 @@ class ProcessController < ApplicationController
   # rezip archive, add metadata, move/register in collection, cleaup WIP folder
   def finalize_volume
     @info = YAML.load_file(File.join @dname, 'info.yml')
+    perc_file = File.join(@dname, 'finalize.perc')
     
     unless @info[:dest_filename].to_s.end_with?('.zip')
       return redirect_to(edit_process_path(id: params[:id], tab: 'move'), alert: "destination filename not ending with \".zip\"")
@@ -557,13 +558,10 @@ class ProcessController < ApplicationController
       return redirect_to(edit_process_path(id: params[:id], tab: 'move'), alert: "empty destination filename")
     end
     
-    if @info[:overwrite] != true && @info[:db_doujin_id].nil? &&
+    if !File.exist?(perc_file) && @info[:overwrite] != true && @info[:db_doujin_id].nil? &&
        File.exist?(Doujin.dest_path_by_process_params(@info, full_path: true))
       return redirect_to(edit_process_path(id: params[:id], tab: 'move'), alert: "file already exists in collection")
     end
-    
-    perc_file = File.join(@dname, 'finalize.perc')
-    @perc = File.read(perc_file).to_f rescue 0.0
     
     if request.post? || params[:confirm] == 'true' # perform actions only via POST or param
       if params[:undo] && File.exist?(perc_file)
@@ -579,6 +577,8 @@ class ProcessController < ApplicationController
         return redirect_to(finalize_volume_process_path(id: params[:id]))
       end
     end # if request.post?
+    
+    @perc = File.read(perc_file).to_f rescue 0.0
   end # finalize_volume
   
   def show_externally
