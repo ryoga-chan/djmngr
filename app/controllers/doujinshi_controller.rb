@@ -278,7 +278,7 @@ class DoujinshiController < ApplicationController
       doujin_dest_id: dd_id.to_s,
       file_type:      (%w{ author circle }.include?(paths[0]) ? 'doujin' : paths[0]),
       dest_folder:    paths[1],
-      subfolder:      File.dirname(paths[2]),
+      subfolder:      (paths[2].include?(File::SEPARATOR) ? File.dirname(paths[2]) : ''),
       dest_filename:  File.basename(paths[2]),
       score:          @doujin.score,
     }.to_yaml) }
