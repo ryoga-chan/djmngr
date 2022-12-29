@@ -303,6 +303,7 @@ body[data-ctrl="doujinshi"][data-action="read"] {
   #msg {
     position: absolute; // top and left set via js
     font-size: 3rem;
+    text-shadow: 0 0 0.5rem #fff;
   }
   
   table.help {
