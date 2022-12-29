@@ -13,7 +13,7 @@ module SearchJapaneseSubject
       
       if search_method == 'sparse'
         # OPTION 1: search every term in any position
-        %i[ name name_kana name_romaji name_kakasi ].each do |k|
+        %i[ name name_kana name_romaji name_kakasi aliases ].each do |k|
           rel_conditions << tokens_orig  .inject(self){|rel, t| rel.where("#{k} LIKE ?", "%#{t}%") }
           rel_conditions << tokens_kakasi.inject(self){|rel, t| rel.where("#{k} LIKE ?", "%#{t}%") }
         end
@@ -29,6 +29,8 @@ module SearchJapaneseSubject
           self.where("name_romaji LIKE ?", "%#{tokens_orig  }%"),
           self.where("name_romaji LIKE ?", "%#{tokens_kakasi}%"),
           self.where("name_kakasi LIKE ?", "%#{tokens_kakasi}%"),
+          self.where("aliases     LIKE ?", "%#{tokens_orig  }%"),
+          self.where("aliases     LIKE ?", "%#{tokens_kakasi}%"),
         ]
       end
       
