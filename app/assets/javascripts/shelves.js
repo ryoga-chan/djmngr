@@ -18,10 +18,11 @@ if ($('body').data('action') == 'edit') {
   $('.sortable').sortable({
     animation:  150,
     ghostClass: 'has-background-primary',
+    filter: '.actions a',
     onUpdate: function (ev) {
       // set position on all items by their index
       $('.doujin .position').each(function (i) { $(this).val(i); })
-    }
+    }//onUpdate
   });
 }// action index
 // -----------------------------------------------------------------------------
