@@ -30,7 +30,20 @@ class ShelvesController < ApplicationController
     @record.destroy ?
       redirect_to({action: :index}, notice: "Shelf [#{@record.id} / #{@record.name}] deleted") :
       redirect_to({action: :index}, alert:  "can't delete Shelf [#{@record.id} / #{@record.name}]")
-  end
+  end # destroy
+  
+  def random
+    doujinshi = Doujin.order("RANDOM()").limit(12)
+  
+    respond_to do |format|
+      format.json {
+        ExternalProgramRunner.run params[:run],
+          doujinshi.map{|d| d.file_path },
+          chdir: Setting['dir.sorted']
+        render json: {ris: :ok}
+      }#json
+    end
+  end # random
 
 
   private

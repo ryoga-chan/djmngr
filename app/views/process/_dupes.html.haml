@@ -63,9 +63,8 @@
               %span.tag.is-warning= "#{'%2d' % d.cover_similarity}% cover similarity"
         .now(title="collection path" style="border-bottom: 1px solid silver")
           = link_to doujin_path(d, run: :comics_viewer, format: :json),
-              onclick: %Q|var bt=jQuery(this); bt.addClass('is-loading'); setTimeout(function(){ bt.removeClass('is-loading') }, 5000)|,
               title: 'read with external viewer',
-              remote: true, class: 'button is-info is-rounded is-small tiny-bt mr-1 is-hidden-mobile' do
+              remote: true, class: 'button is-info is-rounded is-small tiny-bt mr-1 run-progr is-hidden-mobile' do
             %span.icon.is-small
               %i.mi.mi-small launch
           = link_to "##{d.id} @ #{d.file_path}", doujin_path(d), target: :_blank
