@@ -47,7 +47,12 @@
         img_curr.addClass('hidden');
       }//if
     } else {
-      if (page_num >= 0) {
+      if (cur_page == files) {
+        // hide finished message and show last image
+        $('#msg').addClass('hidden');
+        img_curr.removeClass('hidden');
+        cur_page = files - 1;
+      } else if (page_num >= 0) {
         // go back
         $('#msg').addClass('hidden');
         
