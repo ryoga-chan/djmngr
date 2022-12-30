@@ -121,17 +121,15 @@
         %span.icon
           %i.mi star_half
 
-    - if s = Shelf.order(created_at: :desc).first
-      .pick.is-hidden-mobile
-        = link_to shelf_path(s, run: :comics_viewer, format: :json),
-          onclick: %Q|var bt=jQuery(this); bt.addClass('is-loading'); setTimeout(function(){ bt.removeClass('is-loading') }, 5000)|,
-          remote: true, title: 'start slideshow', class: 'button is-info is-rounded mt-3' do
-          %span.icon-text
-            %span.icon
-              %i.mi new_releases
-            %span shelf
-            %span.icon
-              %i.mi shelves
+    = link_to random_shelves_path(run: :batch_comics_viewer, format: :json),
+      remote: true, title: 'best sample slideshow',
+      class: 'button is-info is-rounded mt-3 mx-1 run-progr is-hidden-mobile' do
+      %span.icon-text
+        %span.icon
+          %i.mi new_releases
+        %span shelf
+        %span.icon
+          %i.mi shelves
   
     %hr.is-hidden-tablet.my-0.mt-3
     

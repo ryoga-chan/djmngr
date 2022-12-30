@@ -66,5 +66,7 @@ Rails.application.routes.draw do
   resources :circles, concerns: :metadata_crud
   resources :themes , concerns: :metadata_crud
 
-  resources :shelves, except: %i[ new create ]
+  resources :shelves, except: %i[ new create ] do
+    get  :random, on: :collection
+  end
 end

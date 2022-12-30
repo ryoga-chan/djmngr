@@ -25,9 +25,8 @@
           .field.has-addons
             .control
               = link_to shelf_path(r, run: :batch_comics_viewer, format: :json),
-                  onclick: %Q|var bt=jQuery(this); bt.addClass('is-loading'); setTimeout(function(){ bt.removeClass('is-loading') }, 5000)|,
                   title: 'start slideshow',
-                  remote: true, class: 'button is-info is-small is-rounded' do
+                  remote: true, class: 'button is-info is-small is-rounded run-progr' do
                 %span.icon.is-small
                   %i.mi.mi-small slideshow
             .control
