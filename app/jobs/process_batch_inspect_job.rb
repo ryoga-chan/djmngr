@@ -11,7 +11,7 @@ class ProcessBatchInspectJob < ApplicationJob
 
       Zip::File.open(file_path) do |zip|
         image_entries = zip.entries.
-          select{|e| e.file? && e.name =~ /\.(jpe*g|png|gif)$/i }.
+          select{|e| e.file? && e.name =~ RE_IMAGE_EXT }.
           sort{|a,b| a.name <=> b.name }
       
         info[:files][name] = image_entries.map &:name
