@@ -1,7 +1,6 @@
 class ProcessArchiveDecompressJob < ApplicationJob
   THUMB_WIDTH  = 160
   THUMB_HEIGHT = 240
-  IMAGE_REGEXP = /\.(jpe*g|gif|png)$/i
   CROP_METHODS = %i{ low centre attention entropy high }
 
   queue_as :tools
@@ -163,7 +162,7 @@ class ProcessArchiveDecompressJob < ApplicationJob
     info[:images], info[:files] = Dir[File.join path_contents, '**', '*'].
       sort.select{|i| File.file? i }.
       map{|i| { src_path: Pathname.new(i).relative_path_from(path_contents).to_s, size: File.size(i) } }.
-      partition{|i| i[:src_path] =~ IMAGE_REGEXP }
+      partition{|i| i[:src_path] =~ RE_IMAGE_EXT }
     
     info[:ren_images_method] = 'alphabetical_index'
     

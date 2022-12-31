@@ -201,7 +201,7 @@ class DoujinshiController < ApplicationController
     @page_title = :reader
     
     Zip::File.open(@doujin.file_path full: true) do |zip|
-      @files = zip.glob('*.{jpg,jpeg,png,gif}').map(&:name).sort
+      @files = zip.entries.select{|e| e.file? && e.name =~ RE_IMAGE_EXT }.map(&:name).sort
     end
     
     params[:page] = params[:page].to_i
@@ -218,7 +218,9 @@ class DoujinshiController < ApplicationController
   def image
     Zip::File.open(@doujin.file_path full: true) do |zip|
       entry = zip.find_entry(params[:file]) if params[:file]
-      entry = zip.glob('*.{jpg,jpeg,png,gif}').sort{|a,b| a.name <=> b.name }[params[:page].to_i] if params[:page]
+      entry = zip.entries.
+        select{|e| e.file? && e.name =~ RE_IMAGE_EXT }.
+        sort{|a,b| a.name <=> b.name }[params[:page].to_i] if params[:page]
       @fname   = entry&.name
       @content = entry&.get_input_stream&.read
     end
@@ -228,7 +230,7 @@ class DoujinshiController < ApplicationController
       @content = File.read(Rails.root.join 'public', @fname)
     end
     
-    send_data @content, type: File.extname(@fname).delete('.').to_sym,
+    send_data @content, type: File.extname(@fname).delete('.').downcase.to_sym,
       disposition: :inline, filename: @fname
   end # image
 

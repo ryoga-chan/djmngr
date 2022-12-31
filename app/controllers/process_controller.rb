@@ -61,7 +61,7 @@ class ProcessController < ApplicationController
     
     Zip::File.open(@fname) do |zip|
       zip.entries.
-        select{|e| e.file? && e.name =~ /\.(jpe*g|png|gif)$/i }.
+        select{|e| e.file? && e.name =~ RE_IMAGE_EXT }.
         shuffle[0..5].each do |e|
           thumb = Vips::Image.webp_cropped_thumb e.get_input_stream.read,
             buffer_fname: File.basename(e.name),
@@ -164,7 +164,7 @@ class ProcessController < ApplicationController
     Zip::File.open(@fname) do |zip|
       zip.entries.each do |e|
         next unless e.file?
-        file_counters[e.name =~ ProcessArchiveDecompressJob::IMAGE_REGEXP ? :num_images : :num_files] += 1
+        file_counters[e.name =~ RE_IMAGE_EXT ? :num_images : :num_files] += 1
       end
     end
     
