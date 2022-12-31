@@ -17,6 +17,10 @@ class ProcessArchiveCompressJob < ApplicationJob
       
       # N. hard link/convert images to the new name/format
       info[:images].each do |img|
+        # force lowercase extension
+        dst_ext  = File.extname img[:dst_path]
+        img[:dst_path] = img[:dst_path].sub(dst_ext, dst_ext.downcase)
+
         src_path = File.join(src_dir, 'contents', img[:src_path])
         if File.extname(img[:src_path]).downcase == File.extname(img[:dst_path]).downcase
           dst_path = File.join(out_dir, img[:dst_path])
