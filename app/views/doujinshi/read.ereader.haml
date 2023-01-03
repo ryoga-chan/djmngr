@@ -45,14 +45,12 @@
         // show finished message and hide last image
         showAndCenter('#msg');
         img_curr.addClass('hidden');
-        cur_page = files.length;
       }//if
     } else {
-      if (cur_page == files.length) {
+      if (!$('#msg').hasClass('hidden')) {
         // hide finished message and show last image
         $('#msg').addClass('hidden');
         img_curr.removeClass('hidden');
-        cur_page = files.length - 1;
       } else if (page_num >= 0) {
         // go back
         $('#msg').addClass('hidden');
@@ -75,16 +73,17 @@
     
     $('#pag_num .cur').text(cur_page + 1);
     
-    // save current page on server
-    setTimeout(function () {
-      $.ajax({
-        url: $('.main').data('pages-url'),
-        data: { page: cur_page },
-        method: 'POST',
-        dataType: 'json',
-        cache: false,
-      });
-    }, 1000);
+    if ($('#msg').hasClass('hidden'))
+      // save current page on server
+      setTimeout(function () {
+        $.ajax({
+          url: $('.main').data('pages-url'),
+          data: { page: cur_page },
+          method: 'POST',
+          dataType: 'json',
+          cache: false,
+        });
+      }, 1000);
   }//turnPage
   
   function showAndCenter(el) {
