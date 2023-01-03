@@ -44,7 +44,7 @@
       .actions.field.is-grouped
         .field.has-addons
           %p.control= link_to 'Back', {action: :index}, class: 'button is-info is-rounded'
-          %p.control
+          %p.control.is-hidden-mobile
             = link_to shelf_path(@record, run: :batch_comics_viewer, format: :json),
                 title: 'start slideshow',
                 remote: true, class: 'button is-info is-rounded run-progr' do

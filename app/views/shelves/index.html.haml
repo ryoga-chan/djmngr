@@ -5,23 +5,30 @@
 %table.table.is-striped.is-hoverable.is-fullwidth
   %thead
     %tr
-      %th.w1 Created at
-      %th.w1
+      %th.w1.has-text-centered
+        %span.icon.is-small(title="created at")
+          %i.mi.mi-small event
+      %th.w1.has-text-centered
         %span.icon.is-small(title="n. doujinshi")
           %i.mi.mi-small book
-      %th.w1
+      %th.w1.has-text-centered
         %span.icon.is-small(title="total n. pages")
           %i.mi.mi-small auto_stories
       %th Name
-      %th.w1.has-text-centered Actions
+      %th.w1.has-text-centered.is-hidden-mobile Actions
   %tbody
     - @records.each do |r|
       %tr
-        %td.nowrap= l r.created_at
-        %td= r.doujinshi_shelves.count
-        %td= r.num_images
+        %td.nowrap.has-text-centered{title: l(r.created_at, format: :long)}
+          .year.is-size-6= r.created_at.year
+          .md.is-size-8
+            = '%02d' % r.created_at.month
+            &middot;
+            = '%02d' % r.created_at.day
+        %td.has-text-centered= r.doujinshi_shelves.count
+        %td.has-text-centered= r.num_images
         %td= link_to r.name, edit_shelf_path(r)
-        %td
+        %td.is-hidden-mobile
           .field.has-addons
             .control
               = link_to shelf_path(r, run: :batch_comics_viewer, format: :json),
