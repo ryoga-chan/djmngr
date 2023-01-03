@@ -62,10 +62,27 @@
             - if d.cover_similarity
               %span.tag.is-warning= "#{'%2d' % d.cover_similarity}% cover similarity"
         .now(title="collection path" style="border-bottom: 1px solid silver")
-          = link_to doujin_path(d, run: :comics_viewer, format: :json),
-              title: 'read with external viewer',
-              remote: true, class: 'button is-info is-rounded is-small tiny-bt mr-1 run-progr is-hidden-mobile' do
-            %span.icon.is-small
-              %i.mi.mi-small launch
+          - bt_sample = capture do
+            - ts = Time.now.to_i
+            = link_to doujin_path(d, sample: ts, anchor: "sample-#{ts}"),
+              title: 'view sample images', target: :_blank,
+              class: 'button is-info is-rounded is-small tiny-bt' do
+              %span.icon.is-small
+                %i.mi.mi-small casino
+          
+          %span
+            .is-inline-flex.is-hidden-mobile
+              .field.has-addons
+                %p.control= bt_sample
+                %p.control
+                  = link_to doujin_path(d, run: :comics_viewer, format: :json),
+                      title: 'read with external viewer',
+                      remote: true, class: 'button is-info is-rounded is-small tiny-bt run-progr' do
+                    %span.icon.is-small
+                      %i.mi.mi-small launch
+            
+            .is-inline-flex.is-hidden-desktop
+              %p.control= bt_sample
+            
           = link_to "##{d.id} @ #{d.file_path}", doujin_path(d), target: :_blank
         .was(title="original name")= d.name_orig
