@@ -1,11 +1,14 @@
+- bt_sample = capture do
+  = link_to sample_images_process_index_path(path: fname),
+    title: 'view sample images', target: :_blank,
+    class: 'button is-info is-rounded is-small tiny-bt' do
+    %span.icon.is-small
+      %i.mi.mi-small casino
+
+
 .is-inline-flex.is-hidden-mobile
   .field.has-addons
-    %p.control
-      = link_to sample_images_process_index_path(path: fname),
-        title: 'view sample images', target: :_blank,
-        class: 'button is-info is-rounded is-small tiny-bt' do
-        %span.icon.is-small
-          %i.mi.mi-small casino
+    %p.control= bt_sample
     %p.control
       = link_to show_externally_process_index_path(path: fname, run: :comics_viewer, format: :json),
         title: 'read with external viewer',
@@ -20,9 +23,4 @@
           %i.mi.mi-small folder
 
 .is-inline-flex.is-hidden-desktop
-  %p.control
-    = link_to sample_images_process_index_path(path: fname),
-      title: 'view sample images', target: :_blank,
-      class: 'button is-info is-rounded is-small tiny-bt' do
-      %span.icon.is-small
-        %i.mi.mi-small casino
+  %p.control= bt_sample
