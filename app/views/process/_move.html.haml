@@ -144,7 +144,9 @@
         - base_dir = File.join(@dname, 'thumbs')
         
         - if @info[:landscape_cover] && @info[:landscape_cover_method] != :none
-          %figure.image.is2by3= thumbnail_tag File.join(base_dir, '0000.webp'), title: "cropped cover"
+          %figure.image.is2by3
+            = link_to show_image_process_path(id: @info[:working_dir], path: @info[:images].first[:src_path]), target: :_blank do
+              = thumbnail_tag File.join(base_dir, '0000.webp'), title: 'cropped cover'
           .control.has-icons-left
             - crop_methods = ProcessArchiveDecompressJob::CROP_METHODS.map{|m| ["crop #{m}", m] }
             - crop_methods += (1..99).map{|p| ["crop @ #{p}%", p] }
