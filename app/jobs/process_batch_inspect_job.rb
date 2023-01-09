@@ -3,7 +3,7 @@ class ProcessBatchInspectJob < ApplicationJob
 
   def perform(hash)
     info_path = ProcessBatchJob.info_path(hash)
-    info = YAML.load_file info_path
+    info = YAML.unsafe_load_file info_path
     
     info[:thumbs] = {}
     info[:files].keys.each do |name|

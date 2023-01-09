@@ -35,7 +35,7 @@ class CoverMatchingJob < ApplicationJob
   # return final results and delete temp file after matching completed
   def self.results(image_hash)
     fname = File.join(Setting['dir.sorting'], "#{image_hash}.yml").to_s
-    info  = YAML::load_file(fname) rescue nil
+    info  = YAML.unsafe_load_file(fname) rescue nil
     info  = {status: :not_found} unless info.is_a?(Hash)
     
     return info[:status] if info[:status] != :completed
@@ -52,7 +52,7 @@ class CoverMatchingJob < ApplicationJob
   # by computing hamming distance between pHashes
   def perform(image_hash, max_distance: 13)
     fname = File.join(Setting['dir.sorting'], "#{image_hash}.yml").to_s
-    info  = YAML::load_file fname
+    info  = YAML.unsafe_load_file fname
     
     # https://stackoverflow.com/questions/2281580/is-there-any-way-to-convert-an-integer-3-in-decimal-form-to-its-binary-equival/2310694#2310694
     # https://stackoverflow.com/questions/49601249/string-to-binary-and-back-using-pure-sqlite

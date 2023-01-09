@@ -5,7 +5,7 @@ class ProcessArchiveCompressJob < ApplicationJob
   queue_as :tools
 
   def perform(src_dir)
-    info = YAML.load_file(File.join src_dir, 'info.yml')
+    info = YAML.unsafe_load_file(File.join src_dir, 'info.yml')
     
     begin
       out_dir = File.join src_dir, 'output'
