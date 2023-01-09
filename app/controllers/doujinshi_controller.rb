@@ -366,7 +366,7 @@ class DoujinshiController < ApplicationController
     if @result.is_a?(Hash)       # save completed search results
       File.open(fname, 'w'){|f| f.puts @result.to_yaml }
     elsif @result == :not_found  # expired job, load last search results
-      @result = YAML.load_file(fname) rescue :not_found
+      @result = YAML.unsafe_load_file(fname) rescue :not_found
     end
     
     # find doujinshi

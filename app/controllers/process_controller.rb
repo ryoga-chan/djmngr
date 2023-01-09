@@ -35,7 +35,7 @@ class ProcessController < ApplicationController
       @preparing = Dir[files_glob].map{|f|
         tot_size = Dir.glob("#{File.dirname f}/**/*").
           map{|f| f.ends_with?('/file.zip') ? 0 : File.size(f) }.sum
-        YAML.load_file(f).merge tot_size: tot_size
+        YAML.unsafe_load_file(f).merge tot_size: tot_size
       }.sort{|a,b| a[:relative_path] <=> b[:relative_path] }
       @preparing_paths = @preparing.map{|i| i[:relative_path] }
     end
@@ -86,7 +86,7 @@ class ProcessController < ApplicationController
     info_path = ProcessBatchJob.info_path params[:id]
     return redirect_to(process_index_path, alert: "batch not found!") unless File.exist?(info_path)
     
-    @info = YAML.load_file info_path
+    @info = YAML.unsafe_load_file info_path
 
     # remove single entry or entire batch data file
     if request.delete?
@@ -184,7 +184,7 @@ class ProcessController < ApplicationController
   end # delete_archive
   
   def delete_archive_cwd
-    @info = YAML.load_file(File.join @dname, 'info.yml')
+    @info = YAML.unsafe_load_file(File.join @dname, 'info.yml')
     if params[:archive_too] == 'true'
       # track deletion unless stored in collection
       DeletedDoujin.create({
@@ -209,7 +209,7 @@ class ProcessController < ApplicationController
   end # delete_archive_cwd
   
   def delete_archive_files
-    @info = YAML.load_file(File.join @dname, 'info.yml')
+    @info = YAML.unsafe_load_file(File.join @dname, 'info.yml')
     
     params[:path] = [ params[:path] ] unless params[:path].is_a?(Array)
     
@@ -234,7 +234,7 @@ class ProcessController < ApplicationController
   end # delete_archive_files
   
   def set_property
-    @info  = YAML.load_file(File.join @dname, 'info.yml')
+    @info  = YAML.unsafe_load_file(File.join @dname, 'info.yml')
     @perc  = File.read(File.join @dname, 'completion.perc').to_f rescue 0.0 unless @info[:prepared_at]
     @fname = File.basename(@info[:relative_path].to_s)
     info_changed = false
@@ -323,7 +323,7 @@ class ProcessController < ApplicationController
   def edit
     params[:tab] = 'dupes' unless %w{ dupes files images ident move }.include?(params[:tab])
     
-    @info  = YAML.load_file(File.join @dname, 'info.yml')
+    @info  = YAML.unsafe_load_file(File.join @dname, 'info.yml')
     @perc  = File.read(File.join @dname, 'completion.perc').to_f rescue 0.0 unless @info[:prepared_at]
     @fname = File.basename(@info[:relative_path].to_s)
     
@@ -451,7 +451,7 @@ class ProcessController < ApplicationController
   end # edit
   
   def rename_images
-    @info = YAML.load_file(File.join @dname, 'info.yml')
+    @info = YAML.unsafe_load_file(File.join @dname, 'info.yml')
     
     begin
       case params[:rename_with].to_sym
@@ -518,7 +518,7 @@ class ProcessController < ApplicationController
   end # rename_images
   
   def rename_file
-    @info = YAML.load_file(File.join @dname, 'info.yml')
+    @info = YAML.unsafe_load_file(File.join @dname, 'info.yml')
     
     if el = @info[:files].detect{|i| i[:src_path] == params[:path] }
       el[:dst_path] = params[:name]
@@ -547,7 +547,7 @@ class ProcessController < ApplicationController
   
   # rezip archive, add metadata, move/register in collection, cleaup WIP folder
   def finalize_volume
-    @info = YAML.load_file(File.join @dname, 'info.yml')
+    @info = YAML.unsafe_load_file(File.join @dname, 'info.yml')
     perc_file = File.join(@dname, 'finalize.perc')
     
     unless @info[:dest_filename].to_s.end_with?('.zip')
@@ -595,7 +595,7 @@ class ProcessController < ApplicationController
   end # show_externally
   
   def edit_cover
-    @info = YAML.load_file(File.join @dname, 'info.yml')
+    @info = YAML.unsafe_load_file(File.join @dname, 'info.yml')
     
     respond_to do |format|
       format.html {

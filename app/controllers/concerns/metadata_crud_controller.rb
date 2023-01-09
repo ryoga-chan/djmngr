@@ -90,7 +90,7 @@ module MetadataCrudController
     end
     
     # check progress file on disk + periodic page refresh
-    @info = YAML.load_file(fname) rescue {}
+    @info = YAML.unsafe_load_file(fname) rescue {}
     
     render 'application/metadata/djorg_dl'
   end # djorg_dl
