@@ -31,7 +31,7 @@ class ProcessBatchJob < ApplicationJob
       batch_info_path = ProcessBatchJob.info_path options[:hash]
       return unless File.exist?(batch_info_path)
       
-      batch_info = YAML.load_file batch_info_path
+      batch_info = YAML.unsafe_load_file batch_info_path
       batch_info[:progress] = results
       File.atomic_write(batch_info_path){|f| f.puts batch_info.to_yaml }
     end # update_batch_info
@@ -74,7 +74,7 @@ class ProcessBatchJob < ApplicationJob
       
       dname = File.expand_path File.join(Setting['dir.sorting'], hash)
       info_fname = File.join dname, 'info.yml'
-      info  = YAML.load_file info_fname
+      info  = YAML.unsafe_load_file info_fname
       puts "HASH: #{hash}"
       
       if info[:images].empty?
@@ -140,7 +140,7 @@ class ProcessBatchJob < ApplicationJob
         FileUtils.touch perc_file
         ProcessArchiveCompressJob.perform_now dname
         
-        info = YAML.load_file info_fname
+        info = YAML.unsafe_load_file info_fname
         if info[:finalize_error].blank?
           puts "DjID: #{info[:db_doujin_id]}"
           results[fname][:id] = info[:db_doujin_id].to_i

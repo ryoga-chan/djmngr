@@ -80,7 +80,7 @@ class ProcessArchiveDecompressJob < ApplicationJob
   end # self.generate_thumbnail
 
   def perform(dst_dir)
-    info = YAML.load_file(File.join dst_dir, 'info.yml')
+    info = YAML.unsafe_load_file(File.join dst_dir, 'info.yml')
     
     fname = File.basename(info[:relative_path].to_s).downcase
 
@@ -128,7 +128,7 @@ class ProcessArchiveDecompressJob < ApplicationJob
     
     # restore reprocessing metadata
     md_path = File.join File.dirname(info[:file_path]), "#{File.basename info[:file_path], File.extname(info[:file_path])}.yml"
-    md_info = YAML.load_file(md_path) rescue {}
+    md_info = YAML.unsafe_load_file(md_path) rescue {}
     if File.exist?(md_path) && md_info.is_a?(Hash)
       info.merge! md_info
       File.unlink md_path
