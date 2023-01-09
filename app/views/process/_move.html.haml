@@ -141,12 +141,10 @@
 
     .column.has-text-centered
       - html_cover = capture do
-        - base_dir = File.join(@dname, 'thumbs')
-        
         - if @info[:landscape_cover] && @info[:landscape_cover_method] != :none
           %figure.image.is2by3
             = link_to show_image_process_path(id: @info[:working_dir], path: @info[:images].first[:src_path]), target: :_blank do
-              = thumbnail_tag File.join(base_dir, '0000.webp'), title: 'cropped cover'
+              = thumbnail_tag ProcessArchiveDecompressJob.cover_path(@dname, @info), title: 'cropped cover'
           .control.has-icons-left
             - crop_methods = ProcessArchiveDecompressJob::CROP_METHODS.map{|m| ["crop #{m}", m] }
             - crop_methods += (1..99).map{|p| ["crop @ #{p}%", p] }
@@ -169,8 +167,10 @@
               %span refresh thumb
         - else
           - cover = @info[:images].first
-          %figure.image.is2by3= thumbnail_tag File.join(base_dir, cover[:thumb_path]),
-            title: "#{cover[:dst_path]} @ #{number_to_human_size cover[:size]}\n↪#{cover[:src_path]}"
+          %figure.image.is2by3
+            = link_to show_image_process_path(id: @info[:working_dir], path: cover[:src_path]), target: :_blank do
+              = thumbnail_tag ProcessArchiveDecompressJob.cover_path(@dname, @info),
+                title: "#{cover[:dst_path]} @ #{number_to_human_size cover[:size]}\n↪#{cover[:src_path]}"
       
       - if @collision_info
         .columns
