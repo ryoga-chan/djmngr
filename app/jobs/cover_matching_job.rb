@@ -8,7 +8,6 @@ class CoverMatchingJob < ApplicationJob
     
     # resize image to a temporary thumbnail
     thumb = Vips::Image.webp_cropped_thumb image_data,
-      buffer_fname: File.basename(image_path),
       width:  ProcessArchiveCompressJob::THUMB_WIDTH,
       height: ProcessArchiveCompressJob::THUMB_HEIGHT
     
