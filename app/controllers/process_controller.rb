@@ -64,7 +64,6 @@ class ProcessController < ApplicationController
         select{|e| e.file? && e.name =~ RE_IMAGE_EXT }.
         shuffle[0..5].each do |e|
           thumb = Vips::Image.webp_cropped_thumb e.get_input_stream.read,
-            buffer_fname: File.basename(e.name),
             width: 480, height: 960, padding: false
           @images << { name: e.name, data: Base64.encode64(thumb[:buffer]).chomp }
         end

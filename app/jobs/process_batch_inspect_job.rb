@@ -19,7 +19,6 @@ class ProcessBatchInspectJob < ApplicationJob
         if cover = image_entries.first # extract cover image
           thumb = Vips::Image.webp_cropped_thumb \
             cover.get_input_stream.read,
-            buffer_fname: File.basename(cover.name),
             width:  ProcessArchiveCompressJob::THUMB_WIDTH,
             height: ProcessArchiveCompressJob::THUMB_HEIGHT
           
