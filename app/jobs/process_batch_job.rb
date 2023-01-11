@@ -135,23 +135,27 @@ class ProcessBatchJob < ApplicationJob
         next
       end
       
-      perc_file = File.join(dname, 'finalize.perc')
-      unless File.exist?(perc_file)
-        FileUtils.touch perc_file
-        ProcessArchiveCompressJob.perform_now dname
-        
-        info = YAML.unsafe_load_file info_fname
-        if info[:finalize_error].blank?
-          puts "DjID: #{info[:db_doujin_id]}"
-          results[fname][:id] = info[:db_doujin_id].to_i
-          # remove file on disk, WIP folder, index entry
-          File.unlink info[:file_path]
-          FileUtils.rm_rf dname, secure: true
-          ProcessIndexRefreshJob.rm_entry info[:relative_path]
-        else
-          add_error results, fname, 'processing errors', options # [#{info[:finalize_error]}]
-          next
+      if options[:batch_method] == 'process'
+        perc_file = File.join(dname, 'finalize.perc')
+        unless File.exist?(perc_file)
+          FileUtils.touch perc_file
+          ProcessArchiveCompressJob.perform_now dname
+          
+          info = YAML.unsafe_load_file info_fname
+          if info[:finalize_error].blank?
+            puts "DjID: #{info[:db_doujin_id]}"
+            results[fname][:id] = info[:db_doujin_id].to_i
+            # remove file on disk, WIP folder, index entry
+            File.unlink info[:file_path]
+            FileUtils.rm_rf dname, secure: true
+            ProcessIndexRefreshJob.rm_entry info[:relative_path]
+          else
+            add_error results, fname, 'processing errors', options # [#{info[:finalize_error]}]
+            next
+          end
         end
+      else
+        add_error results, fname, 'prepared', options
       end
       
       update_batch_info results, options

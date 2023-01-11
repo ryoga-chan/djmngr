@@ -97,6 +97,9 @@
                 %span.icon
                   %i.mi visibility
           .control
+            - list, cur = %w{ process prepare }, @info[:options].try('[]', :batch_method)
+            .select= f.select :batch_method, options_for_select(list, cur), {}, class: "input is-rounded is-small"
+          .control
             - list = (1..10).map{|i| ["&star; #{i}".html_safe,i] }.unshift(['score=none', nil])
             .select= f.select :score,
               options_for_select(list, @info[:options].try('[]', :score)), {},
