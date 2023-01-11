@@ -116,7 +116,9 @@ class ProcessController < ApplicationController
       %i[ col unc hcg overwrite ].each do |k|
         @info[:options][k] = params[:options][k].present? ? (params[:options][k] == 'true') : nil
       end
-      @info[:options][:lang] = params[:options][:lang].present? ? params[:options][:lang] : nil
+      %i[ lang batch_method ].each do |k|
+        @info[:options][k] = params[:options][k].present? ? params[:options][k] : nil
+      end
       
       File.atomic_write(info_path){|f| f.puts @info.to_yaml }
       
