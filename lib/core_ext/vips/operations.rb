@@ -6,10 +6,10 @@ module CoreExt
       end
       
       module ClassMethods
-        def webp_cropped_thumb(buffer_or_img, buffer_fname: 'a.jpg', width: 160, height: 240, padding: true)
+        def webp_cropped_thumb(buffer_or_img, width: 160, height: 240, padding: true)
           vips = buffer_or_img.is_a?(::Vips::Image) ?
             buffer_or_img :
-            ::Kernel.suppress_output{ new_from_buffer(buffer_or_img, buffer_fname) }
+            ::Kernel.suppress_output{ new_from_buffer(buffer_or_img, '') }
           
           im = ::ImageProcessing::Vips.source vips
           if padding
@@ -28,8 +28,8 @@ module CoreExt
           }
         end # webp_cropped_thumb
         
-        def is_landscape?(buffer_or_img, buffer_fname: 'a.jpg')
-          img = buffer_or_img.is_a?(Vips::Image) ? buffer_or_img : new_from_buffer(buffer_or_img, buffer_fname)
+        def is_landscape?(buffer_or_img)
+          img = buffer_or_img.is_a?(Vips::Image) ? buffer_or_img : new_from_buffer(buffer_or_img, '')
           img.is_landscape?
         end # is_landscape?
       end # ClassMethods
