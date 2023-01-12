@@ -97,39 +97,40 @@
     
     %hr.is-hidden-tablet.my-0
     
-    = link_to random_pick_doujinshi_path(type: :book  ), class: 'button is-info is-rounded mt-3 mx-1' do
-      %span.icon-text
-        %span.icon
-          %i.mi casino
-        %span book
-        %span.icon
-          %i.mi book
+    .random-links
+      = link_to random_pick_doujinshi_path(type: :book  ), class: 'button is-info is-rounded mt-3 mx-1' do
+        %span.icon-text
+          %span.icon
+            %i.mi casino
+          %span book
+          %span.icon
+            %i.mi book
 
-    = link_to random_pick_doujinshi_path(type: :faved ), class: 'button is-info is-rounded mt-3 mx-1' do
-      %span.icon-text
-        %span.icon
-          %i.mi casino
-        %span faved
-        %span.icon
-          %i.mi auto_awesome
+      = link_to random_pick_doujinshi_path(type: :faved ), class: 'button is-info is-rounded mt-3 mx-1' do
+        %span.icon-text
+          %span.icon
+            %i.mi casino
+          %span faved
+          %span.icon
+            %i.mi auto_awesome
 
-    = link_to random_pick_doujinshi_path(type: :scored), class: 'button is-info is-rounded mt-3 mx-1' do
-      %span.icon-text
-        %span.icon
-          %i.mi casino
-        %span best
-        %span.icon
-          %i.mi star_half
+      = link_to random_pick_doujinshi_path(type: :scored), class: 'button is-info is-rounded mt-3 mx-1' do
+        %span.icon-text
+          %span.icon
+            %i.mi casino
+          %span best
+          %span.icon
+            %i.mi star_half
 
-    = link_to random_shelves_path(run: :batch_comics_viewer, format: :json),
-      remote: true, title: 'best sample slideshow',
-      class: 'button is-info is-rounded mt-3 mx-1 run-progr is-hidden-mobile' do
-      %span.icon-text
-        %span.icon
-          %i.mi new_releases
-        %span shelf
-        %span.icon
-          %i.mi shelves
+      = link_to random_shelves_path(run: :batch_comics_viewer, format: :json),
+        remote: true, title: 'best sample slideshow',
+        class: 'button is-info is-rounded mt-3 mx-1 run-progr is-hidden-mobile' do
+        %span.icon-text
+          %span.icon
+            %i.mi new_releases
+          %span shelf
+          %span.icon
+            %i.mi shelves
   
     %hr.is-hidden-tablet.my-0.mt-3
     
