@@ -216,12 +216,17 @@
 
 = render partial: 'actions'
 
-- if @doujin.num_images > 10 && params[:sample]
+- if @doujin.num_images > 1 && params[:sample]
   %a(name="sample-#{params[:sample]}")
   .columns
-    - start_idx = (rand(@doujin.num_images - 1 - 5) + 1).to_i
-    - (start_idx...(start_idx+3)).each do |i|
-      .column.is-4.has-text-centered
-        .is-size-7= "page #{i}"
-        %figure.image.is2by3
-          = image_tag image_doujin_path(@doujin, page: i)
+  - num_images = 6
+  - max_idx  = [@doujin.num_images - 1 - num_images, 1].max
+  - from_idx = SecureRandom.random_number(max_idx) + 1
+  - to_idx   = [@doujin.num_images - 1, from_idx + 6].min
+  - (from_idx...to_idx).to_a.each_slice(3) do |s|
+    .columns
+      - s.each do |i|
+        .column.is-4.has-text-centered
+          .is-size-7= "page #{i}"
+          %figure.image.is2by3
+            = image_tag image_doujin_path(@doujin, page: i)
