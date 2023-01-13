@@ -409,7 +409,7 @@ class DoujinshiController < ApplicationController
       when 'scored'; Doujin.where("8 <= score AND score <= 10")
     end
 
-    n  = rand(rel.count)
+    n  = SecureRandom.random_number rel.count
     id = rel.order(:id).offset(n).limit(1).pluck :id
     redirect_to_with_format(doujin_path id: id)
   end # random_pick
