@@ -1,8 +1,4 @@
-%h3
-  Generated EPUB files
-  .actions{style: "float: right"}
-    = link_to 'refresh', epub_doujinshi_path, class: :button
-    = link_to 'home', root_path, class: :button
+%h3 Generated EPUB files
 
 %table.files.is-striped.block-links.w100
   - @wip.each do |f|

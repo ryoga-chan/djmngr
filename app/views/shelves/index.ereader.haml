@@ -1,7 +1,4 @@
-%h3
-  Shelves / Reading lists
-  .actions{style: "float: right"}
-    = link_to 'home', root_path, class: :button
+%h3 Shelves / Reading lists
 
 .pagination-info= page_entries_info @records
 = paginate @records

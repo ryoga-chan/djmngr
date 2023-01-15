@@ -23,7 +23,7 @@
       %thead
         %tr
           %th.w1 Cover
-          %th.w1= show_perc_read ? '%' : 'hearts;'.html_safe
+          %th.w1= show_perc_read ? '%' : '&hearts;'.html_safe
           %th{style: "text-align: left"}= "Name (#{@doujinshi.reselect(:id).count})"
           %th.w1 Pag.
           %th.w1 Size

@@ -1,7 +1,4 @@
-%h3
-  Doujinshi collection
-  .actions{style: "float: right"}
-    = link_to 'home', root_path, class: :button
+%h3 Doujinshi collection
 
 - cur_params = params.permit(%w{ format tab letter author_id circle_id folder }).to_h
 

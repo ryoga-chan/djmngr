@@ -9,8 +9,6 @@ body[data-ctrl="doujinshi"] {
     }
   }
   
-  table.dj-details + nav.pagination { margin-top: calc(-400px + 1rem); }
-  
   table.dj-details {
     margin-bottom: 400px;
     
@@ -38,6 +36,11 @@ body[data-ctrl="doujinshi"] {
       font-family: monospace;
       font-size: small;
     }
+  }
+  
+  table.dj-details + nav.pagination {
+    position: relative;
+    top: calc(-400px + 1rem);
   }
   
   #sample_cover {

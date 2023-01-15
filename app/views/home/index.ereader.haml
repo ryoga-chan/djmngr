@@ -1,6 +1,3 @@
-.actions{style: "float: right"}
-  = link_to 'PC version', {format: :html}, class: :button
-
 = form_with url: search_doujinshi_path, method: :get, class: 'frm-search' do |f|
   = f.text_field :term, placeholder: :search, size: 25
   = f.submit 'Search', class: 'button'
@@ -39,7 +36,7 @@
   %tr.scores
     %td score
     - @scores.each do |score, data|
-      %td= score
+      %td= link_to score, scored_doujinshi_path(score_min: score, score_max: score)
 
 %h3
   Counters:
@@ -47,7 +44,12 @@
   Doujinshi
   = "(#{number_to_human_size @stats[:dj_size]})"
 
-= @stats[:dj_cat].map{|cat, n| "#{number_with_delimiter n, delimiter: "'"} #{cat.pluralize}" }.join ' | '
+- @stats[:dj_cat].each_with_index do |data, i|
+  - cat, n = data
+  - if i != 0
+    \|
+  = number_with_delimiter n, delimiter: "'"
+  = cat.pluralize
 
 %hr
 
