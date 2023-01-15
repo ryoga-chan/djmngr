@@ -154,7 +154,7 @@ table.doujinshi {
 
 .pagination-info { margin-bottom: 0.5rem; }
 nav.pagination {
-  margin: 0.75rem 0;
+  margin: 0.25rem 0;
   text-align: right;
   
   a, .is-current {
@@ -163,6 +163,7 @@ nav.pagination {
     border-radius: 0.5rem;
     text-decoration: none;
     font-family: monospace;
+    display: inline-block;
   }
   .is-current { background-color: #aaa; }
   
