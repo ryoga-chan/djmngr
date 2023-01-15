@@ -28,6 +28,11 @@ a, a:visited { color: blue; }
 .notification.is-warning { background-color: #ccc; }
 .notification.is-danger  { background-color: #aaa; }
 
+.main-actions {
+  float: right;
+  font-weight: bold;
+}
+
 table.is-striped thead tr { background-color: #aaa; }
 table.is-striped tbody tr:nth-child(even) { background-color: #ccc; }
 
@@ -150,6 +155,7 @@ table.doujinshi {
 .pagination-info { margin-bottom: 0.5rem; }
 nav.pagination {
   margin: 0.75rem 0;
+  text-align: right;
   
   a, .is-current {
     padding: 0.5rem 0.75rem;
@@ -161,8 +167,9 @@ nav.pagination {
   .is-current { background-color: #aaa; }
   
   ul.pagination-list {
-    float: right;
+    float: left;
     margin: 0;
+    padding: 0 1rem 0 0;
     
     li { display: inline-block; }
   }

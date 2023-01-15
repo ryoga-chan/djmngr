@@ -28,4 +28,10 @@
                   - flash[key].each do |msg|
                     %li= msg
       
+    .main-actions{style: "float: right"}
+      - page = "#{params[:controller]}|#{params[:action]}"
+      = link_to 'PC version', {format: :html}, class: :button  if page == 'home|index'
+      = link_to 'refresh', epub_doujinshi_path, class: :button if page == 'doujinshi|epub'
+      = link_to 'home', root_path, class: :button
+    
     = yield

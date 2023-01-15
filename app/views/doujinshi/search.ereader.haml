@@ -1,7 +1,4 @@
-%h3
-  Search in collection
-  .actions{style: "float: right"}
-    = link_to 'home', root_path, class: :button
+%h3 Search in collection
 
 = form_with url: search_doujinshi_path, method: :get, class: 'frm-search' do |f|
   = f.text_field :term, value: params[:term], placeholder: :search
