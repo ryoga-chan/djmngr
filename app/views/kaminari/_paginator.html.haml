@@ -7,9 +7,6 @@
 -#    paginator:     the paginator that renders the pagination tags inside
 = paginator.render do
   %nav.pagination
-    = prev_page_tag unless current_page.first?
-    = next_page_tag unless current_page.last?
-    
     %ul.pagination-list
       = first_page_tag unless current_page.first?
       - each_page do |page|
@@ -18,3 +15,6 @@
         - elsif !page.was_truncated?
           = gap_tag
       = last_page_tag unless current_page.last?
+
+    = prev_page_tag unless current_page.first?
+    = next_page_tag unless current_page.last?

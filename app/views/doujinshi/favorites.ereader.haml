@@ -1,7 +1,4 @@
-%h3
-  Favorites
-  .actions{style: "float: right"}
-    = link_to 'home', root_path, class: :button
+%h3 Favorites
 
 - cur_params = params.permit(%w{ format tab sort detail }).to_h
 
