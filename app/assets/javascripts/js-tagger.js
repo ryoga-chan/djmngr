@@ -102,8 +102,8 @@ $('body').on('click', '#js-tagger-modal .lookup-results a', function (ev) {
   result_tag.data('clicked', true);
   
   var html = tagger.data('html-template').
-    replace(/RECORD_ID/g, result_tag.data('id')).
-    replace(/LABEL/g, result_tag.text().trim());
+    replace(/RECORD_ID/g, result_tag.data('id' )).
+    replace(/LABEL/g    , result_tag.data('lbl'));
   
   // append new tag to curren list
   modal.find('.current-tags').prepend(html);
@@ -184,7 +184,9 @@ $('body').on('keydown', '#js-tagger-modal .js-tagger-term', function (ev) {
         $.each(resp.tags, function () {
           if ($.inArray(parseInt(this.id), used_ids) == -1) // append only unused tags
             $('<a class="panel-block"></a>').
-              text(this.label).attr('data-id', this.id).
+              text(this.label).
+              append('<tt style="position: absolute; right: 0;">🆔'+this.id+'</tt>').
+              attr('data-id', this.id).attr('data-lbl', this.label).
               appendTo(list);
         });
       },//success
