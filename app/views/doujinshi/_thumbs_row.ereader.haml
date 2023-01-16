@@ -11,4 +11,5 @@
         %span.score<>= "#{d.percent_read.round}%".html_safe
     - elsif d.score.to_i > 0
       %span.score<>= "#{d.score.to_i}&hearts;".html_safe
+    %tt= "#{d.category[0].upcase}:" if show_categ && DoujinshiController::ICONS[d.category]
     %span.name<>= descr

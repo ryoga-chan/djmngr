@@ -1,5 +1,8 @@
 - short_label    = false unless local_assigns.has_key?(:short_label)
 - show_name_orig = false unless local_assigns.has_key?(:show_name_orig)
+- show_categ     = false unless local_assigns.has_key?(:show_categ)
+- local_vars     = { short_label: short_label, show_name_orig: show_name_orig,
+                     show_categ: show_categ }
 
 - unless doujinshi
   .mt-6.is-italic.has-text-centered nothing to see here
@@ -8,10 +11,10 @@
     - if doujinshi.is_a?(ActiveRecord::Relation)
       - doujinshi.find_each_slice_in_order(DoujinshiController::THUMBS_PER_ROW, batch_size: DoujinshiController::BATCH_SIZE) do |s|
         = render partial: 'thumbs_row',
-          locals: {doujinshi: s, short_label: short_label, show_name_orig: show_name_orig}
+          locals: local_vars.merge(doujinshi: s)
     - elsif doujinshi.is_a?(Array)
       - doujinshi.each_slice(DoujinshiController::THUMBS_PER_ROW) do |s|
-        = render partial: 'thumbs_row', locals: {doujinshi: s, short_label: short_label, show_name_orig: show_name_orig}
+        = render partial: 'thumbs_row', locals: local_vars.merge(doujinshi: s)
     - else
       unknown object to render
   - else
@@ -28,9 +31,9 @@
       %tbody
         - if doujinshi.is_a?(ActiveRecord::Relation)
           - doujinshi.find_each_in_order(batch_size: DoujinshiController::BATCH_SIZE) do |d|
-            = render partial: 'thumbs_table_row', locals: {d: d, short_label: short_label, show_name_orig: show_name_orig}
+            = render partial: 'thumbs_table_row', locals: local_vars.merge(d: d)
         - elsif doujinshi.is_a?(Array)
           - doujinshi.each do |d|
-            = render partial: 'thumbs_table_row', locals: {d: d, short_label: short_label, show_name_orig: show_name_orig}
+            = render partial: 'thumbs_table_row', locals: local_vars.merge(d: d)
         - else
           unknown object to render

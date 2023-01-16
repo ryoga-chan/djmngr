@@ -13,11 +13,11 @@
         %li{class: (:'is-active' if params[:tab] == 'artbook') }
           = link_to({tab: :artbook}, title: 'artbooks') do
             %span.icon.is-small
-              %i.mi color_lens
+              %i.mi= DoujinshiController::ICONS['artbook']
         %li{class: (:'is-active' if params[:tab] == 'magazine') }
           = link_to({tab: :magazine}, title: 'magazines') do
             %span.icon.is-small
-              %i.mi newspaper
+              %i.mi= DoujinshiController::ICONS['magazine']
     
     .section-descr
       %p.menu-label(style="display: inline-block")= params[:tab].capitalize.pluralize
@@ -49,4 +49,5 @@
 
   .column.doujinshi
     %a(name="listing")
-    = render partial: 'thumbs_table', locals: { doujinshi: @doujinshi, short_label: true }
+    = render partial: 'thumbs_table',
+      locals: { doujinshi: @doujinshi, short_label: true, show_categ: %w{author circle}.include?(params[:tab]) }

@@ -1,6 +1,9 @@
 - short_label    = false unless local_assigns.has_key?(:short_label)
 - show_name_orig = false unless local_assigns.has_key?(:show_name_orig)
 - show_perc_read = false unless local_assigns.has_key?(:show_perc_read)
+- show_categ     = false unless local_assigns.has_key?(:show_categ)
+- local_vars     = { short_label: short_label, show_name_orig: show_name_orig,
+                     show_perc_read: show_perc_read, show_categ: show_categ }
 
 - unless doujinshi
   %br/
@@ -12,10 +15,10 @@
       - if doujinshi.is_a?(ActiveRecord::Relation)
         - doujinshi.find_each_in_order(batch_size: DoujinshiController::BATCH_SIZE) do |d|
           = render partial: 'doujinshi/thumbs_row',
-            locals: {d: d, short_label: short_label, show_perc_read: show_perc_read}
+            locals: local_vars.merge(d: d)
       - elsif doujinshi.is_a?(Array)
         = render partial: 'doujinshi/thumbs_row', collection: doujinshi, as: :d,
-          locals: {short_label: short_label, show_perc_read: show_perc_read}
+          locals: local_vars
       - else
         unknown object to render
   - else
@@ -32,9 +35,9 @@
         - if doujinshi.is_a?(ActiveRecord::Relation)
           - doujinshi.find_each_in_order(batch_size: DoujinshiController::BATCH_SIZE) do |d|
             = render partial: 'doujinshi/thumbs_table_row',
-              locals: {d: d, short_label: short_label, show_name_orig: show_name_orig, show_perc_read: show_perc_read}
+              locals: local_vars.merge(d: d)
         - elsif doujinshi.is_a?(Array)
           = render partial: 'doujinshi/thumbs_table_row', collection: doujinshi, as: :d,
-            locals: {short_label: short_label, show_name_orig: show_name_orig, show_perc_read: show_perc_read}
+            locals: local_vars
         - else
           unknown object to render

@@ -1,5 +1,12 @@
 body[data-ctrl="doujinshi"] {
   .columns.thumbs {
+    span.icon.categ {
+      top:  0.25rem;
+      left: 0.25rem;
+      position: absolute;
+      z-index: 100;
+    }
+  
     progress { margin: 0; }
     progress[value="0"] { visibility: hidden; }
     

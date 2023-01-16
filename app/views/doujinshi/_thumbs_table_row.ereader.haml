@@ -13,7 +13,9 @@
     - else
       = "#{d.score.to_i}&hearts;".html_safe if d.score.to_i > 0
   %td
-    = link_to descr, doujin_path(d)
+    = link_to doujin_path(d) do
+      %tt= "#{d.category[0].upcase}:" if show_categ && DoujinshiController::ICONS[d.category]
+      = descr
     - if show_name_orig
       .name-orig= d.name_orig
     - if d.name_orig_kakasi != d.name_orig
