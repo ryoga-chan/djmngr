@@ -8,7 +8,11 @@
     = link_to(doujin_path(d), title: title) do
       - if d.cover_similarity.present?
         %span.tag.is-warning.is-rounded= "#{'%2d' % d.cover_similarity}%"
-      = descr
+      %span.icon-text
+        - if show_categ && (icon = DoujinshiController::ICONS[d.category])
+          %span.icon.is-small.mr-2.amiddle
+            %i.mi= icon
+        %span= descr
     - if show_name_orig
       .name-orig.is-size-7{title: (d.name_orig_kakasi if d.name_orig_kakasi != d.name_orig)}= d.name_orig
   %td= d.num_images

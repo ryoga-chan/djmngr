@@ -4,6 +4,7 @@ class DoujinshiController < ApplicationController
   
   THUMBS_PER_ROW = 6
   BATCH_SIZE     = 15 * THUMBS_PER_ROW
+  ICONS = { 'artbook' => 'color_lens', 'magazine' => 'newspaper' }
   
   before_action :set_doujin_list_detail, only: %i[ index favorites search scored search_cover ]
   before_action :set_doujin,

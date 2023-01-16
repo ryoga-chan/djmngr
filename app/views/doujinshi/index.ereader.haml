@@ -26,7 +26,8 @@
 
 - if @doujinshi
   = render partial: 'fav_js_links'
-  = render partial: 'thumbs_table', locals: { doujinshi: @doujinshi, short_label: true }
+  = render partial: 'thumbs_table',
+    locals: { doujinshi: @doujinshi, short_label: true, show_categ: %w{author circle}.include?(params[:tab]) }
 - elsif @parents
   %table.parents.block-links.is-striped.w100
     %tbody
