@@ -115,6 +115,37 @@
 
   .field.is-horizontal
     .field-label.is-normal
+      %label.label Relations
+    .field-body(style="display: block")
+      .columns.metadata-relations
+        - [Author, Circle].each do |model|
+          - ids_name = "#{model.name.downcase}_ids"
+          - rel_name = model.name.pluralize.downcase
+          
+          .column.is-half
+            .js-tagger{data: {title: "Add relations whith #{rel_name}", url: url_for(controller: rel_name, action: :tags_lookup) }}
+              .title.is-size-5.has-text-centered
+                %button.button.is-rounded.is-small.mr-2.js-tagger-search(type="button")
+                  %span.icon.is-small
+                    %i.mi.mi-small add
+                  %span= rel_name
+              
+              .field.is-grouped.is-grouped-multiline.js-tagger-list
+                - rel = @doujin.send(rel_name).order(Arel.sql "COALESCE(NULLIF(name_romaji, ''), NULLIF(name_kakasi, ''))")
+                - rel = rel.select(:id, :name_romaji, :name_kakasi).to_a
+                - rel.unshift model.new id: :RECORD_ID, name_romaji: :LABEL # new recor for template item
+                - rel.each do |assoc|
+                  .control{class: ('js-tagger-template is-hidden' if assoc.new_record?)}
+                    = hidden_field_tag "doujin[#{ids_name}][]", assoc.id_before_type_cast, id: nil
+                    .tags.has-addons
+                      %span.tag.is-link.is-light
+                        = link_to assoc.label_name_latin,
+                          {controller: rel_name, action: :show, id: assoc.id_before_type_cast},
+                          target: :_blank
+                      %a.tag.is-delete{href: "##{model.name}-#{assoc.id_before_type_cast}"}
+
+  .field.is-horizontal
+    .field-label.is-normal
       %label.label Notes
     .field-body
       .field
