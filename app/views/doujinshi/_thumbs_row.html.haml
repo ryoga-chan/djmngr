@@ -15,6 +15,9 @@
     
     .column.is-2.has-text-centered(title=title)
       %figure.image.is2by3
+        - if show_categ && (icon = DoujinshiController::ICONS[d.category])
+          %span.icon.is-small.categ
+            %i.mi= icon
         = link_to image_tag("/thumbs/#{d.id}.webp", title: title),
           doujin_path(d, from_author: params[:author_id], from_circle: params[:circle_id])
       %progress.progress.is-warning{value: d.score.to_i, title: "#{d.score.to_i}⭐", max: 10}
