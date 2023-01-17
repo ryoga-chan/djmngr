@@ -150,7 +150,8 @@
       - if @doujin.notes.present?
         %tr
           %th Notes
-          %td.is-family-monospace.is-italic= @doujin.notes
+          %td.content
+            %pre.is-family-monospace.is-italic= @doujin.notes
     
     .columns
       .column.is-third

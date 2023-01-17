@@ -26,7 +26,7 @@
     = form_with url: set_property_process_path do |f|
       = f.hidden_field :tab , value: params[:tab]
       = f.hidden_field :term, value: params[:term]
-      - %w{  circle author }.each do |type|
+      - %w{ author circle }.each do |type|
         - if instance_variable_get("@associated_#{type.pluralize}").any?
           .subtitle.mb-0= type.capitalize.pluralize
           .subject-list.pl-2.mb-5
@@ -60,7 +60,7 @@
                 - if r.doujinshi_org_aka_id.present?
                   %span.tag.is-danger deprecated
   
-  - %w{ circles authors }.each do |type|
+  - %w{ authors circles }.each do |type|
     .column{class: type}
       .title-bar.mt-1.mb-3
         = link_to({controller: type, action: :new, wip_hash: params[:id], name: params[:term]},
