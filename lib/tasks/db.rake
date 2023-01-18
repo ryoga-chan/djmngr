@@ -16,7 +16,7 @@ def zip_databases(options = {})
       print $?.to_i == 0 ? '.' : 'X'
     end; puts ''
     
-    File.unlink(zipfile) if File.exists?(zipfile)
+    File.unlink(zipfile) if File.exist?(zipfile)
     Dir.chdir(tmpdir){ `7za a -mx=0 #{zipfile.shellescape} .` } # crea un file unico
     puts "CREATED: #{zipfile} "
     
