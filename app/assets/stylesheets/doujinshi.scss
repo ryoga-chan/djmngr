@@ -5,6 +5,8 @@ body[data-ctrl="doujinshi"] {
       left: 0.25rem;
       position: absolute;
       z-index: 100;
+      border-radius: 1rem;
+      border: 1rem solid darkorange;
     }
   
     progress { margin: 0; }
