@@ -1,6 +1,8 @@
 /*
 TAGGER
 ----------------------------------------
+  = hidden_field_tag "record[relation_ids][]", nil, id: nil
+   
   .js-tagger{data: {title: "Add tags", url: url_for(controller: :name, action: :tags_lookup) }}
       %button.button.is-rounded.is-small.mr-2.js-tagger-search
         %span.icon.is-small
