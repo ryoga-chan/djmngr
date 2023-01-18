@@ -123,6 +123,8 @@
           - rel_name = model.name.pluralize.downcase
           
           .column.is-half
+            = hidden_field_tag "doujin[#{ids_name}][]", nil, id: nil
+            
             .js-tagger{data: {title: "Add relations whith #{rel_name}", url: url_for(controller: rel_name, action: :tags_lookup) }}
               .title.is-size-5.has-text-centered
                 %button.button.is-rounded.is-small.mr-2.js-tagger-search(type="button")
