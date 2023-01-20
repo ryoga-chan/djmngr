@@ -57,8 +57,24 @@ if ($('body').data('ctrl') +'/'+ $('body').data('action') == 'process/edit') {
     var num_images = $('.images .columns .column.has-background-warning').length;
     $('button.delete-images').attr('data-confirm', 'Delete '+num_images+' selected images?');
   });
+  // select image when clicking on the top-right half of it, open the link otherwise
+  $('.images .column a').click(function (ev) {
+    var link = $(this);
+    // ev.offsetX      / ev.offsetY         => element relative coordinates
+    // $(this).width() / $(this).height()   => element size
+    if (ev.offsetX > ev.offsetY) {
+      ev.preventDefault();
+      link.siblings('.select-image').click();
+      if (link.siblings(':checkbox').prop('checked'))
+        link.
+          parent().addClass('clicked').
+          find('figure').fadeTo(0,0).fadeTo(300, 1, function () {
+            link.parent().removeClass('clicked');
+          });
+    }//if
+  });
 
-  // update the single image name in "files"
+  // update the single image name in "files" and "images"
   $('input[name="file_name"], input[name="img_name"]').change(function () {
     var el = $(this);
     
