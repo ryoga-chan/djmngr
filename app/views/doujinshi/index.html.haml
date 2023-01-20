@@ -38,7 +38,7 @@
           - if p.is_a?(String)
             - lbl = p == '.' ? '[root folder]' : p
             %li= link_to lbl, {tab: params[:tab], folder: p, anchor: "listing"},
-              class: ('is-active' if p == params[:folder])
+              class: "entry #{'is-active' if p == params[:folder]}"
           - else
             - type = p.class.name.downcase
             %li
