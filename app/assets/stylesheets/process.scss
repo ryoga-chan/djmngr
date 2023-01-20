@@ -39,5 +39,10 @@ body[data-ctrl="process"][data-action="edit"] {
       border: 1px solid coral;
       border-width: 1px 5px;
     }
+
+    .search-results tt {
+      float: right;
+      font-size: small;
+    }
   }
 }
