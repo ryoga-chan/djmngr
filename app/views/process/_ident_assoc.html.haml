@@ -95,7 +95,10 @@
               
           %span.name_romaji.has-text-grey.is-size-7
             %span.has-text-info /
-            = h(r.label_name_latin).gsub(term_re, %Q|<span class="has-text-warning">\\0</span>|).html_safe
+            = link_to h(r.label_name_latin).gsub(term_re, %Q|<span class="has-text-warning">\\0</span>|).html_safe,
+              {term: r.label_name_latin, tab: params[:tab]}, class: 'has-text-white'
+
+          %tt= "🆔#{r.id}"
           
           - members_name = type == 'authors' ? :circles : :authors
           - members = r.send(members_name).order(:name)
@@ -119,4 +122,4 @@
                         {controller: members_name, action: :show, id: m.id},
                         target: :_blank, title: "view #{members_name.to_s.singularize}", class: 'has-text-white'
                     %span.has-text-info /
-                    %span.has-text-grey= m.label_name_latin
+                    %span= link_to m.label_name_latin, {term: m.label_name_latin, tab: params[:tab]}, class: 'has-text-grey'
