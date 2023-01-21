@@ -100,10 +100,10 @@ class ProcessBatchJob < ApplicationJob
       info[:score        ] = options[:score] if options[:score]
       info[:reading_direction] = dj.reading_direction
       
-      info[:language         ] = options[:lang] if options[:lang].present? # dj.language
-      info[:censored         ] = options[:unc ] if options[:unc ].present? # dj.censored
-      info[:colorized        ] = options[:col ] if options[:col ].present? # dj.colorized
-      info[:hcg              ] = options[:hcg ] if options[:hcg ].present? # dj.hcg
+      info[:language         ] = options[:lang] unless options[:lang].nil? # dj.language
+      info[:censored         ] = options[:unc ] unless options[:unc ].nil? # dj.censored
+      info[:colorized        ] = options[:col ] unless options[:col ].nil? # dj.colorized
+      info[:hcg              ] = options[:hcg ] unless options[:hcg ].nil? # dj.hcg
       info[:overwrite        ] = true if options[:overwrite]
       
       info[:dest_filename] = options[:dest_filename] if options[:dest_filename]
