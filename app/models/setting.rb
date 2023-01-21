@@ -1,5 +1,11 @@
 class Setting < ApplicationRecord
   READING_BG_COLORS = %w{ white smoke dark black }
+  PROCESS_IMG_SELECT_MODES = {
+    "-  horizontal (top = select, bottom = zoom)"            => "-",
+    "|  vertical   (right = select, left = zoom)"            => "|",
+    "\\ diagonal   (top-right = select, bottom-left = zoom)" => "\\",
+    "/  diagonal   (top-left = zoom, bottom-right = select)" => "/" ,
+  }
 
   serialize :value, JSON
   
@@ -18,6 +24,10 @@ class Setting < ApplicationRecord
     
     if key == 'reading_direction'
       errors.add :base, "#{key}: unsupported direction" unless %w{ r2l l2r }.include?(value)
+    end
+    
+    if key == 'process_img_sel'
+      errors.add :base, "#{key}: unsupported mode" unless PROCESS_IMG_SELECT_MODES.values.include?(value)
     end
     
     if key == 'ext_cmd_env'
