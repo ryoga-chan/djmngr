@@ -48,9 +48,17 @@ class HomeController < ApplicationController
   def settings
     @page_title = :settings
     
-    if request.post? && s = Setting.find_by(id: params[:id])
-      s.update params.permit(:value)
-      flash[:alert] = s.errors.full_messages if s.errors.any?
+    if request.post? && params[:setting].is_a?(Array)
+      errors = []
+      
+      params[:setting].each do |p|
+        s = Setting.find_by(id: p[:id])
+        errors << s unless s.update(p.permit(:value))
+      end
+      
+      flash[:alert] = [] if errors.any?
+      errors.each{|s| flash[:alert] += s.errors.full_messages.map{|m| "#{s.key}: #{m}"} }
+      
       return redirect_to home_settings_path
     end
   end # settings

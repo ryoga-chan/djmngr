@@ -1,93 +1,84 @@
 .title.is-size-4 Settings
 
-- { 'dir.to_sort'   => 'rule_folder',
-    'dir.sorting'   => 'drive_file_move',
-    'dir.sorted'    => 'create_new_folder',
-    'ext_cmd_env'   => 'holiday_village',
-    'comics_viewer' => 'menu_book',
-    'file_manager'  => 'folder',
-    'image_editor'  => 'draw',
-    'terminal'      => 'terminal',
-    'external_link' => 'launch',
-    'scraper_useragent' => 'badge',
-  }.each do |key, icon|
-  - s = Setting.find_by key: key
-  = form_with url: home_settings_path do |f|
-    = f.hidden_field :id, value: s.id
-    .field.is-horizontal
-      .field-label.is-normal
-        %label.label
-          = s.key
-          %span.icon.is-small.in-text-small{title: s.notes}
-            %i.mi.mi-small help
-      .field-body
-        .field
-          .control.is-expanded.has-icons-left
-            = f.text_field :value, value: s.value, class: :input
-            %span.icon.is-small.is-left
-              %i.mi.mi-small= icon
-        = f.button class: 'button is-primary is-rounded' do
-          %span.icon
-            %i.mi.mi-small send
-
-- { 'epub_img_width'  => 'crop_landscape',
-    'epub_img_height' => 'crop_portrait',
-  }.each do |key, icon|
-  - s = Setting.find_by key: key
-  = form_with url: home_settings_path do |f|
-    = f.hidden_field :id, value: s.id
-    .field.is-horizontal
-      .field-label.is-normal
-        %label.label
-          = s.key
-          %span.icon.is-small.in-text-small{title: s.notes}
-            %i.mi.mi-small help
-      .field-body
-        .field
-          .control.is-expanded.has-icons-left
-            = f.number_field :value, value: s.value, class: :input, min: 640, step: 1
-            %span.icon.is-small.is-left
-              %i.mi.mi-small= icon
-        = f.button class: 'button is-primary is-rounded' do
-          %span.icon
-            %i.mi.mi-small send
-
-- s = Setting.find_by key: :reading_direction
 = form_with url: home_settings_path do |f|
-  = f.hidden_field :id, value: s.id
+  - { 'dir.to_sort'   => 'rule_folder',
+      'dir.sorting'   => 'drive_file_move',
+      'dir.sorted'    => 'create_new_folder',
+      'ext_cmd_env'   => 'holiday_village',
+      'comics_viewer' => 'menu_book',
+      'file_manager'  => 'folder',
+      'image_editor'  => 'draw',
+      'terminal'      => 'terminal',
+      'external_link' => 'launch',
+      'scraper_useragent' => 'badge',
+    }.each do |key, icon|
+    - s = Setting.find_by key: key
+    = f.hidden_field 'setting[][id]', value: s.id
+    .field.is-horizontal
+      .field-label.is-normal
+        %label.label
+          = s.key
+          %span.icon.is-small.in-text-small{title: s.notes, onclick: %Q|alert(jQuery(this).attr('title'))|}
+            %i.mi.mi-small help
+      .field-body
+        .field
+          .control.is-expanded.has-icons-left
+            = f.text_field 'setting[][value]', value: s.value, class: :input
+            %span.icon.is-small.is-left
+              %i.mi.mi-small= icon
+
+  - { 'epub_img_height' => 'crop_portrait',
+      'epub_img_width'  => 'crop_landscape',
+    }.each do |key, icon|
+    - s = Setting.find_by key: key
+    = f.hidden_field 'setting[][id]', value: s.id
+    .field.is-horizontal
+      .field-label.is-normal
+        %label.label
+          = s.key
+          %span.icon.is-small.in-text-small{title: s.notes, onclick: %Q|alert(jQuery(this).attr('title'))|}
+            %i.mi.mi-small help
+      .field-body
+        .field
+          .control.is-expanded.has-icons-left
+            = f.number_field 'setting[][value]', value: s.value, class: :input, min: 640, step: 1
+            %span.icon.is-small.is-left
+              %i.mi.mi-small= icon
+
+  - s = Setting.find_by key: :reading_direction
+  = f.hidden_field 'setting[][id]', value: s.id
   .field.is-horizontal
     .field-label.is-normal
       %label.label
         = s.key
-        %span.icon.is-small.in-text-small{title: s.notes}
+        %span.icon.is-small.in-text-small{title: s.notes, onclick: %Q|alert(jQuery(this).attr('title'))|}
           %i.mi.mi-small help
     .field-body
       .field
         .control.is-expanded.has-icons-left
           .select.is-fullwidth
-            = f.select :value, options_for_select({'right to left' => 'r2l', 'left to right' => 'l2r'}, s.value)
+            = f.select 'setting[][value]', options_for_select({'right to left' => 'r2l', 'left to right' => 'l2r'}, s.value)
           %span.icon.is-small.is-left
             %i.mi.mi-small sync_alt
-      = f.button class: 'button is-primary is-rounded' do
-        %span.icon
-          %i.mi.mi-small send
 
-- s = Setting.find_by key: :reading_bg_color
-= form_with url: home_settings_path do |f|
-  = f.hidden_field :id, value: s.id
+  - s = Setting.find_by key: :reading_bg_color
+  = f.hidden_field 'setting[][id]', value: s.id
   .field.is-horizontal
     .field-label.is-normal
       %label.label
         = s.key
-        %span.icon.is-small.in-text-small{title: s.notes}
+        %span.icon.is-small.in-text-small{title: s.notes, onclick: %Q|alert(jQuery(this).attr('title'))|}
           %i.mi.mi-small help
     .field-body
       .field
         .control.is-expanded.has-icons-left
           .select.is-fullwidth
-            = f.select :value, options_for_select(Setting::READING_BG_COLORS, s.value)
+            = f.select 'setting[][value]', options_for_select(Setting::READING_BG_COLORS, s.value)
           %span.icon.is-small.is-left
             %i.mi.mi-small palette
-      = f.button class: 'button is-primary is-rounded' do
-        %span.icon
-          %i.mi.mi-small send
+
+  .field.is-horizontal
+    .field-label.is-normal
+    .field-body
+      .field
+        .control= f.submit 'Save', class: 'button is-primary'
