@@ -23,5 +23,6 @@ class CreateSettings < ActiveRecord::Migration[7.0]
     Setting.create key: 'scraper_useragent',                     notes: 'user agent used for doujinshi.org scraping',
       value: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36'
     Setting.create key: 'external_link'    , value: 'DJ.org|https://www.doujinshi.org', notes: 'additional menu item in the form "text|url"'
+    Setting.create key: 'process_img_sel'  , value: '-', notes: 'image selection mode for "Images" tab in process section'
   end
 end

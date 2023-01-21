@@ -15,11 +15,7 @@
     - s = Setting.find_by key: key
     = f.hidden_field 'setting[][id]', value: s.id
     .field.is-horizontal
-      .field-label.is-normal
-        %label.label
-          = s.key
-          %span.icon.is-small.in-text-small{title: s.notes, onclick: %Q|alert(jQuery(this).attr('title'))|}
-            %i.mi.mi-small help
+      .field-label.is-normal= render partial: 'setting_help', locals: {s: s}
       .field-body
         .field
           .control.is-expanded.has-icons-left
@@ -33,11 +29,7 @@
     - s = Setting.find_by key: key
     = f.hidden_field 'setting[][id]', value: s.id
     .field.is-horizontal
-      .field-label.is-normal
-        %label.label
-          = s.key
-          %span.icon.is-small.in-text-small{title: s.notes, onclick: %Q|alert(jQuery(this).attr('title'))|}
-            %i.mi.mi-small help
+      .field-label.is-normal= render partial: 'setting_help', locals: {s: s}
       .field-body
         .field
           .control.is-expanded.has-icons-left
@@ -48,11 +40,7 @@
   - s = Setting.find_by key: :reading_direction
   = f.hidden_field 'setting[][id]', value: s.id
   .field.is-horizontal
-    .field-label.is-normal
-      %label.label
-        = s.key
-        %span.icon.is-small.in-text-small{title: s.notes, onclick: %Q|alert(jQuery(this).attr('title'))|}
-          %i.mi.mi-small help
+    .field-label.is-normal= render partial: 'setting_help', locals: {s: s}
     .field-body
       .field
         .control.is-expanded.has-icons-left
@@ -64,11 +52,7 @@
   - s = Setting.find_by key: :reading_bg_color
   = f.hidden_field 'setting[][id]', value: s.id
   .field.is-horizontal
-    .field-label.is-normal
-      %label.label
-        = s.key
-        %span.icon.is-small.in-text-small{title: s.notes, onclick: %Q|alert(jQuery(this).attr('title'))|}
-          %i.mi.mi-small help
+    .field-label.is-normal= render partial: 'setting_help', locals: {s: s}
     .field-body
       .field
         .control.is-expanded.has-icons-left
@@ -76,6 +60,18 @@
             = f.select 'setting[][value]', options_for_select(Setting::READING_BG_COLORS, s.value)
           %span.icon.is-small.is-left
             %i.mi.mi-small palette
+
+  - s = Setting.find_by key: :process_img_sel
+  = f.hidden_field 'setting[][id]', value: s.id
+  .field.is-horizontal
+    .field-label.is-normal= render partial: 'setting_help', locals: {s: s}
+    .field-body
+      .field
+        .control.is-expanded.has-icons-left
+          .select.is-fullwidth
+            = f.select 'setting[][value]', options_for_select(Setting::PROCESS_IMG_SELECT_MODES, s.value)
+          %span.icon.is-small.is-left
+            %i.mi.mi-small check_box
 
   .field.is-horizontal
     .field-label.is-normal
