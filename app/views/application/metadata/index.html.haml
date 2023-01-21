@@ -31,7 +31,7 @@
 %table.table.is-striped.is-hoverable.is-fullwidth
   %thead
     %tr
-      %th.w1 Dj.org
+      -#%th.w1 Dj.org
       - if has_favorite_column
         %th.w1 Fav
         %th.w1 #Dj
@@ -47,11 +47,11 @@
   %tbody
     - @records.each do |r|
       %tr
-        %td
-          - if r.doujinshi_org_id
-            = link_to r.doujinshi_org_id, {action: :djorg_alias_check, id: r.id}, target: :_blank
-          - else
-            &minus;
+        -#%td
+        -#  - if r.doujinshi_org_id
+        -#    = link_to r.doujinshi_org_id, {action: :djorg_alias_check, id: r.id}, target: :_blank
+        -#  - else
+        -#    &minus;
         - if has_favorite_column
           %td
             = link_to '&star;'.html_safe, fav_toggle_doujinshi_path(type: @model, id: r.id),
