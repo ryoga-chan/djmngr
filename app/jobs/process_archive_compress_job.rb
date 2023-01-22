@@ -91,11 +91,11 @@ class ProcessArchiveCompressJob < ApplicationJob
           file_name:    File.basename(info[:collection_relative_path]),
           name_orig:    info[:relative_path].sub(/^reprocess\//, ''),
           reading_direction: info[:reading_direction],
-          language:     info[:language ],
-          censored:     info[:censored ],
+          language:     info[:language],
+          censored:     info[:censored],
           colorized:    info[:colorized],
-          hcg:          info[:hcg      ],
-          notes:        info[:notes    ]
+          media_type:   info[:media_type],
+          notes:        info[:notes]
         d.file_folder = Pathname.new(d.file_folder).relative_path_from("/#{d.category}").to_s
         d.save!
         

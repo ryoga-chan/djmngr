@@ -134,6 +134,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_22_131240) do
     t.datetime "faved_at"
     t.string "name_orig_kakasi", null: false
     t.integer "cover_phash"
+    t.string "name_eng"
+    t.string "media_type", default: "doujin"
   end
 
   create_table "doujinshi_shelves", force: :cascade do |t|
@@ -162,6 +164,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_22_131240) do
 
   create_table "shelves", force: :cascade do |t|
     t.string "name"
+    t.integer "num_images"
     t.datetime "created_at"
   end
 

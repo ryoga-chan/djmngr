@@ -113,8 +113,8 @@
             - list, cur = [['chroma=auto', nil], ['B&W', false], ['color', true]], @info[:options].try('[]', :col)
             .select= f.select :col, options_for_select(list, cur), {}, class: "input is-rounded is-small"
           .control
-            - list, cur = [['media=auto', nil], ['book', false], ['CG', true]], @info[:options].try('[]', :hcg)
-            .select= f.select :hcg, options_for_select(list, cur), {}, class: "input is-rounded is-small"
+            - list, cur = Doujin::MEDIA_TYPES.map{|k| [k,k] }.unshift(['media=auto', nil]), @info[:options].try('[]', :mt)
+            .select= f.select :mt, options_for_select(list, cur), {}, class: "input is-rounded is-small"
           .control
             - list, cur = [['cens=auto', nil], ['censored', false], ['uncensored', true]], @info[:options].try('[]', :unc)
             .select= f.select :unc, options_for_select(list, cur), {}, class: "input is-rounded is-small"
