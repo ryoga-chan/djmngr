@@ -102,10 +102,10 @@
             %i.mi.mi-small format_paint
       .field
         .control.has-icons-left
-          .select.is-fullwidth(title="book or computer graphics")
-            = f.select :hcg, {'book' => false, 'CG' => true}
+          .select.is-fullwidth(title="media type (paper or computer graphics)")
+            = f.select :media_type, Doujin::MEDIA_TYPES
           %span.icon.is-small.is-left
-            %i.mi.mi-small sports_esports
+            %i.mi.mi-small raw_on
       .field
         .control.is-expanded.has-icons-left
           .select.is-fullwidth(title="read pages")

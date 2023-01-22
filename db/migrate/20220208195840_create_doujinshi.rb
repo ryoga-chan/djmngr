@@ -23,7 +23,7 @@ class CreateDoujinshi < ActiveRecord::Migration[7.0]
       t.boolean  :censored,   default: true
       t.boolean  :colorized,  default: false
       t.boolean  :favorite,   default: false
-      t.boolean  :hcg,        default: false
+      t.string   :media_type, default: 'doujin' # doujin, manga, cg
       t.datetime :faved_at
       t.integer  :cover_phash
 

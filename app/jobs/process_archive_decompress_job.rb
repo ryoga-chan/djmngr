@@ -135,10 +135,10 @@ class ProcessArchiveDecompressJob < ApplicationJob
     end
     
     # set properties
-    info[:language ] = Doujin::LANGUAGES.values.detect{|v| name[:properties].include?(v) } || Doujin::LANGUAGES.values.first
-    info[:censored ] = !name[:properties].include?('unc')
-    info[:colorized] = info[:file_type] == 'artbook' || name[:properties].include?('col')
-    info[:hcg      ] = fname =~ /(hcg| cg | cg$)/i
+    info[:language  ] = Doujin::LANGUAGES.values.detect{|v| name[:properties].include?(v) } || Doujin::LANGUAGES.values.first
+    info[:censored  ] = !name[:properties].include?('unc')
+    info[:colorized ] = info[:file_type] == 'artbook' || name[:properties].include?('col')
+    info[:media_type] = (fname =~ /(hcg| cg | cg$)/i ? 'cg' : 'doujin')
     
     # create folder and unzip archive
     path_thumbs   = File.join(dst_dir, 'thumbs')

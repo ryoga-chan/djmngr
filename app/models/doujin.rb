@@ -10,6 +10,8 @@ class Doujin < ApplicationRecord
     'Deutsch'    => 'deu',
     'None/Other' => '???',
   }.freeze
+  
+  MEDIA_TYPES = %w{ doujin cg manga }.freeze
 
   has_and_belongs_to_many :authors, before_add: -> (d, a) {
     return unless d.authors.where(id: a.id).exists? # ensure uniqueness
@@ -30,6 +32,7 @@ class Doujin < ApplicationRecord
   validates :name, :size, :checksum, :num_images, :num_files,
             :category, :file_folder, :file_name,
             presence: true
+  validates_inclusion_of :media_type, in: MEDIA_TYPES
   validate  :validates_rename_file, on: :update
   
   before_validation :sanitize_fields
@@ -51,7 +54,7 @@ class Doujin < ApplicationRecord
     self.name_orig_kakasi = name_orig.to_romaji if name_orig_changed?
     self.notes            = notes.to_s.strip    if notes_changed?
     
-    self.colorized = true if hcg?
+    self.colorized = true if media_type == 'cg'
   end # sanitize_fields
   
   def validates_rename_file

@@ -71,10 +71,10 @@
                 %i.mi.mi-small format_paint
               %span col
             
-            - if @doujin.hcg?
+            - if @doujin.media_type != 'doujin'
               %span.icon.is-small.ml-5
-                %i.mi.mi-small sports_esports
-              %span hcg
+                %i.mi.mi-small raw_on
+              %span= @doujin.media_type
             
             - if @doujin.score.to_i > 0
               %span.icon.is-small.ml-5

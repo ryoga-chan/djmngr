@@ -44,8 +44,8 @@
           options_for_select({'right2left' => 'r2l', 'left2right' => 'l2r'}, @info[:reading_direction]),
           {}, class: "input is-small vmiddle"
         
-        .select(title="book/CG")= f.select :hcg,
-          options_for_select({'book' => false, 'CG' => true}, @info[:hcg]),
+        .select(title="media type")= f.select :media_type,
+          options_for_select(Doujin::MEDIA_TYPES, @info[:media_type]),
           {}, class: "input is-small vmiddle"
         
       .notes.mb-1
