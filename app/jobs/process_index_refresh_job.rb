@@ -1,11 +1,10 @@
 class ProcessIndexRefreshJob < ApplicationJob
-  LOCK_FILE  = File.join(Setting['dir.to_sort'], 'indexing.lock').to_s
-  
   queue_as :tools
 
-  def self.lock_file!     = FileUtils.touch(LOCK_FILE)
-  def self.lock_file?     = File.exist?(LOCK_FILE)
-  def self.rm_lock_file   = FileUtils.rm_f(LOCK_FILE)
+  def self.lock_file      = File.join(Setting['dir.to_sort'], 'indexing.lock').to_s
+  def self.lock_file!     = FileUtils.touch(lock_file)
+  def self.lock_file?     = File.exist?(lock_file)
+  def self.rm_lock_file   = FileUtils.rm_f(lock_file)
   def self.entries        = ProcessableDoujin.order(:name)
   def self.rm_entry(path) = ProcessableDoujin.find_by(name: path).try(:destroy)
   
