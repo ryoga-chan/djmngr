@@ -254,6 +254,8 @@ body[data-ctrl="doujinshi"][data-action="epub"] {
 
 // same styles as in EpubConverterJob
 body[data-ctrl="doujinshi"][data-action="read"] {
+  .main-actions { display: none; }
+
   margin: 0; padding: 0;
   overflow: hidden;
   
