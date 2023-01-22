@@ -113,10 +113,10 @@ class ProcessController < ApplicationController
       
       @info[:options][:score] = params[:options][:score].present? ? params[:options][:score].to_i : nil
       
-      %i[ col unc mt overwrite ].each do |k|
+      %i[ col unc overwrite ].each do |k|
         @info[:options][k] = params[:options][k].present? ? (params[:options][k] == 'true') : nil
       end
-      %i[ lang batch_method ].each do |k|
+      %i[ lang mt batch_method ].each do |k|
         @info[:options][k] = params[:options][k].present? ? params[:options][k] : nil
       end
       
