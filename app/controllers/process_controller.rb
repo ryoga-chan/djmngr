@@ -113,7 +113,7 @@ class ProcessController < ApplicationController
       
       @info[:options][:score] = params[:options][:score].present? ? params[:options][:score].to_i : nil
       
-      %i[ col unc hcg overwrite ].each do |k|
+      %i[ col unc mt overwrite ].each do |k|
         @info[:options][k] = params[:options][k].present? ? (params[:options][k] == 'true') : nil
       end
       %i[ lang batch_method ].each do |k|
@@ -288,7 +288,7 @@ class ProcessController < ApplicationController
       language
       censored
       colorized
-      hcg
+      media_type
       notes
       cover_crop_method
     }.each do |k|
