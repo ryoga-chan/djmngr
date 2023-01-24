@@ -346,7 +346,7 @@ class ProcessController < ApplicationController
           cover_path = ProcessArchiveDecompressJob.cover_path @dname, @info
           @info[:cover_hash] = CoverMatchingJob.hash_image cover_path
           File.open(File.join(@dname, 'info.yml'), 'w'){|f| f.puts @info.to_yaml }
-          CoverMatchingJob.perform_later @info[:cover_hash]
+          CoverMatchingJob.perform_now @info[:cover_hash]
         end
         
         @dupes = []
