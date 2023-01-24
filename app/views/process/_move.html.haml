@@ -51,8 +51,8 @@
       .notes.mb-1
         %span.icon.in-text-small.mr-2
           %i.mi.mi-small(title="notes") comment
-        = f.text_field :notes, value: @info[:notes], placeholder: 'notes',
-          class: 'input is-small', style: 'width: 30.25rem'
+        = f.text_area :notes, value: @info[:notes], placeholder: 'notes',
+          class: :textarea, maxlength: 255, rows: 2
 
       .scoring-stars.mb-1
         %span.icon.in-text-small.mr-2

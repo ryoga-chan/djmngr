@@ -9,6 +9,12 @@ body[data-ctrl="process"][data-action="edit"] {
   .src-fname { font-size: x-small; }
   .files-info    { float: left;  }
   .files-actions { float: right; }
+  
+  .textarea {
+    width: 30.25rem;
+    min-width: auto;
+    display: inline-block;
+  }
 
   .images {
     input { height: 2rem; }
