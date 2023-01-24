@@ -79,24 +79,36 @@
           %span.icon
             %i.mi.mi-small(title="clear subfolder") clear
 
-      .dest-filename.mb-1
+      .dest-titlename.mb-1
         %span.icon.in-text-small.mr-2
-          %i.mi.mi-small(title="destination filename") insert_drive_file
-        = f.text_field :dest_filename, value: @info[:dest_filename], placeholder: 'destination filename',
+          %i.mi.mi-small(title="destination title kanji/original") translate
+        = f.text_field :dest_title, value: @info[:dest_title],
+          placeholder: 'dest. title kanji/original',
           class: 'input is-small', style: 'width: 30.25rem',
-          data: { orig_name: File.basename(@info[:relative_path]) }
+          data: { orig_name: @info[:orig_title] }
         = link_to '#', class: 'button is-small',
-          onclick: %Q|$('#dest_filename').val($('#dest_filename').data('orig-name')); return false| do
+          onclick: %Q|var el=$('#dest_title'); el.val(el.data('orig-name')); return false| do
           %span.icon
-            %i.mi.mi-small(title="restore initial filename") restore
+            %i.mi.mi-small(title="restore initial value") restore
       
       .dest-titlename.mb-1
         %span.icon.in-text-small.mr-2
-          %i.mi.mi-small(title="destination title") title
-        - ph_dest_title = @info[:dest_filename].present? ? File.basename(@info[:dest_filename], File.extname(@info[:dest_filename])) : 'destination title'
-        = f.text_field :dest_title, value: @info[:dest_title],
-          placeholder: ph_dest_title,
+          %i.mi.mi-small(title="destination title romaji/translitterated") title
+        = f.text_field :dest_title_romaji, value: @info[:dest_title_romaji],
+          placeholder: 'dest. title romaji/translitterated',
           class: 'input is-small', style: 'width: 30.25rem'
+      
+      .dest-filename.mb-1
+        %span.icon.in-text-small.mr-2
+          %i.mi.mi-small(title="destination filename") insert_drive_file
+        = f.text_field :dest_filename, value: @info[:dest_filename],
+          placeholder: 'dest. filename',
+          class: 'input is-small', style: 'width: 30.25rem',
+          data: { orig_name: @info[:orig_dest_filename] }
+        = link_to '#', class: 'button is-small',
+          onclick: %Q|var el=$('#dest_filename'); el.val(el.data('orig-name')); return false| do
+          %span.icon
+            %i.mi.mi-small(title="restore initial value") restore
       
       - if @suggestions
         .suggested-filenames.mb1.ml-6(title="suggested filenames" style="max-height: 10rem; overflow: auto;")

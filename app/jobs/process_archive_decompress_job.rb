@@ -114,17 +114,22 @@ class ProcessArchiveDecompressJob < ApplicationJob
         info[:dest_folder] = (subject.name_romaji.present? ? subject.name_romaji : subject.name_kakasi).downcase.strip
       end
       
-      # suggest the romaji title
-      info[:dest_filename] = name[:fname].to_romaji.sub(/ *\.zip$/i, '.zip')
+      # suggest titles and filename
+      info[:dest_filename    ] = name[:fname].to_romaji.sub(/ *\.zip$/i, '.zip')
+      info[:dest_title       ] = name[:fname].sub(/ *\.zip$/i, '')
     elsif fname =~ /^([^0-9]+)[ 0-9\-]+\.zip$/i
-      info[:file_type] = 'magazine'
-      info[:dest_folder] = $1.strip
+      info[:file_type    ] = 'magazine'
+      info[:dest_folder  ] = $1.strip
       info[:dest_filename] = File.basename(fname).sub($1.to_s, '').strip
+      info[:dest_title   ] = fname.tr(File::SEPARATOR, ' ').sub(/ *\.zip$/i, '')
     else
-      info[:file_type] = 'artbook'
-      info[:dest_folder] = ''
+      info[:file_type    ] = 'artbook'
+      info[:dest_folder  ] = ''
       info[:dest_filename] = File.basename(fname)
+      info[:dest_title   ] = info[:dest_filename].sub(/ *\.zip$/i, '')
     end
+    info[:orig_title        ] = info[:dest_title]
+    info[:orig_dest_filename] = info[:dest_filename]
     
     # restore reprocessing metadata
     md_path = File.join File.dirname(info[:file_path]), "#{File.basename info[:file_path], File.extname(info[:file_path])}.yml"
