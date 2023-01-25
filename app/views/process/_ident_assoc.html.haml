@@ -3,7 +3,8 @@
     = f.hidden_field :tab, value: params[:tab]
     %span.icon.in-text-small.mr-2
       %i.mi.mi-small(title="terms for catalog search") search
-    = f.text_field :term, value: params[:term], placeholder: 'search term', class: 'input is-small vmiddle', style: 'width: 15rem'
+    = f.text_field :term, value: params[:term], placeholder: 'search term',
+      id: 'process-ident-search', class: 'input is-small vmiddle', style: 'width: 15rem'
     = f.button class: 'button is-small' do
       %span.icon
         %i.mi.mi-small(title="search") person_search

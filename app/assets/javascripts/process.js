@@ -4,6 +4,11 @@ var p_bar = '<progress class="progress is-small is-info" max="100">i</progress>'
 
 
 if ($('body').data('ctrl') +'/'+ $('body').data('action') == 'process/index') {
+  // add page shortcuts
+  $.myapp.shortcuts.push({ key: 'b', ctrl: true, alt: false, descr: 'toggle batch mode', action: function (ev) { $('a.bt-batch').get(0).click(); } });
+  $.myapp.shortcuts.push({ key: 't', ctrl: true, alt: false, descr: 'toggle checked entries for batch', action: function (ev) { $('a.bt-toggle-all').get(0).click(); } });
+  $.myapp.shortcuts.push({ key: 'r', ctrl: true, alt: false, descr: 'refresh entries index', action: function (ev) { $('a.bt-reindex').get(0).click(); } });
+  
   $.app = $.extend($.app, {
     update_tot_filesize: function () {
       var tot_bytes = 0;
@@ -18,6 +23,25 @@ if ($('body').data('ctrl') +'/'+ $('body').data('action') == 'process/index') {
 
 
 if ($('body').data('ctrl') +'/'+ $('body').data('action') == 'process/edit') {
+  // add page shortcuts - switch active tab
+  $.myapp.shortcuts.push({ key: 'd', ctrl: false, alt: true, descr: 'switch tab to Dupes'   , action: function (ev) { $.myapp.show_loading(); $('#tab-dupes' ).get(0).click(); } });
+  $.myapp.shortcuts.push({ key: 'n', ctrl: false, alt: true, descr: 'switch tab to Names'   , action: function (ev) { $.myapp.show_loading(); $('#tab-files' ).get(0).click(); } });
+  $.myapp.shortcuts.push({ key: 'p', ctrl: false, alt: true, descr: 'switch tab to Pics'    , action: function (ev) { $.myapp.show_loading(); $('#tab-images').get(0).click(); } });
+  $.myapp.shortcuts.push({ key: 'i', ctrl: false, alt: true, descr: 'switch tab to Identify', action: function (ev) { $.myapp.show_loading(); $('#tab-ident' ).get(0).click(); } });
+  $.myapp.shortcuts.push({ key: 'f', ctrl: false, alt: true, descr: 'switch tab to Finalize', action: function (ev) { $.myapp.show_loading(); $('#tab-move'  ).get(0).click(); } });
+  // add page shortcuts - tab identify - focus on search field
+  $.myapp.shortcuts.push({
+    key: 'f', ctrl: false, alt: false, descr: 'Identify search focus',
+    action: function (ev) {
+      var el = $('#process-ident-search').focus().get(0);
+      if (el) el.select();
+    }//action
+  });
+  // add page shortcuts - tab move - copy title kanji/romaji/eng to filename
+  $.myapp.shortcuts.push({ key: 'r', ctrl: false, alt: true, descr: 'copy kanji title to filename'  , action: function (ev) { $('#dest_filename').val( $('#dest_title'       ).val().trim() + '.zip' ); } });
+  $.myapp.shortcuts.push({ key: 't', ctrl: false, alt: true, descr: 'copy romaji title to filename' , action: function (ev) { $('#dest_filename').val( $('#dest_title_romaji').val().trim() + '.zip' ); } });
+  $.myapp.shortcuts.push({ key: 'e', ctrl: false, alt: true, descr: 'copy english title to filename', action: function (ev) { $('#dest_filename').val( $('#dest_title_eng'   ).val().trim() + '.zip' ); } });
+  
   // keep file names button: toggle hidden checkbox and icon
   $('#bt_keep_names').click(function () {
     $('#keep_names').prop('checked', !$('#keep_names').prop('checked'));
