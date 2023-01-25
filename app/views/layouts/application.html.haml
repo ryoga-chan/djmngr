@@ -67,7 +67,8 @@
             = form_with url: search_doujinshi_path, method: :get,
               html: {onsubmit: %Q|jQuery(this).find('button').addClass('is-loading'); jQuery.myapp.show_loading()|} do |f|
               .field.has-addons
-                .control= f.text_field :term, value: params[:term], placeholder: :search, class: 'input is-rounded'
+                .control= f.text_field :term, value: params[:term], placeholder: :search,
+                  id: 'global-search', class: 'input is-rounded'
                 .control
                   .select= f.select :where,
                     options_for_select(%w{ doujinshi authors circles themes }, params[:controller]),
@@ -194,6 +195,14 @@
         %footer.modal-card-foot
           %button.button.is-success.js-tagger-set Set
           %button.button.js-tagger-cancel Cancel
+    
+    #generic-modal.modal
+      .modal-background(onclick="jQuery(this).parent().removeClass('is-active')")
+      .modal-card
+        %header.modal-card-head
+          %p.modal-card-title title
+          %button.delete(onclick="jQuery(this).parents('.modal:first').removeClass('is-active')")
+        %section.modal-card-body
 
     #mobile-toolbar.is-hidden-tablet
       = link_to '#', class: 'button is-primary nsfw-mode-toggle' do
