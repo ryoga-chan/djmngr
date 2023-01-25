@@ -17,11 +17,11 @@
         - if params[:action] == 'edit'
           %p.control
             = link_to 'Show', doujin_path(@doujin, url_params),
-              class: 'button is-info is-rounded'
+              class: 'bt-show button is-info is-rounded'
 
         - if params[:action] == 'show'
           %p.control
-            = link_to edit_doujin_path(@doujin, url_params), class: 'button is-primary is-rounded' do
+            = link_to edit_doujin_path(@doujin, url_params), class: 'bt-edit button is-primary is-rounded' do
               %span.icon
                 %i.mi.mi-small edit
               %span Edit

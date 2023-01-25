@@ -42,10 +42,10 @@
       
       .actions
         .field.has-addons.mb-4.is-justify-content-end
-          .control= link_to 'batch', '#', class: 'button is-link is-small is-rounded',
+          .control= link_to 'batch', '#', class: 'bt-batch button is-link is-small is-rounded',
             onclick: %Q|jQuery('.batch-bt, td.rm-or-batch > *').toggleClass('is-hidden'); return false|
           .control.batch-bt.is-hidden
-            = link_to '#', class: 'button is-rounded is-small',
+            = link_to '#', class: 'bt-toggle-all button is-rounded is-small',
               onclick: %Q|jQuery('td.rm-or-batch :checkbox').each(function(){ $(this).prop('checked', !$(this).prop('checked')) }).first(); jQuery.app.update_tot_filesize(); return false| do
               %span.icon.is-small
                 %i.mi select_all
@@ -56,7 +56,7 @@
                 %i.mi send
               %span prepare
               %span.tot-file-size.is-size-8.ml-1
-          .control= link_to :refresh, {refresh: true}, class: 'button is-info is-small is-rounded'
+          .control= link_to :refresh, {refresh: true}, class: 'bt-reindex button is-info is-small is-rounded'
       
       - if @files.empty?
         %em no files to process

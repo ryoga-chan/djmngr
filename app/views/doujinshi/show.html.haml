@@ -109,17 +109,17 @@
                 %p.control
                   = link_to doujin_path(@doujin, run: :file_manager, format: :json),
                       title: 'open folder in file manager',
-                      remote: true, class: 'button run-progr is-info is-rounded' do
+                      remote: true, class: 'bt-fm button run-progr is-info is-rounded' do
                     %span.icon
                       %i.mi.mi-small folder
                     %span FM
                 %p.control
                   = link_to doujin_path(@doujin, run: :terminal, format: :json),
                       title: 'open folder in terminal',
-                      remote: true, class: 'button run-progr is-info is-rounded' do
+                      remote: true, class: 'bt-term button run-progr is-info is-rounded' do
                     %span.icon
                       %i.mi.mi-small terminal
-                    %span SH
+                    %span Term
 
       %tr
         %th Orig.
@@ -159,21 +159,21 @@
           .field.has-addons
             %p.control
               = link_to read_doujin_path(@doujin, format: :ereader, page: @doujin.next_page_to_read, from_format: :html),
-                class: 'button is-info is-rounded', title: 'read online' do
+                class: 'bt-read button is-info is-rounded', title: 'read online' do
                 %span.icon
                   %i.mi.mi-small chrome_reader_mode
                 %span= @doujin.read_pages.to_i > 0 ? "Read (#{@doujin.percent_read.round}%)" : :Read
             %p.control.is-hidden-mobile
               = link_to doujin_path(@doujin, run: :comics_viewer, format: :json),
                   title: 'read with external viewer',
-                  remote: true, class: 'button run-progr is-info is-rounded' do
+                  remote: true, class: 'bt-reader button run-progr is-info is-rounded' do
                 %span.icon
                   %i.mi.mi-small launch
                 %span Reader
             - if @doujin.num_images > 10
               %p.control
                 - ts = Time.now.to_i
-                = link_to doujin_path(@doujin, sample: ts, anchor: "sample-#{ts}"), class: 'button is-info is-rounded' do
+                = link_to doujin_path(@doujin, sample: ts, anchor: "sample-#{ts}"), class: 'bt-sample button is-info is-rounded' do
                   %span.icon
                     %i.mi.mi-small casino
                   %span Sample

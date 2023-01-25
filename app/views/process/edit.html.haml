@@ -31,32 +31,31 @@
     .tabs.is-boxed
       %ul
         %li{class: (:'is-active' if params[:tab] == 'dupes') }
-          = link_to tab: :dupes do
+          = link_to({tab: :dupes}, id: 'tab-dupes') do
             %span.icon.is-small
               %i.mi content_copy
             %span Dupes
         %li{class: (:'is-active' if params[:tab] == 'files') }
-          = link_to tab: :files do
+          = link_to({tab: :files}, id: 'tab-files') do
             %span.icon.is-small
               %i.mi edit_note
-            %span File names
+            %span Names
             - if @info[:files].any?
               %span.tag.is-warning.ml-2
                 %span.icon.is-small
                   %i.mi warning
-
         %li{class: (:'is-active' if params[:tab] == 'images') }
-          = link_to tab: :images do
+          = link_to({tab: :images}, id: 'tab-images') do
             %span.icon.is-small
               %i.mi collections
-            %span Images
+            %span Pics
         %li{class: (:'is-active' if params[:tab] == 'ident') }
-          = link_to tab: :ident do
+          = link_to({tab: :ident}, id: 'tab-ident') do
             %span.icon.is-small
               %i.mi fact_check
-            %span Identification
+            %span Identify
         %li{class: (:'is-active' if params[:tab] == 'move') }
-          = link_to tab: :move do
+          = link_to({tab: :move}, id: 'tab-move') do
             %span.icon.is-small
               %i.mi gavel
             %span Finalize
