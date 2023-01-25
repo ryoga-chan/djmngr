@@ -128,6 +128,8 @@ class ProcessArchiveDecompressJob < ApplicationJob
       info[:dest_filename] = File.basename(fname)
       info[:dest_title   ] = info[:dest_filename].sub(/ *\.zip$/i, '')
     end
+    
+    %i[ dest_title dest_filename ].each{|k| info[k] = info[k].gsub(/ +/, ' ') }
     info[:orig_title        ] = info[:dest_title]
     info[:orig_dest_filename] = info[:dest_filename]
     

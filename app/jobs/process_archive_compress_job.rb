@@ -81,6 +81,7 @@ class ProcessArchiveCompressJob < ApplicationJob
           name:         name,
           name_romaji:  info[:dest_title_romaji],
           name_kakasi:  name.to_romaji,
+          name_eng:     info[:dest_title_eng],
           size:         File.size("#{info[:collection_full_path]}.NEW"),
           checksum:     info[:dest_checksum],
           num_images:   info[:images].size,
