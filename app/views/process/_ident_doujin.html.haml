@@ -1,12 +1,12 @@
 .name_orig.mb-1
   %span.icon.in-text-small.mr-2
-    %i.mi.mi-small(title="original filename") photo_filter
+    %i.mi.mi-small(title="original subjects") photo_filter
   = @name[:subjects]
 
 - if @name[:subjects] != @name[:subjects].to_romaji
   .name_romaji.mb-1
     %span.icon.in-text-small.mr-2
-      %i.mi.mi-small(title="kakasi filename") translate
+      %i.mi.mi-small(title="kakasi subjects") translate
     = @name[:subjects].to_romaji alt_readings:true#, furigana_mode: true
 
 = render partial: 'ident_dest_folder'

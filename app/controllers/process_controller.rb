@@ -284,6 +284,7 @@ class ProcessController < ApplicationController
       subfolder
       dest_title
       dest_title_romaji
+      dest_title_eng
       dest_filename
       reading_direction
       language
@@ -294,7 +295,7 @@ class ProcessController < ApplicationController
       cover_crop_method
     }.each do |k|
       if params[k] && params[k] != @info[k]
-        @info[k] = params[k].strip
+        @info[k] = params[k].strip.gsub(/ +/, ' ')
         info_changed = true
       end
     end

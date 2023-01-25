@@ -29,12 +29,12 @@
 
       .columns.mt-3
         .column
-          - if @dupes.any?
-            .tags.has-addons
-              %span.tag.is-info= "this file: #{@cur_info}"
+          .tags.has-addons
+            %span.tag.is-info= "this file: #{@cur_info}"
+            - if @dupes.any?
               %span.tag.is-danger= "#{@dupes.size} potential duplicate/s found in collection"
-          - else
-            %span.tag.is-success= "NO duplicates found in collection"
+            - else
+              %span.tag.is-success= "NO duplicates found in collection"
         
         .column.is-5
           = links_to_search_engines @info[:relative_path].tokenize_doujin_filename.join(' '), target: :_blank

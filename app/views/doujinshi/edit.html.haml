@@ -14,7 +14,7 @@
         .control.is-expanded.has-icons-left
           = f.text_field :name, class: :input
           %span.icon.is-small.is-left
-            %i.mi.mi-small local_offer
+            %i.mi.mi-small raw_on
       = render partial: 'field_versions_toggle', locals: {field: 'name'}
   = render partial: 'field_versions', locals: {versions: versions, prefix: 'doujin', field: 'name'}
 
@@ -26,7 +26,7 @@
         .control.is-expanded.has-icons-left
           = f.text_field :name_romaji, class: :input
           %span.icon.is-small.is-left
-            %i.mi.mi-small translate
+            %i.mi.mi-small title
       = render partial: 'field_versions_toggle', locals: {field: 'name_romaji'}
   = render partial: 'field_versions', locals: {versions: versions, prefix: 'doujin', field: 'name_romaji'}
 
@@ -38,7 +38,7 @@
         .control.is-expanded.has-icons-left
           = f.text_field :name_kakasi, class: :input
           %span.icon.is-small.is-left
-            %i.mi.mi-small translate
+            %i.mi.mi-small auto_fix_high
 
   .field.is-horizontal
     .field-label.is-normal
@@ -105,7 +105,7 @@
           .select.is-fullwidth(title="media type (paper or computer graphics)")
             = f.select :media_type, Doujin::MEDIA_TYPES
           %span.icon.is-small.is-left
-            %i.mi.mi-small raw_on
+            %i.mi.mi-small burst_mode
       .field
         .control.is-expanded.has-icons-left
           .select.is-fullwidth(title="read pages")
