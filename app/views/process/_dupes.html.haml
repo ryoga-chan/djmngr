@@ -37,8 +37,7 @@
             %span.tag.is-success= "NO duplicates found in collection"
         
         .column.is-5
-          - term = @info[:relative_path].tokenize_doujin_filename.join(' ').gsub(/[^a-z0-9\- ]/i, '')
-          = links_to_search_engines term, target: :_blank
+          = links_to_search_engines @info[:relative_path].tokenize_doujin_filename.join(' '), target: :_blank
     
     .tags.has-addons.mt-3
       %span.tag.is-info= "cover matching status: "

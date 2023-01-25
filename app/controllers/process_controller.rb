@@ -299,6 +299,8 @@ class ProcessController < ApplicationController
       end
     end
     
+    @info[:dest_filename] = @info[:orig_dest_filename] if @info[:dest_filename].blank?
+    
     # toggle overwrite of file in the collection
     if params[:overwrite] && (params[:overwrite].to_i == 1) != @info[:overwrite]
       @info[:overwrite] = params[:overwrite].to_i == 1

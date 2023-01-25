@@ -26,9 +26,8 @@
           - else
             = @info[:file_type]
         
-        - term = @info[:relative_path].tokenize_doujin_filename.join(' ').gsub(/[^a-z0-9\- ]/i, '')
-        = links_to_search_engines term, target: :_blank
-          
+        = links_to_search_engines @info[:relative_path].tokenize_doujin_filename.join(' '), target: :_blank
+      
       .other-settings.mb-1
         %span.icon.in-text-small.mr-2
           %i.mi.mi-small(title="other properties") settings
