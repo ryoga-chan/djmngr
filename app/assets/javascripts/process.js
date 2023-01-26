@@ -46,6 +46,7 @@ if ($('body').data('ctrl') +'/'+ $('body').data('action') == 'process/edit') {
   $.myapp.shortcuts.push({ key: 't', ctrl: false, alt: true, descr: 'copy romaji title to filename' , action: function (ev) { $('#dest_filename').val( $('#dest_title_romaji').val().trim() + '.zip' ); } });
   $.myapp.shortcuts.push({ key: 'e', ctrl: false, alt: true, descr: 'copy english title to filename', action: function (ev) { $('#dest_filename').val( $('#dest_title_eng'   ).val().trim() + '.zip' ); } });
   $.myapp.shortcuts.push({ key: 'l', ctrl: false, alt: false, descr: 'convert all titles to lowercase', action: $.myapp.titles_to_lowercase });
+  $.myapp.shortcuts.push({ key: 'Enter', ctrl: false, alt: true, descr: 'finalize archive', action: function (ev) { $('.actions button[value="finalize"]').get(0).click(); } });
   // add page shortcuts - scoring
   $.myapp.shortcuts.push({ key: '0', ctrl: false, alt: false, descr: 'clear scoring', action: function (ev) { $('span.clear-score').get(0).click(); } });
   for (let i = 1; i <= 10; i++)
