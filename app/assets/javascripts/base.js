@@ -29,13 +29,24 @@ $.myapp = {
   
   shortcuts: [
     { key: '?', ctrl: false, alt: false, descr: 'show shortcuts list', action:function (ev) {
-      var text = '<table class="table is-striped is-narrow is-hoverable is-fullwidth">';
-      text += '<tr><th>Combo</th><th>Action</th></tr>';
-      $.each($.myapp.shortcuts, function (i, s) {
-        text += '<tr><td>' + (s.ctrl ? 'Ctrl + ' : '') + (s.alt ? 'Alt + ' : '') + s.key + '</td><td>' + s.descr + '</td></tr>';
-      });
-      text += '</table>'
-      $.myapp.show_generic_modal('Page shortcuts', text);
+      function build_table (entries) {
+        var text = '<table class="table is-striped is-narrow is-hoverable is-fullwidth">';
+        text += '<tr><th>Combo</th><th>Action</th></tr>';
+        $.each(entries, function (i, s) {
+          text += '<tr><td class="nowrap">' +
+                  (s.ctrl ? '<span class="tag is-primary">Ctrl</span> + ' : '') +
+                  (s.alt ? '<span class="tag is-primary">Alt</span> + ' : '') +
+                  '<span class="tag is-info">'+ s.key + '</span></td><td>' +
+                  s.descr + '</td></tr>';
+        });
+        text += '</table>'
+        return text;
+      }// build_table
+
+      var n = Math.ceil($.myapp.shortcuts.length / 2);
+      var html = '<div class="column is-half">' + build_table($.myapp.shortcuts.slice(0, n)) + '</div>' +
+                 '<div class="column is-half">' + build_table($.myapp.shortcuts.slice(   n)) + '</div>';
+      $.myapp.show_generic_modal('Page shortcuts', '<div class="columns">'+html+'</div>');
     } },
     { key: 'n', ctrl: false, alt: false, descr: 'toggle NFSW mode', action:function (ev) { $.myapp.nsfw_mode_toggle(); } },
     { key: 'h', ctrl: false, alt: false, descr: 'show Home', action: function (ev) { $.myapp.show_loading(); window.location = '/'; } },
