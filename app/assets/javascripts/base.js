@@ -61,6 +61,18 @@ $.myapp = {
 
 // bind keyboard shortcuts
 $('body').on('keydown', function (ev) {
+  if (ev.key == 'Escape') {
+    // close generic modal if opened
+    if ($('#generic-modal').hasClass('is-active'))
+      $.myapp.hide_generic_modal();
+    
+    // remove focus from current input
+    if ($(document.activeElement).is(':input'))
+      $(document.activeElement).blur();
+    
+    return false;
+  }// Escape
+  
   if ($(document.activeElement).is(':input'))
     return true;
   
