@@ -48,9 +48,10 @@ if ($('body').data('ctrl') +'/'+ $('body').data('action') == 'process/edit') {
   $.myapp.shortcuts.push({ key: 'l', ctrl: false, alt: false, descr: 'convert all titles to lowercase', action: $.myapp.titles_to_lowercase });
   $.myapp.shortcuts.push({ key: 'Enter', ctrl: false, alt: true, descr: 'finalize archive', action: function (ev) { $('.actions button[value="finalize"]').get(0).click(); } });
   // add page shortcuts - scoring
-  $.myapp.shortcuts.push({ key: '0', ctrl: false, alt: false, descr: 'clear scoring', action: function (ev) { $('span.clear-score').get(0).click(); } });
-  for (let i = 1; i <= 10; i++)
-    $.myapp.shortcuts.push({ key: i.toString(), ctrl: false, alt: false, descr: 'assign score 1', action: function (ev) { $('span.set-score[data-score="'+i+'"]').get(0).click(); } });
+  $.myapp.shortcuts.push({ key: '-', ctrl: false, alt: false, descr: 'clear scoring', action: function (ev) { $('span.clear-score').get(0).click(); } });
+  for (let i = 1; i <= 9; i++)
+    $.myapp.shortcuts.push({ key: i.toString(), ctrl: false, alt: false, descr: 'assign score '+i, action: function (ev) { $('span.set-score[data-score="'+i+'"]').get(0).click(); } });
+  $.myapp.shortcuts.push({ key: '0', ctrl: false, alt: false, descr: 'assign score 10', action: function (ev) { $('span.set-score[data-score="10"]').get(0).click(); } });
   // add page shortcuts - tab pics
   $.myapp.shortcuts.push({ key: 'd', ctrl: false, alt: false, descr: 'delete selected images', action: function (ev) { var bt=$('button.delete-images:first').get(0); if (bt) bt.click(); } });
   
