@@ -5,9 +5,9 @@ var p_bar = '<progress class="progress is-small is-info" max="100">i</progress>'
 
 if ($('body').data('ctrl') +'/'+ $('body').data('action') == 'process/index') {
   // add page shortcuts
-  $.myapp.shortcuts.push({ key: 'b', ctrl: true, alt: false, descr: 'toggle batch mode', action: function (ev) { $('a.bt-batch').get(0).click(); } });
-  $.myapp.shortcuts.push({ key: 't', ctrl: true, alt: false, descr: 'toggle checked entries for batch', action: function (ev) { $('a.bt-toggle-all').get(0).click(); } });
-  $.myapp.shortcuts.push({ key: 'r', ctrl: true, alt: false, descr: 'refresh entries index', action: function (ev) { $('a.bt-reindex').get(0).click(); } });
+  $.myapp.shortcuts.push({ key: 'b', ctrl: false, alt: true, descr: 'toggle batch mode', action: function (ev) { $('a.bt-batch').get(0).click(); } });
+  $.myapp.shortcuts.push({ key: 't', ctrl: false, alt: true, descr: 'toggle checked entries for batch', action: function (ev) { $('a.bt-toggle-all').get(0).click(); } });
+  $.myapp.shortcuts.push({ key: 'r', ctrl: false, alt: true, descr: 'refresh entries index', action: function (ev) { $('a.bt-reindex').get(0).click(); } });
   
   $.app = $.extend($.app, {
     update_tot_filesize: function () {
@@ -41,6 +41,10 @@ if ($('body').data('ctrl') +'/'+ $('body').data('action') == 'process/edit') {
   $.myapp.shortcuts.push({ key: 'r', ctrl: false, alt: true, descr: 'copy kanji title to filename'  , action: function (ev) { $('#dest_filename').val( $('#dest_title'       ).val().trim() + '.zip' ); } });
   $.myapp.shortcuts.push({ key: 't', ctrl: false, alt: true, descr: 'copy romaji title to filename' , action: function (ev) { $('#dest_filename').val( $('#dest_title_romaji').val().trim() + '.zip' ); } });
   $.myapp.shortcuts.push({ key: 'e', ctrl: false, alt: true, descr: 'copy english title to filename', action: function (ev) { $('#dest_filename').val( $('#dest_title_eng'   ).val().trim() + '.zip' ); } });
+  // add page shortcuts - scoring
+  $.myapp.shortcuts.push({ key: '0', ctrl: false, alt: false, descr: 'clear scoring', action: function (ev) { $('span.clear-score').get(0).click(); } });
+  for (let i = 1; i <= 10; i++)
+    $.myapp.shortcuts.push({ key: i.toString(), ctrl: false, alt: false, descr: 'assign score 1', action: function (ev) { $('span.set-score[data-score="'+i+'"]').get(0).click(); } });
   
   // keep file names button: toggle hidden checkbox and icon
   $('#bt_keep_names').click(function () {
