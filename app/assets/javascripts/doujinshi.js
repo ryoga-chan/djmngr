@@ -28,14 +28,14 @@ if ($('body').data('action') == 'index') {
 if ($('body').data('action') == 'show') {
   // add page shortcuts
   $.myapp.shortcuts.push({ key: 'e', ctrl: false, alt: false, descr: 'edit details', action: function (ev) { $.myapp.show_loading(); $('a.bt-edit').get(0).click(); } });
-  $.myapp.shortcuts.push({ key: 's', ctrl: true, alt: false, descr: 'show sample pages', action: function (ev) { $.myapp.show_loading(); $('a.bt-sample').get(0).click(); } });
-  $.myapp.shortcuts.push({ key: 'r', ctrl: true, alt: false, descr: 'read doujin', action: function (ev) { $.myapp.show_loading(); $('a.bt-read').get(0).click(); } });
-  $.myapp.shortcuts.push({ key: 'R', ctrl: true, alt: false, descr: 'run external reader', action: function (ev) { $('a.bt-reader').get(0).click(); } });
-  $.myapp.shortcuts.push({ key: 't', ctrl: true, alt: false, descr: 'open terminal', action: function (ev) { $('a.bt-term').get(0).click(); } });
-  $.myapp.shortcuts.push({ key: 'f', ctrl: true, alt: false, descr: 'open file manager', action: function (ev) { $('a.bt-fm').get(0).click(); } });
+  $.myapp.shortcuts.push({ key: 's', ctrl: false, alt: true,  descr: 'show sample pages', action: function (ev) { $.myapp.show_loading(); $('a.bt-sample').get(0).click(); } });
+  $.myapp.shortcuts.push({ key: 'r', ctrl: false, alt: true,  descr: 'read doujin', action: function (ev) { $.myapp.show_loading(); $('a.bt-read').get(0).click(); } });
+  $.myapp.shortcuts.push({ key: 'e', ctrl: false, alt: true,  descr: 'run external reader', action: function (ev) { $('a.bt-reader').get(0).click(); } });
+  $.myapp.shortcuts.push({ key: 't', ctrl: false, alt: true,  descr: 'open terminal', action: function (ev) { $('a.bt-term').get(0).click(); } });
+  $.myapp.shortcuts.push({ key: 'f', ctrl: false, alt: true,  descr: 'open file manager', action: function (ev) { $('a.bt-fm').get(0).click(); } });
+  $.myapp.shortcuts.push({ key: '0', ctrl: false, alt: false, descr: 'clear scoring', action: function (ev) { $('span.clear-score').get(0).click(); } });
   for (let i = 1; i <= 10; i++)
     $.myapp.shortcuts.push({ key: i.toString(), ctrl: false, alt: false, descr: 'assign score 1', action: function (ev) { $('span.set-score[data-score="'+i+'"]').get(0).click(); } });
-  $.myapp.shortcuts.push({ key: '0', ctrl: false, alt: false, descr: 'clear scoring', action: function (ev) { $('span.clear-score').get(0).click(); } });
   
   // update scoring
   $('.scoring > .icon').click(function () {
