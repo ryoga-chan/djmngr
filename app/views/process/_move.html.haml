@@ -29,7 +29,7 @@
         = links_to_search_engines @info[:relative_path].tokenize_doujin_filename.join(' '), target: :_blank
       
       .other-settings.mb-1
-        %span.icon.in-text-small.mr-2
+        %span.icon.in-text-small.mr-2.is-hidden-mobile
           %i.mi.mi-small(title="other properties") settings
         
         .select(title="language")= f.select :language,
@@ -53,13 +53,13 @@
           {}, class: "input is-small vmiddle"
         
       .notes.mb-1
-        %span.icon.in-text-small.mr-2
+        %span.icon.in-text-small.mr-2.is-hidden-mobile
           %i.mi.mi-small(title="notes") comment
         = f.text_area :notes, value: @info[:notes], placeholder: 'notes',
           class: :textarea, maxlength: 255, rows: 2
 
       .scoring-stars.mb-1
-        %span.icon.in-text-small.mr-2
+        %span.icon.in-text-small.mr-2.is-hidden-mobile
           %i.mi.mi-small(title="quality score") favorite
         %span.scoring
           - (1..10).each do |i|
@@ -82,28 +82,31 @@
         = link_to '#', class: 'button is-small', onclick: %Q|$('#subfolder').val(''); return false| do
           %span.icon
             %i.mi.mi-small(title="clear subfolder") clear
+        = link_to '#', class: 'button is-small ml-1', onclick: %Q|$.myapp.titles_to_lowercase(); return false| do
+          %span.icon
+            %i.mi.mi-small(title="convert all titles to downcase") text_rotate_vertical
 
       .dest-titlename.mb-1
-        %span.icon.in-text-small.mr-2
+        %span.icon.in-text-small.mr-2(onclick="$('#dest_filename').val( $('#dest_title').val()+'.zip' )")
           %i.mi.mi-small(title="destination title kanji/original") raw_on
         = f.text_field :dest_title, value: @info[:dest_title],
           placeholder: 'dest. title kanji/original',
           class: 'input is-small', style: 'width: 30.25rem',
           data: { orig_name: @info[:orig_title] }
-        = link_to '#', class: 'button is-small',
+        = link_to '#', class: 'button is-small is-hidden-mobile',
           onclick: %Q|var el=$('#dest_title'); el.val(el.data('orig-name')); return false| do
           %span.icon
             %i.mi.mi-small(title="restore initial value") restore
       
       .dest-titlename.mb-1
-        %span.icon.in-text-small.mr-2
+        %span.icon.in-text-small.mr-2(onclick="$('#dest_filename').val( $('#dest_title_romaji').val()+'.zip' )")
           %i.mi.mi-small(title="destination title romaji/translitterated") title
         = f.text_field :dest_title_romaji, value: @info[:dest_title_romaji],
           placeholder: 'dest. title romaji/translitterated',
           class: 'input is-small', style: 'width: 30.25rem'
       
       .dest-titlename.mb-1
-        %span.icon.in-text-small.mr-2
+        %span.icon.in-text-small.mr-2(onclick="$('#dest_filename').val( $('#dest_title_eng').val()+'.zip' )")
           %i.mi.mi-small(title="destination title english/translated") translate
         = f.text_field :dest_title_eng, value: @info[:dest_title_eng],
           placeholder: 'dest. title english/translated',
@@ -116,7 +119,7 @@
           placeholder: 'dest. filename',
           class: 'input is-small', style: 'width: 30.25rem',
           data: { orig_name: @info[:orig_dest_filename] }
-        = link_to '#', class: 'button is-small',
+        = link_to '#', class: 'button is-small is-hidden-mobile',
           onclick: %Q|var el=$('#dest_filename'); el.val(el.data('orig-name')); return false| do
           %span.icon
             %i.mi.mi-small(title="restore initial value") restore
