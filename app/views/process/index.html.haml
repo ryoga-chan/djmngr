@@ -43,7 +43,7 @@
       .actions
         .field.has-addons.mb-4.is-justify-content-end
           .control= link_to 'batch', '#', class: 'bt-batch button is-link is-small is-rounded',
-            onclick: %Q|jQuery('.batch-bt, td.rm-or-batch > *').toggleClass('is-hidden'); return false|
+            onclick: %Q|jQuery('.batch-bt, td.rm-or-batch > *, td.batch').toggleClass('is-hidden'); return false|
           .control.batch-bt.is-hidden
             = link_to '#', class: 'bt-toggle-all button is-rounded is-small',
               onclick: %Q|jQuery('td.rm-or-batch :checkbox').each(function(){ $(this).prop('checked', !$(this).prop('checked')) }).first(); jQuery.app.update_tot_filesize(); return false| do
@@ -72,8 +72,8 @@
                     method: :delete, data: { confirm: 'Delete this file?' },
                     class: 'has-text-danger', title: 'delete file')
                   .file-select.is-hidden= check_box_tag 'file_ids[]', f.id, false, id: '', data: {size: f.size}
-                %td.file-size.has-text-right= number_to_human_size f.size
-                %td= render partial: 'file_actions', locals: {fname: f.name}
+                %td.batch.file-size.has-text-right= number_to_human_size f.size
+                %td.batch= render partial: 'file_actions', locals: {fname: f.name}
                 %td
                   .name
                     - if @preparing_paths.include?(f.name)
