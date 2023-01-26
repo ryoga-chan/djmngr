@@ -26,7 +26,7 @@
         - show_key = session[:dj_index_detail] == 'thumbs' ? 'table' : 'thumbs'
         - cur_params = params.permit(%w{ tab author_id circle_id folder }).to_h
         = link_to(cur_params.merge(detail: session[:dj_index_detail] == 'thumbs' ? 'table' : 'thumbs', anchor: "listing"),
-          class: 'button is-info is-small is-rounded', style: 'float: right') do
+          class: 'bt-thumbs button is-info is-small is-rounded', style: 'float: right') do
           %span.icon-text
             %span.icon.is-small
               %i.mi.mi-small= session[:dj_index_detail] == 'thumbs' ? 'view_list' : 'image'
