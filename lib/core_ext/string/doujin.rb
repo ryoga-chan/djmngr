@@ -13,7 +13,7 @@ module CoreExt
         #   '[author_circle1 name, author_circle2 name (author_or_alias1 name, author_or_alias2 name)] file name.ext'
         
         # extract groups
-        ac1, ac2, fname = self.match(/^\[([^\]\(\)]+)(\(.+\))*\]\s*(.+)/).try(:captures)
+        ac1, ac2, fname = self.match(/^\[([^\]\(\)]+)(\([^\[\]]+\))*\]\s*(.+)/).try(:captures)
         
         # extract authors/circles by splitting groups
         { ac_explicit:   ac1  .to_s.strip             .split(/\s*[,\|]\s*/),
