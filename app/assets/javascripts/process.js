@@ -42,6 +42,7 @@ if ($('body').data('ctrl') +'/'+ $('body').data('action') == 'process/edit') {
     }//action
   });
   // add page shortcuts - tab move
+  $.myapp.shortcuts.push({ key: 't', ctrl: false, alt: false, descr: 'focus on raw title', action: function (ev) { $('#dest_title').focus(); } });
   $.myapp.shortcuts.push({ key: 'r', ctrl: false, alt: true, descr: 'copy kanji title to filename'  , action: function (ev) { $('#dest_filename').val( $('#dest_title'       ).val().trim() + '.zip' ); } });
   $.myapp.shortcuts.push({ key: 't', ctrl: false, alt: true, descr: 'copy romaji title to filename' , action: function (ev) { $('#dest_filename').val( $('#dest_title_romaji').val().trim() + '.zip' ); } });
   $.myapp.shortcuts.push({ key: 'e', ctrl: false, alt: true, descr: 'copy english title to filename', action: function (ev) { $('#dest_filename').val( $('#dest_title_eng'   ).val().trim() + '.zip' ); } });

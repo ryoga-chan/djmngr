@@ -27,6 +27,7 @@ $.myapp = {
   
   hide_generic_modal: function () { $('#generic-modal').removeClass('is-active'); },
   
+  // https://www.freecodecamp.org/news/javascript-keycode-list-keypress-event-key-codes/#a-full-list-of-key-event-values
   shortcuts: [
     { key: '?', ctrl: false, alt: false, descr: 'show shortcuts list', action:function (ev) {
       function build_table (entries) {
