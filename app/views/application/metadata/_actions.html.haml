@@ -9,7 +9,7 @@
 
         - if params[:action] == 'show'
           %p.control
-            = link_to({action: :edit, id: @record.id}, class: 'button is-primary is-rounded') do
+            = link_to({action: :edit, id: @record.id}, class: 'bt-edit button is-primary is-rounded') do
               %span.icon
                 %i.mi.mi-small edit
               %span Edit

@@ -37,7 +37,7 @@ module MetadataCrudController
   def create
     @record = @model.new record_params
     if @record.save
-      params[:wip_hash] ?
+      params[:wip_hash].present? ?
         redirect_to({controller: :process, action: :edit, id: params[:wip_hash], tab: :ident, term: @record.name}) :
         redirect_to({action: :show, id: @record.id}, notice: "#{@model.name} [#{@record.id} / #{@record.name}] created")
     else
