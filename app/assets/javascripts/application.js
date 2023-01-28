@@ -11,6 +11,7 @@
 //= require process
 //= require doujinshi
 //= require shelves
+//= require metadata
 
 // SOURCES:
 //   - rails-ujs        https://github.com/rails/rails/blob/main/actionview/app/assets/javascripts/rails-ujs.js  (link from https://github.com/rails/rails-ujs)
