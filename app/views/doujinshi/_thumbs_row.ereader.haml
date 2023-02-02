@@ -4,7 +4,8 @@
 
 - descr = short_label ? d.label_name_latin : d.file_dl_name(omit_ext: true)
 .doujin<>
-  .cover<>= link_to image_tag(doujin_path(d, format: :jpg), class: :thumb), doujin_path(d)
+  .cover<>= link_to image_tag(doujin_path(d, format: :jpg),
+    class: :thumb, loading: :lazy, decoding: :async), doujin_path(d)
   .descr<>
     - if show_perc_read
       - if d.read_pages.to_i > 0
