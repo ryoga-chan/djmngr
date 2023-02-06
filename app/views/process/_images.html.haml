@@ -1,5 +1,3 @@
-%a(name="page-top")
-
 = form_with url: delete_archive_files_process_path(id: @info[:working_dir]), method: :delete,
   data: { image_sel_mode: Setting[:process_img_sel] } do |f|
   = hidden_field_tag :tab, params[:tab]
