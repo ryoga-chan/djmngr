@@ -87,13 +87,15 @@ class ProcessArchiveDecompressJob < ApplicationJob
     # auto associate doujin authors/circles when a 100% match is found
     name = fname.parse_doujin_filename
     (name[:ac_explicit] + name[:ac_implicit]).each do |term|
-      # fine authors/circles and use only the first one by name
-      list  = Author.search_by_name(term, limit: 50).inject({}){|h,i| h.merge i.name.downcase => i }.values
-      list += Circle.search_by_name(term, limit: 50).inject({}){|h,i| h.merge i.name.downcase => i }.values
-      list.each do |result|
-        key = "#{result.class.name.downcase}_ids".to_sym
-        info[key] ||= []
-        info[key] << result.id if result.name.downcase == term
+      a = Author.search_by_name(term).first || Author.new
+      c = Circle.search_by_name(term).first || Circle.new
+      if a.attributes.slice(*%w{ name name_romaji name_kana name_kakasi }).values.compact.map(&:downcase).include?(term)
+        info[:author_ids] ||= []
+        info[:author_ids] << a.id
+      end
+      if c.attributes.slice(*%w{ name name_romaji name_kana name_kakasi }).values.compact.map(&:downcase).include?(term)
+        info[:circle_ids] ||= []
+        info[:circle_ids] << c.id
       end
     end
     
