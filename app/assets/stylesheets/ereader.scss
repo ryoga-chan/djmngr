@@ -280,13 +280,22 @@ body[data-ctrl="doujinshi"][data-action="read"] {
     img.page.fit-width  { width:  100%; margin: auto 0; }
   }
   
-  #pag_num, #zoom, #debug {
+  #pag_num, #zoom, #debug, #pbar, #pbar-bg {
     position: fixed;
     opacity: 0.5;
     font-size: smaller;
     padding: 0 0.25rem;
     border: 1px outset silver;
     background-color: #ccc;
+  }
+  #pbar, #pbar-bg {
+    top: 0; left: 0;
+    border: 2px outset silver;
+  }
+  #pbar-bg { width: 100vw; }
+  #pbar {
+    width: 0vw;
+    opacity: 0.8;
   }
   #debug {
     top: 0; left: 0;

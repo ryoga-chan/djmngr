@@ -72,6 +72,7 @@
     }//if-else
     
     $('#pag_num .cur').text(cur_page + 1);
+    $('#pbar').css('width', (cur_page / files.length * 100).toFixed(2) + 'vw');
     
     if ($('#msg').hasClass('hidden'))
       // save current page on server
@@ -184,6 +185,9 @@
   %img.next(src="" class="page hidden" onload="setImgClass(this)")
   
 #msg.hidden Finished
+
+#pbar-bg
+#pbar
 
 #pag_num
   %span.cur>= params[:page] + 1
