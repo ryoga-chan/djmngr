@@ -1,9 +1,7 @@
 - descr = short_label ? d.label_name_latin : d.file_dl_name(omit_ext: true)
 - title = d.name if d.name != descr
 %tr{data: {cover: doujin_path(d, format: :webp)}}
-  %td
-    - if d.score.to_i > 0
-      %progress.progress.is-warning{value: d.score.to_i, title: "#{d.score.to_i}⭐", max: 10}
+  %td.has-text-warning= d.score.to_i if d.score.to_i > 0
   %td
     = link_to(doujin_path(d), title: title) do
       - if d.cover_similarity.present?
