@@ -94,10 +94,13 @@ $('body').on('keydown', function (ev) {
   });
 });
 
-$('#appNavbar a[href]:not(.no-spinner)').click(function (ev) {
+// add navbar spinner when clicking navbar links
+$('nav.navbar a[href]:not(.no-spinner), .show-spinner').click(function (ev) {
   if (!ev.ctrlKey && !ev.altKey)
-    $.myapp.show_loading();
+    $('nav.navbar').addClass('loading-bg');
 });
+// remove navbar spinner on page load (fix "go back" action)
+$('nav.navbar').removeClass('loading-bg');
 
 // temporarily disable "run external program" button when clicked
 $('body').on('click', '.run-progr', function (ev) {

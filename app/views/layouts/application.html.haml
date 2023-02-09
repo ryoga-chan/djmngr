@@ -131,7 +131,7 @@
               
               - ext_lbl, ext_url = Setting[:external_link].to_s.split('|')
               - if ext_lbl.present? && ext_lbl.present?
-                = link_to ext_url, class: 'navbar-item', target: :_blank do
+                = link_to ext_url, class: 'navbar-item no-spinner', target: :_blank do
                   %span.icon-text
                     %span.icon
                       %i.mi.mi-small launch
