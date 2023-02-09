@@ -1,11 +1,38 @@
 (function ($) { $(function () {
 // -----------------------------------------------------------------------------
+if ($('body').data('ctrl') != 'process')
+  return;
+
 var p_bar = '<progress class="progress is-small is-info" max="100">i</progress>';
 
 $.myapp.titles_to_lowercase = function () {
   $.each(['dest_title', 'dest_title_romaji', 'dest_title_eng', 'dest_filename'],
     function () { $('#'+this).val( $('#'+this).val().toLowerCase() ); });
 }// $.myapp.titles_to_lowercase
+
+// remote update the name in "files", "images", and "batch" sections
+$('input.update-name').change(function () {
+  var el = $(this);
+  
+  $.ajax({
+    url: el.data('url'),
+    data: {
+      name: el.val(),
+      path: el.data('path')
+    },
+    method: 'POST',
+    dataType: 'json',
+    cache: false,
+    beforeSend: function () { el.addClass('is-hidden').after(p_bar); },//beforeSend
+    success: function (resp) {
+      if (resp.result != 'ok')
+        alert(resp.msg || 'Server error!');
+    },//success
+    complete: function () { el.removeClass('is-hidden').next().remove(); },//complete
+    error: function () { alert('Server error!'); }//error
+  });
+});
+
 
 if ($('body').data('ctrl') +'/'+ $('body').data('action') == 'process/index') {
   // add page shortcuts
@@ -124,29 +151,6 @@ if ($('body').data('ctrl') +'/'+ $('body').data('action') == 'process/edit') {
             link.parent().removeClass('clicked');
           });
     }//if
-  });
-
-  // update the single image name in "files" and "images"
-  $('input[name="file_name"], input[name="img_name"]').change(function () {
-    var el = $(this);
-    
-    $.ajax({
-      url: el.data('url'),
-      data: {
-        name: el.val(),
-        path: el.data('path')
-      },
-      method: 'POST',
-      dataType: 'json',
-      cache: false,
-      beforeSend: function () { el.addClass('is-hidden').after(p_bar); },//beforeSend
-      success: function (resp) {
-        if (resp.result != 'ok')
-          alert(resp.msg || 'Server error!');
-      },//success
-      complete: function () { el.removeClass('is-hidden').next().remove(); },//complete
-      error: function () { alert('Server error!'); }//error
-    });
   });
 
   // set scoring

@@ -49,7 +49,7 @@ class ProcessBatchJob < ApplicationJob
     results = {}
     
     # fill results with each files to process
-    files.each do |dj_fname|
+    files.each do |dj_fname, dj_title|
       puts '-'*70
       puts "FILE: #{dj_fname}"
       
@@ -96,6 +96,7 @@ class ProcessBatchJob < ApplicationJob
         info[:doujin_dest_type] = dj.category
       end
       info[:dest_folder  ], info[:subfolder] = dj.file_folder.split(File::SEPARATOR)
+      info[:dest_title   ] = dj_title
       info[:dest_title   ] = options[:dest_title] if options[:dest_title].present?
       info[:score        ] = options[:score] if options[:score]
       info[:reading_direction] = dj.reading_direction
@@ -106,6 +107,7 @@ class ProcessBatchJob < ApplicationJob
       info[:media_type       ] = options[:mt  ] unless options[:mt  ].nil? # dj.media_type
       info[:overwrite        ] = true if options[:overwrite]
       
+      info[:dest_filename] = dj_title.to_romaji
       info[:dest_filename] = options[:dest_filename] if options[:dest_filename]
       info[:dest_filename] = File.basename(fname).sub(/ *\.zip$/i, '.zip') if options[:keep_filename]
       info[:author_ids   ] = dj.author_ids
