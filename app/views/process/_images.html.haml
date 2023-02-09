@@ -19,6 +19,7 @@
       - s.each do |img|
         .column.is-2.has-text-centered.nowrap<>
           = text_field_tag :img_name, img[:dst_path], id: '', size: 11,
+            class: 'update-name',
             data: { url: rename_file_process_path, path: img[:src_path] }
           
           %span.button.is-small.select-image

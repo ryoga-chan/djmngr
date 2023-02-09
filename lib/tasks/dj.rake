@@ -45,7 +45,9 @@ namespace :dj do
     doujin_id = ARGV.shift.to_i
     die %Q|ERROR: doujin ID [#{doujin_id}] not found| unless dj = Doujin.find_by(id: doujin_id)
     
-    ProcessBatchJob.perform_now doujin_id, ARGV, options
+    # hash: { full_path => title }
+    files = ARGV.inject({}){|h, f| h.merge f => f }
+    ProcessBatchJob.perform_now doujin_id, files, options
     
     exit 0 # make sure that the extra arguments won't be interpreted as Rake task
   end # process

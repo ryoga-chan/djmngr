@@ -26,6 +26,7 @@ Rails.application.routes.draw do
       get     :edit_cover
       get     :inspect_folder
       get     :batch            # manage mass processing
+      post    :batch
       delete  :batch
     end
   end # process
