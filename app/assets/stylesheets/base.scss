@@ -38,6 +38,17 @@
   z-index: 1000;
 }
 
+// striped moving background
+.loading-bg {
+  background-size: 300% 100% !important;
+  background-image: repeating-linear-gradient(-45deg, #375a7f, #375a7f 10px, #46627F 10px, #46627F 20px) !important;
+  animation: AnimateLBG 20s linear infinite !important;
+}
+@keyframes AnimateLBG {
+    0%{background-position:   0% 50%}
+  100%{background-position: 100% 50%}
+}
+
 body:not([data-env="production"]) {
   // striped background on title bar
   nav.navbar {
