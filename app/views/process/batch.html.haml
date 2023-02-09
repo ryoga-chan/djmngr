@@ -158,6 +158,10 @@
               class: 'has-text-danger', title: 'remove from batch')
             %span= render partial: 'file_actions', locals: {fname: name}
             = name
+          .custom-name
+            = text_field_tag :title, @info[:titles][name], id: '',
+              class: 'update-name w100',
+              data: { url: batch_process_path, path: name }
           - if @info[:thumbs][name][:landscape]
             .actions.my-1
               .tags.has-addons

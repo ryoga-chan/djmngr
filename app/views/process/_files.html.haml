@@ -111,6 +111,7 @@
           %td= check_box_tag 'path[]', img[:src_path], false, id: ''
           %td
             = text_field_tag :file_name, img[:dst_path], id: '', size: 50,
+              class: 'update-name',
               data: { url: rename_file_process_path, path: img[:src_path] }
             .src-fname= link_to img[:src_path],
               show_image_process_path(id: @info[:working_dir], path: img[:src_path]),

@@ -6,7 +6,10 @@ class ProcessBatchInspectJob < ApplicationJob
     info = YAML.unsafe_load_file info_path
     
     info[:thumbs] = {}
+    info[:titles] = {}
     info[:files].keys.each do |name|
+      info[:titles][name] = name.sub(/ *\.zip$/i, '')
+      
       file_path = File.join Setting['dir.to_sort'], name
 
       Zip::File.open(file_path) do |zip|

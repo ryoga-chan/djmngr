@@ -103,6 +103,16 @@ class ProcessController < ApplicationController
       end
     end
     
+    if request.post? && params[:name].present?
+      if @info[:titles][params[:path]]
+        @info[:titles][params[:path]] = params[:name].strip
+        File.atomic_write(info_path){|f| f.puts @info.to_yaml }
+        return render(json: {result: 'ok'})
+      else
+        return render(json: {result: 'err', msg: "path not found [#{params[:path]}]"})
+      end
+    end
+    
     # update options
     if params[:options]
       @info[:options] = { hash: params[:id] }
@@ -131,7 +141,10 @@ class ProcessController < ApplicationController
           @info[:options][:keep_cover] = @info[:thumbs].
             map{|name, data| File.join(Setting['dir.to_sort'], name) if data[:keep_cover] }.compact
           
-          files = @info[:files].keys.map{|f| File.join Setting['dir.to_sort'], f }
+          # hash: { full_path => title }
+          files = @info[:files].keys.
+            inject({}){|h, f| h.merge File.join(Setting['dir.to_sort'], f) => @info[:titles][f] }
+          
           ProcessBatchJob.perform_later dj.id, files, @info[:options]
 
           flash[:notice] = 'batch processing started'
