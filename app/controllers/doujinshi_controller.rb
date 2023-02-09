@@ -327,16 +327,21 @@ class DoujinshiController < ApplicationController
   def scored
     @page_title = :scores
     
-    # sanitize params
-    params[:score_max], params[:score_min] = params[:score_max].to_i, params[:score_min].to_i
-    params[:score_min] = 8  unless (1..10).include?(params[:score_min])
-    params[:score_max] = 10 unless (1..10).include?(params[:score_max])
-    params[:score_min] = params[:score_max] if params[:score_min] > params[:score_max]
-    
-    @doujinshi = Doujin.
-      where("? <= score AND score <= ?", params[:score_min], params[:score_max]).
-      order(score: :desc).
-      page(params[:page])#.per(2)
+    @doujinshi = Doujin.page(params[:page])#.per(2)
+
+    if [params[:score_min], params[:score_max]].include?('ND')
+      @doujinshi = @doujinshi.where(score: nil).order(:name_kakasi)
+    else
+      # sanitize params
+      params[:score_max], params[:score_min] = params[:score_max].to_i, params[:score_min].to_i
+      params[:score_min] = 8  unless (1..10).include?(params[:score_min])
+      params[:score_max] = 10 unless (1..10).include?(params[:score_max])
+      params[:score_min] = params[:score_max] if params[:score_min] > params[:score_max]
+      
+      @doujinshi = @doujinshi.
+        where("? <= score AND score <= ?", params[:score_min], params[:score_max]).
+        reorder(score: :desc)
+    end
   end # scored
   
   # curl -L -F cover=@path/to/img.ext http://localhost:3000/doujinshi/search_cover.json
