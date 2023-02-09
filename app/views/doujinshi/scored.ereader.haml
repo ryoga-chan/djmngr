@@ -1,11 +1,12 @@
+- numbers = (1..10).to_a.reverse.push(:ND)
+
 %h3 Score search results
 
 = form_with url: scored_doujinshi_path, method: :get, class: 'frm-search' do |f|
-  - numbers = (1..10).to_a.reverse
   Score interval
-  = f.select :score_min, options_for_select(numbers, params[:score_min].to_i)
+  = f.select :score_min, options_for_select(numbers, params[:score_min])
   \~
-  = f.select :score_max, options_for_select(numbers, params[:score_max].to_i)
+  = f.select :score_max, options_for_select(numbers, params[:score_max])
   = f.submit 'Search', class: 'button'
 
   &middot;
