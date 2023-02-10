@@ -145,8 +145,10 @@
             %span.icon.is-small
               %i.mi send
             %span Start
-    
-    - @info[:files].each do |name, files|
+
+    - # order entries by the custom title
+    - @info[:titles].sort{|a,b| a[1] <=> b[1]}.map{|i| i[0]}.each_with_index do |name, idx|
+      - files = @info[:files][name]
       .columns
         .column.is-2.cover
           %figure.image.is2by3= inline_image_tag :'image/webp', @info[:thumbs][name][:base64]
@@ -160,7 +162,7 @@
             = name
           .custom-name
             = text_field_tag :title, @info[:titles][name], id: '',
-              class: 'update-name w100',
+              class: 'update-name w100', tabindex: (1000+idx),
               data: { url: batch_process_path, path: name }
           - if @info[:thumbs][name][:landscape]
             .actions.my-1
