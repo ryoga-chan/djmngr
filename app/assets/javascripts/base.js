@@ -95,12 +95,18 @@ $('body').on('keydown', function (ev) {
 });
 
 // add navbar spinner when clicking navbar links
-$('nav.navbar a[href]:not(.no-spinner), .show-spinner').click(function (ev) {
+var sel_spinner = [
+  '.show-spinner',
+  'nav.navbar a[href]:not(.no-spinner)',
+  'body[data-ctrl="home"][data-action="index"] a:not(.no-spinner)'
+]
+$(sel_spinner.join(', ')).click(function (ev) {
   if (!ev.ctrlKey && !ev.altKey)
     $('nav.navbar').addClass('loading-bg');
 });
-// remove navbar spinner on page load (fix "go back" action)
-$('nav.navbar').removeClass('loading-bg');
+// https://stackoverflow.com/questions/2638292/after-travelling-back-in-firefox-history-javascript-wont-run
+$('nav.navbar').removeClass('loading-bg'); // remove navbar spinner
+window.onunload = function(){};            // disable Firefox's bfcache
 
 // temporarily disable "run external program" button when clicked
 $('body').on('click', '.run-progr', function (ev) {

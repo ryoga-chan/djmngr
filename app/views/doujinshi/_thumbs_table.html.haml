@@ -24,9 +24,11 @@
       %thead
         %tr
           %th ⭐
+          %th.is-hidden-mobile Read
           %th Name
-          %th Pag.
-          %th Size
+          %th.is-hidden-mobile Pag.
+          %th.is-hidden-mobile Size
+          %th.is-hidden-tablet P/S
           %th Fav
       %tbody
         - if doujinshi.is_a?(ActiveRecord::Relation)
