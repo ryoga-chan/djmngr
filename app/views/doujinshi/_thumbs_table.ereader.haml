@@ -1,9 +1,8 @@
 - short_label    = false unless local_assigns.has_key?(:short_label)
 - show_name_orig = false unless local_assigns.has_key?(:show_name_orig)
-- show_perc_read = false unless local_assigns.has_key?(:show_perc_read)
 - show_categ     = false unless local_assigns.has_key?(:show_categ)
 - local_vars     = { short_label: short_label, show_name_orig: show_name_orig,
-                     show_perc_read: show_perc_read, show_categ: show_categ }
+                     show_categ: show_categ }
 
 - unless doujinshi
   %br/
@@ -25,11 +24,10 @@
     %table.doujinshi.is-striped.block-links.w100
       %thead
         %tr
-          %th.w1 Cover
-          %th.w1= show_perc_read ? '%' : '&hearts;'.html_safe
+          %th.w1 Cvr
+          %th.w1
           %th{style: "text-align: left"}= "Name (#{@doujinshi.reselect(:id).count})"
-          %th.w1 Pag.
-          %th.w1 Size
+          %th.w1 P/S
           %th.w1 Fav
       %tbody
         - if doujinshi.is_a?(ActiveRecord::Relation)

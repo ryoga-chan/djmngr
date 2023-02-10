@@ -21,6 +21,13 @@
               %i.mi= icon
           - if d.score
             %span.icon.is-small.score= d.score
+          - if d.read_pages.to_i > 0
+            %span.icon.is-small.read-perc
+              - if d.percent_read.to_i == 100
+                ✅
+              - else
+                = d.percent_read.round
+                %span %
           = link_to image_tag("/thumbs/#{d.id}.webp", title: title, loading: :lazy, decoding: :async),
             doujin_path(d, from_author: params[:author_id], from_circle: params[:circle_id])
         .descr.is-size-7

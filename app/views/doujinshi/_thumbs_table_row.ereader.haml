@@ -1,17 +1,14 @@
 - short_label    = false unless local_assigns.has_key?(:short_label)
 - show_name_orig = false unless local_assigns.has_key?(:show_name_orig)
-- show_perc_read = false unless local_assigns.has_key?(:show_perc_read)
 
 - descr = short_label ? d.label_name_latin : d.file_dl_name(omit_ext: true)
 %tr
-  %td= link_to 'show', '#',
+  %td.acenter= link_to '&#9826;'.html_safe, '#',
     data: { cover: doujin_path(d, format: :jpg)},
     onclick: %Q|jQuery(this).hide().after(jQuery('<img class="thumb">').attr('src', jQuery(this).data('cover'))); return false|
-  %td.aright
-    - if show_perc_read
-      = "#{d.percent_read.round}%" if d.read_pages.to_i > 0
-    - else
-      = "#{d.score.to_i}&hearts;".html_safe if d.score.to_i > 0
+  %td.acenter
+    .score= "#{d.score.to_i}&hearts;".html_safe if d.score.to_i > 0
+    .read-perc= d.percent_read.to_i == 100 ? '&#10003;'.html_safe : "#{d.percent_read.round}%" if d.read_pages.to_i > 0
   %td
     = link_to doujin_path(d) do
       %tt= "#{d.category[0].upcase}:" if show_categ && DoujinshiController::ICONS[d.category]
@@ -20,8 +17,11 @@
       .name-orig= d.name_orig
     - if d.name_orig_kakasi != d.name_orig
       .name-orig-kakasi= d.name_orig_kakasi
-  %td= d.num_images
-  %td= number_to_human_size(d.size, precision: 2).delete ' '
+  %td
+    .pages<>
+      = d.num_images
+      &nbsp;Pg
+    .size= number_to_human_size(d.size, precision: 2)
   %td= link_to '&star;'.html_safe,
     fav_toggle_doujinshi_path(type: :Doujin, id: d.id),
     class: "fav #{'is-favorite' if d.favorite?}"
