@@ -82,6 +82,13 @@ if ($('body').data('action') == 'show') {
 if ($('body').data('action') == 'edit') {
   // add page shortcuts
   $.myapp.shortcuts.push({ key: 's', ctrl: true, alt: false, descr: 'save details', action: function (ev) { $.myapp.show_loading(); $('section.main-content form:first').submit(); } });
+  $.myapp.shortcuts.push({ key: 'l', ctrl: false, alt: false, descr: 'convert all titles to lowercase', action: function (ev) {
+    $.each(
+      ['doujin_name', 'doujin_name_romaji', 'doujin_name_kakasi', 'doujin_name_eng',
+       'doujin_file_name', 'doujin_name_orig'],
+      function () { $('#'+this).val( $('#'+this).val().toLowerCase() ); }
+    );
+  } });
 }// action edit
 // -----------------------------------------------------------------------------
 }); })(jQuery)
