@@ -18,6 +18,9 @@ class DoujinshiController < ApplicationController
     
     params[:tab] = 'author' unless %w{ author circle artbook magazine }.include?(params[:tab])
     
+    # default doujin order (same as Doujin#label_name_latin)
+    dj_sql_name = Arel.sql "LOWER( COALESCE(NULLIF(doujinshi.name_romaji, ''), NULLIF(doujinshi.name_kakasi, '')) )"
+    
     case params[:tab]
       when 'author'
         sql_name = "COALESCE(NULLIF(authors.name_romaji, ''), NULLIF(authors.name_kakasi, ''))"
@@ -31,7 +34,7 @@ class DoujinshiController < ApplicationController
           distinct.select("doujinshi.*").
           joins(:authors).
           where(authors: {id: params[:author_id]}).
-          order(:name_kakasi) if params[:author_id]
+          order(dj_sql_name) if params[:author_id]
       
       when 'circle'
         sql_name = "COALESCE(NULLIF(circles.name_romaji, ''), NULLIF(circles.name_kakasi, ''))"
@@ -43,12 +46,12 @@ class DoujinshiController < ApplicationController
           distinct.select("doujinshi.*").
           joins(:circles).
           where(circles: {id: params[:circle_id]}).
-          order(:name_kakasi) if params[:circle_id]
+          order(dj_sql_name) if params[:circle_id]
       
       when 'artbook', 'magazine'
         rel = Doujin.where(category: params[:tab])
         @parents   = rel.order(:file_folder).distinct.pluck(:file_folder)
-        @doujinshi = rel.where(file_folder: params[:folder]).order(:name_kakasi) if params[:folder]
+        @doujinshi = rel.where(file_folder: params[:folder]).order(dj_sql_name) if params[:folder]
     end
     
     if request.format.ereader?
