@@ -101,13 +101,13 @@ class ProcessBatchJob < ApplicationJob
       info[:score        ] = options[:score] if options[:score]
       info[:reading_direction] = dj.reading_direction
       
-      info[:language         ] = options[:lang] unless options[:lang].nil? # dj.language
-      info[:censored         ] = options[:unc ] unless options[:unc ].nil? # dj.censored
-      info[:colorized        ] = options[:col ] unless options[:col ].nil? # dj.colorized
-      info[:media_type       ] = options[:mt  ] unless options[:mt  ].nil? # dj.media_type
-      info[:overwrite        ] = true if options[:overwrite]
+      info[:language     ] = options[:lang] unless options[:lang].nil? # dj.language
+      info[:censored     ] = options[:unc ] unless options[:unc ].nil? # dj.censored
+      info[:colorized    ] = options[:col ] unless options[:col ].nil? # dj.colorized
+      info[:media_type   ] = options[:mt  ] unless options[:mt  ].nil? # dj.media_type
+      info[:overwrite    ] = true if options[:overwrite]
       
-      info[:dest_filename] = dj_title.to_romaji
+      info[:dest_filename] = "#{dj_title.to_romaji}.zip"
       info[:dest_filename] = options[:dest_filename] if options[:dest_filename]
       info[:dest_filename] = File.basename(fname).sub(/ *\.zip$/i, '.zip') if options[:keep_filename]
       info[:author_ids   ] = dj.author_ids
