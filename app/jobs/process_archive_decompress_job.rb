@@ -9,7 +9,7 @@ class ProcessArchiveDecompressJob < ApplicationJob
     Digest::SHA256.hexdigest "djmngr|#{File.basename fname}|#{File.size fname}"
   end # self.file_hash
   
-  def self.prepare_and_perform(fname, perform_when: :later)
+  def self.prepare_and_perform(fname, perform_when: :later, title: nil)
     raise :invalid_method unless %i[ later now ].include?(perform_when)
     raise :file_not_found unless File.exist?(fname)
     
@@ -27,6 +27,7 @@ class ProcessArchiveDecompressJob < ApplicationJob
           file_path:     fname,
           file_size:     File.size(fname),
           relative_path: Pathname.new(fname).relative_path_from(Setting['dir.to_sort']).to_s,
+          title:         title, # optional title from batch processing
           working_dir:   hash,
           prepared_at:   nil,
         }.to_yaml)
@@ -82,7 +83,8 @@ class ProcessArchiveDecompressJob < ApplicationJob
   def perform(dst_dir)
     info = YAML.unsafe_load_file(File.join dst_dir, 'info.yml')
     
-    fname = File.basename(info[:relative_path].to_s).downcase
+    # parse the title from batch processing or the relative filename
+    fname = info[:title] || File.basename(info[:relative_path].to_s).downcase
 
     # auto associate doujin authors/circles when a 100% match is found
     name = fname.parse_doujin_filename
