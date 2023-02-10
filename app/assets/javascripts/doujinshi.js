@@ -6,7 +6,7 @@ if ($('body').data('ctrl') != 'doujinshi')
 var p_bar = '<progress class="progress is-small is-info" max="100">i</progress>';
 
 // show cover on mouseover
-$('table.dj-details tbody tr').
+$('table.dj-details tbody tr > td.show-thumb').
   mouseenter(function (ev) {
     const tr = $(ev.target).parents('tr:first');
     var pos = tr.offset();

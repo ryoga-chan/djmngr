@@ -22,6 +22,12 @@ body[data-ctrl="doujinshi"] {
       right:  0;
       border-color: darkorange;
     }
+    span.icon.read-perc {
+      bottom: 0;
+      left:  0;
+      border-color: darkblue;
+      span { font-size: x-small; }
+    }
   
     .descr {
       height: 1.1rem;
@@ -40,18 +46,19 @@ body[data-ctrl="doujinshi"] {
       
       td {
         width: 1%;
+        text-align: center;
         white-space: nowrap;
       }
-      td:nth-child(2) {
+      td.name {
         width: auto;
+        text-align: left;
         white-space: normal;
       }
       
       a { display: block; }
     }
     
-    tr td:nth-child(3),
-    tr td:nth-child(4) {
+    tr td.num {
       text-align: right;
       font-family: monospace;
       font-size: small;
