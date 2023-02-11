@@ -45,7 +45,10 @@
       - if @info[:cover_status] != :completed
         = link_to('refresh', {tab: :dupes}, class: :tag)
       - else
-        = link_to('restart', {tab: :dupes, rematch_cover: true}, class: :tag)
+        = link_to('restart', {tab: :dupes, rematch_cover: true}, class: 'tag is-warning')
+
+- if @dupes_deleted.try(:any?)
+  = render partial: '/doujinshi/table_deleted', locals: { doujinshi: @dupes_deleted }
 
 - @dupes.each_slice(2) do |s|
   .columns

@@ -11,7 +11,10 @@ class CreateDeletedDoujinshi < ActiveRecord::Migration[7.0]
       t.integer  :size       , null: false
       t.integer  :num_images , null: false
       t.integer  :num_files  , null: false
-      t.integer  :doujin_id  # ID of the eventual already processed file
+      
+      # data from the eventual already processed file
+      t.integer  :doujin_id
+      t.integer  :cover_phash
 
       t.datetime :created_at
     end

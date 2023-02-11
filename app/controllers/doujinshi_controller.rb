@@ -375,16 +375,24 @@ class DoujinshiController < ApplicationController
     @result = CoverMatchingJob.results params[:hash]
     if @result.is_a?(Hash)       # save completed search results
       File.open(fname, 'w'){|f| f.puts @result.to_yaml }
-    elsif @result == :not_found  # expired job, load last search results
+    elsif @result == :not_found  # job completed, load last search results
       @result = YAML.unsafe_load_file(fname) rescue :not_found
     end
     
     # find doujinshi
-    @doujinshi = @result[:results].map do |id, perc|
-      next unless d = Doujin.find_by(id: id)
-      d.cover_similarity = perc
-      d
-    end if @result.is_a?(Hash)
+    if @result.is_a?(Hash)
+      @doujinshi = @result[:results].map do |id, perc|
+        next unless d = Doujin.find_by(id: id)
+        d.cover_similarity = perc
+        d
+      end
+      
+      @doujinshi_deleted = @result[:results_deleted].map do |id, perc|
+        next unless d = DeletedDoujin.find_by(id: id)
+        d.cover_similarity = perc
+        d
+      end
+    end
 
     file_dl_opts = { type: request.format.to_sym, disposition: :attachment,
                      filename: "search-results.#{request.format.to_sym}" }

@@ -1,4 +1,7 @@
 class DeletedDoujin < ApplicationRecord
+  # attribute used to store cover matching similarity based on hamming distance of pHashes
+  attr_internal_accessor :cover_similarity
+  
   def self.search(terms)
     fname_info    = terms.to_s.strip    .parse_doujin_filename
     tokens_orig   = terms.to_s          .tokenize_doujin_filename.join '%'
