@@ -154,6 +154,12 @@
               %span.icon
                 %i.mi.mi-small send
               %span update
+          - if @info[:landscape_cover]
+            %p.control
+              = link_to({tab: :dupes, rematch_cover: true}, class: 'button is-warning is-rounded') do
+                %span.icon
+                  %i.mi.mi-small image_search
+                %span rematch
           %p.control
             = f.button class: 'button is-success is-rounded', value: :finalize do
               %span.icon

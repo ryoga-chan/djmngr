@@ -226,7 +226,7 @@ class Doujin < ApplicationRecord
   end # rename_file
   
   def save_deletion_data
-    attrs = attributes.slice *%w{ size num_images num_files }
+    attrs = attributes.slice *%w{ size num_images num_files cover_phash }
     fname = file_dl_name omit_ext: true
     
     DeletedDoujin.create attrs.merge({

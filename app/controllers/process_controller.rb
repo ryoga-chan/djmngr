@@ -373,8 +373,10 @@ class ProcessController < ApplicationController
         if @info[:cover_hash].present? && !@info[:cover_results].is_a?(Hash)
           cover_matching = CoverMatchingJob.results @info[:cover_hash]
           if cover_matching.is_a?(Hash)
-            @info[:cover_results] = cover_matching[:results]
-            @info[:cover_status ] = cover_matching[:status]
+            @info[:cover_results        ] = cover_matching[:results        ]
+            @info[:cover_results_deleted] = cover_matching[:results_deleted]
+            @info[:cover_status         ] = cover_matching[:status]
+            @info[:dupes_found] = cover_matching[:results].try(:any?) || cover_matching[:results_deleted].try(:any?)
             File.open(File.join(@dname, 'info.yml'), 'w'){|f| f.puts @info.to_yaml }
           else
             @info[:cover_status] = cover_matching
@@ -382,13 +384,19 @@ class ProcessController < ApplicationController
         end
         # find dupes and set similarity percent
         if @info[:cover_results].is_a?(Hash)
-          @dupes += @info[:cover_results].
-            sort{|a,b| b[1] <=> a[1]}.
-            map{|id, perc|
-              next unless d = Doujin.find_by(id: id)
-              d.cover_similarity = perc
-              d
-            }.compact
+          @dupes += @info[:cover_results].sort{|a,b| b[1] <=> a[1]}.map{|id, perc|
+            next unless d = Doujin.find_by(id: id)
+            d.cover_similarity = perc
+            d
+          }.compact
+        end
+        # find deleted dupes and set similarity percent
+        if @info[:cover_results_deleted].is_a?(Hash)
+          @dupes_deleted = @info[:cover_results_deleted].sort{|a,b| b[1] <=> a[1]}.map{|id, perc|
+            next unless d = DeletedDoujin.find_by(id: id)
+            d.cover_similarity = perc
+            d
+          }.compact
         end
         
         # search dupes by filename

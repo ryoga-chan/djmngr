@@ -46,13 +46,8 @@ class CoverMatchingJob < ApplicationJob
   def self.rm_results_file(image_hash)
     FileUtils.rm_f File.join(Setting['dir.sorting'], "#{image_hash}.yml").to_s
   end # self.rm_results_file
-
-  # read image data from temp file and do a matching against all saved doujinshi
-  # by computing hamming distance between pHashes
-  def perform(image_hash, max_distance: 13)
-    fname = File.join(Setting['dir.sorting'], "#{image_hash}.yml").to_s
-    info  = YAML.unsafe_load_file fname
-    
+  
+  def self.find(model, phash, max_distance: 13)
     # https://stackoverflow.com/questions/2281580/is-there-any-way-to-convert-an-integer-3-in-decimal-form-to-its-binary-equival/2310694#2310694
     # https://stackoverflow.com/questions/49601249/string-to-binary-and-back-using-pure-sqlite
     # GENERATE TERMS: puts (0..63).map{|i| "(x>>#{i.to_s.rjust 2}&1)" }.each_slice(5).map{|s| s.join(' + ') }.join(" +\n")
@@ -76,9 +71,9 @@ class CoverMatchingJob < ApplicationJob
       FROM (
         SELECT id, (~(a&b))&(a|b) AS x FROM ( -- a XOR b
           SELECT id
-               , 0x#{image_hash} AS a
+               , 0x#{phash} AS a
                , cover_phash     AS b
-          FROM doujinshi
+          FROM #{model.table_name}
         )
       )
       WHERE hamming_distance < #{max_distance.to_i} -- 13 = less than ~20% different bits
@@ -86,12 +81,24 @@ class CoverMatchingJob < ApplicationJob
       LIMIT 10
     SQL
     
+    model.
+      find_by_sql(query).
+      inject({}){|h, d| h.merge d.id => ((1 - d.hamming_distance.to_f / 64) * 100).round }
+  end # self.find_by_distance
+
+  # read image data from temp file and do a matching against all saved doujinshi
+  # by computing hamming distance between pHashes
+  def perform(image_hash, max_distance: 13)
+    fname = File.join(Setting['dir.sorting'], "#{image_hash}.yml").to_s
+    info  = YAML.unsafe_load_file fname
+    
     # write results
     info.merge! \
-      status:      :completed,
-      finished_at: Time.now,
-      results:     Doujin.find_by_sql(query).
-        inject({}){|h, d| h.merge d.id => ((1 - d.hamming_distance.to_f / 64) * 100).round }
+      status:          :completed,
+      finished_at:     Time.now,
+      results:         CoverMatchingJob.find(Doujin       , image_hash, max_distance: max_distance),
+      results_deleted: CoverMatchingJob.find(DeletedDoujin, image_hash, max_distance: max_distance)
+    
     File.atomic_write(fname){|f| f.puts info.to_yaml }
   end # perform
 end

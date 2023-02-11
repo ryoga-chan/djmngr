@@ -18,9 +18,12 @@ $('table.dj-details tbody tr > td.show-thumb').
     $('#sample_cover').addClass('is-hidden').removeAttr('src');
   });
 
+// add page shortcut to toggle table/thumbs results
+if ($('a.bt-thumbs').length > 0)
+  $.myapp.shortcuts.push({ key: 't', ctrl: false, alt: false, descr: 'toggle thumbnails', action: function (ev) { var bt=$('a.bt-thumbs').get(0); if (bt) { $.myapp.show_loading(); bt.click(); } } });
+
 if ($('body').data('action') == 'index') {
   // add page shortcuts
-  $.myapp.shortcuts.push({ key: 't', ctrl: false, alt: false, descr: 'toggle thumbnails', action: function (ev) { var bt=$('a.bt-thumbs').get(0); if (bt) { $.myapp.show_loading(); bt.click(); } } });
   $.myapp.shortcuts.push({ key: 'a', ctrl: false, alt: true, descr: 'show authors', action: function (ev) { $.myapp.show_loading(); $('.tabs a[title="authors"]').get(0).click(); } });
   $.myapp.shortcuts.push({ key: 'c', ctrl: false, alt: true, descr: 'show circles', action: function (ev) { $.myapp.show_loading(); $('.tabs a[title="circles"]').get(0).click(); } });
   $.myapp.shortcuts.push({ key: 'b', ctrl: false, alt: true, descr: 'show artbooks', action: function (ev) { $.myapp.show_loading(); $('.tabs a[title="artbooks"]').get(0).click(); } });
