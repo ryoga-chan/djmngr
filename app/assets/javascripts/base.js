@@ -15,8 +15,9 @@ $.myapp = {
   },//nsfw_mode_toggle
   
   show_loading: function () {
-    $('section.main-content > *').hide();
-    $('section.main-content').prepend('<progress class="progress is-primary" max="100">loading...</progress>');
+    //$('section.main-content > *').hide();
+    //$('section.main-content').prepend('<progress class="progress is-primary" max="100">loading...</progress>');
+    $('nav.navbar').addClass('loading-bg');
   },// show_loading
   
   show_generic_modal: function (title, content) {
@@ -102,7 +103,7 @@ var sel_spinner = [
 ]
 $(sel_spinner.join(', ')).click(function (ev) {
   if (!ev.ctrlKey && !ev.altKey)
-    $('nav.navbar').addClass('loading-bg');
+    $.myapp.show_loading();
 });
 // https://stackoverflow.com/questions/2638292/after-travelling-back-in-firefox-history-javascript-wont-run
 $('nav.navbar').removeClass('loading-bg'); // remove navbar spinner
