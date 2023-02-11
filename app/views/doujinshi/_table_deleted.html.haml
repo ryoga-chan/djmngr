@@ -1,0 +1,25 @@
+%table.table.is-striped.is-narrow.is-fullwidth
+  %thead
+    %tr
+      %th.w1 ID
+      %th Deleted name
+      %th.w1.is-hidden-mobile Pag.
+      %th.w1.is-hidden-mobile Size
+      %th.w1.is-hidden-tablet P/S
+  %tbody
+    - doujinshi.each do |d|
+      %tr
+        %td= d.id
+        %td.name
+          - if d.cover_similarity.present?
+            %span.tag.is-warning.is-rounded= "#{'%2d' % d.cover_similarity}%"
+          %span{title: (d.name_kakasi if d.name_kakasi != d.name)}= d.name
+          - if d.name != d.alt_name
+            .name-orig.is-size-7{title: (d.alt_name_kakasi if d.alt_name_kakasi != d.alt_name)}= d.alt_name
+        %td.num.is-hidden-mobile= "#{d.num_images}P"
+        %td.num.is-hidden-mobile= number_to_human_size(d.size, precision: 2).delete ' '
+        %td.num.is-hidden-tablet
+          .pages<>
+            = d.num_images
+            &nbsp;Pg
+          .size= number_to_human_size(d.size, precision: 2)
