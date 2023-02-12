@@ -201,13 +201,15 @@ class ProcessController < ApplicationController
     @info = YAML.unsafe_load_file(File.join @dname, 'info.yml')
     if params[:archive_too] == 'true'
       # track deletion unless stored in collection
-      DeletedDoujin.create({
-        name:             @info[:relative_path],
-        name_kakasi:      @info[:relative_path].to_romaji,
-        size:             @info[:file_size],
-        num_images:       @info[:images].to_a.size,
-        num_files:        @info[:files ].to_a.size,
-      }) unless @info[:db_doujin_id].present?
+      unless @info[:db_doujin_id].present?
+        d = DeletedDoujin.create! \
+          name:             @info[:relative_path],
+          name_kakasi:      @info[:relative_path].to_romaji,
+          size:             @info[:file_size],
+          num_images:       @info[:images].to_a.size,
+          num_files:        @info[:files ].to_a.size
+        d.cover_fingerprint! @info[:cover_hash]
+      end
       # remove file on disk
       File.unlink @info[:file_path]
       # update filelist

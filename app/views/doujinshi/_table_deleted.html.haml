@@ -9,13 +9,13 @@
   %tbody
     - doujinshi.each do |d|
       %tr
-        %td= d.id
+        %td= d.doujin_id ? "Dj##{d.doujin_id}" : "Del##{d.id}"
         %td.name
           - if d.cover_similarity.present?
             %span.tag.is-warning.is-rounded= "#{'%2d' % d.cover_similarity}%"
-          %span{title: (d.name_kakasi if d.name_kakasi != d.name)}= d.name
+          %span.has-text-strikethrough.has-text-info{title: (d.name_kakasi if d.name_kakasi != d.name)}= d.name
           - if d.name != d.alt_name
-            .name-orig.is-size-7{title: (d.alt_name_kakasi if d.alt_name_kakasi != d.alt_name)}= d.alt_name
+            .name-orig.has-text-strikethrough.is-size-7{title: (d.alt_name_kakasi if d.alt_name_kakasi != d.alt_name)}= d.alt_name
         %td.num.is-hidden-mobile= "#{d.num_images}P"
         %td.num.is-hidden-mobile= number_to_human_size(d.size, precision: 2).delete ' '
         %td.num.is-hidden-tablet
