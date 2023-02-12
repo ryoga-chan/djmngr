@@ -193,9 +193,11 @@ class Doujin < ApplicationRecord
   def cover_fingerprint = Kernel.suppress_output{ '%016x' % Phashion::Image.new(thumb_disk_path).fingerprint }
   
   def cover_fingerprint!
-    f = cover_fingerprint
-    self.class.connection.execute %Q|UPDATE doujinshi SET cover_phash = 0x#{f} WHERE id = #{id}|
-    f
+    raise :record_not_persisted unless persisted?
+    fp = cover_fingerprint
+    self.class.connection.execute \
+      %Q|UPDATE #{self.class.table_name} SET cover_phash = 0x#{fp} WHERE id = #{id}|
+    fp
   end # cover_fingerprint!
   
   # next page numer for `/doujinshi/ID/read` action
@@ -226,8 +228,8 @@ class Doujin < ApplicationRecord
   end # rename_file
   
   def save_deletion_data
-    attrs = attributes.slice *%w{ size num_images num_files cover_phash }
     fname = file_dl_name omit_ext: true
+    attrs = attributes.slice *%w{ size num_images num_files cover_phash }
     
     DeletedDoujin.create attrs.merge({
       doujin_id:        id,

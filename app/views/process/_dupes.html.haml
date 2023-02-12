@@ -30,9 +30,9 @@
       .columns.mt-3
         .column
           .tags.has-addons
-            %span.tag.is-info= "this file: #{@cur_info}"
+            %span.tag.is-info= @cur_info
             - if @dupes.any?
-              %span.tag.is-danger= "#{@dupes.size} potential duplicate/s found in collection"
+              %span.tag.is-danger= "#{@dupes.size} potential duplicate/s found"
             - else
               %span.tag.is-success= "NO duplicates found in collection"
         
@@ -47,8 +47,24 @@
       - else
         = link_to('restart', {tab: :dupes, rematch_cover: true}, class: 'tag is-warning')
 
-- if @dupes_deleted.try(:any?)
-  = render partial: '/doujinshi/table_deleted', locals: { doujinshi: @dupes_deleted }
+- @dupes_deleted.each_slice(2) do |s|
+  .columns
+    - s.each do |d|
+      .column.is-2.has-text-centered.is-hidden-mobile
+        %span.icon.is-large
+          %i.mi.mi-large hide_image
+      .column
+        .info
+          .tags.has-addons
+            %span.tag.is-info= "#{d.num_images} pics/#{number_to_human_size d.size}"
+            - if d.cover_similarity
+              %span.tag.is-warning= "#{'%2d' % d.cover_similarity}% cover similarity"
+        .now.has-text-strikethrough.has-text-info(title="collection path" style="border-bottom: 1px solid silver")
+          = d.doujin_id ? "Doujin##{d.doujin_id} @ #{d.name}" : "Deleted##{d.id} @ #{d.name}"
+        .was.has-text-strikethrough(title="alt name")= d.alt_name.present? ? d.alt_name : '--'
+
+- if @dupes_deleted.try(:any?) && @dupes.any?
+  %hr
 
 - @dupes.each_slice(2) do |s|
   .columns
