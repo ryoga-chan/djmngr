@@ -20,7 +20,7 @@
       - if @result[:landscape]
         %span.tag.is-danger.is-light.mt-2 landscape image
     .column
-      - if @doujinshi_deleted
+      - if @doujinshi_deleted.try(:any?)
         = render partial: 'table_deleted', locals: { doujinshi: @doujinshi_deleted }
       
       - if @doujinshi
