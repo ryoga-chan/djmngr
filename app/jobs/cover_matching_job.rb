@@ -47,6 +47,7 @@ class CoverMatchingJob < ApplicationJob
     FileUtils.rm_f File.join(Setting['dir.sorting'], "#{image_hash}.yml").to_s
   end # self.rm_results_file
   
+  # max_distance = 13 --> less than ~20% different bits
   def self.find(model, phash, max_distance: 13)
     # https://stackoverflow.com/questions/2281580/is-there-any-way-to-convert-an-integer-3-in-decimal-form-to-its-binary-equival/2310694#2310694
     # https://stackoverflow.com/questions/49601249/string-to-binary-and-back-using-pure-sqlite
@@ -69,14 +70,17 @@ class CoverMatchingJob < ApplicationJob
           (x>>55&1) + (x>>56&1) + (x>>57&1) + (x>>58&1) + (x>>59&1) +
           (x>>60&1) + (x>>61&1) + (x>>62&1) + (x>>63&1) AS hamming_distance
       FROM (
-        SELECT id, (~(a&b))&(a|b) AS x FROM ( -- a XOR b
+        SELECT id
+             , (~(a&b))&(a|b) AS x  -- x = a XOR b
+        FROM (
           SELECT id
-               , 0x#{phash} AS a
-               , cover_phash     AS b
+               , 0x#{phash}   AS a
+               , cover_phash  AS b
           FROM #{model.table_name}
+          WHERE cover_phash IS NOT NULL
         )
       )
-      WHERE hamming_distance < #{max_distance.to_i} -- 13 = less than ~20% different bits
+      WHERE hamming_distance < #{max_distance.to_i}
       ORDER BY hamming_distance DESC
       LIMIT 10
     SQL
