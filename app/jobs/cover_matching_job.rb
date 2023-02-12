@@ -2,8 +2,7 @@ class CoverMatchingJob < ApplicationJob
   queue_as :search
 
   # return the image's hash for `perform`
-  def self.hash_image(image_path)
-    image_data = File.read image_path
+  def self.hash_image_buffer(image_data)
     fkey  = Digest::MD5.hexdigest image_data
     
     # resize image to a temporary thumbnail
@@ -17,18 +16,22 @@ class CoverMatchingJob < ApplicationJob
     phash = Kernel.suppress_output{ '%016x' % Phashion::Image.new(fname).fingerprint }
     FileUtils.rm_f fname # remove temp image
     
+    { phash: phash, landscape: thumb[:landscape],
+      image: Base64.encode64(thumb[:buffer]).chomp }
+  end # self.hash_image_buffer
+  
+  def self.hash_image(image_path)
+    result = hash_image_buffer File.read(image_path)
+    
     # create metadata + embedded image
-    File.atomic_write(File.join(Setting['dir.sorting'], "#{phash}.yml").to_s) do |f|
-      f.puts({
-        phash:      phash,
+    File.atomic_write(File.join(Setting['dir.sorting'], "#{result[:phash]}.yml").to_s) do |f|
+      f.puts(result.merge({
         status:     :comparing,
         started_at: Time.now,
-        landscape:  thumb[:landscape],
-        image:      Base64.encode64(thumb[:buffer]).chomp,
-      }.to_yaml)
+      }).to_yaml)
     end
     
-    phash
+    result[:phash]
   end # self.hash_image
   
   # return final results and delete temp file after matching completed
@@ -81,14 +84,14 @@ class CoverMatchingJob < ApplicationJob
         )
       )
       WHERE hamming_distance < #{max_distance.to_i}
-      ORDER BY hamming_distance DESC
+      ORDER BY hamming_distance
       LIMIT 10
     SQL
     
     model.
       find_by_sql(query).
       inject({}){|h, d| h.merge d.id => ((1 - d.hamming_distance.to_f / 64) * 100).round }
-  end # self.find_by_distance
+  end # self.find
 
   # read image data from temp file and do a matching against all saved doujinshi
   # by computing hamming distance between pHashes

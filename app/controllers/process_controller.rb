@@ -173,22 +173,32 @@ class ProcessController < ApplicationController
   end # batch
   
   def delete_archive
+    cover_hash = nil
+  
     # count images and other files
     file_counters = {num_images: 0, num_files: 0}
     Zip::File.open(@fname) do |zip|
-      zip.entries.each do |e|
+      zip.entries.sort{|a,b| a.name <=> b.name }.each do |e|
         next unless e.file?
-        file_counters[e.name =~ RE_IMAGE_EXT ? :num_images : :num_files] += 1
+        
+        # generate phash for the first image file
+        if cover_hash.nil? && is_image = (e.name =~ RE_IMAGE_EXT)
+          cover_hash = CoverMatchingJob.
+            hash_image_buffer(e.get_input_stream.read)[:phash]
+        end
+        
+        file_counters[is_image ? :num_images : :num_files] += 1
       end
     end
     
     # track deletion
     name = params[:path].tr(File::SEPARATOR, ' ')
-    DeletedDoujin.create file_counters.merge({
+    d = DeletedDoujin.create! file_counters.merge({
       name:             name,
       name_kakasi:      name.to_romaji,
       size:             File.size(@fname),
     })
+    d.cover_fingerprint! cover_hash if cover_hash.present?
     
     # remove file from disk and DB
     File.unlink @fname
