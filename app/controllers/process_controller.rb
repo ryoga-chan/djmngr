@@ -378,7 +378,7 @@ class ProcessController < ApplicationController
           CoverMatchingJob.perform_now @info[:cover_hash]
         end
         
-        @dupes = []
+        @dupes, @dupes_deleted = [], []
       
         # search dupes by cover similarity
         # check matching status/results
@@ -404,7 +404,7 @@ class ProcessController < ApplicationController
         end
         # find deleted dupes and set similarity percent
         if @info[:cover_results_deleted].is_a?(Hash)
-          @dupes_deleted = @info[:cover_results_deleted].sort{|a,b| b[1] <=> a[1]}.map{|id, perc|
+          @dupes_deleted += @info[:cover_results_deleted].sort{|a,b| b[1] <=> a[1]}.map{|id, perc|
             next unless d = DeletedDoujin.find_by(id: id)
             d.cover_similarity = perc
             d
