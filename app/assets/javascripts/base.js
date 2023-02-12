@@ -14,11 +14,15 @@ $.myapp = {
     $.myapp.nsfw_mode_setup();
   },//nsfw_mode_toggle
   
-  show_loading: function () {
-    //$('section.main-content > *').hide();
-    //$('section.main-content').prepend('<progress class="progress is-primary" max="100">loading...</progress>');
-    $('nav.navbar').addClass('loading-bg');
-  },// show_loading
+  show_loading: function () { $('nav.navbar').addClass('loading-bg');    },// show_loading
+  
+  hide_loading: function () {
+    $('nav.navbar').removeClass('loading-bg');
+    
+    // disable Firefox's bfcache (fix "go back in history" and JS not running)
+    // https://stackoverflow.com/questions/2638292/after-travelling-back-in-firefox-history-javascript-wont-run
+    window.onunload = function(){};
+  },// hide_loading
   
   show_generic_modal: function (title, content) {
     $('#generic-modal').addClass('is-active').
@@ -95,19 +99,15 @@ $('body').on('keydown', function (ev) {
   });
 });
 
-// add navbar spinner when clicking navbar links
-var sel_spinner = [
-  '.show-spinner',
-  'nav.navbar a[href]:not(.no-spinner)',
-  'body[data-ctrl="home"][data-action="index"] a:not(.no-spinner)'
-]
-$(sel_spinner.join(', ')).click(function (ev) {
+// add spinner to navbar when clicking internal links
+$('a[href]:not([target="_blank"]):not(.no-spinner)').click(function (ev) {
   if (!ev.ctrlKey && !ev.altKey)
     $.myapp.show_loading();
 });
-// https://stackoverflow.com/questions/2638292/after-travelling-back-in-firefox-history-javascript-wont-run
-$('nav.navbar').removeClass('loading-bg'); // remove navbar spinner
-window.onunload = function(){};            // disable Firefox's bfcache
+// add spinner to navbar when submitting forms
+$('form').submit(function (ev) { $.myapp.show_loading(); });
+// onload page remove navbar spinner if present
+$.myapp.hide_loading();
 
 // temporarily disable "run external program" button when clicked
 $('body').on('click', '.run-progr', function (ev) {
