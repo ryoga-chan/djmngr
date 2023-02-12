@@ -63,7 +63,7 @@
           = d.doujin_id ? "Doujin##{d.doujin_id} @ #{d.name}" : "Deleted##{d.id} @ #{d.name}"
         .was.has-text-strikethrough(title="alt name")= d.alt_name.present? ? d.alt_name : '--'
 
-- if @dupes_deleted.try(:any?) && @dupes.any?
+- if @dupes_deleted.any? && @dupes.any?
   %hr
 
 - @dupes.each_slice(2) do |s|
