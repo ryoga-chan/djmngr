@@ -94,7 +94,7 @@ class ProcessController < ApplicationController
         File.atomic_write(info_path){|f| f.puts @info.to_yaml }
         return redirect_to(batch_process_path(id: params[:id]), notice: "batch processing halted")
       elsif params[:remove].present?
-        @info[:files].delete params[:remove]
+        %i{ files thumbs titles }.each{|k| @info[k].delete params[:remove] }
         File.atomic_write(info_path){|f| f.puts @info.to_yaml }
         return redirect_to(batch_process_path(id: params[:id]), notice: "entry removed: [#{params[:remove]}]")
       else
