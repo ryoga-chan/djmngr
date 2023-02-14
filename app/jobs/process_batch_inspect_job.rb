@@ -8,7 +8,7 @@ class ProcessBatchInspectJob < ApplicationJob
     info[:thumbs] = {}
     info[:titles] = {}
     info[:files].keys.each do |name|
-      info[:titles][name] = name.sub(/ *\.zip$/i, '')
+      info[:titles][name] = File.basename(name).sub(/ *\.zip$/i, '')
       
       file_path = File.join Setting['dir.to_sort'], name
 
