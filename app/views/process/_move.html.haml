@@ -7,7 +7,6 @@
       .name_orig.mb-1
         %span.icon.in-text-small.mr-2
           %i.mi.mi-small(title="original filename") photo_filter
-        %span= render partial: 'file_actions', locals: {fname: @info[:relative_path]}
         = @fname
 
       - if @fname != @fname.to_romaji
@@ -25,6 +24,8 @@
             = "#{@info[:doujin_dest_type]} #{@info[:file_type]}"
           - else
             = @info[:file_type]
+        
+        %span.mr-4= render partial: 'file_actions', locals: {fname: @info[:relative_path]}
         
         = links_to_search_engines @info[:relative_path].tokenize_doujin_filename.join(' '), target: :_blank
       
@@ -63,7 +64,7 @@
           %i.mi.mi-small(title="quality score") favorite
         %span.scoring
           - (1..10).each do |i|
-            %span.icon.is-medium.in-text.set-score{data: {score: i},
+            %span.icon.is-medium.in-text.set-score.mr-4.mb-5{data: {score: i},
               class: (i <= @info[:score].to_i ? 'has-text-warning' : ''), title: i}
               %i.mi.mi-medium= i <= @info[:score].to_i ? :star_rate : :star_outline
               %span= i
@@ -73,20 +74,24 @@
       .subfolder.mb-1
         %span.icon.in-text-small.mr-2
           %i.mi.mi-small(title="destination subfolder") create_new_folder
-        %span.select.vmiddle= f.select :sel_subfolder,
-          options_for_select(@subfolders, @info[:subfolder]), {},
-          class: "input is-small vmiddle", style: 'width: 15rem',
-          onchange: %Q| $('#subfolder').val($(this).val() == '-custom name-' ? '' : $(this).val()) |
+        - if @subfolders.many?
+          %span.select.vmiddle= f.select :sel_subfolder,
+            options_for_select(@subfolders, @info[:subfolder]), {},
+            class: "input is-small vmiddle", style: 'width: 15rem',
+            onchange: %Q| $('#subfolder').val($(this).val() == '-custom name-' ? '' : $(this).val()) |
+          %br.is-hidden-tablet
+          %span.icon.in-text-small.mr-2.is-hidden-tablet
+            %i.mi.mi-small(title="spacer") subdirectory_arrow_right
         = f.text_field :subfolder, value: @info[:subfolder], placeholder: 'destination subfolder',
           class: 'input is-small', style: 'width: 15rem'
-        = link_to '#', class: 'button is-small', onclick: %Q|$('#subfolder').val(''); return false| do
+        = link_to '#', class: 'button is-small', onclick: %Q|$('#subfolder').val(''); $('#sel_subfolder').val('-custom name-'); return false| do
           %span.icon
             %i.mi.mi-small(title="clear subfolder") clear
         = link_to '#', class: 'button is-small ml-1', onclick: %Q|$.myapp.titles_to_lowercase(); return false| do
           %span.icon
             %i.mi.mi-small(title="convert all titles to downcase") text_rotate_vertical
 
-      .dest-titlename.mb-1
+      .dest-titlename.nowrap.mb-1
         %span.icon.in-text-small.mr-2(onclick="$('#dest_filename').val( $('#dest_title').val()+'.zip' )")
           %i.mi.mi-small(title="destination title kanji/original") raw_on
         = f.text_field :dest_title, value: @info[:dest_title],
@@ -98,21 +103,21 @@
           %span.icon
             %i.mi.mi-small(title="restore initial value") restore
       
-      .dest-titlename.mb-1
+      .dest-titlename.nowrap.mb-1
         %span.icon.in-text-small.mr-2(onclick="$('#dest_filename').val( $('#dest_title_romaji').val()+'.zip' )")
           %i.mi.mi-small(title="destination title romaji/translitterated") title
         = f.text_field :dest_title_romaji, value: @info[:dest_title_romaji],
           placeholder: 'dest. title romaji/translitterated',
           class: 'input is-small', style: 'width: 30.25rem'
       
-      .dest-titlename.mb-1
+      .dest-titlename.nowrap.mb-1
         %span.icon.in-text-small.mr-2(onclick="$('#dest_filename').val( $('#dest_title_eng').val()+'.zip' )")
           %i.mi.mi-small(title="destination title english/translated") translate
         = f.text_field :dest_title_eng, value: @info[:dest_title_eng],
           placeholder: 'dest. title english/translated',
           class: 'input is-small', style: 'width: 30.25rem'
       
-      .dest-filename.mb-1
+      .dest-filename.nowrap.mb-1
         %span.icon.in-text-small.mr-2
           %i.mi.mi-small(title="destination filename") insert_drive_file
         = f.text_field :dest_filename, value: @info[:dest_filename],
@@ -173,10 +178,10 @@
     .column.has-text-centered
       - html_cover = capture do
         - if @info[:landscape_cover] && @info[:landscape_cover_method] != :none
-          %figure.image.is2by3
+          %figure.image.is2by3.mb-2
             = link_to show_image_process_path(id: @info[:working_dir], path: @info[:images].first[:src_path]), target: :_blank do
               = thumbnail_tag ProcessArchiveDecompressJob.cover_path(@dname, @info), title: 'cropped cover'
-          .control.has-icons-left
+          .control.has-icons-left.mb-2
             - crop_methods = ProcessArchiveDecompressJob::CROP_METHODS.map{|m| ["crop #{m}", m] }
             - crop_methods += (1..99).map{|p| ["crop @ #{p}%", p] }
             .select.w100= f.select :cover_crop_method,
@@ -184,13 +189,13 @@
               class: 'w100', onchange: %Q| this.form.submit() |
             .icon.is-small.is-left
               %i.mi(title="crop landscape cover") crop
-          .control.is-hidden-mobile
+          %span.control.is-hidden-mobile
             = link_to edit_cover_process_path(run: :image_editor, format: :json), remote: true, data: {spin_time: 15},
               class: "button run-progr is-small is-rounded", target: :_blank do
               %span.icon.is-small
                 %i.mi add_photo_alternate
               %span duplicate & edit
-          .control.is-hidden-mobile
+          %span.control.is-hidden-mobile
             = link_to edit_cover_process_path(tab: params[:tab]),
               class: "button run-progr is-small is-rounded" do
               %span.icon.is-small
@@ -218,4 +223,5 @@
             %span.tag.is-info.mb-1= @collision_info[:collection]
             %figure.image.is2by3.coll_cover= image_tag doujin_path(id: @collision_info[:doujin].try(:id).to_i, format: :webp), title: "collision cover"
       - else
+        .tag.is-info.mb-2= @cur_info
         = html_cover

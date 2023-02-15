@@ -29,13 +29,18 @@ module ApplicationHelper
     link_to label, "https://sukebei.nyaa.si/?#{ { q: term }.to_query }", html_options.merge(target: :_blank)
   end # link_to_sukebei_search
   
+  def link_to_mangaupdates_search(label, term, html_options = {})
+    link_to label, "https://www.mangaupdates.com/authors.html?#{ { search: term }.to_query }", html_options.merge(target: :_blank)
+  end # link_to_mangaupdates_search
+  
   def links_to_search_engines(term, html_options = {})
     [
-      link_to_exhentai_search(    :XEH, term, html_options.merge(title: 'search on Ex-Hentai'   )),
-      link_to_ehentai_search(     :GEH, term, html_options.merge(title: 'search on E-Hentai'    )),
-      link_to_panda_chaika_search(:PND, term, html_options.merge(title: 'search on Panda.chaika')),
-      link_to_nhentai_search(     :NH , term, html_options.merge(title: 'search on N-Hentai'    )),
-      link_to_sukebei_search(     :SUK, term, html_options.merge(title: 'search on Sukebei.nyaa')),
-    ].join(' | ').html_safe
+      link_to_exhentai_search(    :XH, term, html_options.merge(title: 'search on Ex-Hentai'   )),
+      link_to_ehentai_search(     :EH, term, html_options.merge(title: 'search on E-Hentai'    )),
+      link_to_panda_chaika_search(:PD, term, html_options.merge(title: 'search on Panda.chaika')),
+      link_to_nhentai_search(     :NH, term, html_options.merge(title: 'search on N-Hentai'    )),
+      link_to_sukebei_search(     :SK, term, html_options.merge(title: 'search on Sukebei.nyaa')),
+      link_to_mangaupdates_search(:MU, term, html_options.merge(title: 'search on MangaUpdates')),
+    ].compact.join(' | ').html_safe
   end # links_to_search_engines
 end

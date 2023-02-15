@@ -366,6 +366,13 @@ class ProcessController < ApplicationController
     # run cover image hash matching for the first time
     params[:rematch_cover] = true if @info[:cover_hash].blank?
     
+    if %w{ dupes move }.include?(params[:tab])
+      # current file stats
+      f_size = helpers.number_to_human_size File.size(@info[:file_path])
+      f_imgs = @info[:images].size
+      @cur_info = "#{f_imgs} pics/#{f_size}"
+    end
+    
     case params[:tab]
       when 'dupes'
         # refresh cover matching results
@@ -418,11 +425,6 @@ class ProcessController < ApplicationController
           where("name_orig LIKE ?", "%#{params[:dupe_search].tr ' ', '%'}%").
           where.not(id: @dupes.map(&:id)).
           order(:name_orig).limit(10).to_a
-        
-        # current file stats
-        f_size = helpers.number_to_human_size File.size(@info[:file_path])
-        f_imgs = @info[:images].size
-        @cur_info = "#{f_imgs} pics/#{f_size}"
       
       when 'ident'
         # list possible dest folders
