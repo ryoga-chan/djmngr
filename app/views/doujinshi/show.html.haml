@@ -123,7 +123,11 @@
 
       %tr
         %th Orig.
-        %td= @doujin.name_orig
+        %td
+          .columns
+            .column= @doujin.name_orig
+            .column.is-3.has-text-left
+              .nowrap= links_to_search_engines @doujin.name_orig.tokenize_doujin_filename.join(' '), target: :_blank
       
       %tr
         %th Shelf

@@ -1,3 +1,12 @@
+- bt_top = capture do
+  %a.button.is-small(href="#page-top")
+    %span.icon.is-small
+      %i.mi vertical_align_top
+- bt_bottom = capture do
+  %a.button.is-small(href="#page-bottom")
+    %span.icon.is-small
+      %i.mi vertical_align_bottom
+
 = form_with url: rename_images_process_path(id: @info[:working_dir]), method: :post do |f|
   = hidden_field_tag :tab, params[:tab]
     
@@ -47,7 +56,7 @@
     %tbody
       - if @info[:files].any?
         %tr.has-background-info
-          %th.pl-5(colspan="4")
+          %th.pl-5(colspan=5)
             .files-info
               = "&mdash; #{@info[:files].size} Files &mdash;".html_safe
               - if @info[:files_collision]
@@ -67,7 +76,9 @@
               onclick: %Q|jQuery('#filenames tr.files :checkbox').prop('checked', true); return false| do
               %span.icon.is-small
                 %i.mi select_all
-          %th Dest
+          %th(colspan=2)
+            Dest
+            %span.ml-5= bt_bottom
         - @info[:files].each do |f|
           %tr.files
             %td= link_to('🗑', delete_archive_files_process_path(id: @info[:working_dir], path: f[:src_path], tab: params[:tab]),
@@ -79,9 +90,17 @@
               = text_field_tag :file_name, f[:dst_path], id: '', size: 10,
                 data: { url: rename_file_process_path, path: f[:src_path] }
               .src-fname= f[:src_path]
+            %td.nowrap
+              = bt_top
+              = bt_bottom
+        %tr.files
+          %td(colspan=3)
+          %td(colspan=2)
+            End
+            %span.ml-5= bt_top
       
       %tr.has-background-info
-        %th.pl-5(colspan="4")
+        %th.pl-5(colspan=5)
           .files-info
             = "&mdash; #{@info[:images].size} Images &mdash;".html_safe
             - if @info[:images_collision]
@@ -101,7 +120,9 @@
             onclick: %Q|jQuery('#filenames tr.images :checkbox').prop('checked', true); return false| do
             %span.icon.is-small
               %i.mi select_all
-        %th Dest
+        %th(colspan=2)
+          Dest
+          %span.ml-5= bt_bottom
       - @info[:images].each do |img|
         %tr.images
           %td= link_to('🗑', delete_archive_files_process_path(id: @info[:working_dir], path: img[:src_path], tab: params[:tab]),
@@ -116,3 +137,11 @@
             .src-fname= link_to img[:src_path],
               show_image_process_path(id: @info[:working_dir], path: img[:src_path]),
               target: :_blank
+          %td.nowrap
+            = bt_top
+            = bt_bottom
+      %tr.images
+        %td(colspan=3)
+        %td(colspan=2)
+          End
+          %span.ml-5= bt_top
