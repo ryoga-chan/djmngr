@@ -26,8 +26,9 @@
     %a(name="page-top")
 
     .title
-      Archive processing started at
-      %span.is-1= @info[:prepared_at].strftime '%F %H:%M'
+      Archive processing
+      %br.is-hidden-tablet
+      %span.is-size-5= @info[:prepared_at].strftime '@ %F %H:%M'
     .subtitle= @info[:relative_path]
     
     .tabs.is-boxed
