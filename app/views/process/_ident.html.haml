@@ -6,9 +6,8 @@
     %span.select.vmiddle= f.select :file_type,
       options_for_select(%w{doujin magazine artbook}, @info[:file_type]), {},
       class: "input is-small", style: 'width: 15rem', onchange: "this.form.submit()"
-    %span.ml-4
-      %br.is-hidden-tablet
-      = links_to_search_engines @info[:relative_path].tokenize_doujin_filename.join(' '), target: :_blank
+    %br.is-hidden-tablet
+    %span.ml-6= links_to_search_engines @info[:relative_path].tokenize_doujin_filename.join(' '), target: :_blank
 
 = render partial: "ident_#{@info[:file_type]}"
 = render partial: 'ident_assoc'

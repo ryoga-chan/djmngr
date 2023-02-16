@@ -17,7 +17,7 @@
         %span.icon.in-text-small.mr-2
           %i.mi.mi-small(title="terms for catalog search") search
         = f.text_field :dupe_search, value: @info[:dupe_search], placeholder: 'search terms in sequence',
-          class: 'input is-small', style: 'width: 40rem',
+          class: 'input is-small', style: 'width: 18rem',
           data: { orig_name: @info[:relative_path].tokenize_doujin_filename.join(' ') }
         = f.button class: 'button is-small' do
           %span.icon
@@ -26,20 +26,17 @@
           onclick: %Q|$('#dupe_search').val($('#dupe_search').data('orig-name')); return false;| do
           %span.icon
             %i.mi.mi-small(title="restore initial search term") restore
-
-      .columns.mt-3
-        .column
-          .tags.has-addons
-            %span.tag.is-info= @cur_info
-            - if @dupes.any?
-              %span.tag.is-danger= "#{@dupes.size} potential duplicate/s found"
-            - else
-              %span.tag.is-success= "NO duplicates found in collection"
         
-        .column.is-5
-          = links_to_search_engines @info[:relative_path].tokenize_doujin_filename.join(' '), target: :_blank
+        %span.ml-6= links_to_search_engines @info[:relative_path].tokenize_doujin_filename.join(' '), target: :_blank
+
+    .tags.has-addons.my-3
+      %span.tag.is-info= @cur_info
+      - if @dupes.any?
+        %span.tag.is-danger= "#{@dupes.size} potential duplicate/s found"
+      - else
+        %span.tag.is-success= "NO duplicates found in collection"
     
-    .tags.has-addons.mt-3
+    .tags.has-addons.mt-0
       %span.tag.is-info= "cover matching status: "
       %span.tag.is-link= @info[:cover_status]
       - if @info[:cover_status] != :completed
