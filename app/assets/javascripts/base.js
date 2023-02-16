@@ -100,7 +100,7 @@ $('body').on('keydown', function (ev) {
 });
 
 // add spinner to navbar when clicking internal links
-$('a[href]:not(.no-spinner, .run-progr, [target="_blank"], [href="#"])').click(function (ev) {
+$('a[href]:not(.no-spinner, .run-progr, [target="_blank"], [href^="#"])').click(function (ev) {
   if (!ev.ctrlKey && !ev.altKey)
     $.myapp.show_loading();
 });

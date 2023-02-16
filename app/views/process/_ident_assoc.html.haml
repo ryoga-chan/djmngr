@@ -10,9 +10,9 @@
         %i.mi.mi-small(title="search") person_search
     - if params[:term].present?
       %br.is-hidden-tablet
-      %span.mx-4
+      %span.ml-6
         = links_to_search_engines params[:term], target: :_blank
-        \|
+        &middot;
         = link_to :A, Author.doujinshi_org_search_url(params[:term]), target: :_blank, title: "search author on doujinshi.org"
         \|
         = link_to :C, Circle.doujinshi_org_search_url(params[:term]), target: :_blank, title: "search circle on doujinshi.org"

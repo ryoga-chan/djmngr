@@ -3,10 +3,14 @@
     = f.hidden_field :tab, value: params[:tab]
     %span.icon.in-text-small.mr-2
       %i.mi.mi-small(title="destination folder (available > final)") folder
-    %span.select.vmiddle= f.select :sel_dest_folder,
-      options_for_select(@dest_folders, @info[:dest_folder]), {},
-      class: "input is-small vmiddle", style: 'width: 15rem',
-      onchange: %Q| $('#dest_folder').val($(this).val() == '-custom name-' ? '' : $(this).val()); this.form.submit() |
+    - if @dest_folders.many?
+      %span.select.vmiddle= f.select :sel_dest_folder,
+        options_for_select(@dest_folders, @info[:dest_folder]), {},
+        class: "input is-small vmiddle", style: 'width: 15rem',
+        onchange: %Q| $('#dest_folder').val($(this).val() == '-custom name-' ? '' : $(this).val()); this.form.submit() |
+      %br.is-hidden-tablet
+      %span.icon.in-text-small.mr-2.is-hidden-tablet
+        %i.mi.mi-small(title="spacer") subdirectory_arrow_right
     = f.text_field :dest_folder, value: @info[:dest_folder], placeholder: 'destination folder',
       class: 'input is-small', style: 'width: 15rem'
     = f.button class: 'button is-small' do
