@@ -421,10 +421,12 @@ class DoujinshiController < ApplicationController
   def random_pick
     return redirect_to_with_format(root_path) unless %w{ book faved scored }.include?(params[:type])
     
+    rel = Doujin.where.not(media_type: :manga)
+    
     rel = case params[:type]
-      when 'book'  ; Doujin
-      when 'faved' ; Doujin.where favorite: true
-      when 'scored'; Doujin.where("8 <= score AND score <= 10")
+      when 'book'  ; rel
+      when 'faved' ; rel.where favorite: true
+      when 'scored'; rel.where("8 <= score AND score <= 10")
     end
 
     n  = SecureRandom.random_number rel.count
