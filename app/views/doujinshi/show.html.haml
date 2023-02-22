@@ -1,8 +1,11 @@
 .columns
   .column.is-2.has-text-centered
-    %span.tag= "ID# #{@doujin.id}"
-    %figure.image.is2by3
+    %span.tag.mb-1.is-hidden-mobile= "ID# #{@doujin.id}"
+    
+    %figure.image.is2by3.mb-1
       = image_tag("/thumbs/#{@doujin.id}.webp")
+    
+    %span.tag.mt-2.mr-4.is-hidden-tablet= "ID# #{@doujin.id}"
     = link_to '&star; fave'.html_safe,
       fav_toggle_doujinshi_path(type: 'Doujin', id: @doujin.id),
       class: "button is-rounded fav #{'is-warning' if @doujin.favorite?}"
