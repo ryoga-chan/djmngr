@@ -35,10 +35,9 @@
         img_prev.removeClass('prev').addClass('next hidden');
         
         // load next image
+        img_prev.removeAttr('src');
         if ((page_num + 1) < files.length)
           img_prev.attr('src', imgPath(page_num + 1));
-        else
-          img_prev.removeAttr('src');
         
         cur_page = page_num;
       } else {
@@ -60,10 +59,9 @@
         img_next.removeClass('next').addClass('prev hidden');
         
         // load previous image
+        img_next.removeAttr('src');
         if ((page_num - 1) >= 0)
           img_next.attr('src', imgPath(page_num - 1));
-        else
-          img_next.removeAttr('src');
         
         cur_page = page_num;
       } else {
