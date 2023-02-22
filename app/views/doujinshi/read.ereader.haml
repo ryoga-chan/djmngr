@@ -40,17 +40,11 @@
           img_prev.attr('src', imgPath(page_num + 1));
         
         cur_page = page_num;
-      } else {
-        // show finished message and hide last image
+      } else
+        // show finished message
         showAndCenter('#msg');
-        img_curr.addClass('hidden');
-      }//if
     } else {
-      if (!$('#msg').hasClass('hidden')) {
-        // hide finished message and show last image
-        $('#msg').addClass('hidden');
-        img_curr.removeClass('hidden');
-      } else if (page_num >= 0) {
+      if (page_num >= 0) {
         // go back
         $('#msg').addClass('hidden');
         
@@ -64,8 +58,6 @@
           img_next.attr('src', imgPath(page_num - 1));
         
         cur_page = page_num;
-      } else {
-        $('img.curr').removeClass('hidden');
       }//if
     }//if-else
     
@@ -87,8 +79,8 @@
   
   function showAndCenter(el) {
     $(el).removeClass('hidden').
-      css('left', $(window).width()  / 2 - $(el).width()  / 2).
-      css('top' , $(window).height() / 3 - $(el).height() / 2);
+      css('left', $(window).width()  / 2 - $(el).outerWidth()  / 2).
+      css('top' , $(window).height() / 3 - $(el).outerHeight() / 2);
   }//showAndCenter
   
   // manage page actions like an ebook reader: divide in three parts the screen

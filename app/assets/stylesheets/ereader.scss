@@ -266,10 +266,10 @@ body[data-ctrl="doujinshi"][data-action="read"] {
   .bg-black { background: image-url("spinner.svg") center 10% no-repeat, nth($bg_colors, 4); }
   div.main { background-size: 10vmax 10vmax; }
   #menu {
-    .bg-white { background: unset; background-color: nth($bg_colors, 1); }
-    .bg-smoke { background: unset; background-color: nth($bg_colors, 2); }
-    .bg-dark  { background: unset; background-color: nth($bg_colors, 3); }
-    .bg-black { background: unset; background-color: nth($bg_colors, 4); }
+    .bg-white { background: none; background-color: nth($bg_colors, 1); }
+    .bg-smoke { background: none; background-color: nth($bg_colors, 2); }
+    .bg-dark  { background: none; background-color: nth($bg_colors, 3); }
+    .bg-black { background: none; background-color: nth($bg_colors, 4); }
   }
   
   a.set-bg-color {
@@ -331,6 +331,10 @@ body[data-ctrl="doujinshi"][data-action="read"] {
     position: absolute; // top and left set via js
     font-size: 3rem;
     text-shadow: 0 0 0.5rem #fff;
+    border-radius: 1rem;
+    padding: 0.5rem 1rem;
+    background-color: white;
+    border: 0.25rem dotted silver;
   }
   
   table.help {
