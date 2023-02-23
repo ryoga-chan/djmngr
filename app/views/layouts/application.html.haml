@@ -8,8 +8,10 @@
     %title= "DjMngr | #{@page_title || params[:controller]}"
     = csrf_meta_tags
     = csp_meta_tag
-    = stylesheet_link_tag "application"
-    = javascript_include_tag "application"
+    = stylesheet_link_tag    "01_libs"
+    = stylesheet_link_tag    "02_application"
+    = javascript_include_tag "01_libs"
+    = javascript_include_tag "02_application"
   %body{data: {env: Rails.env.to_s, ctrl: params[:controller], action: params[:action], id: params[:id]}}
     %nav.navbar{role: "navigation"}
       .navbar-brand

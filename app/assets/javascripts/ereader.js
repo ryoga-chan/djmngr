@@ -1,1 +1,1 @@
-//= require libs/jquery
+//= require ./libs/jquery
