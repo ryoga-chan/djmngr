@@ -1,17 +1,5 @@
-//= require libs/jquery
-//= require libs/rails-ujs
-//= require libs/sortable
-//= require libs/jquery-sortable
-//= require libs/freezeframe
-
-//= require js-tagger
-//= require base
-
-//= require favorites
-//= require process
-//= require doujinshi
-//= require shelves
-//= require metadata
+//= require      ./libs/jquery
+//= require_tree ./libs
 
 // SOURCES:
 //   - rails-ujs        https://github.com/rails/rails/blob/main/actionview/app/assets/javascripts/rails-ujs.js  (link from https://github.com/rails/rails-ujs)

@@ -26,6 +26,7 @@ gem 'httparty',    '~> 0.20'     # http requests made easy -- https://github.com
 gem 'colorize', require: 'colorized_string' # terminal colors -- https://github.com/fazibear/colorize
 #gem 'bcrypt',      '~> 3.1'     # ActiveModel's has_secure_password -- https://guides.rubyonrails.org/active_model_basics.html#securepassword
 #gem 'ferret', '0.11.9.0', source: 'https://rubygems.pkg.github.com/acavalin' # https://github.com/acavalin/ferret
+gem 'terser'                     # Ruby wrapper for Terser JavaScript compressor (nodejs script)
 
 # image manipulation  ==>         https://github.com/janko/image_processing
 # used by ActiveStorage variants: https://guides.rubyonrails.org/active_storage_overview.html#transforming-images

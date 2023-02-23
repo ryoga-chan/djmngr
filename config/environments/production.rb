@@ -1,12 +1,13 @@
 require "active_support/core_ext/integer/time"
 
 Rails.application.configure do
+  # Settings specified here will take precedence over those in config/application.rb.
+
   # silence sqlite3 usage warning
   config.active_record.sqlite3_production_warning = false
   
   config.assets.css_compressor = :scss
-  config.assets.js_compressor  = :uglify
-  # Settings specified here will take precedence over those in config/application.rb.
+  config.assets.js_compressor  = :terser
 
   # Code is not reloaded between requests.
   config.cache_classes = true

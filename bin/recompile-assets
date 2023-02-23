@@ -1,0 +1,2 @@
+#!/bin/bash
+RAILS_ENV=production bin/rails assets:clobber assets:precompile
