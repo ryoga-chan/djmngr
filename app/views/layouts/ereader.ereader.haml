@@ -10,7 +10,7 @@
     %title= "DjMngr | #{@page_title || params[:controller]}".html_safe
     = csrf_meta_tags
     = csp_meta_tag
-    = stylesheet_link_tag "ereader"
+    = stylesheet_link_tag    "ereader"
     = javascript_include_tag "ereader"
   %body{data: {env: Rails.env.to_s, ctrl: params[:controller], action: params[:action], id: params[:id]}}
     -# NOTE: "notice" and "alert" are Rails defaults, "warn" is a custom key
