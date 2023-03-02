@@ -33,7 +33,7 @@ class ShelvesController < ApplicationController
   end # destroy
   
   def random
-    doujinshi = Doujin.order("RANDOM()").limit(12)
+    doujinshi = Doujin.where.not(media_type: :manga).order("RANDOM()").limit(12)
   
     respond_to do |format|
       format.json {
