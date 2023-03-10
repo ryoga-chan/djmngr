@@ -2,9 +2,18 @@
 CMD="bin/rails s -b 0.0.0.0 -p 39102"
 
 if [ "$1" = "-p" ]; then
+  export RAILS_ENV=production
   export RAILS_LOG_TO_STDOUT=true
   shift
-  exec $CMD -e production "$@"
-else
-  exec $CMD "$@"
 fi
+
+# restart periodically
+while : ; do
+  pkill -INT -f puma.+djmngr
+  sleep 1; pgrep -f puma.+djmngr && pkill -TERM -f puma.+djmngr
+  sleep 1; pgrep -f puma.+djmngr && pkill -KILL -f puma.+djmngr
+
+  $CMD "$@" &
+  
+  sleep 8h
+done
