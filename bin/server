@@ -1,19 +1,13 @@
-#!/bin/bash
-CMD="bin/rails s -b 0.0.0.0 -p 39102"
+#!/usr/bin/env ruby
+argv = %w{ s -b 0.0.0.0 -p 3000 }
 
-if [ "$1" = "-p" ]; then
-  export RAILS_ENV=production
-  export RAILS_LOG_TO_STDOUT=true
-  shift
-fi
+if ARGV.include?('p')
+  ENV['RAILS_LOG_TO_STDOUT'] = 'true'
+  argv.concat %w{ -e production }
+end
 
-# restart periodically
-while : ; do
-  pkill -INT -f puma.+djmngr
-  sleep 1; pgrep -f puma.+djmngr && pkill -TERM -f puma.+djmngr
-  sleep 1; pgrep -f puma.+djmngr && pkill -KILL -f puma.+djmngr
+ARGV.delete 'p'
+argv.concat ARGV
 
-  $CMD "$@" &
-  
-  sleep 8h
-done
+ARGV.replace argv
+load File.join(File.dirname(__FILE__), 'rails')

@@ -1,9 +1,9 @@
-#!/bin/bash
-CMD="bin/rails c"
+#!/usr/bin/env ruby
+argv = %w{ c }
+argv.concat %w{ -e production } if ARGV.include?('-p')
 
-if [ "$1" = "-p" ]; then
-  shift
-  exec $CMD -e production "$@"
-else
-  exec $CMD "$@"
-fi
+ARGV.delete 'p'
+argv.concat ARGV
+
+ARGV.replace argv
+load File.join(File.dirname(__FILE__), 'rails')
