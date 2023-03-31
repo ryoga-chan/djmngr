@@ -141,19 +141,20 @@ class DoujinshiController < ApplicationController
     flash.now.send '[]=', *msg if msg
     
     respond_to do |format|
-      format.html
-      format.ereader
+      format.any(:html, :ereader){ fresh_when @doujin }
       format.any(:webp, :jpg) {
-        # extract a frame (cli: `webpmux -get frame 1 out.webp -o -`)
-        params[:page] = 0 unless (0..3).include?(params[:page].to_i)
-        fname = @doujin.thumb_disk_path
-        img = Vips::Image.webpload(fname, page: params[:page].to_i) # ImageProcessing::Vips.source(fname).call save: false
-        data = request.format.webp? ?
-          img.webpsave_buffer(Q: 70, lossless: false, min_size: true) :
-          img.jpegsave_buffer(Q: 70, background: [255,255,255])
-        send_data data,
-          type: request.format.to_sym, disposition: :inline,
-          filename: "#{@doujin.id}.#{request.format.to_sym}"
+        if stale?(last_modified: @doujin.created_at.utc, strong_etag: @doujin, template: false)
+          # extract a frame (cli: `webpmux -get frame 1 out.webp -o -`)
+          params[:page] = 0 unless (0..3).include?(params[:page].to_i)
+          fname = @doujin.thumb_disk_path
+          img = Vips::Image.webpload(fname, page: params[:page].to_i) # ImageProcessing::Vips.source(fname).call save: false
+          data = request.format.webp? ?
+            img.webpsave_buffer(Q: 70, lossless: false, min_size: true) :
+            img.jpegsave_buffer(Q: 70, background: [255,255,255])
+          send_data data,
+            type: request.format.to_sym, disposition: :inline,
+            filename: "#{@doujin.id}.#{request.format.to_sym}"
+        end
       }# webp, jpg
       format.any(:zip, :cbz) {
         send_data @doujin.file_contents,
@@ -202,14 +203,16 @@ class DoujinshiController < ApplicationController
   
   # online reading
   def read
-    @page_title = :reader
-    
-    Zip::File.open(@doujin.file_path full: true) do |zip|
-      @files = zip.entries.select{|e| e.file? && e.name =~ RE_IMAGE_EXT }.map(&:name).sort
+    if stale?(last_modified: @doujin.created_at.utc, strong_etag: @doujin)
+      @page_title = :reader
+      
+      Zip::File.open(@doujin.file_path full: true) do |zip|
+        @files = zip.entries.select{|e| e.file? && e.name =~ RE_IMAGE_EXT }.map(&:name).sort
+      end
+      
+      params[:page] = params[:page].to_i
+      params[:page] = 0 unless (0...@files.size).include?(params[:page])
     end
-    
-    params[:page] = params[:page].to_i
-    params[:page] = 0 unless (0...@files.size).include?(params[:page])
   end # read
   
   def read_pages
@@ -220,22 +223,25 @@ class DoujinshiController < ApplicationController
   
   # return the selected image extracting it from the ZIP file
   def image
-    Zip::File.open(@doujin.file_path full: true) do |zip|
-      entry = zip.find_entry(params[:file]) if params[:file]
-      entry = zip.entries.
-        select{|e| e.file? && e.name =~ RE_IMAGE_EXT }.
-        sort{|a,b| a.name <=> b.name }[params[:page].to_i] if params[:page]
-      @fname   = entry&.name
-      @content = entry&.get_input_stream&.read
+    if stale?(last_modified: @doujin.created_at.utc, template: false,
+              strong_etag: "doujin_#{@doujin.id}_image-F#{params[:file]}-P#{params[:page]}")
+      Zip::File.open(@doujin.file_path full: true) do |zip|
+        entry = zip.find_entry(params[:file]) if params[:file]
+        entry = zip.entries.
+          select{|e| e.file? && e.name =~ RE_IMAGE_EXT }.
+          sort{|a,b| a.name <=> b.name }[params[:page].to_i] if params[:page]
+        @fname   = entry&.name
+        @content = entry&.get_input_stream&.read
+      end
+      
+      unless @content
+        @fname = 'not-found.png'
+        @content = File.read(Rails.root.join 'public', @fname)
+      end
+      
+      send_data @content, type: File.extname(@fname).delete('.').downcase.to_sym,
+        disposition: :inline, filename: @fname
     end
-    
-    unless @content
-      @fname = 'not-found.png'
-      @content = File.read(Rails.root.join 'public', @fname)
-    end
-    
-    send_data @content, type: File.extname(@fname).delete('.').downcase.to_sym,
-      disposition: :inline, filename: @fname
   end # image
 
   def update

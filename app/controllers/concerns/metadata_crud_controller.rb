@@ -26,7 +26,10 @@ module MetadataCrudController
     render 'application/metadata/index'
   end # index
   
-  def show = render('application/metadata/show')
+  def show
+    render('application/metadata/show') if stale?(@record)
+  end # show
+  
   def edit = render('application/metadata/form')
   
   def new
