@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-argv = %w{ s -b 0.0.0.0 -p 3000 }
+argv = %w{ s -b 0.0.0.0 -p 39102 }
 
 if ARGV.include?('p')
   ENV['RAILS_LOG_TO_STDOUT'] = 'true'
