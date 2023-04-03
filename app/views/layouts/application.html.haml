@@ -40,30 +40,25 @@
                 %span Doujinshi
             .navbar-dropdown
               = link_to doujinshi_path, class: 'navbar-item' do
-                %span.icon-text
-                  %span.icon
-                    %i.mi apps
-                  %span Browse
+                %span.icon
+                  %i.mi apps
+                %span Browse
               = link_to favorites_doujinshi_path, class: 'navbar-item' do
-                %span.icon-text
-                  %span.icon
-                    %i.mi auto_awesome
-                  %span Favorites
+                %span.icon
+                  %i.mi auto_awesome
+                %span Favorites
               = link_to scored_doujinshi_path, class: 'navbar-item' do
-                %span.icon-text
-                  %span.icon
-                    %i.mi star_half
-                  %span Scores
+                %span.icon
+                  %i.mi star_half
+                %span Scores
               = link_to shelves_path, class: 'navbar-item' do
-                %span.icon-text
-                  %span.icon
-                    %i.mi shelves
-                  %span Shelves
+                %span.icon
+                  %i.mi shelves
+                %span Shelves
               = link_to epub_doujinshi_path, class: 'navbar-item' do
-                %span.icon-text
-                  %span.icon
-                    %i.mi.mi-small library_books
-                  %span EPUBs
+                %span.icon
+                  %i.mi library_books
+                %span EPUBs
           
           %span.navbar-item
             = form_with url: search_doujinshi_path, method: :get,
@@ -79,7 +74,7 @@
                 .control
                   = f.button class: 'button is-light is-rounded is-outlined' do
                     %span.icon
-                      %i.mi.mi-small search
+                      %i.mi search
         
           %span.navbar-item.has-dropdown{class: (%w{ authors circles themes }.include?(params[:controller]) ? 'is-current' : nil),
             onclick: "jQuery(this).toggleClass('is-active')"}
@@ -102,7 +97,7 @@
               = link_to themes_path, class: 'navbar-item' do
                 %span.icon-text
                   %span.icon
-                    %i.mi.mi-small local_offer
+                    %i.mi local_offer
                   %span Themes
           
           %span.navbar-item.has-dropdown{class: ("#{params[:controller]}/#{params[:action]}" == 'home/settings' ? 'is-current' : nil),
@@ -126,7 +121,7 @@
                       = f.file_field :cover, class: 'file-input', id: '',
                         onchange: %Q|jQuery(this).next().find('i.mi').text('hourglass_bottom'); jQuery.myapp.show_loading(); this.form.submit()|
                       %span.file-cta
-                        %span.file-icon
+                        %span.file-icon.mr-3
                           %i.mi image_search
                         %span.file-label
                           Cover match
@@ -136,7 +131,7 @@
                 = link_to ext_url, class: 'navbar-item no-spinner', target: :_blank do
                   %span.icon-text
                     %span.icon
-                      %i.mi.mi-small launch
+                      %i.mi launch
                     %span= ext_lbl
           
         .navbar-end
@@ -148,12 +143,12 @@
                     %i.mi shield
               -#- if true # Current.user
               -#  = link_to '#', class: 'button is-primary' do
-              -#    %span.icon.is-small
+              -#    %span.icon
               -#      %i.mi logout
               -#    %span Logout
               = link_to(root_path(format: :ereader), class: 'button is-primary', title: 'view in e-reader format') do
                 %span.icon
-                  %i.mi.mi-small tablet_android
+                  %i.mi tablet_android
                 -#%span e-reader
 
     %section.section.main-content
