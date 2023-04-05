@@ -1,13 +1,10 @@
 class ProcessController < ApplicationController
-  before_action :check_archive_file  , only: [
-    :show_externally, :prepare_archive, :delete_archive, :sample_images,
-  ]
-  before_action :check_archive_folder, only: [
-    :edit, :set_property, :finalize_volume,
-    :show_image, :rename_images, :rename_file,
-    :delete_archive_cwd, :delete_archive_files,
-    :edit_cover, :inspect_folder,
-  ]
+  before_action :check_archive_file,
+    only: %i[ show_externally  prepare_archive  delete_archive  sample_images  compare_add ]
+  
+  before_action :check_archive_folder,
+    only: %i[ edit  set_property  finalize_volume  show_image  rename_images  rename_file
+              delete_archive_cwd  delete_archive_files  edit_cover  inspect_folder ]
 
   # list processable files
   def index
@@ -62,7 +59,7 @@ class ProcessController < ApplicationController
     Zip::File.open(@fname) do |zip|
       zip.entries.
         select{|e| e.file? && e.name =~ RE_IMAGE_EXT }.
-        shuffle[0..5].each do |e|
+        shuffle[0..5].sort.each do |e|
           thumb = Vips::Image.webp_cropped_thumb e.get_input_stream.read,
             width: 480, height: 960, padding: false
           @images << { name: e.name, data: Base64.encode64(thumb[:buffer]).chomp }
@@ -701,6 +698,16 @@ class ProcessController < ApplicationController
       }#json
     end
   end # inspect_folder
+
+  def compare_add
+    DoujinCompareJob.perform_now rel_path: params[:path], full_path: @fname
+    redirect_to compare_doujinshi_path
+  end # compare_add
+  
+  def compare_remove
+    DoujinCompareJob.remove params[:idx]
+    redirect_to(params[:idx] != 'all'.freeze ? compare_doujinshi_path : root_path)
+  end # compare_remove
   
   
   private # ____________________________________________________________________
