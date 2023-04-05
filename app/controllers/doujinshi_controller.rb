@@ -6,9 +6,12 @@ class DoujinshiController < ApplicationController
   BATCH_SIZE     = 15 * THUMBS_PER_ROW
   ICONS = { 'artbook' => 'color_lens', 'magazine' => 'newspaper' }
   
-  before_action :set_doujin_list_detail, only: %i[ index favorites search scored search_cover ]
+  before_action :set_doujin_list_detail,
+    only: %i[ index  favorites  search  scored  search_cover ]
+  
   before_action :set_doujin,
-    only: %i[ show edit score read read_pages image update rehash delete destroy reprocess shelf ]
+    only: %i[ show  edit  score  read  read_pages  image  update  rehash  delete
+              destroy  reprocess  shelf  compare_add ]
 
   # browse doujinshi by author/circle/folder
   def index
@@ -262,8 +265,7 @@ class DoujinshiController < ApplicationController
     redirect_to doujin_path(@doujin, params.permit(:from_author, :from_circle)), flash: msg
   end # rehash
   
-  def delete
-  end # delete
+  def delete = nil
   
   def destroy
     @doujin.destroy_with_files
@@ -453,6 +455,16 @@ class DoujinshiController < ApplicationController
     
     redirect_to_with_format doujin_path(@doujin)
   end # shelf
+
+  def compare_add
+    DoujinCompareJob.perform_now doujin: @doujin
+    redirect_to compare_doujinshi_path
+  end # compare_add
+  
+  def compare
+    @page_title = 'doujinshi comparison'
+    @entries = DoujinCompareJob.data
+  end # compare
 
 
   private # ____________________________________________________________________

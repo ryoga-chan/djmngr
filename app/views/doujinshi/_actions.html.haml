@@ -14,6 +14,12 @@
           = link_to 'Back', doujinshi_path(back_params.to_h.merge anchor: 'listing'),
             class: 'button is-info is-rounded'
         
+        %p.control
+          = link_to compare_add_doujin_path(@doujin), class: 'button is-info is-rounded' do
+            %span.icon
+              %i.mi.mi-small compare
+            %span Compare
+        
         - if params[:action] == 'edit'
           %p.control
             = link_to 'Show', doujin_path(@doujin, url_params),

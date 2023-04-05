@@ -13,6 +13,8 @@ Rails.application.routes.draw do
       delete  :delete_archive
       post    :prepare_batch    # prepare mass processing of selected files
       get     :sample_images
+      get     :compare_add
+      get     :compare_remove
     end
     member do
       get     :show_image
@@ -41,6 +43,7 @@ Rails.application.routes.draw do
       get  :search_cover
       get  :scored
       get  :random_pick
+      get  :compare
     end
     member do
       get  :read
@@ -51,6 +54,7 @@ Rails.application.routes.draw do
       post :rehash
       post :reprocess
       get  :shelf
+      get  :compare_add
     end
   end
   

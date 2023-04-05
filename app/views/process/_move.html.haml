@@ -19,13 +19,13 @@
         %span.icon.in-text-small.mr-2
           %i.mi.mi-small(title="archive type") local_offer
         
-        %span.mr-4
+        %span.mr-3
           - if @info[:file_type] == 'doujin'
             = "#{@info[:doujin_dest_type]} #{@info[:file_type]}"
           - else
             = @info[:file_type]
         
-        %span.mr-4= render partial: 'file_actions', locals: {fname: @info[:relative_path]}
+        %span.mr-3= render partial: 'file_actions', locals: {fname: @info[:relative_path]}
         
         = links_to_search_engines @info[:relative_path].tokenize_doujin_filename.join(' '), target: :_blank
       

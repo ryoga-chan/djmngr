@@ -1,0 +1,71 @@
+- if @entries.any?
+  .actions-danger(style="float: right")
+    = link_to compare_remove_process_index_path(idx: :all),
+      data: { confirm: 'Remove all entries?' },
+      class: 'button is-danger is-rounded' do
+      %span.icon
+        %i.mi clear_all
+      %span Clear list
+
+.title.is-size-4 Doujinshi comparison
+
+- if @entries.empty?
+  .is-italic no entries
+- else
+  %table.table.has-text-centered
+    %thead
+      %tr
+        - @entries.each_with_index do |entry, idx|
+          %td
+            .filetype.mb-2.has-text-weight-bold= entry[:source] == :doujin ? :Doujin : :File
+            
+            .field.is-grouped.is-justify-content-center
+              .field.has-addons
+                %p.control
+                  = link_to compare_remove_process_index_path(idx: idx),
+                    title: 'remove from comparison', class: 'button is-info is-rounded' do
+                    %span.icon
+                      %i.mi remove
+
+                - if entry[:source] == :doujin && Doujin.exists?(id: entry[:doujin_id])
+                  %p.control
+                    = link_to doujin_path(id: entry[:doujin_id]),
+                        data: { confirm: 'Delete from collection?' }, method: :delete,
+                        title: 'delete from collection', class: 'button is-danger is-rounded' do
+                      %span.icon
+                        %i.mi delete
+                - elsif entry[:source] == :process
+                  %p.control
+                    = link_to delete_archive_process_index_path(path: entry[:rel_path]),
+                      data: { confirm: 'Delete from to-sort folder?' }, method: :delete,
+                      title: 'delete from to-sort folder', class: 'button is-danger is-rounded' do
+                      %span.icon
+                        %i.mi delete
+            
+            .filename.is-size-7
+              - if entry[:source] == :doujin
+                = link_to entry[:rel_path], doujin_path(id: entry[:doujin_id]),
+                  title: 'view details in collection'
+              - elsif entry[:source] == :process
+                = link_to entry[:rel_path], prepare_archive_process_index_path(path: entry[:rel_path]),
+                  title: 'prepare for processing'
+                
+    %tbody
+      - i = 0
+      - loop do
+        - images = @entries.map{|entry| entry[:images][i] }
+        - break if images.compact.empty?
+        - if i != 0 && (i % DoujinCompareJob::CHUNK_SIZE) == 0
+          %tr
+            - images.each do |img|
+              %td.has-text-warning
+                - if img
+                  %span.icon
+                    %i.mi more_vert
+        %tr{class: "pic_#{i += 1}"}
+          - images.each do |img|
+            %td
+              - if img
+                .filename= img[:name]
+                %figure.image.is2by3
+                  = inline_image_tag :'image/webp', img[:data]
