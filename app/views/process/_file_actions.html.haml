@@ -5,9 +5,17 @@
     %span.icon.is-small
       %i.mi.mi-small casino
 
+- bt_compare = capture do
+  = link_to compare_add_process_index_path(path: fname),
+    title: 'add to comparison', target: :_blank,
+    class: 'button is-info is-rounded is-small tiny-bt' do
+    %span.icon.is-small
+      %i.mi.mi-small compare
+
 .is-inline-flex.is-hidden-mobile
   .field.has-addons
     %p.control= bt_sample
+    %p.control= bt_compare
     %p.control
       = link_to show_externally_process_index_path(path: fname, run: :comics_viewer, format: :json),
         title: 'read with external viewer',
@@ -21,5 +29,11 @@
         %span.icon.is-small
           %i.mi.mi-small folder
 
-.is-inline-flex.is-hidden-desktop
-  %p.control= bt_sample
+- if local_assigns[:vertical]
+  .is-hidden-desktop
+    %p.control.mb-4= bt_sample
+    %p.control= bt_compare
+- else
+  .is-inline-flex.is-hidden-desktop
+    %p.control.mr-2= bt_sample
+    %p.control= bt_compare

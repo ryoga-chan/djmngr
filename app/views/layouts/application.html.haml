@@ -59,6 +59,10 @@
                 %span.icon
                   %i.mi library_books
                 %span EPUBs
+              = link_to compare_doujinshi_path, class: 'navbar-item' do
+                %span.icon
+                  %i.mi compare
+                %span Comparison
           
           %span.navbar-item
             = form_with url: search_doujinshi_path, method: :get,
