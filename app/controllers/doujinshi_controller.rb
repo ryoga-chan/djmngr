@@ -462,7 +462,7 @@ class DoujinshiController < ApplicationController
   end # compare_add
   
   def compare
-    @page_title = 'doujinshi comparison'
+    @page_title = :compare
     @entries = DoujinCompareJob.data
   end # compare
 
