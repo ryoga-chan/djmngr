@@ -1,0 +1,13 @@
+#!/bin/bash
+CMD="$(dirname $0)/server p"
+
+# restart the server periodically
+while : ; do
+  $CMD "$@" &
+  sleep 8h
+  
+  echo "############### RESTARTING SERVER ###############"
+  pkill -INT -f puma.+djmngr
+  sleep 5; pgrep -f puma.+djmngr && pkill -TERM -f puma.+djmngr
+  sleep 2; pgrep -f puma.+djmngr && pkill -KILL -f puma.+djmngr
+done
