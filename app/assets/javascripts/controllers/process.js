@@ -124,34 +124,19 @@ if ($('body').data('ctrl') +'/'+ $('body').data('action') == 'process/edit') {
     $('button.delete-images').attr('data-confirm', 'Delete '+num_images+' selected images?');
   });
   
-  // select image when clicking on a specific half of it
-  // and open the link on the other half
-  $('.images .column a').click(function (ev) {
-    var link = $(this);
-    var is_select_area = false;
-    
-    // ev.offsetX      / ev.offsetY         => element relative coordinates
-    // $(this).width() / $(this).height()   => element size
-    var y_ratio = $(this).height() / $(this).width();
-    switch (link.parents('form:first').data('image-sel-mode')) {
-      case '\\': is_select_area = ev.offsetX > (ev.offsetY / y_ratio); break;
-      case  '/': is_select_area = ev.offsetX > ($(this).width() - ev.offsetY / y_ratio); break;
-      case  '|': is_select_area = ev.offsetX > $(this).width() /2; break;
-      case  '-': is_select_area = ev.offsetY < $(this).height()/2; break;
-    }//switch
-    
-    if (is_select_area) {
+  // manage click on linked image: area1 = select image, area2 = open link
+  $('.images .column a').split_click({
+    mode:  $('#frm-images').data('image-sel-mode'),
+    area1: function (el, ev) {
       ev.preventDefault(); // do not open the link/zoom image
       // select the image
-      link.siblings('.select-image').click();
+      el.siblings('.select-image').click();
       // animate selection
-      if (link.siblings(':checkbox').prop('checked'))
-        link.
-          parent().addClass('clicked').
-          find('figure').fadeTo(0,0).fadeTo(300, 1, function () {
-            link.parent().removeClass('clicked');
-          });
-    }//if
+      if (el.siblings(':checkbox').prop('checked'))
+        el.parent().addClass('clicked').
+          find('figure').fadeTo(0,0).
+          fadeTo(300, 1, function () { el.parent().removeClass('clicked'); });
+    }//area1
   });
 
   // set scoring
