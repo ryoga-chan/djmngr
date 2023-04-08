@@ -93,5 +93,23 @@ if ($('body').data('action') == 'edit') {
     );
   } });
 }// action edit
+
+if ($('body').data('action') == 'compare') {
+  // manage click on linked image: area1 = select image, area2 = open link
+  $('table#compare img').split_click({
+    //mode:  $('#frm-images').data('image-sel-mode'),
+    area1: function (el, ev) {
+      var page = el.parent().parent();
+      page.clone().empty().addClass('gap').insertBefore(page);
+    },//area1
+    area2: function (el, ev) {
+      var page = el.parent().parent();
+      page.clone().empty().addClass('gap').insertAfter(page);
+    }//area1
+  });
+
+  // remove gap onclick
+  $('table#compare').on('click', 'div.gap', function () { $(this).remove(); });
+}// action compare
 // -----------------------------------------------------------------------------
 }); })(jQuery)

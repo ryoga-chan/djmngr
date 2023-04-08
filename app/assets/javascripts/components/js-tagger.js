@@ -199,4 +199,4 @@ $('body').on('keydown', '#js-tagger-modal .js-tagger-term', function (ev) {
   modal.data('timeout-id', timeout_id);
 });
 // -----------------------------------------------------------------------------
-}); })(jQuery)
+}); })(jQuery);
