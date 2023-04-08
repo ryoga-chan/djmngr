@@ -12,12 +12,22 @@
 - if @entries.empty?
   .is-italic no entries
 - else
-  %table.table.has-text-centered
+  :css
+    .pic { width:  #{DoujinCompareJob::THUMB_SIZE[:width]}px;
+           height: #{@entries.map{|e| e[:max_height] }.max}px; }
+    .pic.separator { border-bottom: 0.3rem dashed yellow; }
+
+  %table#compare.table.has-text-centered
     %thead
       %tr
         - @entries.each_with_index do |entry, idx|
           %td
-            .filetype.mb-2.has-text-weight-bold= entry[:source] == :doujin ? :Doujin : :File
+            .filetype.mb-2.has-text-weight-bold
+              %span.tag.is-info
+                %span.icon-text.is-flex-wrap-nowrap
+                  %span.icon
+                    %i.mi.mi-small= entry[:source] == :doujin ? :book : :swap_horiz
+                  %span= "#{entry[:num_pages]} pics/#{number_to_human_size entry[:file_size]}"
             
             .field.is-grouped.is-justify-content-center
               .field.has-addons
@@ -49,23 +59,12 @@
               - elsif entry[:source] == :process
                 = link_to entry[:rel_path], prepare_archive_process_index_path(path: entry[:rel_path]),
                   title: 'prepare for processing'
-                
     %tbody
-      - i = 0
-      - loop do
-        - images = @entries.map{|entry| entry[:images][i] }
-        - break if images.compact.empty?
-        - if i != 0 && (i % DoujinCompareJob::CHUNK_SIZE) == 0
-          %tr
-            - images.each do |img|
-              %td.has-text-warning
-                - if img
-                  %span.icon
-                    %i.mi more_vert
-        %tr{class: "pic_#{i += 1}"}
-          - images.each do |img|
-            %td
-              - if img
-                .filename= img[:name]
+      %tr
+        - @entries.each do |entry|
+          %td
+            - entry[:images].each_with_index do |img, i|
+              - show_separator = (i != 0 && (i % DoujinCompareJob::CHUNK_SIZE) == 0 && entry[:sampled])
+              .pic.p-0.m-0.my-1{class: ('separator' if show_separator)}
                 %figure.image.is2by3
-                  = inline_image_tag :'image/webp', img[:data]
+                  = inline_image_tag :'image/webp', img[:data], title: img[:name]

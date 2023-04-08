@@ -19,13 +19,14 @@ module CoreExt
           else
             im = im.resize_to_fit(width, height)
           end
+          thumb = im.convert('webp').saver(quality: 70).call(save: false)
           
-          {
-            orig_width:   vips.width,
+          { orig_width:   vips.width,
             orig_height:  vips.height,
             landscape:    vips.is_landscape?,
-            buffer:       im.convert('webp').saver(quality: 70).call(save: false).webpsave_buffer,
-          }
+            width:        thumb.width,
+            height:       thumb.height,
+            buffer:       thumb.webpsave_buffer, }
         end # webp_cropped_thumb
         
         def is_landscape?(buffer_or_img)
