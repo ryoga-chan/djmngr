@@ -8,7 +8,7 @@
     
     .tags
       .tags.has-addons.mr-4.mb-0
-        %span.tag.is-info
+        %span.tag.is-info.is-light
           %span.icon-text
             %span.icon
               %i.mi book
@@ -16,81 +16,63 @@
               = number_with_delimiter @stats[:dj], delimiter: "'"
               \/
               = number_to_human_size @stats[:dj_size]
-        %span.tag.is-link.is-light= link_to 'doujinshi', doujinshi_path
-      
-      .tags.has-addons.mr-4.mb-0
         %span.tag.is-info
           %span.icon-text
             %span.icon
               %i.mi auto_awesome
-            %span= number_with_delimiter @stats[:dj_fav], delimiter: "'"
-        %span.tag= link_to 'faved', favorites_doujinshi_path
-      
-    .tags
-      - @stats[:dj_cat].each do |cat, n|
-        .tags.has-addons.mr-2.mb-0
-          %span.tag.is-info= number_with_delimiter n, delimiter: "'"
-          %span.tag= link_to "in #{cat.pluralize}", doujinshi_path(tab: cat)
+            %span= link_to number_with_delimiter(@stats[:dj_fav], delimiter: "'"), favorites_doujinshi_path
+      .tags.has-addons.mr-4.mb-0
+        - @stats[:dj_cat].each do |cat, n|
+          %span.tag.is-info
+            %span.icon-text
+              %span.icon
+                %i.mi= DoujinshiController::ICONS[cat]
+              %span= link_to number_with_delimiter(n*10, delimiter: "'"), doujinshi_path(tab: cat)
 
     .tags
       .tags.has-addons.mr-4.mb-0
-        %span.tag.is-info
+        %span.tag.is-info.is-light
           %span.icon-text
             %span.icon
               %i.mi swap_horiz
             %span
-              = number_with_delimiter @stats[:todo], delimiter: "'"
-              \/
-              = number_to_human_size @stats[:todo_size]
-        %span.tag.is-link.is-light= link_to 'process', process_index_path
-      
-      .tags.has-addons.mr-4.mb-0
+              = link_to process_index_path do
+                = number_with_delimiter @stats[:todo], delimiter: "'"
+                \/
+                = number_to_human_size @stats[:todo_size]
         %span.tag.is-info
           %span.icon-text
             %span.icon
               %i.mi settings
-            %span= @stats[:wip]
-        %span.tag= link_to 'wip', process_index_path
-
-      .tags.has-addons.mr-4.mb-0
+            %span= link_to @stats[:wip], process_index_path
         %span.tag.is-info
           %span.icon-text
             %span.icon
               %i.mi library_books
-            %span= @stats[:epub]
-        %span.tag= link_to 'epub', epub_doujinshi_path
+            %span= link_to @stats[:epub], epub_doujinshi_path
 
     .tags
       .tags.has-addons.mr-4.mb-0
-        %span.tag.is-info
+        %span.tag.is-info.is-light
           %span.icon-text
             %span.icon
               %i.mi folder_shared
             %span= number_with_delimiter @stats[:md_tot], delimiter: "'"
-        %span.tag.is-link.is-light metadata
-      
-    .tags
-      .tags.has-addons.mr-2.mb-0
         %span.tag.is-info
           %span.icon-text
             %span.icon
               %i.mi supervisor_account
-            %span= number_with_delimiter @stats[:mda], delimiter: "'"
-        %span.tag= link_to 'authors', authors_path
-      .tags.has-addons.mr-2.mb-0
+            %span= link_to number_with_delimiter(@stats[:mda], delimiter: "'"), authors_path
         %span.tag.is-info
           %span.icon-text
             %span.icon
               %i.mi supervised_user_circle
-            %span= number_with_delimiter @stats[:mdc], delimiter: "'"
-        %span.tag= link_to 'circles', circles_path
-      .tags.has-addons.mr-2.mb-0
+            %span= link_to number_with_delimiter(@stats[:mdc], delimiter: "'"), circles_path
         %span.tag.is-info
           %span.icon-text
             %span.icon
               %i.mi local_offer
-            %span= number_with_delimiter @stats[:mdt], delimiter: "'"
-        %span.tag= link_to 'themes', themes_path
+            %span= link_to number_with_delimiter(@stats[:mdt], delimiter: "'"), themes_path
 
   .column.is-2.has-text-centered
     %span.tag.is-hidden-mobile.mb-5 quick links
