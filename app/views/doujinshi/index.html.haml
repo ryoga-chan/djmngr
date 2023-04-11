@@ -5,11 +5,11 @@
         %li{class: (:'is-active' if params[:tab] == 'author') }
           = link_to({tab: :author}, title: 'authors') do
             %span.icon.is-small
-              %i.mi supervisor_account
+              %i.mi= DoujinshiController::ICONS['author']
         %li{class: (:'is-active' if params[:tab] == 'circle') }
           = link_to({tab: :circle}, title: 'circles') do
             %span.icon.is-small
-              %i.mi supervised_user_circle
+              %i.mi= DoujinshiController::ICONS['circle']
         %li{class: (:'is-active' if params[:tab] == 'artbook') }
           = link_to({tab: :artbook}, title: 'artbooks') do
             %span.icon.is-small
