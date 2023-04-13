@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 argv = %w{ c }
-argv.concat %w{ -e production } if ARGV.include?('-p')
+argv.concat %w{ -e production } if ARGV.include?('p')
 
 ARGV.delete 'p'
 argv.concat ARGV
