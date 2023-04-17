@@ -60,7 +60,9 @@ class DoujinCompareJob < ApplicationJob
     return unless File.exist?(info[:full_path])
     
     Zip::File.open(info[:full_path]) do |zip|
-      all_entries = zip.entries.select{|e| e.file? && e.name =~ RE_IMAGE_EXT }
+      all_entries = zip.entries.
+        select{|e| e.file? && e.name =~ RE_IMAGE_EXT }.
+        sort{|a,b| a.name <=> b.name }
       thumb_entries = []
       
       info[:num_pages] = all_entries.size
