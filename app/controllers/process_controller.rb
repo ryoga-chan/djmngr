@@ -100,6 +100,7 @@ class ProcessController < ApplicationController
       end
     end
     
+    # change destination title
     if request.post? && params[:name].present?
       if @info[:titles][params[:path]]
         @info[:titles][params[:path]] = params[:name].strip
@@ -120,7 +121,7 @@ class ProcessController < ApplicationController
       
       @info[:options][:score] = params[:options][:score].present? ? params[:options][:score].to_i : nil
       
-      %i[ col unc overwrite ].each do |k|
+      %i[ col cens overwrite ].each do |k|
         @info[:options][k] = params[:options][k].present? ? (params[:options][k] == 'true') : nil
       end
       %i[ lang mt batch_method ].each do |k|
