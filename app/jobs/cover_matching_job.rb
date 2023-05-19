@@ -12,12 +12,12 @@ class CoverMatchingJob < ApplicationJob
     
     # calculate its pHash
     fname = File.join(Setting['dir.sorting'], "#{fkey}.webp").to_s
-    File.open(fname, 'wb'){|f| f.write thumb[:buffer] }
+    File.open(fname, 'wb'){|f| f.write thumb[:image].webpsave_buffer }
     phash = Kernel.suppress_output{ '%016x' % Phashion::Image.new(fname).fingerprint }
     FileUtils.rm_f fname # remove temp image
     
     { phash: phash, landscape: thumb[:landscape],
-      image: Base64.encode64(thumb[:buffer]).chomp }
+      image: Base64.encode64(thumb[:image].webpsave_buffer).chomp }
   end # self.hash_image_buffer
   
   def self.hash_image(image_path)

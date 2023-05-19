@@ -42,21 +42,34 @@
       
       .actions
         .field.has-addons.mb-4.is-justify-content-end
-          .control= link_to 'batch', '#', class: 'bt-batch button is-link is-small is-rounded',
-            onclick: %Q|jQuery('.batch-bt, td.rm-or-batch > *, td.batch').toggleClass('is-hidden'); return false|
+          .control
+            = link_to '#', class: 'bt-batch button is-link is-small',
+              onclick: %Q|jQuery('.batch-bt, td.rm-or-batch > *, td.batch, .bt-reindex, .bt-preview').toggleClass('is-hidden'); return false| do
+              %span.icon.is-small
+                %i.mi.mi-small inventory_2
+              %span batch
           .control.batch-bt.is-hidden
-            = link_to '#', class: 'bt-toggle-all button is-rounded is-small',
+            = link_to '#', class: 'bt-toggle-all button is-small',
               onclick: %Q|jQuery('td.rm-or-batch :checkbox').each(function(){ $(this).prop('checked', !$(this).prop('checked')) }).first(); jQuery.app.update_tot_filesize(); return false| do
               %span.icon.is-small
                 %i.mi select_all
               %span toggle
           .control.batch-bt.is-hidden
-            = f.button type: :submit, class: 'button is-rounded is-small' do
+            = f.button type: :submit, class: 'button is-small' do
               %span.icon.is-small
                 %i.mi send
               %span prepare
               %span.tot-file-size.is-size-8.ml-1
-          .control= link_to :refresh, {refresh: true}, class: 'bt-reindex button is-info is-small is-rounded'
+          .control
+            = link_to({refresh: true}, class: 'bt-reindex button is-info is-small') do
+              %span.icon.is-small
+                %i.mi.mi-small refresh
+              %span refresh
+          .control
+            = link_to({preview: true}, class: 'bt-preview button is-info is-small') do
+              %span.icon.is-small
+                %i.mi.mi-small preview
+              %span preview
       
       - if @files.empty?
         %em no files to process
@@ -82,5 +95,15 @@
                     = link_to f.name, action: :prepare_archive, path: f.name
                   - if f.name != f.name_kakasi
                     .name_kakasi.is-size-7= f.name_kakasi
+              - if File.exist?(f.thumb_path)
+                %tr
+                  %td
+                  %td(colspan=3)
+                    %figure.image
+                      = link_to f.thumb_url(mobile: true), target: :_blank do
+                        %picture
+                          %source{media: "(min-width: 769px)", srcset: f.thumb_url(mobile: false) }/
+                          %source{media: "(min-width: 320px)", srcset: f.thumb_url(mobile: true ) }/
+                          %img{src: f.thumb_url(mobile: true)}/
         
         = paginate @files

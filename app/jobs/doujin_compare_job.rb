@@ -63,26 +63,20 @@ class DoujinCompareJob < ApplicationJob
       all_entries = zip.entries.
         select{|e| e.file? && e.name =~ RE_IMAGE_EXT }.
         sort{|a,b| a.name <=> b.name }
-      thumb_entries = []
+      
+      thumb_entries = all_entries.pages_preview(chunk_size: CHUNK_SIZE)
       
       info[:num_pages] = all_entries.size
-      info[:sampled  ] = info[:num_pages] > (CHUNK_SIZE*3)
-      
-      # select 3 sets of `chunk_size` images (start/middle/end)
-      if info[:sampled]
-        gap = (all_entries.size - CHUNK_SIZE*3)/2 # number of images for a single gap
-        thumb_entries.concat all_entries[0...CHUNK_SIZE]
-        thumb_entries.concat all_entries[gap+CHUNK_SIZE, CHUNK_SIZE]
-        thumb_entries.concat all_entries[(-CHUNK_SIZE)..-1]
-      else
-        thumb_entries = all_entries
-      end
+      info[:sampled  ] = all_entries.size != thumb_entries.size
       
       thumb_entries.each do |e|
-        thumb = Vips::Image.webp_cropped_thumb e.get_input_stream.read,
-          width: THUMB_SIZE[:width], height: THUMB_SIZE[:height], padding: false
+        thumb = Vips::Image.webp_cropped_thumb \
+          e.get_input_stream.read,
+          width: THUMB_SIZE[:width],
+          height: THUMB_SIZE[:height],
+          padding: false
         info[:max_height] = thumb[:height] if thumb[:height] > info[:max_height]
-        info[:images] << { name: e.name, data: Base64.encode64(thumb[:buffer]).chomp }
+        info[:images] << { name: e.name, data: Base64.encode64(thumb[:image].webpsave_buffer).chomp }
       end
     end
     
