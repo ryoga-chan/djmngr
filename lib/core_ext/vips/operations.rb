@@ -26,7 +26,8 @@ module CoreExt
             landscape:    vips.is_landscape?,
             width:        thumb.width,
             height:       thumb.height,
-            buffer:       thumb.webpsave_buffer, }
+            #buffer:      thumb.webpsave_buffer,
+            image:        thumb, }
         end # webp_cropped_thumb
         
         def is_landscape?(buffer_or_img)

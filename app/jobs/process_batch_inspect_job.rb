@@ -26,7 +26,7 @@ class ProcessBatchInspectJob < ApplicationJob
             height: ProcessArchiveCompressJob::THUMB_HEIGHT
           
           info[:thumbs][name] = { landscape: thumb[:landscape],
-                                  base64:    Base64.encode64(thumb[:buffer]).chomp }
+                                  base64:    Base64.encode64(thumb[:image].webpsave_buffer).chomp }
         end
       end
       

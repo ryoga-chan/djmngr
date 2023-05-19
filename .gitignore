@@ -44,6 +44,7 @@ Gemfile.lock
 /dj-libray/sorted/*
 
 /public/thumbs/*.webp
+/public/samples/*.webp
 
 /public/epub/*.epub
 /public/epub/*.perc
