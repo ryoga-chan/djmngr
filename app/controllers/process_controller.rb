@@ -71,7 +71,7 @@ class ProcessController < ApplicationController
         shuffle[0..5].sort.each do |e|
           thumb = Vips::Image.webp_cropped_thumb e.get_input_stream.read,
             width: 480, height: 960, padding: false
-          @images << { name: e.name, data: Base64.encode64(thumb[:buffer]).chomp }
+          @images << { name: e.name, data: Base64.encode64(thumb[:image].webpsave_buffer).chomp }
         end
     end
   end # sample_images
