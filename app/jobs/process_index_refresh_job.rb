@@ -12,6 +12,8 @@ class ProcessIndexRefreshJob < ApplicationJob
     self.class.lock_file!
     
     ProcessableDoujin.transaction do
+      ProcessIndexPreviewJob.rm_previews
+      
       ProcessableDoujin.truncate_and_restart_sequence
       
       files_glob = File.join Setting['dir.to_sort'], '**', '*.zip'

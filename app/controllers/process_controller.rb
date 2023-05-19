@@ -1,4 +1,6 @@
 class ProcessController < ApplicationController
+  ROWS_PER_PAGE = 25
+
   before_action :check_archive_file,
     only: %i[ show_externally  prepare_archive  delete_archive  sample_images  compare_add ]
   
@@ -20,12 +22,19 @@ class ProcessController < ApplicationController
       ProcessIndexRefreshJob.perform_later
       return redirect_to(action: :index)
     end
+    
+    # generate preview images collage for ZIP files on the first index page
+    if params[:preview]
+      ProcessIndexPreviewJob.lock_file!
+      ProcessIndexPreviewJob.perform_later
+      return redirect_to(action: :index)
+    end
 
-    if ProcessIndexRefreshJob.lock_file?
+    if ProcessIndexRefreshJob.lock_file? || ProcessIndexPreviewJob.lock_file?
       @refreshing = true
     else
       # read "to_sort" file list
-      @files = ProcessIndexRefreshJob.entries.page(params[:page])#.per(10)
+      @files = ProcessIndexRefreshJob.entries.page(params[:page]).per(ROWS_PER_PAGE)
       
       # read "sorting" file list
       files_glob = File.join Setting['dir.sorting'], '*', 'info.yml'
@@ -52,7 +61,7 @@ class ProcessController < ApplicationController
       redirect_to(edit_process_path id: hash)
   end # prepare_archive
   
-  # return the selected image extracting it from the ZIP file
+  # extract some random images from the ZIP file
   def sample_images
     @images = []
     
