@@ -20,7 +20,7 @@ class EpubConverterJob < ApplicationJob
     height_dst = Setting[:epub_img_height].to_i
 
     fname_src  = doujin.file_path(full: true)
-    fname_dst  = File.join base_dir, doujin.file_dl_name.sub(/zip$/i, 'kepub.epub')
+    fname_dst  = File.join base_dir, doujin.file_dl_name.tr('!', '_').sub(/zip$/i, 'kepub.epub')
     author     = doujin.file_dl_info[:author]
     title      = doujin.file_dl_info[:filename]
     
@@ -124,7 +124,7 @@ class EpubConverterJob < ApplicationJob
       num = '%04d' % (i+1)
       
       items[:page ] << %Q|    <item id="p#{num}" href="pages/#{num}.xhtml" media-type="application/xhtml+xml"/>|
-      items[:image] << %Q|    <item id="i#{num}" href="images/#{img_name}" media-type="image/jpeg"/>|
+      items[:image] << %Q|    <item id="i#{num}" href="images/#{img_name}" media-type="image/jpeg"#{' properties="cover-image"' if i == 0}/>|
       items[:spine] << %Q|    <itemref idref="p#{num}"/>|
       items[:toc  ] << %Q|    <navPoint id="n#{i+1}" playOrder="#{i+1}" class="chapter"><navLabel><text>Page #{i+1}</text></navLabel><content src="pages/#{num}.xhtml"/></navPoint>|
       
