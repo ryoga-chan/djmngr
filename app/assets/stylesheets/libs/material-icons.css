@@ -15,7 +15,6 @@ i.mi {
   font-family: 'Material Icons';
   font-weight: normal;
   font-style: normal;
-  font-size: 24px;
   line-height: 1;
   letter-spacing: normal;
   text-transform: none;
@@ -30,10 +29,10 @@ i.mi {
   font-feature-settings: 'liga';
 }
 
-i.mi.mi-small  { font-size: 18px; }
-i.mi           { font-size: 24px; }
-i.mi.mi-medium { font-size: 36px; }
-i.mi.mi-large  { font-size: 48px; }
+i.mi.mi-small  { font-size:   1rem; }
+i.mi           { font-size: 1.5rem; }
+i.mi.mi-medium { font-size:   2rem; }
+i.mi.mi-large  { font-size:   3rem; }
 
 i.mi.mi-dark              { color: rgba(  0,   0,   0, 0.54); } /* black on light bg */
 i.mi.mi-dark.mi-inactive  { color: rgba(  0,   0,   0, 0.26); }
