@@ -11,12 +11,12 @@
 - if @doujin.authors.any?
   %tr
     %th Author
-    %td= @doujin.authors.map{|i| i.label_name_latin }.sort.join(', ')
+    %td= @doujin.authors.map{|i| link_to(i.label_name_latin, doujinshi_path(tab: :author, author_id: i.id, letter: i.label_name_latin[0].upcase)) }.sort.join(', ').html_safe
 
 - if @doujin.circles.any?
   %tr
     %th Circle
-    %td= @doujin.circles.map{|i| i.label_name_latin }.sort.join(', ')
+    %td= @doujin.circles.map{|i| link_to(i.label_name_latin, doujinshi_path(tab: :circle, circle_id: i.id, letter: i.label_name_latin[0].upcase)) }.sort.join(', ').html_safe
 
 %tr
   %th Info

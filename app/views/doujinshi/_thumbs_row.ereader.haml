@@ -4,7 +4,7 @@
 - descr = short_label ? d.label_name_latin : d.file_dl_name(omit_ext: true)
 .doujin<>
   .cover<>= link_to image_tag(doujin_path(d, format: :jpg),
-    class: :thumb, loading: :lazy, decoding: :async), doujin_path(d)
+    class: :thumb, loading: :lazy, decoding: :async), doujin_path(d, from_author: params[:author_id], from_circle: params[:circle_id])
   .descr<>
     - if d.read_pages.to_i > 0
       %span.read-perc<>= d.percent_read.to_i == 100 ? '&#10003;'.html_safe : "#{d.percent_read.round}%"
