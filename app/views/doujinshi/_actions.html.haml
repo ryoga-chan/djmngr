@@ -4,12 +4,14 @@
   .column.is-half
     .actions.field.is-grouped
       .field.has-addons
-        - back_params = if %w{ artbook magazine }.include?(@doujin.category)
-          - { tab: @doujin.category, folder: @doujin.file_folder }
-        - elsif params[:from_author].present?
-          - { tab: :author, author_id: params[:from_author] }
-        - elsif params[:from_circle].present?
-          - { tab: :circle, circle_id: params[:from_circle] }
+        :ruby
+          back_params = if %w{ artbook magazine }.include?(@doujin.category)
+            { tab: @doujin.category, folder: @doujin.file_folder }
+          elsif params[:from_author].present?
+            { tab: :author, author_id: params[:from_author] }
+          elsif params[:from_circle].present?
+            { tab: :circle, circle_id: params[:from_circle] }
+          end
         %p.control
           = link_to 'Back', doujinshi_path(back_params.to_h.merge anchor: 'listing'),
             class: 'button is-info is-rounded'

@@ -58,11 +58,14 @@
 
 %br
 
-- url_params = if %w{ artbook magazine }.include?(@doujin.category)
-  - { tab: @doujin.category, folder: @doujin.file_folder }
-- elsif params[:from_author].present?
-  - { tab: :author, author_id: params[:from_author] }
-- elsif params[:from_circle].present?
-  - { tab: :circle, circle_id: params[:from_circle] }
+:ruby
+  url_params = if %w{ artbook magazine }.include?(@doujin.category)
+    { tab: @doujin.category, folder: @doujin.file_folder }
+  elsif params[:from_author].present?
+    { tab: :author, author_id: params[:from_author] }
+  elsif params[:from_circle].present?
+    { tab: :circle, circle_id: params[:from_circle] }
+  end
+
 = link_to 'Back', doujinshi_path(url_params.to_h.merge letter: params[:letter]),
   class: :button, style: "float: right"
