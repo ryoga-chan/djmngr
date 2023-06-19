@@ -8,7 +8,7 @@
     .has-text-info.is-hidden-tablet= perc_read
   %td.show-thumb.is-hidden-mobile.has-text-info= perc_read
   %td.name
-    = link_to(doujin_path(d), title: title) do
+    = link_to(doujin_path(d, from_author: params[:author_id], from_circle: params[:circle_id]), title: title) do
       - if d.cover_similarity.present?
         %span.tag.is-warning.is-rounded= "#{'%2d' % d.cover_similarity}%"
       - if show_categ && (icon = DoujinshiController::ICONS[d.category])
