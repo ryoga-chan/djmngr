@@ -7,6 +7,9 @@
 -#    remote:        data-remote
 -#= link_to_unless current_page.last?, t('views.pagination.next').html_safe, url, rel: 'next', remote: remote, class: 'pagination-next'
 - unless current_page.last?
-  = link_to url, rel: 'next', remote: remote, class: 'pagination-next' do
-    %span.icon
-      %i.mi keyboard_arrow_right
+  - if request.format.ereader?
+    = link_to t('views.pagination.next').html_safe, url, rel: 'next', remote: remote, class: 'pagination-next'
+  - else
+    = link_to url, rel: 'next', remote: remote, class: 'pagination-next' do
+      %span.icon
+        %i.mi keyboard_arrow_right
