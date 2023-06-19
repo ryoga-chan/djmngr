@@ -5,7 +5,7 @@
 %table.doujin
   %tr
     %td.w1.cover
-      = image_tag doujin_path(@doujin, format: :jpg), class: :thumb
+      %img.thumb.async_load{data: {url: doujin_path(@doujin, format: :jpg)}}
     %td.details
       %table
         = render 'show_info'
@@ -54,7 +54,7 @@
     %tr
       %td.samples(colspan="2")
         - 1.upto([3, @doujin.num_images - 1].min).each do |i|
-          = image_tag doujin_path(@doujin, format: :jpg, page: i), class: :thumb
+          %img.thumb.async_load{data: {url: doujin_path(@doujin, format: :jpg, page: i)}}
 
 %br
 
