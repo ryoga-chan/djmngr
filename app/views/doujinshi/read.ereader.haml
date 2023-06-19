@@ -204,9 +204,9 @@
 .main{class: "bg-#{cur_bg_color}",
       data: { image_url: image_doujin_path(@doujin, format: ''),
               pages_url: read_pages_doujin_path(@doujin) }}
-  %img.prev(id="p1" src="" class="page hidden" onload="setImgClass(this); render_images('ok', this)" onerror="render_images('err', this)")
-  %img.curr(id="p2" src="" class="page hidden" onload="setImgClass(this); render_images('ok', this)" onerror="render_images('err', this)")
-  %img.next(id="p3" src="" class="page hidden" onload="setImgClass(this); render_images('ok', this)" onerror="render_images('err', this)")
+  %img.prev(class="page hidden" onload="setImgClass(this); render_images('ok', this)" onerror="render_images('err', this)")
+  %img.curr(class="page hidden" onload="setImgClass(this); render_images('ok', this)" onerror="render_images('err', this)")
+  %img.next(class="page hidden" onload="setImgClass(this); render_images('ok', this)" onerror="render_images('err', this)")
   
 #msg.hidden Finished
 
