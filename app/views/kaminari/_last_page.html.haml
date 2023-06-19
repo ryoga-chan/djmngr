@@ -6,8 +6,10 @@
 -#    per_page:      number of items to fetch per page
 -#    remote:        data-remote
 - unless current_page.last?
-  -#%li= link_to t('views.pagination.last').html_safe, url, remote: remote, class: 'pagination-link'
-  %li
-    = link_to url, remote: remote, class: 'pagination-link' do
-      %span.icon
-        %i.mi keyboard_double_arrow_right
+  - if request.format.ereader?
+    %li= link_to t('views.pagination.last').html_safe, url, remote: remote, class: 'pagination-link'
+  - else
+    %li
+      = link_to url, remote: remote, class: 'pagination-link' do
+        %span.icon
+          %i.mi keyboard_double_arrow_right
