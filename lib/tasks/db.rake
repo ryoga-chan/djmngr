@@ -17,7 +17,7 @@ def zip_databases(options = {})
     end; puts ''
     
     File.unlink(zipfile) if File.exist?(zipfile)
-    Dir.chdir(tmpdir){ `7za a -mx=0 #{zipfile.shellescape} .` } # crea un file unico
+    Dir.chdir(tmpdir){ `7za a -mx=0 #{zipfile.shellescape} .` } # create a single file
     puts "CREATED: #{zipfile} "
     
     yield(zipfile: zipfile, tmpdir: tmpdir) if block_given?
