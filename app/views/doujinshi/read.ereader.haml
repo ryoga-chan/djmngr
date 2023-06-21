@@ -1,7 +1,7 @@
 :javascript
-  var files    = #{@files.to_json.html_safe};
-  var cur_page = #{params[:page]};
-  var images   = []; // FIFO queue of images to load sequentially
+  var num_files = #{@num_files};
+  var cur_page  = #{params[:page]};
+  var images    = []; // FIFO queue of images to load sequentially
 
   function setImgClass (el) {
     var pag_ratio = $(window).width() / $(window).height(); // https://stackoverflow.com/questions/3437786/get-the-size-of-the-screen-current-web-page-and-browser-window/3437825#3437825
@@ -16,7 +16,8 @@
   }//setImgClass
   
   function imgPath (page_num) {
-    return $('.main').data('image-url') + '?' + $.param({file: files[page_num]});
+    return $('.main').data('image-url') + '?' +
+      $.param({page: page_num, h: $(window).height(), w: $(window).width()});
   }//imgPath
 
   function isImageLoaded (el) {
@@ -32,7 +33,7 @@
         img_next = $('img.next');
     
     if (page_num > cur_page) {
-      if (page_num < files.length) {
+      if (page_num < num_files) {
         // go forward
         $('#msg').addClass('hidden');
         
@@ -45,7 +46,7 @@
         
         // load next image
         img_prev.removeAttr('src');
-        if ((page_num + 1) < files.length)
+        if ((page_num + 1) < num_files)
           render_image('turn', img_prev, imgPath(page_num + 1));
         
         cur_page = page_num;
@@ -170,14 +171,14 @@
       images[0].el.attr('src', images[0].url);
       
       // update progressbar
-      $('#pbar').css('width', ((cur_page + 1) / files.length * 100).toFixed(2) + 'vw');
+      $('#pbar').css('width', ((cur_page + 1) / num_files * 100).toFixed(2) + 'vw');
     }//if
   }//render_images
   
   (function($){ $(function () {
     // initialize initial images
     render_image('init', $('img.prev'), imgPath(#{params[:page]}) );
-    render_image('init', $('img.curr'), imgPath(#{(params[:page] + 1) < @files.size ? (params[:page] + 1) : (@files.size - 1)}));
+    render_image('init', $('img.curr'), imgPath(#{(params[:page] + 1) < @num_files ? (params[:page] + 1) : (@num_files - 1)}));
     
     // turn to the initial request page
     turnPage(#{params[:page]});
@@ -216,7 +217,7 @@
 #pag_num
   %span.cur>= params[:page] + 1
   \/
-  %span.tot>= @files.size
+  %span.tot>= @num_files
 
 %table.help.hidden
   %tr
@@ -246,7 +247,7 @@
       = hidden_field_tag :from_format, params[:from_format]
       jump to
       = select_tag :page,
-        options_for_select(@files.size.times.map{|i| [i+1, i] }, params[:page]),
+        options_for_select(@num_files.times.map{|i| [i+1, i] }, params[:page]),
         onchange: %Q|this.form.submit()|
   
   - Setting::READING_BG_COLORS.each do |color|

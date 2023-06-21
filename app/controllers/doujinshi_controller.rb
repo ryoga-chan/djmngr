@@ -215,11 +215,11 @@ class DoujinshiController < ApplicationController
       @page_title = :reader
       
       Zip::File.open(@doujin.file_path full: true) do |zip|
-        @files = zip.entries.select{|e| e.file? && e.name =~ RE_IMAGE_EXT }.map(&:name).sort
+        @num_files = zip.entries.select{|e| e.file? && e.name =~ RE_IMAGE_EXT }.size
       end
       
       params[:page] = params[:page].to_i
-      params[:page] = 0 unless (0...@files.size).include?(params[:page])
+      params[:page] = 0 unless (0...@num_files).include?(params[:page])
     end
   end # read
   
@@ -234,10 +234,9 @@ class DoujinshiController < ApplicationController
     if stale?(last_modified: @doujin.created_at.utc, template: false,
               strong_etag: "doujin_#{@doujin.id}_image-F#{params[:file]}-P#{params[:page]}")
       Zip::File.open(@doujin.file_path full: true) do |zip|
-        entry = zip.find_entry(params[:file]) if params[:file]
         entry = zip.entries.
           select{|e| e.file? && e.name =~ RE_IMAGE_EXT }.
-          sort{|a,b| a.name <=> b.name }[params[:page].to_i] if params[:page]
+          sort{|a,b| a.name <=> b.name }[params[:page].to_i]
         @fname   = entry&.name
         @content = entry&.get_input_stream&.read
       end
