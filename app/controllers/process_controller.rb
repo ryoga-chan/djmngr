@@ -42,14 +42,14 @@ class ProcessController < ApplicationController
         tot_size = Dir.glob("#{File.dirname f}/**/*").
           map{|f| f.ends_with?('/file.zip') ? 0 : File.size(f) }.sum
         YAML.unsafe_load_file(f).merge tot_size: tot_size
-      }.sort{|a,b| a[:relative_path] <=> b[:relative_path] }
+      }.sort_by_method('[]', :relative_path)
       @preparing_paths = @preparing.map{|i| i[:relative_path] }
     end
     
     files_glob = File.join Setting['dir.sorting'], 'batch_*.yml'
     @batches = Dir[files_glob].map{|f|
       { hash: File.basename(f).sub(/batch_(.+).yml/, '\1'), time: File.ctime(f) }
-    }.sort{|a,b| a[:time] <=> b[:time] }
+    }.sort_by_method('[]', :time)
   end # index
   
   # prepare ZIP working folder and redirects to edit
@@ -66,13 +66,11 @@ class ProcessController < ApplicationController
     @images = []
     
     Zip::File.open(@fname) do |zip|
-      zip.entries.
-        select{|e| e.file? && e.name =~ RE_IMAGE_EXT }.
-        shuffle[0..5].sort.each do |e|
-          thumb = Vips::Image.webp_cropped_thumb e.get_input_stream.read,
-            width: 480, height: 960, padding: false
-          @images << { name: e.name, data: Base64.encode64(thumb[:image].webpsave_buffer).chomp }
-        end
+      zip.image_entries.shuffle[0..5].sort_by_method(:name).each do |e|
+        thumb = Vips::Image.webp_cropped_thumb e.get_input_stream.read,
+          width: 480, height: 960, padding: false
+        @images << { name: e.name, data: Base64.encode64(thumb[:image].webpsave_buffer).chomp }
+      end
     end
   end # sample_images
   
@@ -185,7 +183,7 @@ class ProcessController < ApplicationController
     # count images and other files
     file_counters = {num_images: 0, num_files: 0}
     Zip::File.open(@fname) do |zip|
-      zip.entries.sort{|a,b| a.name <=> b.name }.each do |e|
+      zip.entries.sort_by_method(:name).each do |e|
         next unless e.file?
         
         # generate phash for the first image file
@@ -410,7 +408,7 @@ class ProcessController < ApplicationController
         end
         # find dupes and set similarity percent
         if @info[:cover_results].is_a?(Hash)
-          @dupes += @info[:cover_results].sort{|a,b| b[1] <=> a[1]}.map{|id, perc|
+          @dupes += @info[:cover_results].sort_by_value(reverse: true).map{|id, perc|
             next unless d = Doujin.find_by(id: id)
             d.cover_similarity = perc
             d
@@ -418,7 +416,7 @@ class ProcessController < ApplicationController
         end
         # find deleted dupes and set similarity percent
         if @info[:cover_results_deleted].is_a?(Hash)
-          @dupes_deleted += @info[:cover_results_deleted].sort{|a,b| b[1] <=> a[1]}.map{|id, perc|
+          @dupes_deleted += @info[:cover_results_deleted].sort_by_value(reverse: true).map{|id, perc|
             next unless d = DeletedDoujin.find_by(id: id)
             d.cover_similarity = perc
             d
@@ -531,7 +529,7 @@ class ProcessController < ApplicationController
           
           # rename images sorted by the previous label
           @info[:images]
-            .sort{|a,b| a[:dst_sort_by] <=> b[:dst_sort_by] }
+            .sort_by_method('[]', :dst_sort_by)
             .each_with_index{|img, i| img[:dst_path] = "%04d#{File.extname img[:src_path]}" % (i+1) }
         
         when :regex_replacement
@@ -551,7 +549,7 @@ class ProcessController < ApplicationController
         img[:dst_path] = "#{name}-#{img[:src_path].sub(/\.[^\.]+$/, ext).tr File::SEPARATOR, '_'}"
       end if params[:keep_names] == 'true'
       
-      @info[:images] = @info[:images].sort{|a,b| a[:dst_path] <=> b[:dst_path] }
+      @info[:images] = @info[:images].sort_by_method('[]', :dst_path)
       
       @info[:ren_images_method      ] = params[:rename_with]
       @info[:images_last_regexp     ] = params[:rename_regexp]
@@ -573,11 +571,11 @@ class ProcessController < ApplicationController
     
     if el = @info[:files].detect{|i| i[:src_path] == params[:path] }
       el[:dst_path] = params[:name]
-      @info[:files] = @info[:files].sort{|a,b| a[:dst_path] <=> b[:dst_path] }
+      @info[:files] = @info[:files].sort_by_method('[]', :dst_path)
       @info[:files_collision] = @info[:files].size != @info[:files].map{|i| i[:dst_path] }.uniq.size
     elsif el = @info[:images].detect{|i| i[:src_path] == params[:path] }
       el[:dst_path] = params[:name]
-      @info[:images] = @info[:images].sort{|a,b| a[:dst_path] <=> b[:dst_path] }
+      @info[:images] = @info[:images].sort_by_method('[]', :dst_path)
       @info[:images_collision] = @info[:images].size != @info[:images].map{|i| i[:dst_path] }.uniq.size
     end
     

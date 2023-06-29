@@ -118,6 +118,12 @@
                     %i.mi settings
                   %span Settings
 
+              = link_to zip_select4read_doujinshi_path, class: 'navbar-item is-hidden-touch' do
+                %span.icon-text
+                  %span.icon
+                    %i.mi chrome_reader_mode
+                  %span Read ZIP
+
               %span.navbar-item
                 = form_with url: search_cover_doujinshi_path, method: :post, html: {style: 'margin-left: -0.6rem'} do |f|
                   .file.is-primary

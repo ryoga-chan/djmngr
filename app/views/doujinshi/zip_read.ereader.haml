@@ -1,3 +1,13 @@
+:ruby
+  img_params  = ''
+  
+  if params[:id] && params[:model]
+    img_params += ", model: #{params[:model].to_json}" if params[:model].present?
+    img_params += ", id:    #{params[:id   ].to_json}" if params[:id   ].present?
+  else
+    img_params += ", file:  #{params[:file ].to_json}" if params[:file ].present?
+  end
+
 :javascript
   var num_files = #{@num_files};
   var cur_page  = #{params[:page]};
@@ -17,7 +27,7 @@
   
   function imgPath (page_num) {
     return $('.main').data('image-url') + '?' +
-      $.param({page: page_num, h: $(window).height(), w: $(window).width()});
+      $.param({page: page_num, h: $(window).height(), w: $(window).width()#{img_params}});
   }//imgPath
 
   function isImageLoaded (el) {
@@ -76,11 +86,11 @@
     
     $('#pag_num .cur').text(cur_page + 1);
     
-    if ($('#msg').hasClass('hidden'))
+    if ($('#msg').hasClass('hidden') && $('.main').data('turn-url'))
       // save current page on server
       setTimeout(function () {
         $.ajax({
-          url: $('.main').data('pages-url'),
+          url: $('.main').data('turn-url'),
           data: { page: cur_page },
           method: 'POST',
           dataType: 'json',
@@ -203,8 +213,8 @@
 
 - cur_bg_color = is_ereader_browser? ? Setting::READING_BG_COLORS.first : Setting[:reading_bg_color]
 .main{class: "bg-#{cur_bg_color}",
-      data: { image_url: image_doujin_path(@doujin, format: ''),
-              pages_url: read_pages_doujin_path(@doujin) }}
+      data: { image_url: zip_image_doujinshi_path(format: ''),
+              turn_url: params[:turn_url] }}
   %img.prev(class="page hidden" onload="setImgClass(this); render_images('ok', this)" onerror="render_images('err', this)")
   %img.curr(class="page hidden" onload="setImgClass(this); render_images('ok', this)" onerror="render_images('err', this)")
   %img.next(class="page hidden" onload="setImgClass(this); render_images('ok', this)" onerror="render_images('err', this)")
@@ -243,8 +253,9 @@
     %br/
     men&ugrave;
   .jump
-    = form_with url: read_doujin_path(@doujin), method: :get do |f|
-      = hidden_field_tag :from_format, params[:from_format]
+    = form_with url: @jump_to[:url], method: :get do |f|
+      - @jump_to[:params].each do |k, v|
+        = hidden_field_tag k, v
       jump to
       = select_tag :page,
         options_for_select(@num_files.times.map{|i| [i+1, i] }, params[:page]),
@@ -253,4 +264,4 @@
   - Setting::READING_BG_COLORS.each do |color|
     %a.set-bg-color.button{href: '#', class: "bg-#{color}", data: {color: color}}<>= color[0].upcase
   
-  .back= link_to 'back to details', doujin_path(@doujin, format: params[:from_format]), class: :button
+  .back= link_to 'back to details', params[:ret_url], class: :button

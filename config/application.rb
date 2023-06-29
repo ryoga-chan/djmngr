@@ -29,7 +29,8 @@ module Djmngr
     # in config/environments, which are processed later.
     #
     # config.time_zone = "Central Time (US & Canada)"
-    config.eager_load_paths << Rails.root.join('lib', 'app')
+    
+    #config.eager_load_paths << Rails.root.join('lib', 'app')
 
     # Don't generate system test files.
     config.generators.system_tests = nil
