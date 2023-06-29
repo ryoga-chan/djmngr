@@ -17,6 +17,7 @@ class CreateSettings < ActiveRecord::Migration[7.0]
     Setting.create key: 'epub_img_height'  , value: 1024       , notes: 'resize image to this height in epub creation'
     Setting.create key: 'comics_viewer'    , value: 'mcomix -f', notes: 'application for reading CBZ files (comic book viewer)'
     Setting.create key: 'file_manager'     , value: 'thunar'   , notes: 'application for browsing files (file manager)'
+    Setting.create key: 'file_picker'      , value: "zenity --file-selection --file-filter='*.zip *.cbz'", notes: 'application for file selection (prints file path to stdout)'
     Setting.create key: 'image_editor'     , value: 'gimp'     , notes: 'application for editing images (photo editor)'
     Setting.create key: 'terminal'         , value: 'xfce4-terminal', notes: 'default terminal emulator'
     Setting.create key: 'ext_cmd_env'      , value: '{"DISPLAY":":0"}', notes: 'environment variables for external commands'

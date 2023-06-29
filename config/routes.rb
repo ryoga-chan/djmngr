@@ -30,6 +30,8 @@ Rails.application.routes.draw do
       get     :batch            # manage mass processing
       post    :batch
       delete  :batch
+      get     :read , to: 'doujinshi#zip_read' , model: 'ProcessableDoujin'
+      get     :image, to: 'doujinshi#zip_image', model: 'ProcessableDoujin'
     end
   end # process
 
@@ -44,10 +46,13 @@ Rails.application.routes.draw do
       get  :scored
       get  :random_pick
       get  :compare
+      get  :zip_select4read
+      get  :zip_read
+      get  :zip_image
     end
     member do
-      get  :read
-      get  :image
+      get  :read , to: 'doujinshi#zip_read' , model: 'Doujin'
+      get  :image, to: 'doujinshi#zip_image', model: 'Doujin'
       get  :delete
       post :read_pages
       post :score

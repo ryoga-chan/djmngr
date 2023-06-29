@@ -33,6 +33,8 @@ class ProcessableDoujin < ApplicationRecord
     rel.order(:name_kakasi)
   end # self.search
   
+  def file_path(full: false) = full ? File.join(Setting['dir.to_sort'], name) : name
+  
   def thumb_url(mobile: false)  = "/#{THUMB_FOLDER}/#{'%010d' % id}-#{mobile ? :m : :d}.webp"
   
   def thumb_path(mobile: false) = Rails.root.join('public', THUMB_FOLDER, "#{'%010d' % id}-#{mobile ? :m : :d}.webp").to_s

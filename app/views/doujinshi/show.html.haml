@@ -26,7 +26,7 @@
         %tr
           %th Author
           %td
-            - @doujin.authors.sort{|a,b| a.label_name_latin <=> b.label_name_latin }.each do |i|
+            - @doujin.authors.to_a.sort_by_method(:label_name_latin).each do |i|
               .assoc-author
                 = link_to i.label_name_latin, doujinshi_path(tab: :author, author_id: i.id, anchor: :listing)
                 &minus;
@@ -35,7 +35,7 @@
         %tr
           %th Circle
           %td
-            - @doujin.circles.sort{|a,b| a.label_name_latin <=> b.label_name_latin }.each do |i|
+            - @doujin.circles.to_a.sort_by_method(:label_name_latin).each do |i|
               .assoc-author
                 = link_to i.label_name_latin, doujinshi_path(tab: :circle, circle_id: i.id, anchor: :listing)
                 &minus;

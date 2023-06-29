@@ -1,3 +1,11 @@
+- if (pd_id = local_assigns[:id] || ProcessableDoujin.find_by(name: fname).try(:id))
+  - bt_read = capture do
+    = link_to read_process_path(id: pd_id, format: :ereader),
+      title: 'read', target: :_blank,
+      class: 'button is-info is-rounded is-small tiny-bt' do
+      %span.icon.is-small
+        %i.mi.mi-small chrome_reader_mode
+
 - bt_sample = capture do
   = link_to sample_images_process_index_path(path: fname),
     title: 'view sample images', target: :_blank,
@@ -14,6 +22,8 @@
 
 .is-inline-flex.is-hidden-mobile
   .field.has-addons
+    - if bt_read
+      %p.control= bt_read
     %p.control= bt_sample
     %p.control= bt_compare
     %p.control
@@ -30,10 +40,14 @@
           %i.mi.mi-small folder
 
 - if local_assigns[:vertical]
-  .is-hidden-desktop
+  .is-hidden-tablet
+    - if bt_read
+      %p.control.mb-4= bt_read
     %p.control.mb-4= bt_sample
     %p.control= bt_compare
 - else
-  .is-inline-flex.is-hidden-desktop
+  .is-inline-flex.is-hidden-tablet
+    - if bt_read
+      %p.control.mr-2= bt_read
     %p.control.mr-2= bt_sample
     %p.control= bt_compare

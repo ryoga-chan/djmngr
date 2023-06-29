@@ -10,8 +10,17 @@ body[data-ctrl="process"][data-action="edit"] {
   .files-info    { float: left;  }
   .files-actions { float: right; }
   
+  .scroller {
+    width: 100%;
+    height: 6.3rem;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+  }
+  .fillwidth { width: 90%; }
+  .setting { width: calc(86% / 5); }
+  
   .textarea {
-    width: 30.25rem;
     min-width: auto;
     display: inline-block;
   }
