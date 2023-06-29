@@ -147,7 +147,7 @@
             %span Start
 
     - # order entries by the custom title
-    - @info[:titles].sort{|a,b| a[1] <=> b[1]}.map{|i| i[0]}.each_with_index do |name, idx|
+    - @info[:titles].sort_by_value.map{|k,v| k}.each_with_index do |name, idx|
       - files = @info[:files][name]
       .columns
         .column.is-2.cover.has-text-centered

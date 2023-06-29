@@ -15,10 +15,7 @@ class ProcessIndexPreviewJob < ProcessIndexRefreshJob
       next if File.exist?(processable_doujin.thumb_path)
       
       Zip::File.open(File.join Setting['dir.to_sort'], processable_doujin.name) do |zip|
-        thumb_entries = zip.entries.
-          select{|e| e.file? && e.name =~ RE_IMAGE_EXT }.
-          sort{|a,b| a.name <=> b.name }.
-          pages_preview(chunk_size: THUMBS_CHUNK)
+        thumb_entries = zip.image_entries(sort: true).pages_preview(chunk_size: THUMBS_CHUNK)
         
         images = thumb_entries.map{|e|
           Vips::Image.webp_cropped_thumb(

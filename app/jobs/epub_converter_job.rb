@@ -40,9 +40,7 @@ class EpubConverterJob < ApplicationJob
     puts "Converting images..."
     images = []
     Zip::File.open(fname_src) do |zip|
-      entries = zip.entries.
-        select{|e| e.file? && e.name =~ RE_IMAGE_EXT }.
-        sort{|a,b| a.name <=> b.name }
+      entries = zip.image_entries(sort: true)
       
       entries.each_with_index do |entry, i|
         puts entry.name

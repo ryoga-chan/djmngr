@@ -79,7 +79,7 @@
         %table.to_process.table.is-striped.is-hoverable.ml-4
           %tbody
             - @files.each_with_index do |f, idx|
-              %tr
+              %tr{data: {id: f.id}}
                 %td.rm-or-batch
                   = link_to('🗑', {action: :delete_archive, path: f.name},
                     method: :delete, data: { confirm: 'Delete this file?' },
@@ -87,7 +87,7 @@
                   .file-select.is-hidden= check_box_tag 'file_ids[]', f.id, false,
                     id: '', data: {size: f.size}, tabindex: (1000+idx)
                 %td.batch.file-size.has-text-right= number_to_human_size f.size
-                %td.batch= render partial: 'file_actions', locals: {fname: f.name, vertical: true}
+                %td.batch= render partial: 'file_actions', locals: {fname: f.name, id: f.id, vertical: true}
                 %td
                   .name
                     - if @preparing_paths.include?(f.name)

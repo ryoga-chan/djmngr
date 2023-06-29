@@ -253,7 +253,7 @@ body[data-ctrl="doujinshi"][data-action="epub"] {
 }
 
 // same styles as in EpubConverterJob
-body[data-ctrl="doujinshi"][data-action="read"] {
+body[data-ctrl="doujinshi"][data-action="zip_read"] {
   .main-actions { display: none; }
 
   margin: 0; padding: 0;

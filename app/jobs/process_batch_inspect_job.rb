@@ -13,9 +13,7 @@ class ProcessBatchInspectJob < ApplicationJob
       file_path = File.join Setting['dir.to_sort'], name
 
       Zip::File.open(file_path) do |zip|
-        image_entries = zip.entries.
-          select{|e| e.file? && e.name =~ RE_IMAGE_EXT }.
-          sort{|a,b| a.name <=> b.name }
+        image_entries = zip.image_entries(sort: true)
       
         info[:files][name] = image_entries.map &:name
         

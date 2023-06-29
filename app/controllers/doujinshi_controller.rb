@@ -209,34 +209,75 @@ class DoujinshiController < ApplicationController
       sort.partition{|i| i.end_with? '.perc' }
   end # epub
   
-  # online reading
-  def read
-    if stale?(last_modified: @doujin.created_at.utc, strong_etag: @doujin)
-      @page_title = :reader
-      
-      Zip::File.open(@doujin.file_path full: true) do |zip|
-        @num_files = zip.entries.select{|e| e.file? && e.name =~ RE_IMAGE_EXT }.size
-      end
-      
-      params[:page] = params[:page].to_i
-      params[:page] = 0 unless (0...@num_files).include?(params[:page])
-    end
-  end # read
+  def zip_select4read
+    f = ExternalProgramRunner.run('file_picker', nil)
+    
+    File.exist?(f.to_s) ?
+      redirect_to(zip_read_doujinshi_path file: f, format: :ereader) :
+      redirect_to(root_path, alert: "file not found: [#{f}]")
+  end # zip_select4read
   
-  def read_pages
-    p = params[:page].to_i == 0 ? 0 : (params[:page].to_i + 1) # don't count the first page
-    ris = @doujin.update read_pages: p if p >= 0
-    render json: (ris == false ? :err : :ok)
-  end # read_pages
+  # read images within a ZIP file
+  def zip_read
+    @page_title = :reader
+    
+    case params[:model]
+      when 'Doujin'.freeze
+        if d = Doujin.find_by(id: params[:id])
+          params[:file    ]   = d.file_path(full: true)
+          @jump_to = { url: read_doujin_path, params: params.permit(:id, :model, :ret_url, :from_format) }
+          params[:ret_url ] ||= doujin_path(id: params[:id], format: params[:from_format])
+          params[:turn_url]   = read_pages_doujin_path(id: params[:id], format: '')
+        end
+      when 'ProcessableDoujin'.freeze
+        if d = ProcessableDoujin.find_by(id: params[:id])
+          params[:file    ]   = d.file_path(full: true)
+          @jump_to = { url: read_process_path, params: params.permit(:id, :model, :ret_url, :from_format) }
+          params[:ret_url ] ||= process_index_path(format: params[:from_format])
+          params.delete :turn_url
+        end
+      else # read from a generic ZIP file
+        if params[:file].blank? || !File.exist?(params[:file])
+          flash.now[:alert] = %Q|file "#{params[:file]}" not found|
+          return render(inline: '', layout: true)
+        end
+        @jump_to = { url: zip_read_doujinshi_path, params: params.permit(:file, :turn_url, :ret_url, :from_format) }
+        params[:ret_url] ||= root_path(format: params[:from_format])
+    end # case
+    
+    Zip::File.open(params[:file]){|zip| @num_files = zip.image_entries.size }
+    
+    params[:page] = params[:page].to_i
+    params[:page] = 0 unless (0...@num_files).include?(params[:page])
+  end # zip_read
   
-  # return the selected image extracting it from the ZIP file
-  def image
-    if stale?(last_modified: @doujin.created_at.utc, template: false,
-              strong_etag: "doujin_#{@doujin.id}_image-F#{params[:file]}-P#{params[:page]}")
-      Zip::File.open(@doujin.file_path full: true) do |zip|
-        entry = zip.entries.
-          select{|e| e.file? && e.name =~ RE_IMAGE_EXT }.
-          sort{|a,b| a.name <=> b.name }[params[:page].to_i]
+  # return the selected image by extracting it from the ZIP file
+  def zip_image
+    file_updated_at = Time.now
+  
+    # file_path, page_num, turn_url, return_url
+    case params[:model]
+      when 'Doujin'.freeze
+        if d = Doujin.find_by(id: params[:id])
+          file_updated_at = d.created_at
+          params[:file] = d.file_path(full: true)
+        end
+      when 'ProcessableDoujin'.freeze
+        if d = ProcessableDoujin.find_by(id: params[:id])
+          file_updated_at = d.created_at
+          params[:file] = d.file_path(full: true)
+        end
+      else
+        if params[:file].blank? || !File.exist?(params[:file])
+          return render(plain: 'file not found', status: :not_found)
+        end
+        file_updated_at = File.mtime(params[:file])
+    end # case
+
+    if stale?(last_modified: file_updated_at.utc, template: false,
+              strong_etag: "#{params[:model] || 'file'}-#{params[:id] || 0}_page-#{params[:page]}")
+      Zip::File.open(params[:file]) do |zip|
+        entry = zip.image_entries(sort: true)[params[:page].to_i]
         @fname   = entry&.name
         @content = entry&.get_input_stream&.read
       end
@@ -249,8 +290,14 @@ class DoujinshiController < ApplicationController
       send_data @content, type: File.extname(@fname).delete('.').downcase.to_sym,
         disposition: :inline, filename: @fname
     end
-  end # image
-
+  end # zip_image
+  
+  def read_pages
+    p = params[:page].to_i == 0 ? 0 : (params[:page].to_i + 1) # don't count the first page
+    ris = @doujin.update read_pages: p if p >= 0
+    render json: (ris == false ? :err : :ok)
+  end # read_pages
+  
   def update
     @page_title = 'edit doujin'
     
