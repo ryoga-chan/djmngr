@@ -297,8 +297,9 @@ body[data-ctrl="doujinshi"][data-action="zip_read"] {
     background-color: #ccc;
   }
   #pbar, #pbar-bg {
-    top: 0; left: 0;
+    bottom: 0; left: 0;
     border: 2px outset silver;
+    z-index: 10;
   }
   #pbar-bg { width: 100vw; }
   #pbar {
@@ -310,11 +311,13 @@ body[data-ctrl="doujinshi"][data-action="zip_read"] {
     border-width: 1px;
   }
   #pag_num {
-    bottom: 0; right: 0;
+    z-index: 9;
+    bottom: 3px; right: 0;
     border-width: 1px 0 0 1px;
   }
   #zoom {
-    bottom: 0; left:  0;
+    z-index: 9;
+    bottom: 3px; left:  0;
     border-width: 1px 1px 0 0;
     padding: 0;
     
