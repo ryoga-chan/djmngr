@@ -9,9 +9,13 @@
   end
 
 :javascript
+  // DEBUG HOWTO: decomment lines starting with "//log("
+  
   var num_files = #{@num_files};
   var cur_page  = #{params[:page]};
   var images    = []; // FIFO queue of images to load sequentially
+  
+  function log (msg) { console.log(msg); }
 
   function setImgClass (el) {
     var pag_ratio = $(window).width() / $(window).height(); // https://stackoverflow.com/questions/3437786/get-the-size-of-the-screen-current-web-page-and-browser-window/3437825#3437825
@@ -29,11 +33,14 @@
     return $('.main').data('image-url') + '?' +
       $.param({page: page_num, h: $(window).height(), w: $(window).width()#{img_params}});
   }//imgPath
-
-  function isImageLoaded (el) {
-    //return $(el).get(0).complete && $(el).get(0).naturalHeight !== 0;
-    return $(el).get(0).complete;
-  }//isImageLoaded
+  
+  function canTurnPage(img) {
+    var dom_img   = $(img).get(0);
+    var is_loaded = dom_img.complete; // && dom_img.naturalHeight !== 0
+    var is_queued = images.some(function (i) { i.el.get(0) == dom_img; });
+    
+    return images.length < 2 && is_loaded && !is_queued;
+  }//canTurnPage
 
   function turnPage (page_num) {
     var is_on_init = page_num == cur_page;
@@ -42,12 +49,14 @@
         img_curr = $('img.curr'),
         img_next = $('img.next');
     
+    //log({f: 'turnPage', num: page_num, img_len: images.length })
+    
     if (page_num > cur_page) {
       if (page_num < num_files) {
         // go forward
         $('#msg').addClass('hidden');
         
-        if (images.length > 2 || !isImageLoaded(img_prev))
+        if (!canTurnPage(img_prev))
           return false;
         
         img_curr.removeClass('curr').addClass('prev hidden');
@@ -68,7 +77,7 @@
         // go back
         $('#msg').addClass('hidden');
         
-        if (!is_on_init && (images.length > 2 || !isImageLoaded(img_next)))
+        if (!is_on_init && !canTurnPage(img_next))
           return false;
         
         img_curr.removeClass('curr').addClass('next hidden');
@@ -85,6 +94,9 @@
     }//if-else
     
     $('#pag_num .cur').text(cur_page + 1);
+    
+    // update progressbar
+    $('#pbar').css('width', ((cur_page + 1) / num_files * 100).toFixed(2) + 'vw');
     
     if ($('#msg').hasClass('hidden') && $('.main').data('turn-url'))
       // save current page on server
@@ -131,6 +143,8 @@
   }//turnPageByClick
   
   function turnPageByKey (ev) {
+    //log({f: 'keypress', key: ev.which});
+    
     if (ev.ctrlKey || ev.altKey || $(document.activeElement).is(':input'))
       return true;
     
@@ -172,17 +186,17 @@
   }//render_image
   
   function render_images (ev_type, caller) {
+    //log({f: 'render_images', ev: ev_type, caller: caller, img_len: images.length })
+    
     // remove finished caller image
-    if (caller && images[0] && images[0].el.get(0) == $(caller).get(0))
-      images.shift();
+    if (caller) {
+      var caller_el = $(caller).get(0);
+      images = images.filter(function (i) { return i.el.get(0) != caller_el; });
+    }//if
     
     // render next image
-    if (images[0]) {
+    if (images[0])
       images[0].el.attr('src', images[0].url);
-      
-      // update progressbar
-      $('#pbar').css('width', ((cur_page + 1) / num_files * 100).toFixed(2) + 'vw');
-    }//if
   }//render_images
   
   (function($){ $(function () {
