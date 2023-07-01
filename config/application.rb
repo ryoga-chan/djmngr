@@ -44,7 +44,8 @@ module Djmngr
     
     # https://pawelurbanek.com/rails-gzip-brotli-compression
     # test with: curl -siIH "Accept-Encoding: gzip, deflate, br" "http://localhost:3000" | egrep "^Content-Encoding"
-    config.middleware.use Rack::Deflater
-    config.middleware.use Rack::Brotli
+    # !!SEGFAULT using send_file!!
+    #config.middleware.use Rack::Deflater
+    #config.middleware.use Rack::Brotli
   end
 end

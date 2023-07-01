@@ -11,7 +11,7 @@ gem 'rails',       '~> 7.0',     # to use edge: gem 'rails', github: 'rails/rail
   require: %w{ shellwords open-uri pp open3 }
 gem 'sqlite3',     '~> 1.4'      # sqlite3 database for Active Record
 gem 'puma',        '~> 5.0'      # puma web server -- https://github.com/puma/puma
-gem 'rack-brotli', '~> 1.2'      # enable brotli compression
+#gem 'rack-brotli', '~> 1.2'      # enable brotli compression !!SEGFAULT using send_file!!
 gem 'sassc-rails'                # sass to process CSS
 gem 'sprockets-rails'            # asset pipeline -- https://github.com/rails/sprockets-rails
 gem 'tzinfo-data', platforms: %i[ mingw mswin x64_mingw jruby ] # zoneinfo files for Windows
