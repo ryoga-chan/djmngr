@@ -132,10 +132,12 @@ table.doujin {
   .read-perc { background-color: #ccc; }
 }
 
-table.block-links td a {
-  display: block;
+table.block-links td a { display: block; }
+
+table.collection-index.block-links td a {
   min-height: 3rem;
   text-align: center;
+  text-decoration: none;
 }
 
 a.fav { text-align: center; }
@@ -274,6 +276,21 @@ body[data-ctrl="doujinshi"][data-action="zip_read"] {
     .bg-smoke { background: none; background-color: nth($bg_colors, 2); }
     .bg-dark  { background: none; background-color: nth($bg_colors, 3); }
     .bg-black { background: none; background-color: nth($bg_colors, 4); }
+    
+    position: fixed; // top and left set via js
+    text-align: center;
+    background-color: white;
+    border: 0.2rem outset silver;
+    border-radius: 1rem;
+    
+    #page { margin: 0 0.75rem; }
+    a.skip { font-family: monospace; }
+    
+    .title {
+      font-size: larger;
+      border-bottom: 1px solid black;
+    }
+    div { margin: 1.5rem; }
   }
   
   a.set-bg-color {
@@ -371,19 +388,5 @@ body[data-ctrl="doujinshi"][data-action="zip_read"] {
       border: 4px dotted black;
       border-width: 0 4px 0 4px;
     }
-  }
-  
-  #menu {
-    position: fixed; // top and left set via js
-    text-align: center;
-    background-color: white;
-    border: 0.2rem outset silver;
-    border-radius: 1rem;
-    
-    .title {
-      font-size: larger;
-      border-bottom: 1px solid black;
-    }
-    div { margin: 1.5rem; }
   }
 }
