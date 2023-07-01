@@ -93,7 +93,8 @@
       }//if
     }//if-else
     
-    $('#pag_num .cur').text(cur_page + 1);
+    $('#page').val(cur_page);               // menu > jump to
+    $('#pag_num .cur').text(cur_page + 1);  // info box on right corner
     
     // update progressbar
     $('#pbar').css('width', ((cur_page + 1) / num_files * 100).toFixed(2) + 'vw');
@@ -135,7 +136,6 @@
       turnPage(cur_page + 1);
     else                               // tap on middle  => open menu
       if ($('#menu').hasClass('hidden')) {
-        $('#page').val(parseInt($('#pag_num .cur').text()) - 1);
         showAndCenter('#menu');
         $('table.help').removeClass('hidden');
       } else
@@ -270,10 +270,14 @@
     = form_with url: @jump_to[:url], method: :get do |f|
       - @jump_to[:params].each do |k, v|
         = hidden_field_tag k, v
-      jump to
-      = select_tag :page,
-        options_for_select(@num_files.times.map{|i| [i+1, i] }, params[:page]),
-        onchange: %Q|this.form.submit()|
+      %center
+        jump to
+        %br
+        %a.button.skip(href="#" onclick="jQuery(this).next().val(cur_page - 10).change(); return false") <<
+        = select_tag :page,
+          options_for_select(@num_files.times.map{|i| [i+1, i] }, params[:page]),
+          onchange: %Q|this.form.submit()|
+        %a.button.skip(href="#" onclick="jQuery(this).prev().val((cur_page+10) > num_files ? num_files : (cur_page+10)).change(); return false") >>
   
   - Setting::READING_BG_COLORS.each do |color|
     %a.set-bg-color.button{href: '#', class: "bg-#{color}", data: {color: color}}<>= color[0].upcase

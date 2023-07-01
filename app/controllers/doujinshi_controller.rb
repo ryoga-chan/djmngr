@@ -275,14 +275,27 @@ class DoujinshiController < ApplicationController
     end # case
 
     if stale?(last_modified: file_updated_at.utc, template: false,
-              strong_etag: "#{params[:model] || 'file'}-#{params[:id] || 0}_page-#{params[:page]}")
+              strong_etag: "#{params[:model] || params[:file]}-#{params[:id] || 0}_page-#{params[:page]}_#{params[:w]}x#{params[:h]}")
       Zip::File.open(params[:file]) do |zip|
         entry = zip.image_entries(sort: true)[params[:page].to_i]
-        @fname   = entry&.name
+        @fname   = File.basename entry&.name.to_s
         @content = entry&.get_input_stream&.read
       end
       
-      unless @content
+      maxw, maxh = params[:w].to_i, params[:h].to_i
+      
+      if @content # downsize image
+        vips = Vips::Image.new_from_buffer @content, @fname
+        to_resize  = vips.width > maxw || vips.height > maxh
+        to_convert = @fname !~ /\.jpg$/i
+        
+        if to_resize || to_convert
+          im = ImageProcessing::Vips.source vips
+          im = im.resize_to_fit(maxw, maxh)            if to_resize
+          @fname = "#{File.basename @fname, '.*'}.jpg" if to_convert
+          @content = im.saver(quality: 80).call(save: false).jpegsave_buffer
+        end
+      else
         @fname = 'not-found.png'
         @content = File.read(Rails.root.join 'public', @fname)
       end
