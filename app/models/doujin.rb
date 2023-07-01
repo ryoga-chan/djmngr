@@ -89,10 +89,6 @@ class Doujin < ApplicationRecord
     full ? File.join(Setting['dir.sorted'], tmp_path) : tmp_path
   end # file_path
   
-  def file_contents
-    File.read file_path(full: true)
-  end # file_contents
-  
   # infer a default artist and filename
   def file_dl_info
     return @file_dl_info if @file_dl_info

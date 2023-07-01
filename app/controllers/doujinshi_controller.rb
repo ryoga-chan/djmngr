@@ -165,9 +165,9 @@ class DoujinshiController < ApplicationController
         end
       }# webp, jpg
       format.any(:zip, :cbz) {
-        send_data @doujin.file_contents,
+        send_file @doujin.file_path(full: true), buffer_size: 512.kilobyte,
           type: request.format.to_sym, disposition: :attachment,
-          filename: "#{@doujin.file_dl_name}.#{request.format.to_sym}"
+          filename: "#{@doujin.file_dl_name omit_ext: true}.#{request.format.to_sym}"
       }# zip, cbz
       format.json {
         target = @doujin.file_path(full: true)
