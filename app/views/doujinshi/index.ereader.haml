@@ -29,7 +29,7 @@
   = render partial: 'thumbs_table',
     locals: { doujinshi: @doujinshi, short_label: true, show_categ: %w{author circle}.include?(params[:tab]) }
 - elsif @parents
-  %table.parents.block-links.is-striped.w100
+  %table.collection-index.parents.block-links.is-striped.w100
     %tbody
       - @parents[params[:letter]].to_a.each_slice(4) do |s|
         %tr
