@@ -273,7 +273,7 @@
       %center
         jump to
         %br
-        %a.button.skip(href="#" onclick="jQuery(this).next().val(cur_page - 10).change(); return false") <<
+        %a.button.skip(href="#" onclick="jQuery(this).next().val((cur_page-10) < 0 ? 0 : (cur_page-10)).change(); return false") <<
         = select_tag :page,
           options_for_select(@num_files.times.map{|i| [i+1, i] }, params[:page]),
           onchange: %Q|this.form.submit()|
