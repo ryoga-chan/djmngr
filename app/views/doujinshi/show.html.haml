@@ -226,7 +226,6 @@
 
 - if @doujin.num_images > 1 && params[:sample]
   %a(name="sample-#{params[:sample]}")
-  .columns
   - num_images = 6
   - max_idx  = [@doujin.num_images - 1 - num_images, 1].max
   - from_idx = SecureRandom.random_number(max_idx) + 1
@@ -237,4 +236,4 @@
         .column.is-4.has-text-centered
           .is-size-7= "page #{i}"
           %figure.image.is2by3
-            = image_tag image_doujin_path(@doujin, page: i)
+            %img.async_load{data: {url: image_doujin_path(@doujin, page: i)}}
