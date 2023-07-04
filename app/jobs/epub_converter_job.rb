@@ -54,33 +54,33 @@ class EpubConverterJob < ApplicationJob
         img = Vips::Image.new_from_buffer entry.get_input_stream.read, ''
         
         if img.width > img.height # landscape image => generate 3 images:
-          im = ImageProcessing::Vips.source(img).convert('jpg').saver(quality: IMG_QUALITY_RESIZE)
+          #im = ImageProcessing::Vips.source(img).convert('jpg').saver(quality: IMG_QUALITY_RESIZE)
           
           # 90° rotated image
-          fname = "#{img_dst}-0.jpg"
-          im.rotate(90).
-            resize_and_pad(width_dst, height_dst, background: [255,255,255]).
-            call destination: fname
+          fname = "#{img_dst}-0.jpg"; puts "\t rotated"
+          #im.rotate(90).resize_and_pad(width_dst, height_dst, background: [255,255,255]).call destination: fname
+          img.rotate(90).resize_to_fit(width_dst, height_dst).write_to_file fname, Q: IMG_QUALITY_RESIZE
           images << File.basename(fname)
           
+          # doubled image for halving
+          #im = im.resize_to_fit(width_dst*2, height_dst)
+          img = img.resize_to_fit width_dst*2, height_dst
+          
           # first part of the splitted half
-          fname = "#{img_dst}-1.jpg"
-          im.resize_to_fit(width_dst*2, height_dst).
-            resize_to_fill(width_dst, height_dst, crop: crop_modes[0]).
-            call destination: fname
+          fname = "#{img_dst}-1.jpg"; puts "\t first half (#{crop_modes[0]})"
+          #im.resize_to_fit(width_dst*2, height_dst).resize_to_fill(width_dst, height_dst, crop: crop_modes[0]).call destination: fname
+          img.smartcrop(width_dst, height_dst, interesting: crop_modes[0]).write_to_file fname
           images << File.basename(fname)
           
           # second part of the splitted half
-          fname = "#{img_dst}-2.jpg"
-          im.resize_to_fit(width_dst*2, height_dst).
-            resize_to_fill(width_dst, height_dst, crop: crop_modes[1]).
-            call destination: fname
+          fname = "#{img_dst}-2.jpg"; puts "\t second half (#{crop_modes[1]})"
+          #im.resize_to_fit(width_dst*2, height_dst).resize_to_fill(width_dst, height_dst, crop: crop_modes[1]).call destination: fname
+          img.smartcrop(width_dst, height_dst, interesting: crop_modes[1]).write_to_file fname
           images << File.basename(fname)
         else # resize the image
           fname = "#{img_dst}.jpg"
-          ImageProcessing::Vips.source(img).convert('jpg').saver(quality: IMG_QUALITY_RESIZE).
-            resize_and_pad(width_dst, height_dst, background: [255,255,255]).
-            call destination: fname
+          #ImageProcessing::Vips.source(img).resize_and_pad(width_dst, height_dst, background: [255,255,255]).call destination: fname
+          img.resize_to_fit(width_dst, height_dst).write_to_file fname, Q: IMG_QUALITY_RESIZE
           images << File.basename(fname)
         end
       end # each zip entry

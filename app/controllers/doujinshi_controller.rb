@@ -289,7 +289,7 @@ class DoujinshiController < ApplicationController
           @fname = "#{File.basename @fname, '.*'}.jpg"
           @content = Vips::Image.
             new_from_buffer(@content, '').
-            resize_to_fit_resolution(maxw, maxh).
+            resize_to_fit(maxw, maxh).
             jpegsave_buffer(Q: IMG_QUALITY_RESIZE)
         end
       else
