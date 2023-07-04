@@ -33,6 +33,7 @@ gem 'terser'                     # Ruby wrapper for Terser JavaScript compressor
 # api documentation:              https://github.com/janko/image_processing/blob/master/doc/vips.md#readme
 #                                 https://rubydoc.info/gems/ruby-vips/Vips/Image#webpsave-instance_method
 #                                 https://github.com/libvips/ruby-vips/blob/master/lib/vips/methods.rb
+#                                 https://www.libvips.org/API/current/func-list.html
 gem 'image_processing', '~> 1.2', require: %w{ ruby-vips image_processing }
 gem 'phashion',         '~> 1.2' # https://github.com/westonplatter/phashion -- pHash: image perceptual hashing
 
