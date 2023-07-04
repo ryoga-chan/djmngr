@@ -54,28 +54,39 @@ class EpubConverterJob < ApplicationJob
         img = Vips::Image.new_from_buffer entry.get_input_stream.read, ''
         
         if img.width > img.height # landscape image => generate 3 images:
+          # NOTE: ImageProcessing::Vips does not upscale the image!! => so we use Vips::Image
           #im = ImageProcessing::Vips.source(img).convert('jpg').saver(quality: IMG_QUALITY_RESIZE)
           
           # 90° rotated image
           fname = "#{img_dst}-0.jpg"; puts "\t rotated"
           #im.rotate(90).resize_and_pad(width_dst, height_dst, background: [255,255,255]).call destination: fname
-          img.rotate(90).resize_to_fit(width_dst, height_dst).write_to_file fname, Q: IMG_QUALITY_RESIZE
+          img2 = img.rotate(90).resize_to_fit(width_dst, height_dst)
+          if img2.height < height_dst
+            # https://github.com/libvips/ruby-vips/issues/134#issuecomment-330685115
+            # add top/bottom white border to center image in the epub page
+            margin_top = (height_dst - img2.height)/2
+            img2 = img2.embed \
+              0,         margin_top, # current image insertion coordinates (X, Y)
+              width_dst, height_dst, # canvas/larger image dimensions
+              background: [255,255,255]
+          end
+          img2.write_to_file fname, Q: IMG_QUALITY_RESIZE
           images << File.basename(fname)
           
           # doubled image for halving
           #im = im.resize_to_fit(width_dst*2, height_dst)
-          img = img.resize_to_fit width_dst*2, height_dst
+          img2 = img.resize_to_fit width_dst*2, height_dst
           
           # first part of the splitted half
           fname = "#{img_dst}-1.jpg"; puts "\t first half (#{crop_modes[0]})"
           #im.resize_to_fit(width_dst*2, height_dst).resize_to_fill(width_dst, height_dst, crop: crop_modes[0]).call destination: fname
-          img.smartcrop(width_dst, height_dst, interesting: crop_modes[0]).write_to_file fname
+          img2.smartcrop(width_dst, height_dst, interesting: crop_modes[0]).write_to_file fname
           images << File.basename(fname)
           
           # second part of the splitted half
           fname = "#{img_dst}-2.jpg"; puts "\t second half (#{crop_modes[1]})"
           #im.resize_to_fit(width_dst*2, height_dst).resize_to_fill(width_dst, height_dst, crop: crop_modes[1]).call destination: fname
-          img.smartcrop(width_dst, height_dst, interesting: crop_modes[1]).write_to_file fname
+          img2.smartcrop(width_dst, height_dst, interesting: crop_modes[1]).write_to_file fname
           images << File.basename(fname)
         else # resize the image
           fname = "#{img_dst}.jpg"
