@@ -31,8 +31,7 @@
                   %i.mi swap_horiz
                 %span Process
           
-          %span.navbar-item.has-dropdown{class: (params[:controller] != 'doujinshi' ? nil : 'is-current'),
-            onclick: "jQuery(this).toggleClass('is-active')"}
+          %span.navbar-item.has-dropdown.is-hoverable{class: (params[:controller] != 'doujinshi' ? nil : 'is-current')}
             %a.navbar-link
               %span.icon-text
                 %span.icon
@@ -80,32 +79,26 @@
                     %span.icon
                       %i.mi search
         
-          %span.navbar-item.has-dropdown{class: (%w{ authors circles themes }.include?(params[:controller]) ? 'is-current' : nil),
-            onclick: "jQuery(this).toggleClass('is-active')"}
+          %span.navbar-item.has-dropdown.is-hoverable{class: (%w{ authors circles themes }.include?(params[:controller]) ? 'is-current' : nil)}
             %a.navbar-link
-              %span.icon-text
-                %span.icon
-                  %i.mi folder_shared
-                %span Metadata
+              %span.icon
+                %i.mi folder_shared
+              %span Metadata
             .navbar-dropdown
               = link_to authors_path, class: 'navbar-item' do
-                %span.icon-text
-                  %span.icon
-                    %i.mi supervisor_account
-                  %span Authors
+                %span.icon
+                  %i.mi supervisor_account
+                %span Authors
               = link_to circles_path, class: 'navbar-item' do
-                %span.icon-text
-                  %span.icon
-                    %i.mi supervised_user_circle
-                  %span Circles
+                %span.icon
+                  %i.mi supervised_user_circle
+                %span Circles
               = link_to themes_path, class: 'navbar-item' do
-                %span.icon-text
-                  %span.icon
-                    %i.mi local_offer
-                  %span Themes
+                %span.icon
+                  %i.mi local_offer
+                %span Themes
           
-          %span.navbar-item.has-dropdown{class: ("#{params[:controller]}/#{params[:action]}" == 'home/settings' ? 'is-current' : nil),
-            onclick: "jQuery(this).toggleClass('is-active')"}
+          %span.navbar-item.has-dropdown.is-hoverable{class: ("#{params[:controller]}/#{params[:action]}" == 'home/settings' ? 'is-current' : nil)}
             %a.navbar-link
               %span.icon-text
                 %span.icon
@@ -113,16 +106,14 @@
                 %span Tools
             .navbar-dropdown
               = link_to home_settings_path, class: 'navbar-item' do
-                %span.icon-text
-                  %span.icon
-                    %i.mi settings
-                  %span Settings
+                %span.icon
+                  %i.mi settings
+                %span Settings
 
               = link_to zip_select4read_doujinshi_path, class: 'navbar-item is-hidden-touch' do
-                %span.icon-text
-                  %span.icon
-                    %i.mi chrome_reader_mode
-                  %span Read ZIP
+                %span.icon
+                  %i.mi chrome_reader_mode
+                %span Read ZIP
 
               %span.navbar-item
                 = form_with url: search_cover_doujinshi_path, method: :post, html: {style: 'margin-left: -0.6rem'} do |f|
@@ -139,10 +130,9 @@
               - ext_lbl, ext_url = Setting[:external_link].to_s.split('|')
               - if ext_lbl.present? && ext_lbl.present?
                 = link_to ext_url, class: 'navbar-item no-spinner', target: :_blank do
-                  %span.icon-text
-                    %span.icon
-                      %i.mi launch
-                    %span= ext_lbl
+                  %span.icon
+                    %i.mi launch
+                  %span= ext_lbl
           
         .navbar-end
           .navbar-item
