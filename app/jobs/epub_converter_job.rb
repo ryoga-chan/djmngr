@@ -48,43 +48,40 @@ class EpubConverterJob < ApplicationJob
         perc = (i+1).to_f / entries.size * 100
         File.atomic_write(perc_file){|f| f.write perc.round(2) }
         
-        img_dst = "#{tmpd}/images/#{'%04d' % (i+1)}.jpg"
-        ext = File.extname(entry.name).downcase
+        img_dst = "#{tmpd}/images/#{'%04d' % (i+1)}"
         
         # read image in memory
-        load_method = :jpegload_buffer
-        load_method = :pngload_buffer  if entry.name =~ /png/i
-        load_method = :gifload_buffer  if entry.name =~ /gif/i
-        img = Vips::Image.send load_method, entry.get_input_stream.read
+        img = Vips::Image.new_from_buffer entry.get_input_stream.read, ''
         
         if img.width > img.height # landscape image => generate 3 images:
-          im = ImageProcessing::Vips.source(img).convert('jpg').saver(quality: 75)
+          im = ImageProcessing::Vips.source(img).convert('jpg').saver(quality: IMG_QUALITY_RESIZE)
           
           # 90° rotated image
-          fname = img_dst.sub(/\..{3,4}$/, '-0\0')
+          fname = "#{img_dst}-0.jpg"
           im.rotate(90).
             resize_and_pad(width_dst, height_dst, background: [255,255,255]).
             call destination: fname
           images << File.basename(fname)
           
           # first part of the splitted half
-          fname = img_dst.sub(/\..{3,4}$/, '-1\0')
+          fname = "#{img_dst}-1.jpg"
           im.resize_to_fit(width_dst*2, height_dst).
             resize_to_fill(width_dst, height_dst, crop: crop_modes[0]).
             call destination: fname
           images << File.basename(fname)
           
           # second part of the splitted half
-          fname = img_dst.sub(/\..{3,4}$/, '-2\0')
+          fname = "#{img_dst}-2.jpg"
           im.resize_to_fit(width_dst*2, height_dst).
             resize_to_fill(width_dst, height_dst, crop: crop_modes[1]).
             call destination: fname
           images << File.basename(fname)
         else # resize the image
-          ImageProcessing::Vips.source(img).convert('jpg').saver(quality: 75).
+          fname = "#{img_dst}.jpg"
+          ImageProcessing::Vips.source(img).convert('jpg').saver(quality: IMG_QUALITY_RESIZE).
             resize_and_pad(width_dst, height_dst, background: [255,255,255]).
-            call destination: img_dst
-          images << File.basename(img_dst)
+            call destination: fname
+          images << File.basename(fname)
         end
       end # each zip entry
     end # Zip open

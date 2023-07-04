@@ -9,7 +9,7 @@ module CoreExt
         def webp_cropped_thumb(buffer_or_img, width: 160, height: 240, padding: true)
           vips = buffer_or_img.is_a?(::Vips::Image) ?
             buffer_or_img :
-            ::Kernel.suppress_output{ new_from_buffer(buffer_or_img, '') }
+            new_from_buffer(buffer_or_img, '')
           
           im = ::ImageProcessing::Vips.source vips
           if padding
@@ -19,7 +19,7 @@ module CoreExt
           else
             im = im.resize_to_fit(width, height)
           end
-          thumb = im.convert('webp').saver(quality: 70).call(save: false)
+          thumb = im.convert('webp').saver(quality: IMG_QUALITY_THUMB).call(save: false)
           
           { orig_width:   vips.width,
             orig_height:  vips.height,
@@ -53,6 +53,21 @@ module CoreExt
         x_offset   = ((img_scaled.width - w) * p.to_f / 100).to_i
         img_scaled.extract_area x_offset, 0, w, h
       end # scale_and_crop_to_offset_perc
+      
+      # example: im.resize_to_fit_resolution.jpegsave_buffer(Q: IMG_QUALITY_RESIZE)
+      def resize_to_fit_resolution(maxw, maxh)
+        case
+          when width > maxw || height > maxh # downscale
+            im = ImageProcessing::Vips.source self
+            result = im.resize_to_fit(maxw, maxh).
+              saver(quality: IMG_QUALITY_RESIZE).
+              call(save: false)
+          when width == maxw || height == maxh
+            self
+          else  # upscale
+            resize [maxw.to_f/width, maxh.to_f/height].min
+        end
+      end # resize_to_fit_resolution
     end
   end
 end

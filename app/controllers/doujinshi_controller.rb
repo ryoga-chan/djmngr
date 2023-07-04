@@ -157,8 +157,8 @@ class DoujinshiController < ApplicationController
           fname = @doujin.thumb_disk_path
           img = Vips::Image.webpload(fname, page: params[:page].to_i) # ImageProcessing::Vips.source(fname).call save: false
           data = request.format.webp? ?
-            img.webpsave_buffer(Q: 70, lossless: false, min_size: true) :
-            img.jpegsave_buffer(Q: 70, background: [255,255,255])
+            img.webpsave_buffer(Q: IMG_QUALITY_THUMB, lossless: false, min_size: true) :
+            img.jpegsave_buffer(Q: IMG_QUALITY_THUMB, background: [255,255,255])
           send_data data,
             type: request.format.to_sym, disposition: :inline,
             filename: "#{@doujin.id}.#{request.format.to_sym}"
@@ -282,18 +282,15 @@ class DoujinshiController < ApplicationController
         @content = entry&.get_input_stream&.read
       end
       
-      maxw, maxh = params[:w].to_i, params[:h].to_i
-      
-      if @content # downsize image
-        vips = Vips::Image.new_from_buffer @content, @fname
-        to_resize  = vips.width > maxw || vips.height > maxh
-        to_convert = @fname !~ /\.jpg$/i
+      if @content # downsize image to the specified resolution
+        maxw, maxh = params[:w].to_i, params[:h].to_i
         
-        if to_resize || to_convert
-          im = ImageProcessing::Vips.source vips
-          im = im.resize_to_fit(maxw, maxh)            if to_resize
-          @fname = "#{File.basename @fname, '.*'}.jpg" if to_convert
-          @content = im.saver(quality: 80).call(save: false).jpegsave_buffer
+        if maxw > 0 && maxh > 0
+          @fname = "#{File.basename @fname, '.*'}.jpg"
+          @content = Vips::Image.
+            new_from_buffer(@content, '').
+            resize_to_fit_resolution(maxw, maxh).
+            jpegsave_buffer(Q: IMG_QUALITY_RESIZE)
         end
       else
         @fname = 'not-found.png'
