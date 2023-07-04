@@ -51,23 +51,11 @@ module CoreExt
 
         # https://stackoverflow.com/questions/10853119/chop-image-into-tiles-using-vips-command-line/11098420#11098420
         x_offset   = ((img_scaled.width - w) * p.to_f / 100).to_i
-        img_scaled.extract_area x_offset, 0, w, h
+        img_scaled.extract_area x_offset, 0, w, h   # `extract_area` also aliased as `crop`
       end # scale_and_crop_to_offset_perc
       
-      # example: im.resize_to_fit_resolution.jpegsave_buffer(Q: IMG_QUALITY_RESIZE)
-      def resize_to_fit_resolution(maxw, maxh)
-        case
-          when width > maxw || height > maxh # downscale
-            im = ImageProcessing::Vips.source self
-            result = im.resize_to_fit(maxw, maxh).
-              saver(quality: IMG_QUALITY_RESIZE).
-              call(save: false)
-          when width == maxw || height == maxh
-            self
-          else  # upscale
-            resize [maxw.to_f/width, maxh.to_f/height].min
-        end
-      end # resize_to_fit_resolution
+      # down/up-scale image: im.resize_to_fit(w, h).jpegsave_buffer(Q: IMG_QUALITY_RESIZE)
+      def resize_to_fit(maxw, maxh) = resize([maxw.to_f/width, maxh.to_f/height].min)
     end
   end
 end
