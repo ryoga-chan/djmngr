@@ -140,7 +140,7 @@ class ProcessArchiveCompressJob < ApplicationJob
               vips.resize_and_pad(THUMB_WIDTH, THUMB_HEIGHT, alpha: true)
             end
           
-          vips.convert('webp').saver(quality: 70).call destination: dst_img
+          vips.convert('webp').saver(quality: IMG_QUALITY_THUMB).call destination: dst_img
         end
         # merge selected thumbnails
         cmd  = %Q| img2webp -q 70 -lossy -d 3000 #{thumb_src[0]} |
