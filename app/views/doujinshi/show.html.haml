@@ -5,10 +5,36 @@
     %figure.image.is2by3.mb-1
       = image_tag("/thumbs/#{@doujin.id}.webp")
     
-    %span.tag.mt-2.mr-4.is-hidden-tablet= "ID# #{@doujin.id}"
+    %span.tag.mt-2.is-hidden-tablet= "ID# #{@doujin.id}"
     = link_to '&star; fave'.html_safe,
       fav_toggle_doujinshi_path(type: 'Doujin', id: @doujin.id),
-      class: "button is-rounded fav #{'is-warning' if @doujin.favorite?}"
+      class: "button is-rounded fav mb-2 mx-4 #{'is-warning' if @doujin.favorite?}"
+
+    .dropdown.is-hoverable.has-text-left(onclick="jQuery(this).toggleClass('is-active')")
+      .dropdown-trigger
+        %button.button
+          %span Download
+          %span.icon.is-small
+            %i.mi.mi-small expand_more
+      .dropdown-menu
+        .dropdown-content
+          - Setting.epub_devices.each do |specs|
+            = link_to epub_doujinshi_path(specs.merge convert: @doujin.id), class: 'dropdown-item' do
+              %span.icon.is-small(style="vertical-align: text-bottom")
+                %i.mi.mi-small construction
+              %span
+                EPUB &middot;
+                = specs[:name].tr '_', ' '
+          %hr.dropdown-divider
+          = link_to doujin_path(@doujin, format: :cbz), class: 'dropdown-item' do
+            %span.icon.is-small
+              %i.mi.mi-small file_download
+            %span CBZ
+          = link_to doujin_path(@doujin, format: :zip), class: 'dropdown-item' do
+            %span.icon.is-small
+              %i.mi.mi-small file_download
+            %span ZIP
+
   .column.pl-5
     %table.table.is-striped.is-fullwidth
       %tr
@@ -161,7 +187,7 @@
             %pre.is-family-monospace.is-italic= @doujin.notes
     
     .columns
-      .column.is-third
+      .column.is-half
         .actions.field.is-grouped
           .field.has-addons
             %p.control
@@ -185,29 +211,10 @@
                     %i.mi.mi-small casino
                   %span Sample
       
-      .column.is-third
-        .actions.field.is-grouped
-          .field.has-addons
-            %p.control
-              = link_to epub_doujinshi_path(convert: @doujin.id), class: 'button is-link is-rounded' do
-                %span.icon
-                  %i.mi.mi-small construction
-                %span EPUB
-            %p.control
-              = link_to doujin_path(@doujin, format: :cbz), class: 'button is-link is-rounded' do
-                %span.icon
-                  %i.mi.mi-small file_download
-                %span CBZ
-            %p.control
-              = link_to doujin_path(@doujin, format: :zip), class: 'button is-link is-rounded' do
-                %span.icon
-                  %i.mi.mi-small file_download
-                %span ZIP
-      
       .column
         - url_params = params.permit(:from_author, :from_circle).to_h
         
-        .actions.field.is-grouped
+        .actions.field.is-grouped.is-justify-content-flex-end
           .field.has-addons
             %p.control
               = link_to doujin_path(@doujin, url_params.merge(check_hash: true)),

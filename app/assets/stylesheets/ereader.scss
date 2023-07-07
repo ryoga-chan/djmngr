@@ -14,7 +14,7 @@
 .w1   { width: 1% }
 .w100 { width: 100% }
 .nowrap { white-space: nowrap; }
-.hidden { display: none; }
+.hidden { display: none !important; }
 .aright { text-align: right; }
 .acenter { text-align: center; }
 

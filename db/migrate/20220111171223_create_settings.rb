@@ -13,8 +13,7 @@ class CreateSettings < ActiveRecord::Migration[7.0]
     Setting.create key: 'dir.sorted'       , value: Rails.root.join('dj-libray', 'sorted' ).to_s, notes: 'folder containing processed doujinshi'
     Setting.create key: 'reading_direction', value: 'r2l'      , notes: 'default reading direction' # r2l, l2r
     Setting.create key: 'reading_bg_color' , value: 'dark'     , notes: 'default reading background color' # white, smoke, dark, black
-    Setting.create key: 'epub_img_width'   , value: 768        , notes: 'resize image to this width in epub creation'
-    Setting.create key: 'epub_img_height'  , value: 1024       , notes: 'resize image to this height in epub creation'
+    Setting.create key: 'epub_devices'     , value: 'Kobo_Sage@1440x1920, Kobo_Glo@758x1024', notes: 'screen dimension of your devices, used for epub creation'
     Setting.create key: 'comics_viewer'    , value: 'mcomix -f', notes: 'application for reading CBZ files (comic book viewer)'
     Setting.create key: 'file_manager'     , value: 'thunar'   , notes: 'application for browsing files (file manager)'
     Setting.create key: 'file_picker'      , value: "zenity --file-selection --file-filter='*.zip *.cbz'", notes: 'application for file selection (prints file path to stdout)'
