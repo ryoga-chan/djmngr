@@ -1,7 +1,11 @@
 class EpubConverterJob < ApplicationJob
   queue_as :tools
   
-  def perform(doujin_id)
+  def perform(doujin_id, options = {})
+    options[:name  ] ||= 'default'
+    options[:width ] =  768 unless (320..3000).include?(options[:width ].to_i)
+    options[:height] = 1024 unless (320..3000).include?(options[:height].to_i)
+    
     doujin = Doujin.find(doujin_id)
     
     # working folder
@@ -16,11 +20,12 @@ class EpubConverterJob < ApplicationJob
     uuid = SecureRandom.uuid
     
     # target image dimensions
-    width_dst  = Setting[:epub_img_width ].to_i
-    height_dst = Setting[:epub_img_height].to_i
-
+    width_dst  = options[:width ].to_i
+    height_dst = options[:height].to_i
+    
     fname_src  = doujin.file_path(full: true)
-    fname_dst  = File.join base_dir, doujin.file_dl_name.tr('!', '_').sub(/zip$/i, 'kepub.epub')
+    fname_dst  = File.join base_dir,
+      doujin.file_dl_name.tr('!', '_').sub(/\.zip$/i, "@#{options[:name]}.kepub.epub")
     author     = doujin.file_dl_info[:author]
     title      = doujin.file_dl_info[:filename]
     

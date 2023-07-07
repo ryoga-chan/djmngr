@@ -10,6 +10,7 @@
       'file_picker'   => 'file_open',
       'image_editor'  => 'draw',
       'terminal'      => 'terminal',
+      'epub_devices'  => 'screenshot',
       'external_link' => 'launch',
       'scraper_useragent' => 'badge',
     }.each do |key, icon|
@@ -24,19 +25,19 @@
             %span.icon.is-small.is-left
               %i.mi.mi-small= icon
 
-  - { 'epub_img_height' => 'crop_portrait',
-      'epub_img_width'  => 'crop_landscape',
-    }.each do |key, icon|
-    - s = Setting.find_by key: key
-    = f.hidden_field 'setting[][id]', value: s.id
-    .field.is-horizontal
-      .field-label.is-normal= render partial: 'setting_help', locals: {s: s}
-      .field-body
-        .field
-          .control.is-expanded.has-icons-left
-            = f.number_field 'setting[][value]', value: s.value, class: :input, min: 640, step: 1
-            %span.icon.is-small.is-left
-              %i.mi.mi-small= icon
+  -#- { 'epub_img_height' => 'crop_portrait',
+  -#    'epub_img_width'  => 'crop_landscape',
+  -#  }.each do |key, icon|
+  -#  - s = Setting.find_by key: key
+  -#  = f.hidden_field 'setting[][id]', value: s.id
+  -#  .field.is-horizontal
+  -#    .field-label.is-normal= render partial: 'setting_help', locals: {s: s}
+  -#    .field-body
+  -#      .field
+  -#        .control.is-expanded.has-icons-left
+  -#          = f.number_field 'setting[][value]', value: s.value, class: :input, min: 640, step: 1
+  -#          %span.icon.is-small.is-left
+  -#            %i.mi.mi-small= icon
 
   - s = Setting.find_by key: :reading_direction
   = f.hidden_field 'setting[][id]', value: s.id
