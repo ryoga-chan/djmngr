@@ -78,21 +78,23 @@ class EpubConverterJob < ApplicationJob
           img2.write_to_file fname, Q: IMG_QUALITY_RESIZE
           images << File.basename(fname)
           
-          # doubled image for halving
-          #im = im.resize_to_fit(width_dst*2, height_dst)
-          img2 = img.resize_to_fit width_dst*2, height_dst
-          
-          # first part of the splitted half
-          fname = "#{img_dst}-1.jpg"; puts "\t first half (#{crop_modes[0]})"
-          #im.resize_to_fit(width_dst*2, height_dst).resize_to_fill(width_dst, height_dst, crop: crop_modes[0]).call destination: fname
-          img2.smartcrop(width_dst, height_dst, interesting: crop_modes[0]).write_to_file fname
-          images << File.basename(fname)
-          
-          # second part of the splitted half
-          fname = "#{img_dst}-2.jpg"; puts "\t second half (#{crop_modes[1]})"
-          #im.resize_to_fit(width_dst*2, height_dst).resize_to_fill(width_dst, height_dst, crop: crop_modes[1]).call destination: fname
-          img2.smartcrop(width_dst, height_dst, interesting: crop_modes[1]).write_to_file fname
-          images << File.basename(fname)
+          if doujin.media_type != 'cg'
+            # doubled image for halving
+            #im = im.resize_to_fit(width_dst*2, height_dst)
+            img2 = img.resize_to_fit width_dst*2, height_dst
+            
+            # first part of the splitted half
+            fname = "#{img_dst}-1.jpg"; puts "\t first half (#{crop_modes[0]})"
+            #im.resize_to_fit(width_dst*2, height_dst).resize_to_fill(width_dst, height_dst, crop: crop_modes[0]).call destination: fname
+            img2.smartcrop(width_dst, height_dst, interesting: crop_modes[0]).write_to_file fname
+            images << File.basename(fname)
+            
+            # second part of the splitted half
+            fname = "#{img_dst}-2.jpg"; puts "\t second half (#{crop_modes[1]})"
+            #im.resize_to_fit(width_dst*2, height_dst).resize_to_fill(width_dst, height_dst, crop: crop_modes[1]).call destination: fname
+            img2.smartcrop(width_dst, height_dst, interesting: crop_modes[1]).write_to_file fname
+            images << File.basename(fname)
+          end # if not 'cg'
         else # resize the image
           fname = "#{img_dst}.jpg"
           #ImageProcessing::Vips.source(img).resize_and_pad(width_dst, height_dst, background: [255,255,255]).call destination: fname
