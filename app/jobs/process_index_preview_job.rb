@@ -8,10 +8,12 @@ class ProcessIndexPreviewJob < ProcessIndexRefreshJob
     Dir[pattern].each{|f| FileUtils.rm_f f }
   end # self.rm_previews
   
-  def perform(*args)
+  def perform(id = nil)
     self.class.lock_file!
     
-    self.class.entries.page(1).per(ProcessController::ROWS_PER_PAGE).each do |processable_doujin|
+    rel = self.class.entries
+    rel = rel.where(id: id) if id
+    rel.page(1).per(ProcessController::ROWS_PER_PAGE).each do |processable_doujin|
       next if File.exist?(processable_doujin.thumb_path)
       
       Zip::File.open(File.join Setting['dir.to_sort'], processable_doujin.name) do |zip|
