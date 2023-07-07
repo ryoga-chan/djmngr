@@ -79,6 +79,8 @@
         %table.to_process.table.is-striped.is-hoverable.ml-4
           %tbody
             - @files.each_with_index do |f, idx|
+              - has_thumb = File.exist?(f.thumb_path)
+              
               %tr{data: {id: f.id}}
                 %td.rm-or-batch
                   = link_to('🗑', {action: :delete_archive, path: f.name},
@@ -93,9 +95,15 @@
                     - if @preparing_paths.include?(f.name)
                       %span.tag.is-warning(title="processing") 🛠
                     = link_to f.name, action: :prepare_archive, path: f.name
+                    - unless has_thumb
+                      = link_to({preview: true, id: f.id},
+                        title: 'generate file preview', target: :_blank,
+                        class: 'button is-info is-rounded is-small tiny-bt ml-2') do
+                        %span.icon.is-small
+                          %i.mi.mi-small preview
                   - if f.name != f.name_kakasi
                     .name_kakasi.is-size-7= f.name_kakasi
-              - if File.exist?(f.thumb_path)
+              - if has_thumb
                 %tr
                   %td
                   %td(colspan=3)
