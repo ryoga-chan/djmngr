@@ -192,7 +192,7 @@ class DoujinshiController < ApplicationController
     @pub_dir = Rails.root.join('public').to_s
     
     if params[:convert]
-      EpubConverterJob.perform_later params[:convert]
+      EpubConverterJob.perform_later params[:convert], params.permit(:name, :width, :height).to_h
       sleep 3
       flash[:notice] = "now converting doujin ID [#{params[:convert]}]"
       return redirect_to_with_format(epub_doujinshi_path)

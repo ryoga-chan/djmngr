@@ -8,7 +8,8 @@
       %table
         = render 'show_info'
 
-      = form_with url: doujin_path(@doujin), method: :delete, class: :actions do |f|
+      = form_with url: doujin_path(@doujin), method: :delete, class: 'actions acenter' do |f|
         = f.submit 'YES, delete it', class: :button
-        &nbsp;&nbsp;
+        %br
+        %br
         = link_to 'NO, go back', doujin_path(@doujin, params.permit(:from_author, :from_circle).to_h), class: :button

@@ -45,10 +45,14 @@
             shelf_doujin_path(@doujin, shelf_id: s.try(:id).to_i, shelf_name: 'ereader'), class: :button
 
       .actions
-        = link_to '&nabla;EPUB'.html_safe, epub_doujinshi_path(convert: @doujin.id), class: :button
-        = link_to '&nabla;CBZ' .html_safe, doujin_path(@doujin, format: :cbz), class: :button
-        &nbsp;&nbsp;&nbsp;
-        = link_to '&empty;Del' .html_safe, delete_doujin_path(@doujin, params.permit(:from_author, :from_circle).to_h), class: :button
+        = link_to '&nabla;Download'.html_safe, '#', class: :button, style: "margin-right: 2rem;",
+          onclick: "jQuery(this).next().add(this).toggleClass('hidden'); return false"
+        .dl-list.hidden
+          - Setting.epub_devices.each do |specs|
+            = link_to "&nabla;#{h specs[:name].tr '_', ' '}".html_safe, epub_doujinshi_path(specs.merge convert: @doujin.id), class: :button
+          = link_to '&nabla;CBZ' .html_safe, doujin_path(@doujin, format: :cbz), class: :button
+        
+        = link_to '&empty;Delete' .html_safe, delete_doujin_path(@doujin, params.permit(:from_author, :from_circle).to_h), class: :button
   
   - if @doujin.num_images > 1
     %tr

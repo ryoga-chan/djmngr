@@ -31,7 +31,8 @@
                   %i.mi swap_horiz
                 %span Process
           
-          %span.navbar-item.has-dropdown.is-hoverable{class: (params[:controller] != 'doujinshi' ? nil : 'is-current')}
+          %span.navbar-item.has-dropdown.is-hoverable{class: (params[:controller] != 'doujinshi' ? nil : 'is-current'),
+            onclick: "jQuery(this).toggleClass('is-active')"}
             %a.navbar-link
               %span.icon-text
                 %span.icon
@@ -79,7 +80,8 @@
                     %span.icon
                       %i.mi search
         
-          %span.navbar-item.has-dropdown.is-hoverable{class: (%w{ authors circles themes }.include?(params[:controller]) ? 'is-current' : nil)}
+          %span.navbar-item.has-dropdown.is-hoverable{class: (%w{ authors circles themes }.include?(params[:controller]) ? 'is-current' : nil),
+            onclick: "jQuery(this).toggleClass('is-active')"}
             %a.navbar-link
               %span.icon
                 %i.mi folder_shared
@@ -98,7 +100,8 @@
                   %i.mi local_offer
                 %span Themes
           
-          %span.navbar-item.has-dropdown.is-hoverable{class: ("#{params[:controller]}/#{params[:action]}" == 'home/settings' ? 'is-current' : nil)}
+          %span.navbar-item.has-dropdown.is-hoverable{class: ("#{params[:controller]}/#{params[:action]}" == 'home/settings' ? 'is-current' : nil),
+            onclick: "jQuery(this).toggleClass('is-active')"}
             %a.navbar-link
               %span.icon-text
                 %span.icon
