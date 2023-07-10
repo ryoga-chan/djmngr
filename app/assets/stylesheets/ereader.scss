@@ -11,6 +11,8 @@
  * It is generally better to create a new file per style scope.
  *
  */
+//= require_tree ./components
+
 .w1   { width: 1% }
 .w100 { width: 100% }
 .nowrap { white-space: nowrap; }
@@ -36,7 +38,7 @@ a, a:visited { color: blue; }
 table.is-striped thead tr { background-color: #aaa; }
 table.is-striped tbody tr:nth-child(even) { background-color: #ccc; }
 
-.button {
+.button, button.jQKeyboardToggle {
   padding: 0.4rem 1rem;
   border-radius: 1rem;
   border: 2px outset silver;
@@ -44,6 +46,11 @@ table.is-striped tbody tr:nth-child(even) { background-color: #ccc; }
   text-decoration: none;
   display: inline-block;
   margin-bottom: 0.2rem;
+}
+
+button.jQKeyboardToggle {
+  line-height: 1rem;
+  border-radius: 0;
 }
 
 .frm-search {
