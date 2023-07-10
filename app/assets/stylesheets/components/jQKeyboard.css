@@ -1,0 +1,56 @@
+div.jQKeyboardContainer {
+  left: 0;
+  bottom: 0;
+  position: fixed;
+  width: 100vw;
+  display: table;
+  padding: 0.2rem 0;
+  background: white;
+  border-top: 0.1rem dashed black;
+}
+
+div.jQKeyboardRow {
+  display: table-row;
+  text-align: center;
+}
+
+#jQKeyboardDisplay {
+  width: 96.2vw;
+  line-height: 6vmin;
+  min-height: 6vmin;
+  margin-bottom: 0.2rem;
+}
+
+button.jQKeyboardBtn {
+  color: black;
+  background: white;
+  line-height: 7.40vmin;
+  min-width: 1rem;
+  margin: 0;
+  padding: 0.25rem 0;
+  border: 0.1rem solid black;
+  border-width: 0.1rem 0.1rem 0 0;
+  border-radius: 0.3rem;
+  text-align: center;
+  font-weight: bold;
+  outline: none;
+  cursor: pointer;
+}
+div.jQKeyboardRow button.jQKeyboardBtn:first-child { border-left: 0.1rem solid black; }
+div.jQKeyboardContainer div.jQKeyboardRow:last-child button.jQKeyboardBtn { border-bottom: 0.1rem solid black; }
+
+button.jQKeyboardBtn.shift-active { background: silver; }
+
+button.jQKeyboardBtn.ui-button-colspan-0  { width:  7.40vw; } /* 1   */
+button.jQKeyboardBtn.ui-button-colspan-2  { width: 11.10vw; } /* 1.5 */
+button.jQKeyboardBtn.ui-button-colspan-3  { width: 14.80vw; } /* 2   */
+button.jQKeyboardBtn.ui-button-colspan-4  { width: 18.50vw; } /* 2.5 */
+button.jQKeyboardBtn.ui-button-colspan-5  { width: 22.20vw; } /* 3   */
+button.jQKeyboardBtn.ui-button-colspan-6  { width: 25.90vw; } /* 3.5 */
+button.jQKeyboardBtn.ui-button-colspan-7  { width: 29.60vw; } /* 4   */
+button.jQKeyboardBtn.ui-button-colspan-8  { width: 33.30vw; } /* 4.5 */
+button.jQKeyboardBtn.ui-button-colspan-9  { width: 37.00vw; } /* 5   */
+button.jQKeyboardBtn.ui-button-colspan-10 { width: 40.70vw; } /* 5.5 */
+button.jQKeyboardBtn.ui-button-colspan-11 { width: 44.40vw; } /* 6   */
+button.jQKeyboardBtn.ui-button-colspan-12 { width: 48.10vw; } /* 6.5 */
+button.jQKeyboardBtn.ui-button-colspan-13 { width: 51.80vw; } /* 7   */

@@ -2,6 +2,7 @@
 
 = form_with url: search_doujinshi_path, method: :get, class: 'frm-search' do |f|
   = f.text_field :term, value: params[:term], placeholder: :search
+  %button.jQKeyboardToggle(data-field="#term") KB
   = f.submit 'Search', class: 'button'
 
   &middot;
