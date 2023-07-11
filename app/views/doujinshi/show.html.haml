@@ -243,4 +243,4 @@
         .column.is-4.has-text-centered
           .is-size-7= "page #{i}"
           %figure.image.is2by3
-            %img.async_load{data: {url: image_doujin_path(@doujin, page: i)}}
+            = trasparent_image_tag class: :async_load, data: {url: image_doujin_path(@doujin, page: i)}
