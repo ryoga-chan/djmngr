@@ -96,8 +96,7 @@
                       %span.tag.is-warning(title="processing") 🛠
                     = link_to f.name, action: :prepare_archive, path: f.name
                     - unless has_thumb
-                      = link_to({preview: true, id: f.id},
-                        title: 'generate file preview', target: :_blank,
+                      = link_to({preview: true, id: f.id}, title: 'generate file preview',
                         class: 'button is-info is-rounded is-small tiny-bt ml-2') do
                         %span.icon.is-small
                           %i.mi.mi-small preview

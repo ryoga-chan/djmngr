@@ -1,4 +1,6 @@
 module ApplicationHelper
+  B64_GIF_TRASPARENT = 'R0lGODlhAgADAPAAAAAAAAAAACH5BAEAAAAALAAAAAACAAMAAAIChF8AOw=='
+  
   def is_ereader_browser?
     %w{ Kobo Kindle NOOK }.any?{|i| request.user_agent.include? i }
   end # is_ereader?
@@ -7,6 +9,8 @@ module ApplicationHelper
     options[:src] = "data:#{mime};base64,#{b64_data}"
     tag :img, options, true
   end # inline_image_tag
+  
+  def trasparent_image_tag(options = {}) = inline_image_tag(:gif, B64_GIF_TRASPARENT, options)
   
   def link_to_exhentai_search(label, term, html_options = {})
     link_to label, "https://exhentai.org/?#{ {f_search: term}.to_query }", html_options.merge(target: :_blank)
