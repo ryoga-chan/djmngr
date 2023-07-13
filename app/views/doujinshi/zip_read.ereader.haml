@@ -13,6 +13,7 @@
   
   var num_files = #{@num_files};
   var cur_page  = #{params[:page]};
+  var resize    = #{params[:nr].to_i == 0};
   var images    = []; // FIFO queue of images to load sequentially
   
   function log (msg) { console.log(msg); }
@@ -30,8 +31,12 @@
   }//setImgClass
   
   function imgPath (page_num) {
-    return $('.main').data('image-url') + '?' +
-      $.param({page: page_num, h: $(window).height(), w: $(window).width()#{img_params}});
+    var params = {page: page_num#{img_params}};
+    
+    if (resize)
+      $.extend(params, {h: $(window).height(), w: $(window).width()});
+    
+    return $('.main').data('image-url') + '?' + $.param(params);
   }//imgPath
   
   function canTurnPage(img) {
@@ -266,8 +271,11 @@
     reading
     %br/
     men&ugrave;
-  .jump
-    = form_with url: @jump_to[:url], method: :get do |f|
+  
+  = form_with url: @jump_to[:url], method: :get do |f|
+    = hidden_field_tag :nr, params[:nr].to_i
+    
+    .jump
       - @jump_to[:params].each do |k, v|
         = hidden_field_tag k, v
       %center
@@ -278,8 +286,14 @@
           options_for_select(@num_files.times.map{|i| [i+1, i] }, params[:page]),
           onchange: %Q|this.form.submit()|
         %a.button.skip(href="#" onclick="jQuery(this).prev().val((cur_page+10) > num_files ? num_files : (cur_page+10)).change(); return false") >>
+    
+    .toggle-hq
+      %input.button{type: "submit",
+        value: (params[:nr].to_i == 0 ? "toggle auto resize (YES)" : "toggle auto resize (NO)"),
+        onclick: "jQuery('#nr').val( 1 - parseInt(jQuery('#nr').val()) )"}
   
-  - Setting::READING_BG_COLORS.each do |color|
-    %a.set-bg-color.button{href: '#', class: "bg-#{color}", data: {color: color}}<>= color[0].upcase
+  .canvas
+    - Setting::READING_BG_COLORS.each do |color|
+      %a.set-bg-color.button{href: '#', class: "bg-#{color}", data: {color: color}}<>= color[0].upcase
   
   .back= link_to 'back to details', params[:ret_url], class: :button
