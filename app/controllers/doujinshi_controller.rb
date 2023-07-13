@@ -29,16 +29,33 @@ class DoujinshiController < ApplicationController
     # default doujin order (same as Doujin#label_name_latin)
     dj_sql_name = Arel.sql "LOWER( COALESCE(NULLIF(doujinshi.name_romaji, ''), NULLIF(doujinshi.name_kakasi, '')) )"
     
+    def apply_filters(rel = nil)
+      return nil unless rel
+      
+      rel = rel.where('doujinshi.language' =>          params[:lan]          ) if params[:lan].present?
+      rel = rel.where('doujinshi.censored' =>          params[:cen] == 'true') if params[:cen].present?
+      rel = rel.where('doujinshi.colorized' =>         params[:col] == 'true') if params[:col].present?
+      rel = rel.where('doujinshi.reading_direction' => params[:dir]          ) if params[:dir].present?
+      rel = rel.where('doujinshi.media_type' =>        params[:med]          ) if params[:med].present?
+      rel = rel.where('doujinshi.favorite' =>          params[:fav] == 'true') if params[:fav].present?
+      case params[:sco]
+        when 'nd'         then rel = rel.where('doujinshi.score' => nil)
+        when /\A[0-9]+\z/ then rel = rel.where('doujinshi.score' => params[:sco].to_i)
+      end
+      
+      rel
+    end # apply_filters
+    
     case params[:tab]
       when 'author'
         sql_name = "COALESCE(NULLIF(authors.name_romaji, ''), NULLIF(authors.name_kakasi, ''))"
         # possibly lighter query:
         #   Author.select(Arel.sql "id, #{sql_name} AS name").where("id IN (SELECT author_id FROM authors_doujinshi)").
-        @parents = Author.
+        @parents = apply_filters Author.
           distinct.select(Arel.sql "authors.id, #{sql_name} AS name, authors.favorite").
           joins(:doujinshi).
           order(Arel.sql "authors.favorite DESC, LOWER(#{sql_name})")
-        @doujinshi = Doujin.
+        @doujinshi = apply_filters Doujin.
           distinct.select("doujinshi.*").
           joins(:authors).
           where(authors: {id: params[:author_id]}).
@@ -46,18 +63,18 @@ class DoujinshiController < ApplicationController
       
       when 'circle'
         sql_name = "COALESCE(NULLIF(circles.name_romaji, ''), NULLIF(circles.name_kakasi, ''))"
-        @parents = Circle.
+        @parents = apply_filters Circle.
           distinct.select(Arel.sql "circles.id, #{sql_name} AS name, circles.favorite").
           joins(:doujinshi).
           order(Arel.sql "circles.favorite DESC, LOWER(#{sql_name})")
-        @doujinshi = Doujin.
+        @doujinshi = apply_filters Doujin.
           distinct.select("doujinshi.*").
           joins(:circles).
           where(circles: {id: params[:circle_id]}).
           order(dj_sql_name) if params[:circle_id]
       
       when 'artbook', 'magazine'
-        rel = Doujin.where(category: params[:tab])
+        rel = apply_filters Doujin.where(category: params[:tab])
         @parents   = rel.order(:file_folder).distinct.pluck(:file_folder)
         @doujinshi = rel.where(file_folder: params[:folder]).order(dj_sql_name) if params[:folder]
     end
