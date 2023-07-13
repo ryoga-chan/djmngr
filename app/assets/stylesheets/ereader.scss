@@ -38,7 +38,9 @@ a, a:visited { color: blue; }
 table.is-striped thead tr { background-color: #aaa; }
 table.is-striped tbody tr:nth-child(even) { background-color: #ccc; }
 
-.button, button.jQKeyboardToggle {
+.button,
+button.jQKeyboardToggle {
+  cursor: pointer;
   padding: 0.4rem 1rem;
   border-radius: 1rem;
   border: 2px outset silver;
@@ -297,7 +299,7 @@ body[data-ctrl="doujinshi"][data-action="zip_read"] {
       font-size: larger;
       border-bottom: 1px solid black;
     }
-    div { margin: 1.5rem; }
+    div { margin: 1rem 1.5rem; }
   }
   
   a.set-bg-color {
