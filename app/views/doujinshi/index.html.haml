@@ -1,21 +1,63 @@
+- p_base   = %i[ tab detail author_id circle_id folder ]
+- p_filter = %i[ lan cen col dir med fav sco ]
+- p_data   = params.permit(*(p_base + p_filter)).to_h
+
+= form_with url: doujinshi_path, method: :get, html: {style: "margin-top: -2.5rem"} do |f|
+  - p_base.each do |k|
+    = f.hidden_field k, value: params[k]
+
+  %button.button.is-small.mb-2(type="button" onclick="jQuery(this).next().toggleClass('is-hidden')")
+    %span.icon
+      %i.mi(title="toggle filters") filter_list
+  %span.filters.is-hidden
+    .select.setting(title="language")= f.select :lan,
+      options_for_select({'[language]' => nil}.merge(Doujin::LANGUAGES), params[:lan]),
+      {}, class: "input is-small vmiddle"
+    .select.setting(title="censored?")= f.select :cen,
+      options_for_select({'[censor]' => nil}.merge({'uncensored' => false, 'censored' => true}), params[:cen]),
+      {}, class: "input is-small vmiddle"
+    .select.setting(title="colorized?")= f.select :col,
+      options_for_select({'[color]' => nil}.merge({'B&W' => false, 'color' => true}), params[:col]),
+      {}, class: "input is-small vmiddle"
+    .select.setting(title="reading direction")= f.select :dir,
+      options_for_select({'[direction]' => nil}.merge({'right2left' => 'r2l', 'left2right' => 'l2r'}), params[:dir]),
+      {}, class: "input is-small vmiddle"
+    .select.setting(title="media type")= f.select :med,
+      options_for_select([['[media]', nil]].concat(Doujin::MEDIA_TYPES), params[:med]),
+      {}, class: "input is-small vmiddle"
+    .select.setting(title="faved?")= f.select :fav,
+      options_for_select({'[fave]' => nil}.merge({'not faved' => false, 'faved' => true}), params[:fav]),
+      {}, class: "input is-small vmiddle"
+    .select.setting(title="scoring")= f.select :sco,
+      options_for_select(10.downto(1).to_a.push(['ND', 'nd']).unshift(['[score]', nil]), params[:sco]),
+      {}, class: "input is-small vmiddle"
+    %button.button.is-small(type="submit")
+      %span.icon.is-small
+        %i.mi.mi-small(title="toggle filters") filter_alt
+      %span filter
+    %a.button.is-small(href=doujinshi_path)
+      %span.icon.is-small
+        %i.mi.mi-small(title="toggle filters") filter_alt_off
+      %span reset
+
 .columns
   .column.is-3
     .tabs.is-boxed.is-centered
       %ul
         %li{class: (:'is-active' if params[:tab] == 'author') }
-          = link_to({tab: :author}, title: 'authors') do
+          = link_to(p_data.merge({tab: :author}), title: 'authors') do
             %span.icon.is-small
               %i.mi= DoujinshiController::ICONS['author']
         %li{class: (:'is-active' if params[:tab] == 'circle') }
-          = link_to({tab: :circle}, title: 'circles') do
+          = link_to(p_data.merge({tab: :circle}), title: 'circles') do
             %span.icon.is-small
               %i.mi= DoujinshiController::ICONS['circle']
         %li{class: (:'is-active' if params[:tab] == 'artbook') }
-          = link_to({tab: :artbook}, title: 'artbooks') do
+          = link_to(p_data.merge({tab: :artbook}), title: 'artbooks') do
             %span.icon.is-small
               %i.mi= DoujinshiController::ICONS['artbook']
         %li{class: (:'is-active' if params[:tab] == 'magazine') }
-          = link_to({tab: :magazine}, title: 'magazines') do
+          = link_to(p_data.merge({tab: :magazine}), title: 'magazines') do
             %span.icon.is-small
               %i.mi= DoujinshiController::ICONS['magazine']
     
@@ -24,8 +66,7 @@
       
       - if %w{ author_id circle_id folder }.any?{|k| params[k] }
         - show_key = session[:dj_index_detail] == 'thumbs' ? 'table' : 'thumbs'
-        - cur_params = params.permit(%w{ tab author_id circle_id folder }).to_h
-        = link_to(cur_params.merge(detail: session[:dj_index_detail] == 'thumbs' ? 'table' : 'thumbs', anchor: "listing"),
+        = link_to(p_data.merge(detail: session[:dj_index_detail] == 'thumbs' ? 'table' : 'thumbs', anchor: "listing"),
           class: 'bt-thumbs button is-info is-small is-rounded', style: 'float: right') do
           %span.icon-text
             %span.icon.is-small
@@ -37,12 +78,12 @@
         - @parents.each do |p|
           - if p.is_a?(String)
             - lbl = p == '.' ? '[root folder]' : p
-            %li= link_to lbl, {tab: params[:tab], folder: p, anchor: "listing"},
+            %li= link_to lbl, p_data.merge({tab: params[:tab], folder: p, anchor: "listing"}),
               class: "entry #{'is-active' if p == params[:folder]}"
           - else
             - type = p.class.name.downcase
             %li
-              = link_to p.name, {tab: params[:tab], "#{type}_id": p.id, anchor: "listing"},
+              = link_to p.name, p_data.merge({tab: params[:tab], "#{type}_id": p.id, anchor: "listing"}),
                 class: "entry #{'is-active' if p.id == params["#{type}_id"].to_i}"
               = link_to '&star;'.html_safe, fav_toggle_doujinshi_path(type: p.class.name, id: p.id),
                 class: "fav #{'has-text-warning' if p.favorite?}"
