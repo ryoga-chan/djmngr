@@ -1,6 +1,8 @@
 %h3 Doujinshi collection
 
-- cur_params = params.permit(%w{ format tab letter author_id circle_id folder }).to_h
+- p_base   = %i[ format tab letter detail author_id circle_id folder ]
+- p_filter = %i[ lan cen col dir med fav sco ]
+- p_data   = params.permit(*(p_base + p_filter)).to_h
 
 = form_with url: doujinshi_path, method: :get do |f|
   = f.hidden_field :format, value: params[:format]
@@ -17,10 +19,26 @@
 
     &middot;
 
-    %small= link_to 'back', cur_params.slice(*%w{ tab letter format })
+    %small= link_to 'back', p_data.slice!(*%i{ author_id circle_id folder })
     \|
     - show_key = session[:dj_index_detail] == 'thumbs' ? 'table' : 'thumbs'
-    %small= link_to "show #{show_key}", cur_params.merge(detail: show_key)
+    %small= link_to "show #{show_key}", p_data.merge(detail: show_key)
+  
+  \|
+  %a(href="#" onclick="jQuery('span.filters').toggleClass('hidden'); return false") filters
+  
+  %br
+  
+  %span.filters.hidden
+    = f.select :lan, options_for_select({'[language]' => nil}.merge(Doujin::LANGUAGES), params[:lan])
+    = f.select :cen, options_for_select({'[censor]' => nil}.merge({'uncensored' => false, 'censored' => true}), params[:cen])
+    = f.select :col, options_for_select({'[color]' => nil}.merge({'B&W' => false, 'color' => true}), params[:col])
+    = f.select :dir, options_for_select({'[direction]' => nil}.merge({'right2left' => 'r2l', 'left2right' => 'l2r'}), params[:dir])
+    = f.select :med, options_for_select([['[media]', nil]].concat(Doujin::MEDIA_TYPES), params[:med])
+    = f.select :fav, options_for_select({'[fave]' => nil}.merge({'not faved' => false, 'faved' => true}), params[:fav])
+    = f.select :sco, options_for_select(10.downto(1).to_a.push(['ND', 'nd']).unshift(['[score]', nil]), params[:sco])
+    %button(type="submit") filter
+    %a(href=doujinshi_path) reset
 
 %hr/
 
@@ -37,8 +55,8 @@
           - s.each do |parent|
             - if parent.is_a?(String)
               - lbl = parent == '.' ? '[root folder]' : parent
-              %td= link_to lbl, cur_params.merge(folder: parent)
+              %td= link_to lbl, p_data.merge(folder: parent)
             - else
-              %td= link_to parent.name, cur_params.merge("#{parent.class.name.downcase}_id": parent.id)
-          -#- (columns - s.size).times do
-          -#  %td(align="center") &middot;
+              %td= link_to parent.name, p_data.merge("#{parent.class.name.downcase}_id": parent.id)
+          - (columns - s.size).times do
+            %td(align="center") &middot;
