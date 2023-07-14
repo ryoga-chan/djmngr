@@ -6,10 +6,10 @@
   - p_base.each do |k|
     = f.hidden_field k, value: params[k]
 
-  %button.button.is-small.mb-2(type="button" onclick="jQuery(this).next().toggleClass('is-hidden')")
+  %button.button.is-small.mb-2(type="button" onclick="jQuery(this).next().toggleClass('is-hidden-mobile')")
     %span.icon
       %i.mi(title="toggle filters") filter_list
-  %span.filters.is-hidden
+  %span.filters.is-hidden-mobile
     .select.setting(title="language")= f.select :lan,
       options_for_select({'[language]' => nil}.merge(Doujin::LANGUAGES), params[:lan]),
       {}, class: "input is-small vmiddle"
