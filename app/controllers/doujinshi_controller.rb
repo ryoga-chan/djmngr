@@ -59,7 +59,7 @@ class DoujinshiController < ApplicationController
           distinct.select("doujinshi.*").
           joins(:authors).
           where(authors: {id: params[:author_id]}).
-          order(dj_sql_name) if params[:author_id]
+          order(dj_sql_name) if params[:author_id].present?
       
       when 'circle'
         sql_name = "COALESCE(NULLIF(circles.name_romaji, ''), NULLIF(circles.name_kakasi, ''))"
@@ -71,18 +71,18 @@ class DoujinshiController < ApplicationController
           distinct.select("doujinshi.*").
           joins(:circles).
           where(circles: {id: params[:circle_id]}).
-          order(dj_sql_name) if params[:circle_id]
+          order(dj_sql_name) if params[:circle_id].present?
       
       when 'artbook', 'magazine'
         rel = apply_filters Doujin.where(category: params[:tab])
         @parents   = rel.order(:file_folder).distinct.pluck(:file_folder)
-        @doujinshi = rel.where(file_folder: params[:folder]).order(dj_sql_name) if params[:folder]
+        @doujinshi = rel.where(file_folder: params[:folder]).order(dj_sql_name) if params[:folder].present?
     end
     
     if request.format.ereader?
-      @parent_name = Author.find_by(id: params[:author_id].to_i).try(:label_name_latin) if params[:author_id]
-      @parent_name = Circle.find_by(id: params[:circle_id].to_i).try(:label_name_latin) if params[:circle_id]
-      @parent_name = params[:folder] if params[:folder]
+      @parent_name = Author.find_by(id: params[:author_id].to_i).try(:label_name_latin) if params[:author_id].present?
+      @parent_name = Circle.find_by(id: params[:circle_id].to_i).try(:label_name_latin) if params[:circle_id].present?
+      @parent_name = params[:folder] if params[:folder].present?
       # group by first letter
       @parents = @parents.inject({}) do |h, i|
         key = (i.try(:name) || i)[0].upcase # Author/Circle/String
