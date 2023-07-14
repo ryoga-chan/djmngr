@@ -146,12 +146,24 @@ table.doujin {
 }
 
 table.block-links td a { display: block; }
-
+table.doujinshi.block-links tr td:nth-child(3) {
+  padding: 0;
+  
+  a {
+    min-height: 2.5rem;
+    padding: 1rem 0.25rem;
+  }
+}
 table.collection-index.block-links td a {
   min-height: 2.5rem;
   padding: 1rem 0.25rem;
   text-align: center;
   text-decoration: none;
+}
+
+div.pages, div.size {
+  white-space: nowrap;
+  text-align: right;
 }
 
 a.fav { text-align: center; }
