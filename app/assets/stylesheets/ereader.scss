@@ -38,6 +38,10 @@ a, a:visited { color: blue; }
 table.is-striped thead tr { background-color: #aaa; }
 table.is-striped tbody tr:nth-child(even) { background-color: #ccc; }
 
+table.is-checkered thead tr { background-color: #aaa; }
+table.is-checkered tbody tr:nth-child(even) td:nth-child(even) { background-color: #ccc; }
+table.is-checkered tbody tr:nth-child(odd)  td:nth-child(odd)  { background-color: #ccc; }
+
 .button,
 button.jQKeyboardToggle {
   cursor: pointer;
@@ -144,7 +148,8 @@ table.doujin {
 table.block-links td a { display: block; }
 
 table.collection-index.block-links td a {
-  min-height: 3rem;
+  min-height: 2.5rem;
+  padding: 1rem 0.25rem;
   text-align: center;
   text-decoration: none;
 }
@@ -247,11 +252,16 @@ body[data-ctrl="doujinshi"][data-action="index"] {
   li { margin-bottom: 1rem; }
 
   table.parents {
+    border-collapse: collapse;
+
     td {
-      width: 25%;
-      border-left: 1px dotted black;
+      width: 16.66%;
+      border: 1px solid black;
+      border-width: 0 1px 1px 0;
     }
-    td:first-child { border: 0; }
+
+    tr td:last-child { border-right:  0; }
+    tr:last-child td { border-bottom: 0; }
   }
 }
 

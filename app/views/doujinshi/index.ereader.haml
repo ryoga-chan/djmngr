@@ -29,9 +29,10 @@
   = render partial: 'thumbs_table',
     locals: { doujinshi: @doujinshi, short_label: true, show_categ: %w{author circle}.include?(params[:tab]) }
 - elsif @parents
-  %table.collection-index.parents.block-links.is-striped.w100
+  %table.collection-index.parents.block-links.is-checkered.w100
     %tbody
-      - @parents[params[:letter]].to_a.each_slice(4) do |s|
+      - columns = 6
+      - @parents[params[:letter]].to_a.each_slice(columns) do |s|
         %tr
           - s.each do |parent|
             - if parent.is_a?(String)
@@ -39,5 +40,5 @@
               %td= link_to lbl, cur_params.merge(folder: parent)
             - else
               %td= link_to parent.name, cur_params.merge("#{parent.class.name.downcase}_id": parent.id)
-          - (4-s.size).times do
-            %td
+          -#- (columns - s.size).times do
+          -#  %td(align="center") &middot;
