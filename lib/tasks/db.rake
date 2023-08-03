@@ -4,21 +4,14 @@ def zip_databases(options = {})
   zipfile = Rails.root.join("tmp/db-#{Date.today}.7z").to_s
   
   Dir.mktmpdir('dbbkup_') do |tmpdir|
-    db_sql = {}
+    db_file  = Rails.root.join('db', "#{Rails.env}.sqlite3").to_s
+    zip_file = Rails.root.join("db-#{Rails.env.to_s[0...4]}-#{Time.now.strftime '%F'}.sql.7z").to_s
     
-    Dir["#{Rails.root}/db/#{Rails.env}*.sqlite3"].
-      each{|db| db_sql[db] = "#{tmpdir.shellescape}/#{File.basename(db).sub /sqlite3$/, 'sql.7z'}" }
-    
-    print "Dumping #{db_sql.size} DBs: "
+    print "Dumping DB... "
     p_passwd = "-p#{options[:passwd]}" if options[:passwd]
-    db_sql.each do |db, sql_file|
-      `(sqlite3 #{db.shellescape} .dump | 7za a -mx=9 -m0=PPMd:mem=64m -si #{p_passwd} #{sql_file.shellescape}) 2>&1`
-      print $?.to_i == 0 ? '.' : 'X'
-    end; puts ''
+    `(sqlite3 #{db_file.shellescape} .dump | 7za a -mx=9 -m0=PPMd:mem=64m -si #{p_passwd} #{zip_file.shellescape}) 2>&1`
     
-    File.unlink(zipfile) if File.exist?(zipfile)
-    Dir.chdir(tmpdir){ `7za a -mx=0 #{zipfile.shellescape} .` } # create a single file
-    puts "CREATED: #{zipfile} "
+    puts "CREATED: #{zip_file} "
     
     yield(zipfile: zipfile, tmpdir: tmpdir) if block_given?
   end # mktmpdir
