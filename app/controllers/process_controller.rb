@@ -13,7 +13,7 @@ class ProcessController < ApplicationController
     # create archive folders
     folders  = [ Setting['dir.to_sort'], Setting['dir.sorting'] ]
     folders += %w{ author circle magazine artbook }.map{|d| File.join(Setting['dir.sorted'], d).to_s }
-    folders << File.join(Setting['dir.to_sort'], 'reprocess')
+    folders << File.join(Setting['dir.to_sort'], DJ_DIR_REPROCESS)
     folders.each{|f| FileUtils.mkdir_p f }
     
     # create "to_sort" file list
@@ -716,6 +716,11 @@ class ProcessController < ApplicationController
     DoujinCompareJob.remove params[:idx]
     redirect_to(params[:idx] != 'all'.freeze ? compare_doujinshi_path : root_path)
   end # compare_remove
+  
+  def process_later
+    ProcessableDoujin.find_by(id: params[:id])&.process_later
+    redirect_to process_index_path, notice: "file moved in [#{DJ_DIR_PROCESS_LATER}] folder"
+  end # process_later
   
   
   private # ____________________________________________________________________
