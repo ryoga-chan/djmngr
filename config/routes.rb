@@ -32,6 +32,7 @@ Rails.application.routes.draw do
       delete  :batch
       get     :read , to: 'doujinshi#zip_read' , model: 'ProcessableDoujin'
       get     :image, to: 'doujinshi#zip_image', model: 'ProcessableDoujin'
+      get     :process_later
     end
   end # process
 

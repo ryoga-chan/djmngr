@@ -352,8 +352,8 @@ class DoujinshiController < ApplicationController
   end # destroy
   
   def reprocess
-    # create original folder in /to_sort/reprocess
-    dst_dir = File.expand_path File.join(Setting['dir.to_sort'], 'reprocess', File.dirname(@doujin.name_orig))
+    # create original folder in /to_sort/#{DJ_DIR_REPROCESS}
+    dst_dir = File.expand_path File.join(Setting['dir.to_sort'], DJ_DIR_REPROCESS, File.dirname(@doujin.name_orig))
     FileUtils.mkdir_p dst_dir
     
     # move current ZIP file to that folder
@@ -378,7 +378,7 @@ class DoujinshiController < ApplicationController
     
     @doujin.destroy_with_files
     
-    redirect_to prepare_archive_process_index_path(path: File.join('reprocess', @doujin.name_orig)),
+    redirect_to prepare_archive_process_index_path(path: File.join(DJ_DIR_REPROCESS, @doujin.name_orig)),
       notice: "doujin removed from collection, processing auto started"
   end # reprocess
   

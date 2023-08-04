@@ -35,7 +35,9 @@ class ProcessableDoujin < ApplicationRecord
   
   def file_path(full: false) = full ? File.join(Setting['dir.to_sort'], name) : name
   
-  def thumb_url(mobile: false)  = "/#{THUMB_FOLDER}/#{'%010d' % id}-#{mobile ? :m : :d}.webp"
+  # append a hash to the url to ignore browser cache when the file name changes
+  def name_hash = @cache_name_hash ||= Digest::MD5.hexdigest("djmngr|#{name}|#{name.size}")
+  def thumb_url(mobile: false)  = "/#{THUMB_FOLDER}/#{'%010d' % id}-#{mobile ? :m : :d}.webp?h=#{name_hash}"
   
   def thumb_path(mobile: false) = Rails.root.join('public', THUMB_FOLDER, "#{'%010d' % id}-#{mobile ? :m : :d}.webp").to_s
 
@@ -43,4 +45,18 @@ class ProcessableDoujin < ApplicationRecord
     File.unlink(thumb_path(mobile: true )) if File.exist?(thumb_path(mobile: true ))
     File.unlink(thumb_path(mobile: false)) if File.exist?(thumb_path(mobile: false))
   end # delete_files
+  
+  def process_later
+    ProcessableDoujin.transaction do
+      src_file = File.expand_path File.join(Setting['dir.to_sort'], name)
+      dst_file = File.expand_path File.join(Setting['dir.to_sort'], DJ_DIR_PROCESS_LATER, name)
+      
+      update! name:        File.join(DJ_DIR_PROCESS_LATER, "#{name}"),
+              name_kakasi: File.join(DJ_DIR_PROCESS_LATER, "#{name_kakasi}")
+      
+      # create dest folder and move file
+      FileUtils.mkdir_p File.dirname(dst_file)
+      FileUtils.mv src_file, dst_file, force: true
+    end
+  end # process_later
 end
