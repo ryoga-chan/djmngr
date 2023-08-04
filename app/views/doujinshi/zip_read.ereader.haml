@@ -296,4 +296,4 @@
     - Setting::READING_BG_COLORS.each do |color|
       %a.set-bg-color.button{href: '#', class: "bg-#{color}", data: {color: color}}<>= color[0].upcase
   
-  .back= link_to 'back to details', params[:ret_url], class: :button
+  .back= link_to 'back', params[:ret_url], class: :button
