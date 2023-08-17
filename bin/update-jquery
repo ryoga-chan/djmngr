@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/sh
 VER=`curl -sL https://github.com/jquery/jquery/releases | grep '/tree/' | head -n 1 | sed -r 's:.+/([0-9.]+).+:\1:'`
 URL="https://code.jquery.com/jquery-$VER.js" # or $VER.min
 echo "DL $VER @ $URL"
