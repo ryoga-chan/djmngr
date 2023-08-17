@@ -26,7 +26,6 @@ gsub_file 'Gemfile', /^.+kredis.+\n/i, ''                 # strip kredis comment
 gem 'haml-rails', '~> 2.0'  # https://haml.info
 gem 'kaminari'  # pagination -- https://github.com/kaminari/kaminari
 gem 'kakasi'    # kanji kana simple inverter -- https://github.com/knu/kakasi_ffi
-gem 'ferret', '0.11.9.0', source: 'https://rubygems.pkg.github.com/acavalin' # https://github.com/acavalin/ferret#instructions
 
 # --- setup sprockets -----------------------------------------------------
 # https://github.com/rails/sprockets#directives
