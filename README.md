@@ -20,6 +20,9 @@ Populate your collection and:
 * simple **alternative interface** available for less powerful devices like
   e-readers or old browsers
 
+Screenshots and further instructions are available in the
+[homepage](https://ryoga-chan.github.io/djmngr-hp/).
+
 ## Collection folders organization of processed ZIP files
 
 - `/circles/<name_romaji>/[subfolder/]file`
