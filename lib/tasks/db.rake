@@ -29,7 +29,7 @@ namespace :db do
     db_test = Rails.root.join('db', 'development.sqlite3').to_s
 
     print "Copying prod DB to test DB... "
-    system %Q| cat #{db_prod.shellescape} > #{db_test.shellescape} |
+    FileUtils.cp_f db_prod, db_test
     system %Q| sqlite3 #{db_test.shellescape} "UPDATE ar_internal_metadata SET value = 'development' WHERE key = 'environment'" |
     puts "DONE!"
   end # prod2test
