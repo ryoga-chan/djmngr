@@ -74,7 +74,7 @@ class ProcessArchiveDecompressJob < ApplicationJob
     end
   end # self.crop_landscape_cover
   
-  # fast resize for thumbnail generation
+  # fast resize for thumbnail generation (cwebp -q in.webp out.webp)
   def self.generate_thumbnail(src, dst)
     ImageProcessing::Vips.source(src).
       resize_and_pad(THUMB_WIDTH, THUMB_HEIGHT, alpha: true).
@@ -196,10 +196,6 @@ class ProcessArchiveDecompressJob < ApplicationJob
         tpath = File.join(path_thumbs, img[:thumb_path])
         
         ProcessArchiveDecompressJob.generate_thumbnail File.join(path_contents, img[:src_path]), tpath
-        
-        # optimize size
-        #system %Q| cwebp -q 70 #{tpath.shellescape} -o #{tpath.shellescape} |
-        #raise 'err' if $?.to_i != 0
       rescue
         img[:dst_path] = "RESIZE ERROR: #{$!}"
       end
