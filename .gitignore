@@ -51,3 +51,4 @@ Gemfile.lock
 /public/epub/*.wip
 
 /docs/db-schema.pdf
+/docs/homepage
