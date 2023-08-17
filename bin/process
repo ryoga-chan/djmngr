@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/bash
 [ -z "$RAILS_ENV" ] && RAILS_ENV=production # development
 export RAILS_ENV
 bin/rails dj:process -- "$@"

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/bash
 CMD="$(dirname $0)/server p"
 
 # restart the server periodically
