@@ -44,7 +44,7 @@ Populate your collection and:
 1. configure the app by visiting `/home/settings` page
 
 It is *reccommended* to run the server as `./bin/server p`
-behind a reverse proxy like `nginx` or `apache`.
+behind a reverse proxy like *nginx* or *apache*.
 
 ## Requirements
 
