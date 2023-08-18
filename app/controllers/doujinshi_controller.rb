@@ -22,7 +22,7 @@ class DoujinshiController < ApplicationController
   def index
     @page_title = :collection
     
-    return redirect_to(process_index_path, flash: {warn: 'collection is empty'}) unless Doujin.any?
+    return redirect_to(root_path, flash: {warn: 'collection is empty'}) unless Doujin.any?
     
     params[:tab] = 'author' unless %w{ author circle artbook magazine }.include?(params[:tab])
     
@@ -516,8 +516,10 @@ class DoujinshiController < ApplicationController
     end
 
     n  = SecureRandom.random_number rel.count
-    id = rel.order(:id).offset(n).limit(1).pluck :id
-    redirect_to_with_format(doujin_path id: id)
+    id = rel.order(:id).offset(n).limit(1).pluck(:id).first
+    
+    id ? redirect_to_with_format(doujin_path id: id) :
+      redirect_to(root_path, flash: {warn: 'collection is empty'})
   end # random_pick
   
   # add/remove doujin from a shelf (creates a new shelf if requested)
