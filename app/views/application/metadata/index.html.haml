@@ -40,10 +40,9 @@
       %th Aliases
       %th.w1.has-text-centered
         = link_to({action: :new}, class: 'button is-small is-rounded') do
-          %span.icon-text
-            %span.icon.is-small
-              %i.mi.mi-small add
-            %span New
+          %span.icon.is-small
+            %i.mi.mi-small add
+          %span New
   %tbody
     - @records.each do |r|
       %tr

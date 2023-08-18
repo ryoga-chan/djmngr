@@ -32,22 +32,40 @@ Screenshots and further instructions are available in the
 
 ## Notes
 
+- This app is meant to be executed locally within your home network: no extra attention
+  was paid to security regarding external attacks or access management.
+  You can however put it behind basic auth and/or other restrictions via nginx/apache.
 - Runs on Rails 7 via Ruby 3 using an sqlite3 database file.
 - `docs/create-app.sh` contains the history of some cli commands executed to build the app
 - restore a DB dump: `7za x -so db.sql.7z | sqlite3 db/production.sqlite3`
 
 ## Local installation
 
-1. install ruby 3.2.x
-1. clone the repository and open a terminal within its folder
-1. install gems: `bundle install`
-1. run database migrations: `./bin/rails db:migrate`
-1. run standalone server: `RAILS_SERVE_STATIC_FILES=true ./bin/server p`
-1. open a browser to <http://localhost:39102/>
-1. configure the app by visiting `/home/settings` page
+~~~shell
+# install ruby 3.2.x
+curl -sSL https://get.rvm.io | bash -s stable
+rvm install 3.2.0
 
-It is *reccommended* to run the server as `./bin/server p`
-behind a reverse proxy like *nginx* or *apache*.
+# clone the repository
+git clone https://github.com/ryoga-chan/djmngr.git
+
+# install gems
+cd djmngr && bundle install
+
+# run database migrations
+RAILS_ENV=production ./bin/rails db:migrate
+
+# run standalone server
+RAILS_SERVE_STATIC_FILES=true ./bin/server p
+
+# wait for assets compilation to finish (done once)
+# then open a browser to http://localhost:39102/
+# and configure the app in Menu > Tools > Settings
+~~~
+
+It is *reccommended* to run the server with `./bin/server p`
+behind a **reverse proxy** like *nginx* or *apache* because they
+are better at serving many static files.
 
 ## Requirements
 
