@@ -39,7 +39,13 @@ Screenshots and further instructions are available in the
 - `docs/create-app.sh` contains the history of some cli commands executed to build the app
 - restore a DB dump: `7za x -so db.sql.7z | sqlite3 db/production.sqlite3`
 
-## Local installation
+## Running the application
+
+### Docker image
+
+*A Docker image will be available in the near feature.*
+
+### Local installation
 
 ~~~shell
 # install ruby 3.2.x
