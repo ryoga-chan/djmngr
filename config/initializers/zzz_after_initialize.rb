@@ -1,3 +1,4 @@
+# https://stackoverflow.com/questions/73868603/accessing-models-and-modules-in-a-rails-7-initializer/73881810#73881810
 Rails.application.config.after_initialize do
   if Setting.table_exists?
     # create collection folders

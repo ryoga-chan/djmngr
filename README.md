@@ -69,7 +69,7 @@ RAILS_SERVE_STATIC_FILES=true ./bin/server p
 # and configure the app in Menu > Tools > Settings
 ~~~
 
-It is *reccommended* to run the server with `./bin/server p`
+It is *recommended* to run the server with `./bin/server p`
 behind a **reverse proxy** like *nginx* or *apache* because they
 are better at serving many static files.
 
