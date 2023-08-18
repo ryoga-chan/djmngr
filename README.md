@@ -23,7 +23,7 @@ Populate your collection and:
 Screenshots and further instructions are available in the
 [homepage](https://ryoga-chan.github.io/djmngr-hp/).
 
-## Collection folders organization of processed ZIP files
+## Folder organization of processed ZIP files
 
 - `/circles/<name_romaji>/[subfolder/]file`
 - `/authors/<name_romaji>/[subfolder/]file`
@@ -32,7 +32,7 @@ Screenshots and further instructions are available in the
 
 ## Notes
 
-- Runs on Rails 7 via Ruby 3
+- Runs on Rails 7 via Ruby 3 using an sqlite3 database file.
 - `docs/create-app.sh` contains the history of some cli commands executed to build the app
 - restore a DB dump: `7za x -so db.sql.7z | sqlite3 db/production.sqlite3`
 
@@ -53,17 +53,20 @@ behind a reverse proxy like *nginx* or *apache*.
 
 ### Required system tools
 
-- [libvips-dev](https://packages.debian.org/stable/libvips-dev)
-- [libkakasi2-dev](https://packages.debian.org/stable/libkakasi2-dev)
-- [libjpeg-dev](https://packages.debian.org/stable/libjpeg-dev)
-- [libpng-dev](https://packages.debian.org/stable/libpng-dev)
-- [img2webp](https://packages.debian.org/stable/webp)
-- [zip](https://packages.debian.org/stable/zip),
+- images:
+  [libvips-dev](https://packages.debian.org/stable/libvips-dev),
+  [libkakasi2-dev](https://packages.debian.org/stable/libkakasi2-dev),
+  [libjpeg-dev](https://packages.debian.org/stable/libjpeg-dev),
+  [libpng-dev](https://packages.debian.org/stable/libpng-dev),
+  [img2webp](https://packages.debian.org/stable/webp)
+- compression:
+  [zip](https://packages.debian.org/stable/zip),
   [unzip](https://packages.debian.org/stable/unzip)
-- [find](https://packages.debian.org/stable/findutils)
-- [grep](https://packages.debian.org/stable/grep)
-- [sort](https://packages.debian.org/stable/coreutils)
-- [sha512sum](https://packages.debian.org/stable/coreutils)
+- core tools:
+  [find](https://packages.debian.org/stable/findutils),
+  [grep](https://packages.debian.org/stable/grep),
+  [sort](https://packages.debian.org/stable/coreutils),
+  [sha512sum](https://packages.debian.org/stable/coreutils)
 
 Install all on debian with:
 
@@ -74,11 +77,12 @@ apt install libvips-dev libkakasi2-dev libjpeg-dev libpng-dev \
 
 ### Optional tools
 
-- [mcomix](https://packages.debian.org/stable/mcomix) (CBZ/comic book viewer)
-- [thunar](https://packages.debian.org/stable/thunar) (file manager)
-- [graphviz](https://packages.debian.org/stable/graphviz), [sed](https://packages.debian.org/stable/sed) (ER diagram generation)
-- [sqlite3](https://packages.debian.org/stable/sqlite3) (DB dump)
-- [p7zip-full](https://packages.debian.org/stable/p7zip-full) (DB dump decompression)
+- comics viewer: [mcomix](https://packages.debian.org/stable/mcomix)
+- file manager: [thunar](https://packages.debian.org/stable/thunar)
+- DB ER diagram: [graphviz](https://packages.debian.org/stable/graphviz), [sed](https://packages.debian.org/stable/sed)
+- DB dump/restore:
+  [sqlite3](https://packages.debian.org/stable/sqlite3),
+  [p7zip-full](https://packages.debian.org/stable/p7zip-full)
 
 Install all on debian with:
 
