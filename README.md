@@ -91,6 +91,8 @@ are better at serving many static files.
   [grep](https://packages.debian.org/stable/grep),
   [sort](https://packages.debian.org/stable/coreutils),
   [sha512sum](https://packages.debian.org/stable/coreutils)
+- other:
+  [nodejs](https://packages.debian.org/stable/nodejs)
 
 Install all on debian with:
 
