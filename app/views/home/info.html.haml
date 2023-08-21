@@ -1,0 +1,37 @@
+.title.is-size-4 Application info
+
+%table.table.is-striped.is-hoverable
+  %tbody
+    %tr
+      %th DjMngr
+      %td
+        = ::VERSION
+        - git_rev = `git rev-parse HEAD` rescue nil
+        - if git_rev
+          \-
+          = git_rev
+    
+    %tr
+      %th Ruby
+      %td= RUBY_VERSION
+    
+    %tr
+      %th Rails
+      %td= Rails.version
+    
+    - node_ver = `node --version` rescue nil
+    - if node_ver
+      %tr
+        %th Node
+        %td= node_ver
+    
+    - vips_ver = `vips --version` rescue nil
+    - if vips_ver
+      %tr
+        %th Vips
+        %td= vips_ver
+    
+    %tr
+      %th DB size
+      - db_file = Rails.root.join('db', "#{Rails.env}.sqlite3").to_s
+      %td= number_to_human_size File.size(db_file)
