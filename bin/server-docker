@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+cd /app
+
+# copy default db if missing
+[ -f db/production.sqlite3 ] || cp -a -f production.sqlite3 ./db/
+[ -f db/schema.rb          ] || cp -a -f schema.rb          ./db/
+
+exec su -c "cd /app ; bundle exec ./bin/server p" rails
