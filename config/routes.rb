@@ -5,6 +5,7 @@ Rails.application.routes.draw do
   get  'home/index'
   get  'home/settings'
   post 'home/settings'
+  get  'home/info'
   
   resources :process, only: %i[ index edit ] do
     collection do
