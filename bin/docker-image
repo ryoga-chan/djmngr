@@ -1,0 +1,39 @@
+#!/usr/bin/env ruby
+
+# read APP VERSION
+load 'config/initializers/version.rb' rescue nil
+raise :no_version_found unless defined?(VERSION)
+
+# read RUBY VERSION
+RUBY_VER = File.read('.ruby-version').strip.sub(/.+-([0-9\.]+).*/, '\1') rescue nil
+raise :no_version_found unless RUBY_VER
+
+puts "=== App #{VERSION} on Ruby #{RUBY_VER} ==="
+
+IMG_NAME = "ryogachan/djmngr:#{VERSION}"
+
+case ARGV.shift
+  when 'build'
+    puts "Building image..."
+    sleep 2
+    
+    build_args = {
+      'APP_VERSION'  => VERSION,
+      'RUBY_VERSION' => RUBY_VER,
+    }.map{|k,v| %Q|--build-arg="#{k}=#{v}"| }.join(' ')
+    
+    opts = '--no-cache' if ARGV.include?('nc')
+    
+    system %Q| docker build #{build_args} #{opts} -t #{IMG_NAME} . |, chdir: 'docker'
+  when 'run'
+    puts "Running built image..."
+    system %Q| docker run --rm -ti -p 3000:3000 --name trash #{IMG_NAME} |
+  when 'exec'
+    puts "Opening shell in running image..."
+    system %Q| docker exec -ti trash bash -il |
+  when 'publish'
+    system %Q| docker login |
+    system %Q| docker push #{IMG_NAME} |
+  else
+    puts "USAGE: #{File.basename __FILE__} <build [nc]|run|exec|publish>"
+end
