@@ -131,8 +131,8 @@ are better at serving many static files.
 Install all on debian with:
 
 ~~~shell
-apt install libvips-dev libkakasi2-dev libjpeg-dev libpng-dev \
-            webp zip unzip findutils grep coreutils
+apt install libvips-dev libkakasi2-dev libjpeg-dev libpng-dev webp \
+            zip unzip findutils grep coreutils nodejs imagemagick
 ~~~
 
 ### Optional tools
