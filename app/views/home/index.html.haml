@@ -27,7 +27,7 @@
             %span.icon-text
               %span.icon
                 %i.mi= DoujinshiController::ICONS[cat]
-              %span= link_to number_with_delimiter(n*10, delimiter: "'"), doujinshi_path(tab: cat)
+              %span= link_to number_with_delimiter(n, delimiter: "'"), doujinshi_path(tab: cat)
 
     .tags
       .tags.has-addons.mr-4.mb-0
