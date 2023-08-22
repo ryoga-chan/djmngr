@@ -14,7 +14,7 @@ IMG_NAME = "ryogachan/djmngr:#{VERSION}"
 
 case ARGV.shift
   when 'build'
-    puts "Building image..."
+    puts "Building image:"
     sleep 2
     
     build_args = {
@@ -24,16 +24,45 @@ case ARGV.shift
     
     opts = '--no-cache' if ARGV.include?('nc')
     
-    system %Q| docker build #{build_args} #{opts} -t #{IMG_NAME} . |, chdir: 'docker'
+    cmd = %Q| docker build #{build_args} #{opts} -t #{IMG_NAME} . |
+    puts cmd
+    system cmd, chdir: 'docker'
+  
   when 'run'
-    puts "Running built image..."
-    system %Q| docker run --rm -ti -p 3000:3000 --name trash #{IMG_NAME} |
+    puts "Running built image:"
+    cmd = %Q| docker run --rm -ti -p 3000:3000 --name trash #{IMG_NAME} |
+    puts cmd
+    system cmd
+  
+  when 'sh'
+    puts "Opening shell in image:"
+    cmd = %Q| docker run --rm -ti -p 3000:3000 --name trash #{IMG_NAME} bash -il |
+    puts cmd
+    system cmd
+  
   when 'exec'
-    puts "Opening shell in running image..."
-    system %Q| docker exec -ti trash bash -il |
-  when 'publish'
+    puts "Opening shell in container:"
+    cmd = %Q| docker exec -ti trash bash -il |
+    puts cmd
+    system cmd
+  
+  when 'push'
+    puts "Logging in:"
     system %Q| docker login |
+    
+    puts "\nPushing:"
     system %Q| docker push #{IMG_NAME} |
+  
+  when 'cc'
+    puts "Clear builder cache:"
+    system %Q| docker builder prune -f |
+  
   else
-    puts "USAGE: #{File.basename __FILE__} <build [nc]|run|exec|publish>"
+    puts "USAGE: #{File.basename __FILE__} <build [nc]|run|sh|exec|push|cc>"
+    puts "    build [nc]      build image, nc=don't use cache"
+    puts "    run             run the image with default command"
+    puts "    sh              run the image by opening a shell"
+    puts "    exec            run a shell in the running image/container"
+    puts "    push            push image to docker registry (publish)"
+    puts "    cc              clear builder cache"
 end
