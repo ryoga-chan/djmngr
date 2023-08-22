@@ -1,3 +1,4 @@
 #!/usr/bin/env ruby
+ENV['RAILS_ENV'] = 'production'
 ARGV.replace %w{ assets:clobber assets:precompile }
 load File.join(File.dirname(__FILE__), 'rails')
