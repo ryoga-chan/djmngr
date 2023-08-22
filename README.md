@@ -82,7 +82,8 @@ are better at serving many static files.
   [libkakasi2-dev](https://packages.debian.org/stable/libkakasi2-dev),
   [libjpeg-dev](https://packages.debian.org/stable/libjpeg-dev),
   [libpng-dev](https://packages.debian.org/stable/libpng-dev),
-  [img2webp](https://packages.debian.org/stable/webp)
+  [img2webp](https://packages.debian.org/stable/webp),
+  [imagemagick](https://packages.debian.org/stable/imagemagick)
 - compression:
   [zip](https://packages.debian.org/stable/zip),
   [unzip](https://packages.debian.org/stable/unzip)
