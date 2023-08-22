@@ -27,6 +27,7 @@ case ARGV.shift
     cmd = %Q| docker build #{build_args} #{opts} -t #{IMG_NAME} . |
     puts cmd
     system cmd, chdir: 'docker'
+    system %Q| docker image tag #{IMG_NAME} ryogachan/djmngr:latest |
   
   when 'run'
     puts "Running built image:"
@@ -52,6 +53,7 @@ case ARGV.shift
     
     puts "\nPushing:"
     system %Q| docker push #{IMG_NAME} |
+    system %Q| docker push ryogachan/djmngr:latest |
   
   when 'cc'
     puts "Clear builder cache:"

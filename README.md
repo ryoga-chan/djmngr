@@ -6,6 +6,7 @@ files, assigning metedata, searching, and reading online from any device.
 
 Populate your collection and:
 
+* browse it on desktop or mobile devices
 * browse by metadata with optional filters
 * search by title and its translation
 * search by **cover similarity**
@@ -43,7 +44,39 @@ Screenshots and further instructions are available in the
 
 ### Docker image
 
-*A Docker image will be available in the near feature.*
+**Note:** When running the app via docker all external commands will fail to run
+(examples: file manager, terminal, ...), for the advanced/full experience consider
+the *Local installation*.
+
+#### Via docker
+
+~~~shell
+# download image
+docker pull ryogachan/djmngr
+
+# run image
+docker run --rm -ti --name trash \
+  -p 3000:3000 \
+  -v /path/to/library:/app/dj-library     \
+  -v /path/to/epub:/app/public/epub       \
+  -v /path/to/thumbs:/app/public/thumbs   \
+  -v /path/to/samples:/app/public/samples \
+  ryogachan/djmngr
+~~~
+
+#### Via docker-compose
+
+~~~shell
+# download image
+docker pull ryogachan/djmngr
+
+# download docker-compose file
+wget https://github.com/ryoga-chan/djmngr/raw/main/docker/compose.yml
+
+# edit port/folders in compose.yml, then:
+docker compose up -d  # start app in background
+docker compose down   # stop app
+~~~
 
 ### Local installation
 

@@ -1,0 +1,18 @@
+version: "3.7"
+
+# GUIDE: https://docs.docker.com/get-started/08_using_compose/
+services:
+  djmngr:
+    image: ryogachan/djmngr
+    volumes:
+      - /path/to/library:/app/dj-library
+      - /path/to/epub:/app/public/epub
+      - /path/to/thumbs:/app/public/thumbs
+      - /path/to/samples:/app/public/samples
+    networks:
+      - net
+    ports:
+      - 3000:3000
+
+networks:
+  net:
