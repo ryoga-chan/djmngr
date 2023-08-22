@@ -39,6 +39,19 @@ class EpubConverterJob < ApplicationJob
       return
     end
     
+    # add top/bottom white border to center image in the epub page
+    # https://github.com/libvips/ruby-vips/issues/134#issuecomment-330685115
+    def center_vertically(img, height_dst)
+      return img unless img.height < height_dst
+    
+      margin_top = (height_dst - img.height)/2
+      
+      img.embed \
+        0,         margin_top, # current image insertion coordinates (X, Y)
+        img.width, height_dst, # canvas/larger image dimensions
+        background: [255,255,255]
+    end # center_vertically
+    
     # create required folders
     %w{ META-INF images pages }.each{|d| FileUtils.mkdir_p "#{tmpd}/#{d}" }
     
@@ -66,15 +79,7 @@ class EpubConverterJob < ApplicationJob
           fname = "#{img_dst}-0.jpg"; puts "\t rotated"
           #im.rotate(90).resize_and_pad(width_dst, height_dst, background: [255,255,255]).call destination: fname
           img2 = img.rotate(90).resize_to_fit(width_dst, height_dst)
-          if img2.height < height_dst
-            # https://github.com/libvips/ruby-vips/issues/134#issuecomment-330685115
-            # add top/bottom white border to center image in the epub page
-            margin_top = (height_dst - img2.height)/2
-            img2 = img2.embed \
-              0,         margin_top, # current image insertion coordinates (X, Y)
-              width_dst, height_dst, # canvas/larger image dimensions
-              background: [255,255,255]
-          end
+          img2 = center_vertically img2, height_dst
           img2.write_to_file fname, Q: IMG_QUALITY_RESIZE
           images << File.basename(fname)
           
@@ -82,6 +87,7 @@ class EpubConverterJob < ApplicationJob
             # doubled image for halving
             #im = im.resize_to_fit(width_dst*2, height_dst)
             img2 = img.resize_to_fit width_dst*2, height_dst
+            img2 = center_vertically img2, height_dst
             
             # first part of the splitted half
             fname = "#{img_dst}-1.jpg"; puts "\t first half (#{crop_modes[0]})"
