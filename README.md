@@ -1,7 +1,7 @@
 # Doujinshi manager
 
-This software is made for comics/manga/doujin/novel readers and photographers for
-managing their collection of zipped image sets, easying their work with sorting
+This software is made for doujin/manga/comics/novel readers and photographers to
+manage a collection of zipped image sets, easying their work with sorting
 files, assigning metedata, searching, and reading online from any device.
 
 Populate your collection and:
@@ -26,10 +26,10 @@ Screenshots and further instructions are available in the
 
 ## Folder organization of processed ZIP files
 
-- `/circles/<name_romaji>/[subfolder/]file`
-- `/authors/<name_romaji>/[subfolder/]file`
+- `/authors/<name>/[subfolder/]file`
+- `/circles/<name>/[subfolder/]file`
 - `/magz/<name>/[subfolder/]file`
-- `/artbooks/[collection name/][subfolder/]file`
+- `/artbooks/[series name/][subfolder/]file`
 
 ## Notes
 
@@ -42,7 +42,7 @@ Screenshots and further instructions are available in the
 
 ## Running the application
 
-### Docker image
+### Docker image ([dockerhub](https://hub.docker.com/r/ryogachan/djmngr))
 
 **Note:** When running the app via docker all external commands will fail to run
 (examples: file manager, terminal, ...), for the advanced/full experience consider
@@ -97,7 +97,7 @@ RAILS_ENV=production ./bin/rails db:migrate
 # run standalone server
 RAILS_SERVE_STATIC_FILES=true ./bin/server p
 
-# wait for assets compilation to finish (done once)
+# wait for assets compilation to finish (done only once)
 # then open a browser to http://localhost:39102/
 # and configure the app in Menu > Tools > Settings
 ~~~
