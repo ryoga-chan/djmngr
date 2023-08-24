@@ -1,7 +1,7 @@
 # Doujinshi manager
 
-This software is made for comics/manga/doujin/novel readers and photographers for
-managing their collection of zipped image sets, easying their work with sorting
+This software is made for doujin/manga/comics/novel readers and photographers to
+manage a collection of zipped image sets, easying their work with sorting
 files, assigning metedata, searching, and reading online from any device.
 
 Populate your collection and:
