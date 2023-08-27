@@ -126,6 +126,7 @@ are better at serving many static files.
   [sort](https://packages.debian.org/stable/coreutils),
   [sha512sum](https://packages.debian.org/stable/coreutils)
 - other:
+  [libsqlite3-0](https://packages.debian.org/stable/libsqlite3-0)
   [nodejs](https://packages.debian.org/stable/nodejs)
 
 Install all on debian with:
