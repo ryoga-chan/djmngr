@@ -6,4 +6,6 @@ cd /app
 [ -f db/production.sqlite3 ] || cp -a -f production.sqlite3 ./db/
 [ -f db/schema.rb          ] || cp -a -f schema.rb          ./db/
 
+su -c "cd /app ; bundle exec ./bin/rails db:migrate" rails
+
 exec su -c "cd /app ; bundle exec ./bin/server p" rails
