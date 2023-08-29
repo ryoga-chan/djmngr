@@ -1,4 +1,4 @@
-# * see also `/bin/docker-image script`
+# * see also `/bin/docker-image` script
 # * multi stage build based on "Rails 7.1 default Dockerfile":
 #   https://gist.github.com/tannakartikey/ced6b33acd3d6132a6eab99a667e1cbe
 

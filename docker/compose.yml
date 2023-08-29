@@ -5,6 +5,7 @@ services:
   djmngr:
     image: ryogachan/djmngr
     volumes:
+      - /path/to/db:/app/db
       - /path/to/library:/app/dj-library
       - /path/to/epub:/app/public/epub
       - /path/to/thumbs:/app/public/thumbs
