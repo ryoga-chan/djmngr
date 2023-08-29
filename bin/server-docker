@@ -6,6 +6,8 @@ cd /app
 [ -f db/production.sqlite3 ] || cp -a -f production.sqlite3 ./db/
 [ -f db/schema.rb          ] || cp -a -f schema.rb          ./db/
 
+[ -f './import/metadata.dat' ] && su -c "cd /app ; bundle exec ./bin/rails djorg:metadata:load" rails
+
 su -c "cd /app ; bundle exec ./bin/rails db:migrate" rails
 
 exec su -c "cd /app ; bundle exec ./bin/server p" rails
