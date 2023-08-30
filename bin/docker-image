@@ -59,6 +59,13 @@ case ARGV.shift
     puts "Clear builder cache:"
     system %Q| docker builder prune -f |
   
+  when 'prune'
+    puts "Pruning docker images & system:"
+    # https://stackoverflow.com/questions/32490229/how-can-i-delete-docker-images-by-tag-preferably-with-wildcarding/47265229#47265229
+    images = `docker images --filter=reference="ryogachan/djmngr*" -q | sort -u`.split("\n")
+    system %Q| docker image rm -f #{images.join ' '} |
+    system %Q| docker system prune -f |
+  
   else
     puts "USAGE: #{File.basename __FILE__} <build [nc]|run|sh|exec|push|cc>"
     puts "    build [nc]      build image, nc=don't use cache"
@@ -67,4 +74,5 @@ case ARGV.shift
     puts "    exec            run a shell in the running image/container"
     puts "    push            push image to docker registry (publish)"
     puts "    cc              clear builder cache"
+    puts "    prune           clear built images and docker system"
 end
