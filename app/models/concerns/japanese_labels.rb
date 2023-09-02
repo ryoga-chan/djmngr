@@ -6,7 +6,7 @@ module JapaneseLabels
     
     def label_name_latin
       return name_romaji if name_romaji.present?
-      return name_eng    if name_eng   .present?
+      return name_eng    if try(:name_eng).present?
       name_kakasi
     end
   end

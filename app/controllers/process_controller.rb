@@ -254,6 +254,8 @@ class ProcessController < ApplicationController
     
     File.open(File.join(@dname, 'info.yml'), 'w'){|f| f.puts @info.to_yaml }
     
+    params[:tab] = :ident if params[:tab] == 'images'
+    
     return redirect_to(edit_process_path(id: params[:id], tab: params[:tab]),
       notice: "#{params[:path].size} file/s deleted")
   end # delete_archive_files
@@ -263,6 +265,7 @@ class ProcessController < ApplicationController
     @perc  = File.read(File.join @dname, 'completion.perc').to_f rescue 0.0 unless @info[:prepared_at]
     @fname = File.basename(@info[:relative_path].to_s)
     info_changed = false
+    redir_anchor = nil
 
     # toggle associated author/circle ID
     %w{ author circle }.each do |k|
@@ -316,7 +319,6 @@ class ProcessController < ApplicationController
       colorized
       media_type
       notes
-      cover_crop_method
     }.each do |k|
       if params[k] && params[k] != @info[k]
         @info[k] = params[k].strip.gsub(/ +/, ' ')
@@ -338,8 +340,10 @@ class ProcessController < ApplicationController
       info_changed = true
     end
     
-    if @info[:landscape_cover] && params[:cover_crop_method]
+    if @info[:landscape_cover] && params[:cover_crop_method] && params[:cover_crop_method] != @info[:cover_crop_method]
+      @info[:cover_crop_method] = params[:cover_crop_method]
       ProcessArchiveDecompressJob.crop_landscape_cover @dname, @info, params[:cover_crop_method].to_sym
+      redir_anchor = :cover
       info_changed = true
     end
     
@@ -348,7 +352,7 @@ class ProcessController < ApplicationController
     if params[:button] == 'finalize'
       redirect_to finalize_volume_process_path(id: params[:id], confirm: true)
     else
-      redirect_to edit_process_path(id: params[:id], tab: params[:tab], term: params[:term])
+      redirect_to edit_process_path(id: params[:id], tab: params[:tab], term: params[:term], anchor: redir_anchor)
     end
   end # set_property
   
