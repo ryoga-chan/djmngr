@@ -41,7 +41,7 @@
         %th.w1 Title
         %td
           = @doujin.label_name_latin
-          - if @doujin.name_eng.present?
+          - if @doujin.name_eng.present? && @doujin.name_eng != @doujin.label_name_latin
             .eng.is-italic.is-size-7= @doujin.name_eng
       - if @doujin.name != @doujin.label_name_latin
         %tr
