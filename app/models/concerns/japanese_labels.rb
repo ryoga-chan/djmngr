@@ -2,7 +2,12 @@ module JapaneseLabels
   extend ActiveSupport::Concern
   
   included do
-    def label_name_kanji = self.name.present?        ? self.name        : self.try(:name_kana)
-    def label_name_latin = self.name_romaji.present? ? self.name_romaji : self.name_kakasi
+    def label_name_kanji = name.present? ? name : try(:name_kana)
+    
+    def label_name_latin
+      return name_romaji if name_romaji.present?
+      return name_eng    if name_eng   .present?
+      name_kakasi
+    end
   end
 end # JapaneseLabels
