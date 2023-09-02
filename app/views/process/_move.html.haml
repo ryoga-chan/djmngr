@@ -183,6 +183,7 @@
       - html_cover = capture do
         - if @info[:landscape_cover] && @info[:landscape_cover_method] != :none
           %figure.image.is2by3.mb-2
+            %a(name="cover")
             = link_to show_image_process_path(id: @info[:working_dir], path: @info[:images].first[:src_path]), target: :_blank do
               = thumbnail_tag ProcessArchiveDecompressJob.cover_path(@dname, @info), title: 'cropped cover'
           .control.has-icons-left.mb-2
@@ -208,6 +209,7 @@
         - else
           - cover = @info[:images].first
           %figure.image.is2by3
+            %a(name="cover")
             = link_to show_image_process_path(id: @info[:working_dir], path: cover[:src_path]), target: :_blank do
               = thumbnail_tag ProcessArchiveDecompressJob.cover_path(@dname, @info),
                 title: "#{cover[:dst_path]} @ #{number_to_human_size cover[:size]}\n↪#{cover[:src_path]}"
