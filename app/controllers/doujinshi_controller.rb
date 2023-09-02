@@ -166,7 +166,7 @@ class DoujinshiController < ApplicationController
     flash.now.send '[]=', *msg if msg
     
     respond_to do |format|
-      format.any(:html, :ereader){ fresh_when @doujin }
+      format.any(:html, :ereader)
       format.any(:webp, :jpg) {
         if stale?(last_modified: @doujin.created_at.utc, strong_etag: @doujin, template: false)
           # extract a frame (cli: `webpmux -get frame 1 out.webp -o -`)
