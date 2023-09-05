@@ -25,7 +25,7 @@ body[data-ctrl="process"][data-action="edit"] {
     display: inline-block;
   }
 
-  .files input[type="text"] { height: 2rem; }
+  #filenames .files input[type="text"] { height: 2rem; }
 
   .images {
     input { height: 2rem; }
