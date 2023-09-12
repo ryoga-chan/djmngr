@@ -149,10 +149,9 @@ class ProcessBatchJob < ApplicationJob
           if info[:finalize_error].blank?
             puts "DjID: #{info[:db_doujin_id]}"
             results[fname][:id] = info[:db_doujin_id].to_i
-            # remove file on disk, WIP folder, index entry
-            File.unlink info[:file_path]
+            # remove WIP folder, index entry, file on disk
             FileUtils.rm_rf dname, secure: true
-            ProcessIndexRefreshJob.rm_entry info[:relative_path]
+            ProcessIndexRefreshJob.rm_entry info[:relative_path], rm_zip: true
           else
             add_error results, fname, 'processing errors', options # [#{info[:finalize_error]}]
             next

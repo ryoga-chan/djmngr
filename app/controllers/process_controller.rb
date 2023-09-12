@@ -170,59 +170,29 @@ class ProcessController < ApplicationController
       }#json
     end
   end # batch
+
+  # delete selected files
+  def batch_delete
+    if params[:file_ids].to_a.any?
+      params[:file_ids].each{|id| ProcessIndexRefreshJob.rm_entry id, track: true, rm_zip: true }
+      
+      redirect_to process_index_path, notice: "#{params[:file_ids].size} files deleted"
+    else
+      redirect_to process_index_path, alert: "no files selected!"
+    end
+  end # batch_delete
   
   def delete_archive
-    cover_hash = nil
-  
-    # count images and other files
-    file_counters = {num_images: 0, num_files: 0}
-    Zip::File.open(@fname) do |zip|
-      zip.entries.sort_by_method(:name).each do |e|
-        next unless e.file?
-        
-        # generate phash for the first image file
-        if cover_hash.nil? && is_image = (e.name =~ RE_IMAGE_EXT)
-          cover_hash = CoverMatchingJob.
-            hash_image_buffer(e.get_input_stream.read)[:phash]
-        end
-        
-        file_counters[is_image ? :num_images : :num_files] += 1
-      end
-    end
+    ProcessIndexRefreshJob.rm_entry params[:path], track: true, rm_zip: true
     
-    # track deletion
-    name = params[:path].tr(File::SEPARATOR, ' ')
-    d = DeletedDoujin.create! file_counters.merge({
-      name:             name,
-      name_kakasi:      name.to_romaji,
-      size:             File.size(@fname),
-    })
-    d.cover_fingerprint! cover_hash if cover_hash.present?
-    
-    # remove file from disk and DB
-    File.unlink @fname
-    ProcessIndexRefreshJob.rm_entry params[:path]
-    
-    return redirect_to(process_index_path, notice: "file deleted: [#{params[:path]}]")
+    redirect_to(process_index_path, notice: "file deleted: [#{params[:path]}]")
   end # delete_archive
   
   def delete_archive_cwd
     @info = YAML.unsafe_load_file(File.join @dname, 'info.yml')
+    
     if params[:archive_too] == 'true'
-      # track deletion unless stored in collection
-      unless @info[:db_doujin_id].present?
-        d = DeletedDoujin.create! \
-          name:             @info[:relative_path],
-          name_kakasi:      @info[:relative_path].to_romaji,
-          size:             @info[:file_size],
-          num_images:       @info[:images].to_a.size,
-          num_files:        @info[:files ].to_a.size
-        d.cover_fingerprint! @info[:cover_hash]
-      end
-      # remove file on disk
-      File.unlink @info[:file_path]
-      # update filelist
-      ProcessIndexRefreshJob.rm_entry @info[:relative_path]
+      ProcessIndexRefreshJob.rm_entry @info[:relative_path], track: true, rm_zip: true
     end
     
     FileUtils.rm_rf @dname, secure: true
