@@ -13,6 +13,7 @@ Rails.application.routes.draw do
       get     :prepare_archive  # prepare processing of single file
       delete  :delete_archive
       post    :prepare_batch    # prepare mass processing of selected files
+      post    :batch_delete     # delete selected files
       get     :sample_images
       get     :compare_add
       get     :compare_remove
@@ -28,9 +29,9 @@ Rails.application.routes.draw do
       delete  :delete_archive_files
       get     :edit_cover
       get     :inspect_folder
-      get     :batch            # manage mass processing
-      post    :batch
-      delete  :batch
+      get     :batch            # start/monitor mass processing
+      post    :batch            # change entry title in the batch
+      delete  :batch            # remove entry from batch or the entire batch
       get     :read , to: 'doujinshi#zip_read' , model: 'ProcessableDoujin'
       get     :image, to: 'doujinshi#zip_image', model: 'ProcessableDoujin'
       get     :process_later
