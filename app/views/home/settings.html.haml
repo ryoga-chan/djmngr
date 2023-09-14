@@ -13,6 +13,7 @@
       'epub_devices'  => 'screenshot',
       'external_link' => 'launch',
       'scraper_useragent' => 'badge',
+      'basic_auth'    => 'admin_panel_settings',
     }.each do |key, icon|
     - s = Setting.find_by key: key
     = f.hidden_field 'setting[][id]', value: s.id
