@@ -1,6 +1,8 @@
 class ApplicationController < ActionController::Base
   layout -> { return 'ereader' if request.format.ereader? }
   
+  before_action :authenticate
+  
   def default_url_options
     opts = {}
     opts.merge! format: :ereader if request.format.ereader?
@@ -26,4 +28,13 @@ class ApplicationController < ActionController::Base
     session[:dj_index_detail] = params[:detail] if %w{ thumbs table }.include?(params[:detail])
     session[:dj_index_detail] ||= 'table'
   end # set_doujin_list_detail
+  
+  def authenticate
+    return if request.format.symbol != :html
+    
+    if Setting[:basic_auth].present?
+      user, pass = Setting[:basic_auth].split ':', 2
+      http_basic_authenticate_or_request_with(name: user, password: pass)
+    end
+  end # authenticate
 end
