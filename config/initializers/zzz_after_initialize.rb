@@ -2,6 +2,28 @@
 Rails.application.config.after_initialize do
   ActiveRecord::Base.logger.silence do
     if Setting.table_exists?
+      # create default settings
+      [
+        { key: 'dir.to_sort'      , value: Rails.root.join('dj-libray', 'to-sort').to_s, notes: 'folder containing doujinshi to process' },
+        { key: 'dir.sorting'      , value: Rails.root.join('dj-libray', 'sorting').to_s, notes: 'folder containing doujinshi under process' },
+        { key: 'dir.sorted'       , value: Rails.root.join('dj-libray', 'sorted' ).to_s, notes: 'folder containing processed doujinshi' },
+        { key: 'reading_direction', value: 'r2l'      , notes: 'default reading direction' }, # r2l, l2r
+        { key: 'reading_bg_color' , value: 'dark'     , notes: 'default reading background color' }, # white, smoke, dark, black
+        { key: 'epub_devices'     , value: 'Kobo_Sage@1440x1920, Kobo_Glo@758x1024', notes: 'screen dimension of your devices, used for epub creation' },
+        { key: 'comics_viewer'    , value: 'mcomix -f', notes: 'application for reading CBZ files (comic book viewer)' },
+        { key: 'file_manager'     , value: 'thunar'   , notes: 'application for browsing files (file manager)' },
+        { key: 'file_picker'      , value: "zenity --file-selection --file-filter='*.zip *.cbz'", notes: 'application for file selection (prints file path to stdout)' },
+        { key: 'image_editor'     , value: 'gimp'     , notes: 'application for editing images (photo editor)' },
+        { key: 'terminal'         , value: 'xfce4-terminal', notes: 'default terminal emulator' },
+        { key: 'ext_cmd_env'      , value: '{"DISPLAY":":0"}', notes: 'environment variables for external commands' },
+        { key: 'scraper_useragent', value: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36', notes: 'user agent used for doujinshi.org scraping' },
+        { key: 'external_link'    , value: 'DJ.org|https://www.doujinshi.org', notes: 'additional menu item, input format = "text|url"' },
+        { key: 'process_img_sel'  , value: '-', notes: 'image selection mode for "Images" tab in process section' },
+        { key: 'basic_auth'       , value: '', notes: 'enable basic auth for PCs, input format = "user:password"' },
+      ].each do |fields|
+        Setting.find_or_initialize_by(fields.slice :key).update fields.slice(:value, :notes) unless Setting[fields[:key]]
+      end
+
       # create collection folders
       folders  = [ Setting['dir.to_sort'], Setting['dir.sorting'], Setting['dir.sorted'] ]
       folders += %w{ author circle magazine artbook }.map{|d| File.join(Setting['dir.sorted'], d).to_s }
