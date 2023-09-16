@@ -224,7 +224,10 @@ class ProcessController < ApplicationController
     
     File.open(File.join(@dname, 'info.yml'), 'w'){|f| f.puts @info.to_yaml }
     
-    params[:tab] = :ident if params[:tab] == 'images'
+    # redirect to next tabs when deleting images from "Pics" tab
+    if params[:tab] == 'images'
+      params[:tab] = @info[:dest_folder].present? ? :move : :ident
+    end
     
     return redirect_to(edit_process_path(id: params[:id], tab: params[:tab]),
       notice: "#{params[:path].size} file/s deleted")
