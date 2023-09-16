@@ -480,6 +480,14 @@ class ProcessController < ApplicationController
         when :alphabetical_index
           @info[:images].each_with_index{|img, i| img[:dst_path] = "%04d#{File.extname img[:src_path]}" % (i+1) }
         
+        when :numbers_only
+          @info[:images].each do |img|
+            img[:nums] = img[:src_path].tr("^0-9", ' ').split(' ').map{|n| '%010d' % n }.join ','
+          end
+          
+          @info[:images].sort_by_method(:'[]', :nums).
+            each_with_index{|img, i| img[:dst_path] = "%04d#{File.extname img[:src_path]}" % i }
+        
         when :to_integer
           @info[:images].each{|img| img[:dst_path] = "%04d#{File.extname img[:src_path]}" % img[:src_path].to_i }
         
