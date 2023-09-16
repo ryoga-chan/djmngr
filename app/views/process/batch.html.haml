@@ -146,7 +146,7 @@
               %i.mi send
             %span Start
 
-    - # order entries by the custom title
+    -# order entries by the custom title
     - @info[:titles].sort_by_value.map{|k,v| k}.each_with_index do |name, idx|
       - files = @info[:files][name]
       .columns
