@@ -1,6 +1,8 @@
 :ruby
   img_params  = ''
   
+  img_params += ", fhash: #{params[:fhash].to_json}" if params[:fhash].present?
+  
   if params[:id] && params[:model]
     img_params += ", model: #{params[:model].to_json}" if params[:model].present?
     img_params += ", id:    #{params[:id   ].to_json}" if params[:id   ].present?
