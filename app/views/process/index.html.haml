@@ -40,44 +40,51 @@
     = form_with url: prepare_batch_process_index_path, method: :post do |f|
       .title.is-size-4= "Processable archives (#{@files.total_count})"
       
-      .actions
-        .field.has-addons.mb-4.is-justify-content-end
-          .control
-            = link_to '#', class: 'bt-batch button is-link is-small',
-              onclick: %Q|jQuery('.batch-bt, .batch-rm, td.rm-or-batch > *, td.batch, .bt-reindex, .bt-preview').toggleClass('is-hidden'); return false| do
-              %span.icon.is-small
-                %i.mi.mi-small inventory_2
-              %span batch
-          .control.batch-rm.is-hidden
-            -# # https://stackoverflow.com/questions/3027149/how-do-i-create-multiple-submit-buttons-for-the-same-form-in-rails
-            = f.button(type: :submit, class: 'button is-small is-danger',
-                       formaction: batch_delete_process_index_path,
-                       data: {confirm: 'Delete selected files?'}) do
-              %span.icon.is-small
-                %i.mi delete_forever
-              %span delete
-          .control.batch-bt.is-hidden
-            = link_to '#', class: 'bt-toggle-all button is-small',
-              onclick: %Q|jQuery('td.rm-or-batch :checkbox').each(function(){ $(this).prop('checked', !$(this).prop('checked')) }).first(); jQuery.app.update_tot_filesize(); return false| do
-              %span.icon.is-small
-                %i.mi select_all
-              %span toggle
-          .control.batch-bt.is-hidden
-            = f.button type: :submit, class: 'button is-small' do
-              %span.icon.is-small
-                %i.mi send
-              %span prepare
-              %span.tot-file-size.is-size-8.ml-1
-          .control
-            = link_to({refresh: true}, class: 'bt-reindex button is-info is-small') do
-              %span.icon.is-small
-                %i.mi.mi-small refresh
-              %span refresh
-          .control
-            = link_to({preview: true}, class: 'bt-preview button is-info is-small') do
-              %span.icon.is-small
-                %i.mi.mi-small preview
-              %span preview
+      .columns.my-0
+        .column.py-0.pb-2
+          %span Sort files by
+          .select(style="vertical-align: middle")= select_tag :sort_by,
+            options_for_select(ProcessIndexRefreshJob::ORDER, params[:sort_by]),
+            onchange: %Q|window.location = '/process?sort_by='+jQuery(this).val()|
+        .column.py-0
+          .actions
+            .field.has-addons.mb-4.is-justify-content-end
+              .control
+                = link_to '#', class: 'bt-batch button is-link is-small',
+                  onclick: %Q|jQuery('.batch-bt, .batch-rm, td.rm-or-batch > *, td.batch, .bt-reindex, .bt-preview').toggleClass('is-hidden'); return false| do
+                  %span.icon.is-small
+                    %i.mi.mi-small inventory_2
+                  %span batch
+              .control.batch-rm.is-hidden
+                -# # https://stackoverflow.com/questions/3027149/how-do-i-create-multiple-submit-buttons-for-the-same-form-in-rails
+                = f.button(type: :submit, class: 'button is-small is-danger',
+                           formaction: batch_delete_process_index_path,
+                           data: {confirm: 'Delete selected files?'}) do
+                  %span.icon.is-small
+                    %i.mi delete_forever
+                  %span delete
+              .control.batch-bt.is-hidden
+                = link_to '#', class: 'bt-toggle-all button is-small',
+                  onclick: %Q|jQuery('td.rm-or-batch :checkbox').each(function(){ $(this).prop('checked', !$(this).prop('checked')) }).first(); jQuery.app.update_tot_filesize(); return false| do
+                  %span.icon.is-small
+                    %i.mi select_all
+                  %span toggle
+              .control.batch-bt.is-hidden
+                = f.button type: :submit, class: 'button is-small' do
+                  %span.icon.is-small
+                    %i.mi send
+                  %span prepare
+                  %span.tot-file-size.is-size-8.ml-1
+              .control
+                = link_to({refresh: true}, class: 'bt-reindex button is-info is-small') do
+                  %span.icon.is-small
+                    %i.mi.mi-small refresh
+                  %span refresh
+              .control
+                = link_to({preview: true, sort_by: params[:sort_by]}, class: 'bt-preview button is-info is-small') do
+                  %span.icon.is-small
+                    %i.mi.mi-small preview
+                  %span preview
       
       - if @files.empty?
         %em no files to process
@@ -96,7 +103,12 @@
                     class: 'has-text-danger', title: 'delete file')
                   .file-select.is-hidden= check_box_tag 'file_ids[]', f.id, false,
                     id: '', data: {size: f.size}, tabindex: (1000+idx)
-                %td.batch.file-size.has-text-right= number_to_human_size f.size
+                %td.batch.file-size.has-text-right
+                  .size= number_to_human_size f.size
+                  - if f.images
+                    .images
+                      = f.images
+                      P
                 %td.batch= render partial: 'file_actions', locals: {fname: f.name, id: f.id, vertical: true}
                 %td
                   .name
@@ -126,4 +138,4 @@
                           %source{media: "(min-width: 320px)", srcset: f.thumb_url(mobile: true ) }/
                           %img{src: f.thumb_url(mobile: true)}/
         
-        = paginate @files
+        = paginate @files, params: {sort_by: params[:sort_by]}
