@@ -1,3 +1,7 @@
+body[data-ctrl="process"][data-action="index"] {
+  div.images { border-top: 1px solid white; }
+}
+
 body[data-ctrl="process"][data-action="batch"] {
   .files pre {
     height: 10rem;

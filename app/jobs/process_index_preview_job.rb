@@ -2,22 +2,26 @@ class ProcessIndexPreviewJob < ProcessIndexRefreshJob
   THUMB_WIDTH  = 320
   THUMB_HEIGHT = 640
   THUMBS_CHUNK = 3
+  THUMBS_NUM   = Rails.env.production? ? ProcessController::ROWS_PER_PAGE : 3
   
   def self.rm_previews
     pattern = Rails.root.join('public', ProcessableDoujin::THUMB_FOLDER, '*.webp').to_s
     Dir[pattern].each{|f| FileUtils.rm_f f }
   end # self.rm_previews
   
-  def perform(id = nil)
+  def perform(id: nil, order: nil)
     self.class.lock_file!
     
-    rel = self.class.entries
+    rel = self.class.entries(order: order)
     rel = rel.where(id: id) if id
-    rel.page(1).per(ProcessController::ROWS_PER_PAGE).each do |processable_doujin|
+    rel.page(1).per(THUMBS_NUM).each do |processable_doujin|
       next if File.exist?(processable_doujin.thumb_path)
       
       Zip::File.open(File.join Setting['dir.to_sort'], processable_doujin.name) do |zip|
-        thumb_entries = zip.image_entries(sort: true).pages_preview(chunk_size: THUMBS_CHUNK)
+        zip_images = zip.image_entries(sort: true)
+        processable_doujin.update images: zip_images.size
+        
+        thumb_entries = zip_images.pages_preview(chunk_size: THUMBS_CHUNK)
         
         images = thumb_entries.map{|e|
           Vips::Image.webp_cropped_thumb(

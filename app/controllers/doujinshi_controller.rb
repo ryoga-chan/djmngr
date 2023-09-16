@@ -262,9 +262,11 @@ class DoujinshiController < ApplicationController
         params[:ret_url] ||= root_path(format: params[:from_format])
     end # case
     
-    # create a unique fingerprint for the file
-    fs = File.stat params[:file]
-    params[:fhash] = Digest::MD5.hexdigest "#{params[:file]}:#{fs.size}@#{fs.mtime.to_i}"
+    # create a unique fingerprint for external files that may change and overlap to old ones
+    if params[:model] != 'Doujin'.freeze
+      fs = File.stat params[:file]
+      params[:fhash] = Digest::MD5.hexdigest "#{params[:file]}:#{fs.size}@#{fs.mtime.to_i}"
+    end
     
     Zip::File.open(params[:file]){|zip| @num_files = zip.image_entries.size }
     
