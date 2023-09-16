@@ -262,6 +262,10 @@ class DoujinshiController < ApplicationController
         params[:ret_url] ||= root_path(format: params[:from_format])
     end # case
     
+    # create a unique fingerprint for the file
+    fs = File.stat params[:file]
+    params[:fhash] = Digest::MD5.hexdigest "#{params[:file]}:#{fs.size}@#{fs.mtime.to_i}"
+    
     Zip::File.open(params[:file]){|zip| @num_files = zip.image_entries.size }
     
     params[:page] = params[:page].to_i
