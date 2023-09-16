@@ -1,11 +1,29 @@
 class ProcessIndexRefreshJob < ApplicationJob
   queue_as :tools
+  
+  ORDER = {
+    'name 🔽' => :name,
+    'name 🔼' => :name_desc,
+    'time 🔽' => :time,
+    'time 🔼' => :time_desc,
+    
+  }
 
   def self.lock_file      = File.join(Setting['dir.to_sort'], 'indexing.lock').to_s
   def self.lock_file!     = FileUtils.touch(lock_file)
   def self.lock_file?     = File.exist?(lock_file)
   def self.rm_lock_file   = FileUtils.rm_f(lock_file)
-  def self.entries        = ProcessableDoujin.order(:name)
+  
+  def self.entries(order: :name_asc)
+    order_clause = case order
+      when 'name_desc'.freeze then {name: :desc}
+      when 'time_asc' .freeze then :mtime
+      when 'time_desc'.freeze then {mtime: :desc}
+      else :name
+    end
+    
+    ProcessableDoujin.order(order_clause)
+  end # self.entries
   
   def self.rm_entry(path_or_id, track: false, rm_zip: false)
     pd = ProcessableDoujin.find_by(id: path_or_id.to_i) ||
@@ -62,8 +80,10 @@ class ProcessIndexRefreshJob < ApplicationJob
       list = Dir[files_glob].sort
       list = list[0...100] unless Rails.env.production?
       list.each do |f|
+        fs = File.stat f
         rel_name = Pathname.new(f).relative_path_from(Setting['dir.to_sort']).to_s
-        ProcessableDoujin.create name: rel_name, name_kakasi: rel_name.to_romaji, size: File.size(f)
+        ProcessableDoujin.create name: rel_name, name_kakasi: rel_name.to_romaji,
+          size: fs.size, mtime: fs.mtime
       end
     end
     

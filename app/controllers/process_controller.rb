@@ -1,6 +1,6 @@
 class ProcessController < ApplicationController
   ROWS_PER_PAGE = 25
-
+  
   before_action :check_archive_file,
     only: %i[ show_externally  prepare_archive  delete_archive  sample_images  compare_add ]
   
@@ -20,15 +20,17 @@ class ProcessController < ApplicationController
     # generate preview images collage for ZIP files on the first index page
     if params[:preview]
       ProcessIndexPreviewJob.lock_file!
-      ProcessIndexPreviewJob.perform_later params[:id]
-      return redirect_to(action: :index)
+      ProcessIndexPreviewJob.perform_later order: params[:sort_by], id: params[:id]
+      return redirect_to(action: :index, sort_by: params[:sort_by])
     end
 
     if ProcessIndexRefreshJob.lock_file? || ProcessIndexPreviewJob.lock_file?
       @refreshing = true
     else
       # read "to_sort" file list
-      @files = ProcessIndexRefreshJob.entries.page(params[:page]).per(ROWS_PER_PAGE)
+      @files = ProcessIndexRefreshJob.
+        entries(order: params[:sort_by]).
+        page(params[:page]).per(ROWS_PER_PAGE)
       
       # read "sorting" file list
       files_glob = File.join Setting['dir.sorting'], '*', 'info.yml'
