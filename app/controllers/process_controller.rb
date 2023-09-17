@@ -476,59 +476,7 @@ class ProcessController < ApplicationController
     @info = YAML.unsafe_load_file(File.join @dname, 'info.yml')
     
     begin
-      case params[:rename_with].to_sym
-        when :alphabetical_index
-          @info[:images].each_with_index{|img, i| img[:dst_path] = "%04d#{File.extname img[:src_path]}" % (i+1) }
-        
-        when :numbers_only
-          @info[:images].each do |img|
-            img[:nums] = img[:src_path].tr("^0-9", ' ').split(' ').map{|n| '%010d' % n }.join ','
-          end
-          
-          @info[:images].sort_by_method(:'[]', :nums).
-            each_with_index{|img, i| img[:dst_path] = "%04d#{File.extname img[:src_path]}" % i }
-        
-        when :to_integer
-          @info[:images].each{|img| img[:dst_path] = "%04d#{File.extname img[:src_path]}" % img[:src_path].to_i }
-        
-        when :regex_number
-          re = Regexp.new params[:rename_regexp]
-          @info[:images].each do |img|
-            img[:dst_path] = "%04d#{File.extname img[:src_path]}" % img[:src_path].match(re)&.captures&.first.to_i
-          end
-        
-        when :regex_pref_num, :regex_num_pref
-          re = Regexp.new params[:rename_regexp]
-          
-          # create a sortable label
-          invert_terms = params[:rename_with].to_sym == :regex_num_pref
-          @info[:images].each do |img|
-            prefix, num = img[:src_path].match(re)&.captures
-            num, prefix = prefix, num if invert_terms
-            img[:dst_sort_by] = "#{prefix}-#{'%050d' % num.to_i}"
-          end
-          
-          # rename images sorted by the previous label
-          @info[:images]
-            .sort_by_method('[]', :dst_sort_by)
-            .each_with_index{|img, i| img[:dst_path] = "%04d#{File.extname img[:src_path]}" % (i+1) }
-        
-        when :regex_replacement
-          re = Regexp.new params[:rename_regexp]
-          @info[:images].each do |img|
-            img[:dst_path] = img[:src_path].sub re, params[:rename_regexp_repl]
-          end
-        
-        else
-          raise 'unknown renaming method'
-      end # case
-      
-      # append filenames
-      @info[:images].each_with_index do |img, i|
-        ext  = File.extname  img[:dst_path]
-        name = File.basename img[:dst_path], ext
-        img[:dst_path] = "#{name}-#{img[:src_path].sub(/\.[^\.]+$/, ext).tr File::SEPARATOR, '_'}"
-      end if params[:keep_names] == 'true'
+      ZipImagesRenamer.rename @info[:images], params[:rename_with], params
       
       @info[:images] = @info[:images].sort_by_method('[]', :dst_path)
       
