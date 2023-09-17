@@ -12,15 +12,7 @@
     
   .field.has-addons.mb-4
     .control.has-icons-left
-      .select= f.select :rename_with,
-        { "alphabetical index"                  => :alphabetical_index,
-          "use numbers only"                    => :numbers_only,
-          "filename to number"                  => :to_integer,
-          "regexp \\1 to number"                => :regex_number,
-          "regexp \\1 as prefix, \\2 as number" => :regex_pref_num,
-          "regexp \\1 to number, \\2 as prefix" => :regex_num_pref,
-          "full regexp replacement"             => :regex_replacement,
-        }, {}, class: "input is-rounded"
+      .select= f.select :rename_with, ZipImagesRenamer::RENAME_METHODS, {}, class: "input is-rounded"
       %span.icon.is-small.is-left
         %i.mi swap_horiz
     .control.has-icons-left.is-hidden

@@ -174,14 +174,17 @@ class ProcessArchiveDecompressJob < ApplicationJob
 
     # detect images and other files
     info[:images], info[:files] = Dir[File.join path_contents, '**', '*'].
-      sort.select{|i| File.file? i }.
+      select{|i| File.file? i }.
       map{|i| { src_path: Pathname.new(i).relative_path_from(path_contents).to_s, size: File.size(i) } }.
       partition{|i| i[:src_path] =~ RE_IMAGE_EXT }
     
-    info[:ren_images_method] = 'alphabetical_index'
+    # auto rename images with default method
+    info[:ren_images_method] = ZipImagesRenamer::DEFAULT_METHOD.to_s
+    info[:images] = ZipImagesRenamer.rename(info[:images]).sort_by_method('[]', :dst_path)
     
     # copy filename for files
     info[:files].each_with_index{|f, i| f[:dst_path] = "#{'%04d' % i}-#{f[:src_path].gsub '/', '_'}" }
+    info[:files] = info[:files].sort_by_method('[]', :dst_path)
     
     # autogenerate portrait cover for landascape first image
     self.class.crop_landscape_cover dst_dir, info
