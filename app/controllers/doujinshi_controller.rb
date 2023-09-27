@@ -363,8 +363,9 @@ class DoujinshiController < ApplicationController
     FileUtils.mkdir_p dst_dir
     
     # move current ZIP file to that folder
-    FileUtils.mv @doujin.file_path(full: true),
-                 File.join(dst_dir, File.basename(@doujin.name_orig)), force: true
+    dst_path = File.join dst_dir, File.basename(@doujin.name_orig)
+    FileUtils.mv @doujin.file_path(full: true), dst_path, force: true
+    ProcessIndexRefreshJob.add_entry dst_path
     
     # write current metadata
     md_path = File.join(dst_dir, "#{File.basename @doujin.name_orig, '.zip'}.yml")
