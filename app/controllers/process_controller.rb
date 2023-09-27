@@ -194,7 +194,8 @@ class ProcessController < ApplicationController
     @info = YAML.unsafe_load_file(File.join @dname, 'info.yml')
     
     if params[:archive_too] == 'true'
-      ProcessIndexRefreshJob.rm_entry @info[:relative_path], track: true, rm_zip: true
+      ProcessIndexRefreshJob.rm_entry @info[:relative_path],
+        track: @info[:doujin_dest_id].blank?, rm_zip: true
     end
     
     FileUtils.rm_rf @dname, secure: true
