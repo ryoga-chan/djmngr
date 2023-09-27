@@ -6,7 +6,6 @@ class ProcessIndexRefreshJob < ApplicationJob
     'name 🔼' => :name_desc,
     'time 🔽' => :time,
     'time 🔼' => :time_desc,
-    
   }
 
   def self.lock_file      = File.join(Setting['dir.to_sort'], 'indexing.lock').to_s
@@ -68,6 +67,13 @@ class ProcessIndexRefreshJob < ApplicationJob
     pd.destroy
   end # self.rm_entry
   
+  def self.add_entry(full_path)
+    fs = File.stat full_path
+    rel_name = Pathname.new(full_path).relative_path_from(Setting['dir.to_sort']).to_s
+    ProcessableDoujin.create name: rel_name, name_kakasi: rel_name.to_romaji,
+      size: fs.size, mtime: fs.mtime
+  end # self.add_entry
+  
   def perform(*args)
     self.class.lock_file!
     
@@ -79,12 +85,7 @@ class ProcessIndexRefreshJob < ApplicationJob
       files_glob = File.join Setting['dir.to_sort'], '**', '*.zip'
       list = Dir[files_glob].sort
       list = list[0...100] unless Rails.env.production?
-      list.each do |f|
-        fs = File.stat f
-        rel_name = Pathname.new(f).relative_path_from(Setting['dir.to_sort']).to_s
-        ProcessableDoujin.create name: rel_name, name_kakasi: rel_name.to_romaji,
-          size: fs.size, mtime: fs.mtime
-      end
+      list.each{|f| self.class.add_entry f }
     end
     
     self.class.rm_lock_file
