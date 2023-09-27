@@ -131,8 +131,9 @@ class Doujin < ApplicationRecord
   
   def thumb_disk_path = Rails.root.join('public', 'thumbs', "#{id}.webp").to_s
   
-  def destroy_with_files
+  def destroy_with_files(track: true)
     @delete_files = true
+    @save_deletion_data = track
     destroy
   end # destroy_with_files
   
@@ -224,6 +225,8 @@ class Doujin < ApplicationRecord
   end # rename_file
   
   def save_deletion_data
+    return unless @save_deletion_data
+    
     fname = file_dl_name omit_ext: true
     attrs = attributes.slice *%w{ size num_images num_files cover_phash }
     

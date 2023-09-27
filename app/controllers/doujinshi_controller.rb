@@ -362,28 +362,29 @@ class DoujinshiController < ApplicationController
     dst_dir = File.expand_path File.join(Setting['dir.to_sort'], DJ_DIR_REPROCESS, File.dirname(@doujin.name_orig))
     FileUtils.mkdir_p dst_dir
     
-    # move current ZIP file to that folder
-    dst_path = File.join dst_dir, File.basename(@doujin.name_orig)
-    FileUtils.mv @doujin.file_path(full: true), dst_path, force: true
-    ProcessIndexRefreshJob.add_entry dst_path
-    
     # write current metadata
     md_path = File.join(dst_dir, "#{File.basename @doujin.name_orig, '.zip'}.yml")
     paths = @doujin.file_path.split(File::SEPARATOR, 3)
     dd_id = (paths[0] == 'author' ? @doujin.author_ids.first : (paths[0] == 'circle' ? @doujin.circle_ids.first : -1))
+    is_author_or_circle = %w{ author circle }.include? paths[0]
     File.atomic_write(md_path){|f| f.puts({
       author_ids:     @doujin.author_ids,
       circle_ids:     @doujin.circle_ids,
       doujin_dest_type: paths[0],
       doujin_dest_id: dd_id.to_s,
-      file_type:      (%w{ author circle }.include?(paths[0]) ? 'doujin' : paths[0]),
-      dest_folder:    paths[1],
-      subfolder:      (paths[2].include?(File::SEPARATOR) ? File.dirname(paths[2]) : ''),
-      dest_filename:  File.basename(paths[2]),
+      file_type:      (is_author_or_circle ? 'doujin' : paths[0]),
+      dest_folder:    (is_author_or_circle ? paths[1] : (paths[2] ? paths[1] : '')),
+      subfolder:      (paths[2].to_s.include?(File::SEPARATOR) ? File.dirname(paths[2]) : ''),
+      dest_filename:  File.basename(paths[2] || paths[1]),
       score:          @doujin.score,
     }.to_yaml) }
     
-    @doujin.destroy_with_files
+    # move current ZIP file to that folder
+    dst_path = File.join dst_dir, File.basename(@doujin.name_orig)
+    FileUtils.mv @doujin.file_path(full: true), dst_path, force: true
+    ProcessIndexRefreshJob.add_entry dst_path
+    
+    @doujin.destroy_with_files track: false
     
     redirect_to prepare_archive_process_index_path(path: File.join(DJ_DIR_REPROCESS, @doujin.name_orig)),
       notice: "doujin removed from collection, processing auto started"
