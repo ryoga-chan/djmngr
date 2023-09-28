@@ -76,6 +76,8 @@
             %span.tag.is-info= "#{d.num_images} pics/#{number_to_human_size d.size}"
             - if d.cover_similarity
               %span.tag.is-warning= "#{'%2d' % d.cover_similarity}% cover similarity"
+            - if d.score.to_i != 0
+              %span.tag.is-info!= "#{d.score}&star;"
         .now(title="collection path" style="border-bottom: 1px solid silver")
           - bt_read = capture do
             = link_to zip_read_doujinshi_path(file: d.file_path(full: true), format: :ereader),
