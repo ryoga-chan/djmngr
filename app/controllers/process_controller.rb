@@ -195,7 +195,7 @@ class ProcessController < ApplicationController
     
     if params[:archive_too] == 'true'
       ProcessIndexRefreshJob.rm_entry @info[:relative_path],
-        track: @info[:doujin_dest_id].blank?, rm_zip: true
+        track: @info[:db_doujin_id].blank?, rm_zip: true
     end
     
     FileUtils.rm_rf @dname, secure: true
