@@ -228,7 +228,8 @@
           .column.is-6(style="border-left: 1px solid red")
             .descr
               - if dj_id = @collision_info[:doujin].try(:id)
-                = link_to "collection ##{dj_id}", doujin_path(id: dj_id), target: :_blank
+                - score_lbl = " / #{@collision_info[:doujin].score}&star;" if @collision_info[:doujin].score.to_i != 0
+                = link_to "ID ##{dj_id}#{score_lbl}".html_safe, doujin_path(id: dj_id), target: :_blank
               - else
                 collection
             %span.tag.is-info.mb-1= @collision_info[:collection]
