@@ -659,7 +659,9 @@ class ProcessController < ApplicationController
   def check_archive_file
     @fname = File.expand_path File.join(Setting['dir.to_sort'], params[:path])
     
-    return redirect_to(process_index_path, alert: "file not found!") unless File.exist?(@fname)
+    if !File.exist?(@fname) && params[:action] != 'delete_archive'
+      return redirect_to(process_index_path, alert: "file not found!")
+    end
     
     unless @fname.start_with?(Setting['dir.to_sort'])
       return redirect_to(process_index_path, alert: "file outside of working directory!")

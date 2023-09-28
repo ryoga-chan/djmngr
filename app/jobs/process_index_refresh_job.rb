@@ -31,38 +31,40 @@ class ProcessIndexRefreshJob < ApplicationJob
     
     zip_path = pd.file_path full: true
     
-    if track
-      cover_hash = nil
-    
-      # count images and other files
-      file_counters = { num_images: 0, num_files: 0 }
-      Zip::File.open(zip_path) do |zip|
-        zip.entries.sort_by_method(:name).each do |e|
-          next unless e.file?
-          
-          is_image = e.name =~ RE_IMAGE_EXT
-          
-          # generate phash for the first image file
-          if cover_hash.nil? && is_image
-            cover_hash = CoverMatchingJob.hash_image_buffer(e.get_input_stream.read)[:phash]
-          end
-          
-          file_counters[is_image ? :num_images : :num_files] += 1
-        end
-      end
+    if File.exist?(zip_path)
+      if track
+        cover_hash = nil
       
-      # track deletion
-      name = pd.name.tr(File::SEPARATOR, ' ')
-      dd = DeletedDoujin.create! file_counters.merge({
-        name:             name,
-        name_kakasi:      name.to_romaji,
-        size:             File.size(zip_path),
-      })
-      dd.cover_fingerprint! cover_hash if cover_hash.present?
-    end # if track
-    
-    # remove file from disk
-    File.unlink zip_path if rm_zip && File.exist?(zip_path)
+        # count images and other files
+        file_counters = { num_images: 0, num_files: 0 }
+        Zip::File.open(zip_path) do |zip|
+          zip.entries.sort_by_method(:name).each do |e|
+            next unless e.file?
+            
+            is_image = e.name =~ RE_IMAGE_EXT
+            
+            # generate phash for the first image file
+            if cover_hash.nil? && is_image
+              cover_hash = CoverMatchingJob.hash_image_buffer(e.get_input_stream.read)[:phash]
+            end
+            
+            file_counters[is_image ? :num_images : :num_files] += 1
+          end
+        end
+        
+        # track deletion
+        name = pd.name.tr(File::SEPARATOR, ' ')
+        dd = DeletedDoujin.create! file_counters.merge({
+          name:             name,
+          name_kakasi:      name.to_romaji,
+          size:             File.size(zip_path),
+        })
+        dd.cover_fingerprint! cover_hash if cover_hash.present?
+      end # if track
+      
+      # remove file from disk
+      File.unlink zip_path if rm_zip
+    end
     
     pd.destroy
   end # self.rm_entry
