@@ -9,6 +9,15 @@ class ProcessIndexPreviewJob < ProcessIndexRefreshJob
     Dir[pattern].each{|f| FileUtils.rm_f f }
   end # self.rm_previews
   
+  def self.err_img
+    @@err_img ||= Vips::Image.webp_cropped_thumb(
+      File.read(Rails.root.join('public', 'not-found.png').to_s),
+      width:   THUMB_WIDTH,
+      height:  THUMB_HEIGHT,
+      padding: false
+    )[:image]
+  end # self.err_img
+  
   def perform(id: nil, order: nil)
     self.class.lock_file!
     
@@ -17,7 +26,10 @@ class ProcessIndexPreviewJob < ProcessIndexRefreshJob
     rel.page(1).per(THUMBS_NUM).each do |processable_doujin|
       next if File.exist?(processable_doujin.thumb_path)
       
-      Zip::File.open(File.join Setting['dir.to_sort'], processable_doujin.name) do |zip|
+      fname = File.join Setting['dir.to_sort'], processable_doujin.name
+      next unless File.exist?(fname)
+      
+      Zip::File.open(fname) do |zip|
         zip_images = zip.image_entries(sort: true)
         processable_doujin.update images: zip_images.size
         
@@ -29,8 +41,10 @@ class ProcessIndexPreviewJob < ProcessIndexRefreshJob
             width:   THUMB_WIDTH,
             height:  THUMB_HEIGHT,
             padding: false
-          )[:image]
+          )[:image].colourspace('srgb') # https://github.com/libvips/pyvips/issues/202
         }.compact
+        
+        images = 9.times.map{ self.class.err_img } if images.empty?
         
         # https://github.com/libvips/ruby-vips/blob/master/lib/vips/methods.rb#L362
         # create a long thumbnail for desktop
