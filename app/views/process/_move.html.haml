@@ -20,9 +20,11 @@
           %span.icon.in-text-small.mr-2
             %i.mi.mi-small(title="archive type") local_offer
           
-          %span.mr-3
+          %span.mr-3.tag.has-text-warning
             - if @info[:file_type] == 'doujin'
-              = "#{@info[:doujin_dest_type]} #{@info[:file_type]}"
+              = @info[:file_type]
+              &middot;
+              = @info[:doujin_dest_type]
             - else
               = @info[:file_type]
           
@@ -146,7 +148,10 @@
           %i.mi.mi-small(title="destination path") folder
         - if @collision_info
           %span.tag.is-danger= "ALREADY EXIST!"
-        = Doujin.dest_path_by_process_params @info
+        - Doujin.dest_path_by_process_params(@info).split(File::SEPARATOR, 3)[1..-1].each_with_index do |path, i|
+          = File::SEPARATOR
+          %span{class: ('has-text-warning' if i == 0)}<>= path
+          
       
       - if @collision_info
         .overwrite-confirm.mb-1
