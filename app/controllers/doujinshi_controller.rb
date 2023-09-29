@@ -107,7 +107,7 @@ class DoujinshiController < ApplicationController
       max_results = THUMBS_PER_ROW * 2
       
       @doujinshi = @doujinshi.
-        select(:id, :category, :file_folder, :file_name, :name_orig, :size, :num_images).
+        reselect(:id, :category, :file_folder, :file_name, :name_orig, :size, :num_images).
         limit(max_results)
       
       @deleted_doujinshi = DeletedDoujin.

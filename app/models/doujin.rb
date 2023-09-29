@@ -152,39 +152,55 @@ class Doujin < ApplicationRecord
   end # refresh_checksum!
   
   def self.search(terms)
-    fname_info    = terms.to_s.strip    .parse_doujin_filename
     tokens_orig   = terms.to_s          .tokenize_doujin_filename.join '%'
     tokens_kakasi = terms.to_s.to_romaji.tokenize_doujin_filename.join '%'
     
     return self.none if tokens_orig.size < 3
     
-    # search all terms on the original filename
+    # search all terms in the original filename
     rel_conditions = [
-      Doujin.where("name_orig        LIKE ?", "%#{tokens_orig  }%"),
-      Doujin.where("name_orig_kakasi LIKE ?", "%#{tokens_kakasi}%"),
-      Doujin.where("name_orig        LIKE ?", "%#{tokens_orig  }%"),
-      Doujin.where("name_orig_kakasi LIKE ?", "%#{tokens_kakasi}%"),
-      Doujin.where("name_eng         LIKE ?", "%#{tokens_orig  }%"),
+      Doujin.where("doujinshi.name_orig        LIKE ?", "%#{tokens_orig  }%"),
+      Doujin.where("doujinshi.name_orig        LIKE ?", "%#{tokens_kakasi}%"),
+      Doujin.where("doujinshi.name_orig_kakasi LIKE ?", "%#{tokens_orig  }%"),
+      Doujin.where("doujinshi.name_orig_kakasi LIKE ?", "%#{tokens_kakasi}%"),
+      Doujin.where("doujinshi.name_eng         LIKE ?", "%#{tokens_orig  }%"),
     ]
     
-    # search only filename terms on user filled fields
+    # search all terms in relations
+    %i[ authors circles ].each do |r|
+      rel_conditions += [
+        Doujin.where("#{r}.name        LIKE ?", "%#{tokens_orig  }%"),
+        Doujin.where("#{r}.name        LIKE ?", "%#{tokens_kakasi}%"),
+        Doujin.where("#{r}.name_romaji LIKE ?", "%#{tokens_orig  }%"),
+        Doujin.where("#{r}.name_romaji LIKE ?", "%#{tokens_kakasi}%"),
+        Doujin.where("#{r}.name_kakasi LIKE ?", "%#{tokens_kakasi}%"),
+        Doujin.where("#{r}.aliases     LIKE ?", "%#{tokens_orig  }%"),
+        Doujin.where("#{r}.aliases     LIKE ?", "%#{tokens_kakasi}%"),
+      ]
+    end
+    
+    # search only filename terms in user filled fields
+    fname_info    = terms.to_s.strip.parse_doujin_filename
     title_terms   = fname_info[:fname].present? ? fname_info[:fname] : terms
     tokens_orig   = title_terms.to_s          .tokenize_doujin_filename.join '%'
     tokens_kakasi = title_terms.to_s.to_romaji.tokenize_doujin_filename.join '%'
     rel_conditions += [
-      Doujin.where("name        LIKE ?", "%#{tokens_orig  }%"),
-      Doujin.where("name        LIKE ?", "%#{tokens_kakasi}%"),
-      Doujin.where("name_romaji LIKE ?", "%#{tokens_orig  }%"),
-      Doujin.where("name_romaji LIKE ?", "%#{tokens_kakasi}%"),
-      Doujin.where("name_kakasi LIKE ?", "%#{tokens_kakasi}%"),
-      Doujin.where("name_eng    LIKE ?", "%#{tokens_orig  }%"),
+      Doujin.where("doujinshi.name        LIKE ?", "%#{tokens_orig  }%"),
+      Doujin.where("doujinshi.name        LIKE ?", "%#{tokens_kakasi}%"),
+      Doujin.where("doujinshi.name_romaji LIKE ?", "%#{tokens_orig  }%"),
+      Doujin.where("doujinshi.name_romaji LIKE ?", "%#{tokens_kakasi}%"),
+      Doujin.where("doujinshi.name_kakasi LIKE ?", "%#{tokens_kakasi}%"),
+      Doujin.where("doujinshi.name_eng    LIKE ?", "%#{tokens_orig  }%"),
     ]
     
     # build query with all conditions in OR
     rel = rel_conditions.shift
     rel_conditions.each{|cond| rel = rel.or cond }
     
-    rel.order(Arel.sql "COALESCE(NULLIF(name_romaji, ''), NULLIF(name_kakasi, ''))")
+    rel.
+      left_joins(:authors, :circles).
+      distinct.select('doujinshi.*').
+      order(Arel.sql "COALESCE(NULLIF(doujinshi.name_romaji, ''), NULLIF(doujinshi.name_kakasi, ''))")
   end # self.search
   
   def cover_fingerprint = Kernel.suppress_output{ '%016x' % Phashion::Image.new(thumb_disk_path).fingerprint }
