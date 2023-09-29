@@ -5,7 +5,7 @@ git_source(:github) { |repo| 'https://github.com/#{repo}.git' }
 #   bundle update
 #   gem cleanup
 
-ruby '3.2.0'
+ruby '3.2.2'
 
 gem 'rails',       '~> 7.0',     # to use edge: gem 'rails', github: 'rails/rails', branch: 'main'
   require: %w{ shellwords open-uri pp open3 }
