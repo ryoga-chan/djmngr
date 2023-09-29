@@ -1,5 +1,5 @@
 .title.is-size-4
-  = "Search results (#{@doujinshi.count})"
+  = "Search results (#{@doujinshi.reselect(:id).count})"
   
   - show_key = session[:dj_index_detail] == 'thumbs' ? 'table' : 'thumbs'
   .actions.field.is-grouped{style: "float: right;"}
