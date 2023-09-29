@@ -2,7 +2,7 @@
 # * multi stage build based on "Rails 7.1 default Dockerfile":
 #   https://gist.github.com/tannakartikey/ced6b33acd3d6132a6eab99a667e1cbe
 
-ARG RUBY_VERSION=3.2.0
+ARG RUBY_VERSION=3.2.2
 
 # ----- base -------------------------------------------------------------------
 FROM ruby:$RUBY_VERSION-slim as base
