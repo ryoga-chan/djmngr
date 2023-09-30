@@ -36,22 +36,29 @@ class ProcessIndexPreviewJob < ProcessIndexRefreshJob
         thumb_entries = zip_images.pages_preview(chunk_size: THUMBS_CHUNK)
         
         images = thumb_entries.map{|e|
-          Vips::Image.webp_cropped_thumb(
+          i = Vips::Image.webp_cropped_thumb(
             e.get_input_stream.read,
             width:   THUMB_WIDTH,
             height:  THUMB_HEIGHT,
             padding: false
-          )[:image].colourspace('srgb') # https://github.com/libvips/pyvips/issues/202
+          )[:image]
+          
+          # https://github.com/libvips/pyvips/issues/202
+          # https://github.com/libvips/libvips/issues/1525
+          i = i.colourspace('srgb') if i.bands  < 3
+          i = i.bandjoin(255)       if i.bands == 3
+          
+          i
         }.compact
         
         images = 9.times.map{ self.class.err_img } if images.empty?
         
         # https://github.com/libvips/ruby-vips/blob/master/lib/vips/methods.rb#L362
         # create a long thumbnail for desktop
-        collage = Vips::Image.arrayjoin images
+        collage = Vips::Image.arrayjoin images, background: 255
         collage.write_to_file processable_doujin.thumb_path(mobile: false)
         # create a portrait thumbnail for mobile
-        collage = Vips::Image.arrayjoin images, across: THUMBS_CHUNK
+        collage = Vips::Image.arrayjoin images, background: 255, across: THUMBS_CHUNK
         collage.write_to_file processable_doujin.thumb_path(mobile: true)
       end
     end
