@@ -55,10 +55,10 @@ class ProcessIndexPreviewJob < ProcessIndexRefreshJob
         
         # https://github.com/libvips/ruby-vips/blob/master/lib/vips/methods.rb#L362
         # create a long thumbnail for desktop
-        collage = Vips::Image.arrayjoin images, background: 255
+        collage = Vips::Image.arrayjoin images, background: 0
         collage.write_to_file processable_doujin.thumb_path(mobile: false)
         # create a portrait thumbnail for mobile
-        collage = Vips::Image.arrayjoin images, background: 255, across: THUMBS_CHUNK
+        collage = Vips::Image.arrayjoin images, background: 0, across: THUMBS_CHUNK
         collage.write_to_file processable_doujin.thumb_path(mobile: true)
       end
     end
