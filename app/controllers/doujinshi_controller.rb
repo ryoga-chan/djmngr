@@ -354,6 +354,8 @@ class DoujinshiController < ApplicationController
   def destroy
     @doujin.destroy_with_files
     flash[:notice] = "doujin [#{@doujin.id}] deleted"
+    return redirect_to_with_format(doujinshi_path tab: :author, author_id: params[:from_author], anchor: :listing) if params[:from_author]
+    return redirect_to_with_format(doujinshi_path tab: :circle, circle_id: params[:from_circle], anchor: :listing) if params[:from_circle]
     redirect_to_with_format doujinshi_path
   end # destroy
   
