@@ -45,19 +45,19 @@
     .tabs.is-boxed.is-centered
       %ul
         %li{class: (:'is-active' if params[:tab] == 'author') }
-          = link_to(p_data.merge({tab: :author}), title: 'authors') do
+          = link_to(p_data.merge({tab: :author, circle_id: nil}), title: 'authors') do
             %span.icon.is-small
               %i.mi= DoujinshiController::ICONS['author']
         %li{class: (:'is-active' if params[:tab] == 'circle') }
-          = link_to(p_data.merge({tab: :circle}), title: 'circles') do
+          = link_to(p_data.merge({tab: :circle, author_id: nil}), title: 'circles') do
             %span.icon.is-small
               %i.mi= DoujinshiController::ICONS['circle']
         %li{class: (:'is-active' if params[:tab] == 'artbook') }
-          = link_to(p_data.merge({tab: :artbook}), title: 'artbooks') do
+          = link_to(p_data.merge({tab: :artbook, author_id: nil, circle_id: nil}), title: 'artbooks') do
             %span.icon.is-small
               %i.mi= DoujinshiController::ICONS['artbook']
         %li{class: (:'is-active' if params[:tab] == 'magazine') }
-          = link_to(p_data.merge({tab: :magazine}), title: 'magazines') do
+          = link_to(p_data.merge({tab: :magazine, author_id: nil, circle_id: nil}), title: 'magazines') do
             %span.icon.is-small
               %i.mi= DoujinshiController::ICONS['magazine']
     
