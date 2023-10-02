@@ -20,8 +20,8 @@ class ProcessController < ApplicationController
     # generate preview images collage for ZIP files on the first index page
     if params[:preview]
       ProcessIndexPreviewJob.lock_file!
-      ProcessIndexPreviewJob.perform_later order: params[:sort_by], id: params[:id]
-      return redirect_to(action: :index, sort_by: params[:sort_by])
+      ProcessIndexPreviewJob.perform_later order: params[:sort_by], page: params[:page], id: params[:id]
+      return redirect_to(action: :index, sort_by: params[:sort_by], page: params[:page])
     end
 
     if ProcessIndexRefreshJob.lock_file? || ProcessIndexPreviewJob.lock_file?
