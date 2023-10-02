@@ -50,11 +50,23 @@
           .actions
             .field.has-addons.mb-4.is-justify-content-end
               .control
-                = link_to '#', class: 'bt-batch button is-link is-small',
+                = link_to '#', onclick: %Q|jQuery('tr.sample').toggleClass('is-hidden')|,
+                  class: 'button is-small' do
+                  %span.icon.is-small
+                    %i.mi compare
+                  %span thumbs
+              .control
+                = link_to '#', class: 'bt-batch button is-small',
                   onclick: %Q|jQuery('.batch-bt, .batch-rm, td.rm-or-batch > *, td.batch, .bt-reindex, .bt-preview').toggleClass('is-hidden'); return false| do
                   %span.icon.is-small
                     %i.mi.mi-small inventory_2
                   %span batch
+              .control.batch-bt.is-hidden
+                = link_to '#', class: 'bt-toggle-all button is-small',
+                  onclick: %Q|jQuery('td.rm-or-batch :checkbox').each(function(){ $(this).prop('checked', !$(this).prop('checked')) }).first(); jQuery.app.update_tot_filesize(); return false| do
+                  %span.icon.is-small
+                    %i.mi select_all
+                  %span toggle
               .control.batch-rm.is-hidden
                 -# # https://stackoverflow.com/questions/3027149/how-do-i-create-multiple-submit-buttons-for-the-same-form-in-rails
                 = f.button(type: :submit, class: 'button is-small is-danger',
@@ -64,13 +76,7 @@
                     %i.mi delete_forever
                   %span delete
               .control.batch-bt.is-hidden
-                = link_to '#', class: 'bt-toggle-all button is-small',
-                  onclick: %Q|jQuery('td.rm-or-batch :checkbox').each(function(){ $(this).prop('checked', !$(this).prop('checked')) }).first(); jQuery.app.update_tot_filesize(); return false| do
-                  %span.icon.is-small
-                    %i.mi select_all
-                  %span toggle
-              .control.batch-bt.is-hidden
-                = f.button type: :submit, class: 'button is-small' do
+                = f.button type: :submit, class: 'button is-link is-small' do
                   %span.icon.is-small
                     %i.mi send
                   %span prepare
@@ -128,7 +134,7 @@
                   - if f.name != f.name_kakasi
                     .name_kakasi.is-size-7= f.name_kakasi
               - if has_thumb
-                %tr
+                %tr.sample
                   %td
                   %td(colspan=3)
                     %figure.image
