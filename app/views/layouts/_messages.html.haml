@@ -1,0 +1,14 @@
+-# NOTE: "notice" and "alert" are Rails defaults, "warn" is a custom key
+- { notice: :'is-info', alert: :'is-danger', warn: :'is-warning' }.each do |key, css_class|
+  - if flash[key].present?
+    .is-size-5.notification{class: css_class}
+      - if flash[key].is_a?(String)
+        = flash[key]
+      - elsif flash[key].is_a?(Array)
+        - if flash[key].one?
+          = flash[key].first
+        - else
+          .content
+            %ul.mt-0
+              - flash[key].each do |msg|
+                %li= msg

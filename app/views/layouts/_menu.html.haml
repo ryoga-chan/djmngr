@@ -1,0 +1,145 @@
+%nav.navbar{role: "navigation"}
+  .navbar-brand
+    %a.navbar-item(href='/' title='home page')= image_tag 'logo.webp', style: "border-radius: 0.5rem", class: 'app-logo'
+    %a.navbar-burger.no-spinner{:role => "button", :'data-target' => "appNavbar",
+      :onclick => %Q|jQuery(this).add('#appNavbar').toggleClass('is-active') | }
+      %span
+      %span
+      %span
+
+  #appNavbar.navbar-menu
+    .navbar-start
+      %span.navbar-item{class: params[:controller] != 'process' ? nil : 'is-current'}
+        = link_to process_index_path, class: 'has-text-white' do
+          %span.icon-text
+            %span.icon
+              %i.mi swap_horiz
+            %span Process
+      
+      %span.navbar-item.has-dropdown.is-hoverable{class: (params[:controller] != 'doujinshi' ? nil : 'is-current'),
+        onclick: "jQuery(this).toggleClass('is-active')"}
+        %a.navbar-link
+          %span.icon-text
+            %span.icon
+              %i.mi book
+            %span Doujinshi
+        .navbar-dropdown
+          = link_to doujinshi_path, class: 'navbar-item' do
+            %span.icon
+              %i.mi apps
+            %span Browse
+          = link_to favorites_doujinshi_path, class: 'navbar-item' do
+            %span.icon
+              %i.mi auto_awesome
+            %span Favorites
+          = link_to scored_doujinshi_path, class: 'navbar-item' do
+            %span.icon
+              %i.mi star_half
+            %span Scores
+          = link_to shelves_path, class: 'navbar-item' do
+            %span.icon
+              %i.mi shelves
+            %span Shelves
+          = link_to epub_doujinshi_path, class: 'navbar-item' do
+            %span.icon
+              %i.mi library_books
+            %span EPUBs
+          = link_to compare_doujinshi_path, class: 'navbar-item' do
+            %span.icon
+              %i.mi compare
+            %span Comparison
+      
+      %span.navbar-item
+        = form_with url: search_doujinshi_path, method: :get,
+          html: {onsubmit: %Q|jQuery(this).find('button').addClass('is-loading'); jQuery.myapp.show_loading()|} do |f|
+          .field.has-addons
+            .control
+              .select= f.select :where,
+                options_for_select(%w{ doujinshi authors circles themes }, params[:controller]),
+                {}, class: 'input is-rounded',
+                onchange: %Q|if ($('#term:first').val().trim().length > 0) this.form.submit()|
+            .control= f.text_field :term, value: params[:term], placeholder: :search,
+              id: 'global-search', class: 'input is-rounded'
+            .control
+              = f.button class: 'button is-light is-rounded is-outlined' do
+                %span.icon
+                  %i.mi search
+    
+      %span.navbar-item.has-dropdown.is-hoverable{class: (%w{ authors circles themes }.include?(params[:controller]) ? 'is-current' : nil),
+        onclick: "jQuery(this).toggleClass('is-active')"}
+        %a.navbar-link
+          %span.icon
+            %i.mi folder_shared
+          %span Metadata
+        .navbar-dropdown
+          = link_to authors_path, class: 'navbar-item' do
+            %span.icon
+              %i.mi supervisor_account
+            %span Authors
+          = link_to circles_path, class: 'navbar-item' do
+            %span.icon
+              %i.mi supervised_user_circle
+            %span Circles
+          = link_to themes_path, class: 'navbar-item' do
+            %span.icon
+              %i.mi local_offer
+            %span Themes
+      
+      %span.navbar-item.has-dropdown.is-hoverable{class: ("#{params[:controller]}/#{params[:action]}" == 'home/settings' ? 'is-current' : nil),
+        onclick: "jQuery(this).toggleClass('is-active')"}
+        %a.navbar-link
+          %span.icon-text
+            %span.icon
+              %i.mi construction
+            %span Tools
+        .navbar-dropdown
+          = link_to home_settings_path, class: 'navbar-item' do
+            %span.icon
+              %i.mi settings
+            %span Settings
+
+          = link_to zip_select4read_doujinshi_path, class: 'navbar-item is-hidden-touch' do
+            %span.icon
+              %i.mi chrome_reader_mode
+            %span Read ZIP
+
+          %span.navbar-item
+            = form_with url: search_cover_doujinshi_path, method: :post, html: {style: 'margin-left: -0.6rem'} do |f|
+              .file.is-primary
+                %label.file-label
+                  = f.file_field :cover, class: 'file-input', id: '',
+                    onchange: %Q|jQuery(this).next().find('i.mi').text('hourglass_bottom'); jQuery.myapp.show_loading(); this.form.submit()|
+                  %span.file-cta
+                    %span.file-icon.mr-3
+                      %i.mi image_search
+                    %span.file-label
+                      Cover match
+          
+          - ext_lbl, ext_url = Setting[:external_link].to_s.split('|')
+          - if ext_lbl.present? && ext_lbl.present?
+            = link_to ext_url, class: 'navbar-item no-spinner', target: :_blank do
+              %span.icon
+                %i.mi launch
+              %span= ext_lbl
+      
+          = link_to home_info_path, class: 'navbar-item' do
+            %span.icon
+              %i.mi info
+            %span Info
+
+    .navbar-end
+      .navbar-item
+        .buttons
+          = link_to '#', class: 'button is-primary no-spinner nsfw-mode-toggle', title: 'toggle NSFW mode' do
+            %span.icon-text
+              %span.icon
+                %i.mi shield
+          -#- if true # Current.user
+          -#  = link_to '#', class: 'button is-primary' do
+          -#    %span.icon
+          -#      %i.mi logout
+          -#    %span Logout
+          = link_to(root_path(format: :ereader), class: 'button is-primary', title: 'view in e-reader format') do
+            %span.icon
+              %i.mi tablet_android
+            -#%span e-reader
