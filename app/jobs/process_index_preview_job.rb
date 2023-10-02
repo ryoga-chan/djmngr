@@ -2,7 +2,7 @@ class ProcessIndexPreviewJob < ProcessIndexRefreshJob
   THUMB_WIDTH  = 320
   THUMB_HEIGHT = 640
   THUMBS_CHUNK = 3
-  THUMBS_NUM   = Rails.env.production? ? ProcessController::ROWS_PER_PAGE : 3
+  THUMBS_NUM   = ProcessController::ROWS_PER_PAGE
   
   def self.rm_previews
     pattern = Rails.root.join('public', ProcessableDoujin::THUMB_FOLDER, '*.webp').to_s
@@ -18,12 +18,14 @@ class ProcessIndexPreviewJob < ProcessIndexRefreshJob
     )[:image]
   end # self.err_img
   
-  def perform(id: nil, order: nil)
+  def perform(id: nil, order: nil, page: nil)
     self.class.lock_file!
+    
+    page = 1 if page.to_i <= 0
     
     rel = self.class.entries(order: order)
     rel = rel.where(id: id) if id
-    rel.page(1).per(THUMBS_NUM).each do |processable_doujin|
+    rel.page(page.to_i).per(THUMBS_NUM).each do |processable_doujin|
       next if File.exist?(processable_doujin.thumb_path)
       
       fname = File.join Setting['dir.to_sort'], processable_doujin.name

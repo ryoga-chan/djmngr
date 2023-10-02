@@ -81,7 +81,7 @@
                     %i.mi.mi-small refresh
                   %span refresh
               .control
-                = link_to({preview: true, sort_by: params[:sort_by]}, class: 'bt-preview button is-info is-small') do
+                = link_to({preview: true, sort_by: params[:sort_by], page: params[:page]}, class: 'bt-preview button is-info is-small') do
                   %span.icon.is-small
                     %i.mi.mi-small preview
                   %span preview
