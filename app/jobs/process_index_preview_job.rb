@@ -9,14 +9,22 @@ class ProcessIndexPreviewJob < ProcessIndexRefreshJob
     Dir[pattern].each{|f| FileUtils.rm_f f }
   end # self.rm_previews
   
-  def self.err_img
-    @@err_img ||= Vips::Image.webp_cropped_thumb(
+  def self.img_not_found
+    @@img_not_found ||= Vips::Image.webp_cropped_thumb(
       File.read(Rails.root.join('public', 'not-found.png').to_s),
       width:   THUMB_WIDTH,
       height:  THUMB_HEIGHT,
       padding: false
     )[:image]
-  end # self.err_img
+  end # self.img_not_found
+  
+  def self.img_transparent
+    # https://github.com/libvips/pyvips/issues/326
+    @@img_trasparent ||= Vips::Image.
+      black(2,2). # with x height in pixels
+      copy(interpretation: "srgb").
+      new_from_image([0, 0, 0, 0])
+  end # self.img_transparent
   
   def perform(id: nil, order: nil, page: nil)
     self.class.lock_file!
@@ -53,7 +61,12 @@ class ProcessIndexPreviewJob < ProcessIndexRefreshJob
           i
         }.compact
         
-        images = 9.times.map{ self.class.err_img } if images.empty?
+        # display missing image if no images are found
+        images << self.class.img_not_found if images.empty?
+        
+        # use transparent images for the remaining thumbs
+        num_fill = (images.size.to_f / 3).ceil * 3
+        images += (images.size ... num_fill).map{ self.class.img_transparent }
         
         # https://github.com/libvips/ruby-vips/blob/master/lib/vips/methods.rb#L362
         # create a long thumbnail for desktop
