@@ -18,6 +18,7 @@ gem 'tzinfo-data', platforms: %i[ mingw mswin x64_mingw jruby ] # zoneinfo files
 gem 'haml-rails',  '~> 2.0'      # https://haml.info
 gem 'kaminari'                   # pagination -- https://github.com/kaminari/kaminari
 gem 'kakasi'                     # kanji kana simple inverter -- https://github.com/knu/kakasi_ffi
+gem 'marcel'                     # mime type of files -- https://github.com/rails/marcel
 gem 'progressbar'                # cli progressbar -- https://github.com/jfelchner/ruby-progressbar
 gem 'rubyzip', '~> 2.3', require: 'zip' # manage ZIP files -- https://github.com/rubyzip/rubyzip
 gem 'paper_trail', '~> 12.3'     # track model changes -- https://github.com/paper-trail-gem/paper_trail
