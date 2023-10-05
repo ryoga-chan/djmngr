@@ -1,8 +1,14 @@
 class CoverMatchingJob < ApplicationJob
+  # https://github.com/westonplatter/phashion#threshold-for-dupe-detection
+  # http://www.mikeperham.com/2010/05/21/detecting-duplicate-images-with-phashion/
+  # << Our testing showed that 15 bits is a good value to start with, it detected
+  #    all duplicates with a minimum of false positives >>
+  MAX_HAMMING_DISTANCE = 15 # = less than ~23% (15/64) different bits
+  
   queue_as :search
 
   # return the image's hash for `perform`
-  def self.hash_image_buffer(image_data)
+  def self.hash_image_buffer(image_data, hash_only: false)
     fkey  = Digest::MD5.hexdigest image_data
     
     # resize image to a temporary thumbnail
@@ -15,6 +21,8 @@ class CoverMatchingJob < ApplicationJob
     File.open(fname, 'wb'){|f| f.write thumb[:image].webpsave_buffer }
     phash = Kernel.suppress_output{ '%016x' % Phashion::Image.new(fname).fingerprint }
     FileUtils.rm_f fname # remove temp image
+    
+    return phash if hash_only
     
     { phash: phash, landscape: thumb[:landscape],
       image: Base64.encode64(thumb[:image].webpsave_buffer).chomp }
@@ -50,8 +58,7 @@ class CoverMatchingJob < ApplicationJob
     FileUtils.rm_f File.join(Setting['dir.sorting'], "#{image_hash}.yml").to_s
   end # self.rm_results_file
   
-  # max_distance = 13 --> less than ~20% different bits
-  def self.find(model, phash, max_distance: 13)
+  def self.find(model, phash, max_distance: MAX_HAMMING_DISTANCE)
     # https://stackoverflow.com/questions/2281580/is-there-any-way-to-convert-an-integer-3-in-decimal-form-to-its-binary-equival/2310694#2310694
     # https://stackoverflow.com/questions/49601249/string-to-binary-and-back-using-pure-sqlite
     # GENERATE TERMS: puts (0..63).map{|i| "(x>>#{i.to_s.rjust 2}&1)" }.each_slice(5).map{|s| s.join(' + ') }.join(" +\n")
@@ -95,7 +102,7 @@ class CoverMatchingJob < ApplicationJob
 
   # read image data from temp file and do a matching against all saved doujinshi
   # by computing hamming distance between pHashes
-  def perform(image_hash, max_distance: 13)
+  def perform(image_hash, max_distance: MAX_HAMMING_DISTANCE)
     fname = File.join(Setting['dir.sorting'], "#{image_hash}.yml").to_s
     info  = YAML.unsafe_load_file fname
     
