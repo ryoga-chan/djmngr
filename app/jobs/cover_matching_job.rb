@@ -3,7 +3,7 @@ class CoverMatchingJob < ApplicationJob
   # http://www.mikeperham.com/2010/05/21/detecting-duplicate-images-with-phashion/
   # << Our testing showed that 15 bits is a good value to start with, it detected
   #    all duplicates with a minimum of false positives >>
-  MAX_HAMMING_DISTANCE = 15 # = less than ~23% (15/64) different bits
+  MAX_HAMMING_DISTANCE = 13 # = less than ~20% (13/64) different bits
   
   queue_as :search
 
