@@ -12,7 +12,7 @@
     .field-body
       .field
         .control.is-expanded.has-icons-left
-          = f.text_field :name, class: :input
+          = f.text_field :name, class: :input, tabindex: 100
           %span.icon.is-small.is-left
             %i.mi.mi-small raw_on
       = render partial: 'field_versions_toggle', locals: {field: 'name'}
@@ -24,7 +24,7 @@
     .field-body
       .field
         .control.is-expanded.has-icons-left
-          = f.text_field :name_romaji, class: :input
+          = f.text_field :name_romaji, class: :input, tabindex: 101
           %span.icon.is-small.is-left
             %i.mi.mi-small title
       = render partial: 'field_versions_toggle', locals: {field: 'name_romaji'}
@@ -36,7 +36,7 @@
     .field-body
       .field
         .control.is-expanded.has-icons-left
-          = f.text_field :name_kakasi, class: :input
+          = f.text_field :name_kakasi, class: :input, tabindex: 102
           %span.icon.is-small.is-left
             %i.mi.mi-small auto_fix_high
 
@@ -46,7 +46,7 @@
     .field-body
       .field
         .control.is-expanded.has-icons-left
-          = f.text_field :name_eng, class: :input
+          = f.text_field :name_eng, class: :input, tabindex: 103
           %span.icon.is-small.is-left
             %i.mi.mi-small translate
 
@@ -56,7 +56,7 @@
     .field-body
       .field
         .control.is-expanded.has-icons-left
-          = f.text_field :file_name, class: :input
+          = f.text_field :file_name, class: :input, tabindex: 104
           %span.icon.is-small.is-left
             %i.mi.mi-small description
 
@@ -66,7 +66,7 @@
     .field-body
       .field
         .control.is-expanded.has-icons-left
-          = f.text_field :name_orig, class: :input
+          = f.text_field :name_orig, class: :input, tabindex: 105
           %span.icon.is-small.is-left
             %i.mi.mi-small photo_filter
       = render partial: 'field_versions_toggle', locals: {field: 'name_orig'}

@@ -101,7 +101,7 @@
         %span.icon.in-text-small.mr-2(onclick="$('#dest_filename').val( $('#dest_title').val()+'.zip' )")
           %i.mi.mi-small(title="destination title kanji/original") raw_on
         = f.text_field :dest_title, value: @info[:dest_title],
-          placeholder: 'dest. title kanji/original',
+          placeholder: 'dest. title kanji/original', tabindex: 100,
           class: 'input is-small fillwidth',
           data: { orig_name: @info[:orig_title] }
         = link_to '#', class: 'button is-small is-hidden-mobile',
@@ -113,21 +113,21 @@
         %span.icon.in-text-small.mr-2(onclick="$('#dest_filename').val( $('#dest_title_romaji').val()+'.zip' )")
           %i.mi.mi-small(title="destination title romaji/translitterated") title
         = f.text_field :dest_title_romaji, value: @info[:dest_title_romaji],
-          placeholder: 'dest. title romaji/translitterated',
+          placeholder: 'dest. title romaji/translitterated', tabindex: 101,
           class: 'input is-small fillwidth'
       
       .dest-titlename.nowrap.mb-1
         %span.icon.in-text-small.mr-2(onclick="$('#dest_filename').val( $('#dest_title_eng').val()+'.zip' )")
           %i.mi.mi-small(title="destination title english/translated") translate
         = f.text_field :dest_title_eng, value: @info[:dest_title_eng],
-          placeholder: 'dest. title english/translated',
+          placeholder: 'dest. title english/translated', tabindex: 102,
           class: 'input is-small fillwidth'
       
       .dest-filename.nowrap.mb-1
         %span.icon.in-text-small.mr-2
           %i.mi.mi-small(title="destination filename") insert_drive_file
         = f.text_field :dest_filename, value: @info[:dest_filename],
-          placeholder: 'dest. filename',
+          placeholder: 'dest. filename', tabindex: 103,
           class: 'input is-small fillwidth',
           data: { orig_name: @info[:orig_dest_filename] }
         = link_to '#', class: 'button is-small is-hidden-mobile',

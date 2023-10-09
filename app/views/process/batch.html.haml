@@ -100,7 +100,7 @@
             - list, cur = %w{ prepare process }, @info[:options].try('[]', :batch_method)
             .select= f.select :batch_method, options_for_select(list, cur), {}, class: "input is-rounded is-small"
           .control
-            - list = (1..10).map{|i| ["&star; #{i}".html_safe,i] }.unshift(['score=none', nil])
+            - list = (1..10).map{|i| ["#{i} &star;".html_safe,i] }.unshift(['score=none', nil])
             .select= f.select :score,
               options_for_select(list, @info[:options].try('[]', :score)), {},
               class: "input is-rounded is-small"
