@@ -1,4 +1,11 @@
 #!/usr/bin/env ruby
+require 'fileutils'
+
+# remove building cache
+cache_path = File.join File.dirname(__FILE__), '..', 'tmp', 'cache', 'assets'
+FileUtils.rm_rf File.expand_path cache_path
+
+# run rails tasks
 ENV['RAILS_ENV'] = 'production'
 ARGV.replace %w{ assets:clobber assets:precompile }
 load File.join(File.dirname(__FILE__), 'rails')
