@@ -187,7 +187,7 @@ class ProcessController < ApplicationController
   def delete_archive
     ProcessIndexRefreshJob.rm_entry params[:path], track: true, rm_zip: true
     
-    redirect_to(process_index_path, notice: "file deleted: [#{params[:path]}]")
+    redirect_to(process_index_path(page: params[:page]), notice: "file deleted: [#{params[:path]}]")
   end # delete_archive
   
   def delete_archive_cwd
