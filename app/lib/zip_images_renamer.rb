@@ -16,7 +16,7 @@ module ZipImagesRenamer
       when :alphabetical_index
         images.
           sort_by_method(:'[]', :src_path).
-          each_with_index{|img, i| img[:dst_path] = "%04d#{File.extname img[:src_path]}" % (i+1) }
+          each_with_index{|img, i| img[:dst_path] = "%04d#{File.extname(img[:src_path]).downcase}" % (i+1) }
       
       when :numbers_only
         # create a sortable label
@@ -27,13 +27,13 @@ module ZipImagesRenamer
         rename_by_alt_label images
       
       when :to_integer
-        images.each{|img| img[:dst_path] = "%04d#{File.extname img[:src_path]}" % img[:src_path].to_i }
+        images.each{|img| img[:dst_path] = "%04d#{File.extname(img[:src_path]).downcase}" % img[:src_path].to_i }
       
       when :regex_number
         re = Regexp.new options[:rename_regexp]
         
         images.each do |img|
-          img[:dst_path] = "%04d#{File.extname img[:src_path]}" %
+          img[:dst_path] = "%04d#{File.extname(img[:src_path]).downcase}" %
                            img[:src_path].match(re)&.captures&.first.to_i
         end
       
@@ -50,7 +50,11 @@ module ZipImagesRenamer
       
       when :regex_replacement
         re = Regexp.new options[:rename_regexp]
-        images.each{|img| img[:dst_path] = img[:src_path].sub re, options[:rename_regexp_repl] }
+        images.each do |img|
+          img[:dst_path] = img[:src_path].sub re, options[:rename_regexp_repl]
+          ext = File.extname img[:dst_path]
+          img[:dst_path] = "#{File.basename img[:dst_path], ext)}#{ext.downcase}"
+        end
       
       else
         raise 'unknown renaming method'
@@ -71,6 +75,6 @@ module ZipImagesRenamer
   def self.rename_by_alt_label(images)
     images.
       sort_by_method(:'[]', :alt_label).
-      each_with_index{|img, i| img[:dst_path] = "%04d#{File.extname img[:src_path]}" % (i+1) }
+      each_with_index{|img, i| img[:dst_path] = "%04d#{File.extname(img[:src_path]).downcase}" % (i+1) }
   end # self.rename_by_alt_label
 end # ZipImagesRenamer
