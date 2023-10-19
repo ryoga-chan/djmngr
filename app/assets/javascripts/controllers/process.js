@@ -7,7 +7,7 @@ var p_bar = '<progress class="progress is-small is-info" max="100">i</progress>'
 
 $.myapp.titles_to_lowercase = function () {
   $.each(['dest_title', 'dest_title_romaji', 'dest_title_eng', 'dest_filename'],
-    function () { $('#'+this).val( $('#'+this).val().toLowerCase() ); });
+    function () { $('#'+this).val( $('#'+this).val().toLowerCase().trim() ); });
 }// $.myapp.titles_to_lowercase
 
 // remote update the name in "files", "images", and "batch" sections
