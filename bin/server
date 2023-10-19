@@ -2,7 +2,8 @@
 argv = %w{ s -b 0.0.0.0 -p 39102 }
 
 root_path   = File.expand_path File.join(File.dirname(__FILE__), '..')
-assets_path = File.join(root_path, 'public', 'assets')
+assets_path = File.join root_path, 'public', 'assets'
+cache_path  = File.join root_path, 'tmp', 'cache', 'assets'
 
 if ARGV.include?('p')
   ENV['RAILS_LOG_TO_STDOUT'] = 'true'
@@ -11,10 +12,12 @@ if ARGV.include?('p')
     puts '=> recompiling assets...'
     system File.join('bin', 'recompile-assets'), chdir: root_path
   end
-elsif File.exist?(assets_path)
-  puts '=> removing precompiled assets...'
-  require 'fileutils'
-  FileUtils.rm_rf assets_path
+else
+  if File.exist?(assets_path) || File.exist?(cache_path)
+    require 'fileutils'
+    puts '=> removing precompiled assets and cache...'
+    FileUtils.rm_rf [assets_path, cache_path]
+  end
 end
 
 ARGV.delete 'p'

@@ -54,6 +54,18 @@ class Doujin < ApplicationRecord
     self.name_orig_kakasi = name_orig.to_romaji if name_orig_changed?
     self.notes            = notes.to_s.strip    if notes_changed?
     
+    # strip strings
+    %i[
+      name
+      name_romaji
+      name_kakasi
+      name_eng
+      name_orig
+      file_folder
+      file_name
+      notes
+    ].each{|k| send "#{k}=", send(k).strip if send(k).is_a?(String) }
+    
     self.colorized = true if media_type == 'cg'
   end # sanitize_fields
   
