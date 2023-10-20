@@ -300,10 +300,13 @@
           onchange: %Q|this.form.submit()|
         %a.button.skip(href="#" onclick="jQuery(this).prev().val((cur_page+10) > num_files ? num_files : (cur_page+10)).change(); return false") >>
     
-    .toggle-hq
+    .options
       %input.button{type: "submit",
-        value: (params[:nr].to_i == 0 ? "toggle auto resize (YES)" : "toggle auto resize (NO)"),
+        value: (params[:nr].to_i == 0 ? "Auto scale ON" : "Auto scale OFF"),
         onclick: "jQuery('#nr').val( 1 - parseInt(jQuery('#nr').val()) )"}
+      %a.button.fs(href="#" onclick="jQuery('body').get(0).requestFullscreen(); jQuery('a.fs').toggleClass('hidden'); return false") F.Screen OFF
+      %a.button.fs.hidden(href="#" onclick="document.exitFullscreen(); jQuery('a.fs').toggleClass('hidden'); return false") F.Screen ON
+      
   
   .canvas
     - Setting::READING_BG_COLORS.each do |color|
