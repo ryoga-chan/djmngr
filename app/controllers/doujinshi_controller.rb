@@ -379,6 +379,10 @@ class DoujinshiController < ApplicationController
       subfolder:      (paths[2].to_s.include?(File::SEPARATOR) ? File.dirname(paths[2]) : ''),
       dest_filename:  File.basename(paths[2] || paths[1]),
       score:          @doujin.score,
+      language:       @doujin.language,
+      censored:       @doujin.censored,
+      colorized:      @doujin.colorized,
+      media_type:     @doujin.media_type,
     }.to_yaml) }
     
     # move current ZIP file to that folder
