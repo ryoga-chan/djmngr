@@ -164,6 +164,7 @@ class ProcessArchiveDecompressJob < ApplicationJob
     FileUtils.mkdir_p path_cover
     
     system %Q| unzip -q -d #{path_contents.shellescape} #{info[:file_path].shellescape} |
+    FileUtils.rm_f File.join(path_contents, 'metadata.yml') # remove reprocessing file
     
     # reset file/folder permissions
     if OS_LINUX
