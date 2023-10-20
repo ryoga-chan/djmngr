@@ -138,14 +138,6 @@ class ProcessArchiveDecompressJob < ApplicationJob
     info[:orig_title        ] = info[:dest_title]
     info[:orig_dest_filename] = info[:dest_filename]
     
-    # restore reprocessing metadata
-    md_path = File.join File.dirname(info[:file_path]), "#{File.basename info[:file_path], File.extname(info[:file_path])}.yml"
-    md_info = YAML.unsafe_load_file(md_path) rescue {}
-    if File.exist?(md_path) && md_info.is_a?(Hash)
-      info.merge! md_info
-      File.unlink md_path
-    end
-    
     # set properties
     info[:language  ]   = Doujin::LANGUAGES.
       detect{|descr, lbl| name[:properties].include?(lbl) || fname.include?(descr.downcase) }.
@@ -153,6 +145,14 @@ class ProcessArchiveDecompressJob < ApplicationJob
     info[:censored  ] = !(name[:properties].include?('unc') || %w{ decensored uncensored }.any?{|t| fname.include? t })
     info[:colorized ] = info[:file_type] == 'artbook' || name[:properties].include?('col')
     info[:media_type] = (fname =~ /(hcg| cg | cg$)/i ? 'cg' : 'doujin')
+    
+    # restore reprocessing metadata
+    md_path = File.join File.dirname(info[:file_path]), "#{File.basename info[:file_path], File.extname(info[:file_path])}.yml"
+    md_info = YAML.unsafe_load_file(md_path) rescue {}
+    if File.exist?(md_path) && md_info.is_a?(Hash)
+      info.merge! md_info
+      File.unlink md_path
+    end
     
     # create folder and unzip archive
     path_thumbs   = File.join(dst_dir, 'thumbs')
