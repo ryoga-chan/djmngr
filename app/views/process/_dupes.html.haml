@@ -120,4 +120,9 @@
               %p.control= bt_compare
             
           = link_to "##{d.id} @ #{d.file_path}", doujin_path(d), target: :_blank
+          = link_to({ident_from: d.id},
+            title: 'clone relations and folders',
+            class: 'button is-info is-rounded is-small tiny-bt') do
+            %span.icon.is-small
+              %i.mi.mi-small file_copy
         .was(title="original name")= d.name_orig

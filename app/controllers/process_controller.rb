@@ -342,6 +342,14 @@ class ProcessController < ApplicationController
     
     return render unless @info[:prepared_at]
     
+    # clone relations from another doujin
+    if params[:ident_from] && (d = Doujin.find_by id: params[:ident_from])
+      @info[:author_ids ], @info[:circle_ids] = d.author_ids, d.circle_ids
+      @info[:dest_folder], @info[:subfolder ] = d.file_folder.to_s.split(File::SEPARATOR)
+      File.atomic_write(File.join @dname, 'info.yml'){|f| f.puts @info.to_yaml }
+      return redirect_to({tab: :ident}, notice: "relations and folders cloned")
+    end
+    
     # run cover image hash matching for the first time
     params[:rematch_cover] = true if @info[:cover_hash].blank?
     
@@ -403,7 +411,7 @@ class ProcessController < ApplicationController
         @dupes += Doujin.
           where.not(id: @dupes.map(&:id)).
           search(params[:dupe_search], relations: false).
-          order(:name_orig).limit(10).to_a
+          order(:name_orig).limit(30).to_a
       
       when 'ident'
         # list possible dest folders
