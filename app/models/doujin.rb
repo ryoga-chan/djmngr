@@ -163,7 +163,7 @@ class Doujin < ApplicationRecord
     tmp_hash.size == 128 ? update(checksum: tmp_hash) : false
   end # refresh_checksum!
   
-  def self.search(terms)
+  def self.search(terms, relations: true)
     tokens_orig   = terms.to_s          .tokenize_doujin_filename.join '%'
     tokens_kakasi = terms.to_s.to_romaji.tokenize_doujin_filename.join '%'
     
@@ -179,16 +179,18 @@ class Doujin < ApplicationRecord
     ]
     
     # search all terms in relations
-    %i[ authors circles ].each do |r|
-      rel_conditions += [
-        Doujin.where("#{r}.name        LIKE ?", "%#{tokens_orig  }%"),
-        Doujin.where("#{r}.name        LIKE ?", "%#{tokens_kakasi}%"),
-        Doujin.where("#{r}.name_romaji LIKE ?", "%#{tokens_orig  }%"),
-        Doujin.where("#{r}.name_romaji LIKE ?", "%#{tokens_kakasi}%"),
-        Doujin.where("#{r}.name_kakasi LIKE ?", "%#{tokens_kakasi}%"),
-        Doujin.where("#{r}.aliases     LIKE ?", "%#{tokens_orig  }%"),
-        Doujin.where("#{r}.aliases     LIKE ?", "%#{tokens_kakasi}%"),
-      ]
+    if relations
+      %i[ authors circles ].each do |r|
+        rel_conditions += [
+          Doujin.where("#{r}.name        LIKE ?", "%#{tokens_orig  }%"),
+          Doujin.where("#{r}.name        LIKE ?", "%#{tokens_kakasi}%"),
+          Doujin.where("#{r}.name_romaji LIKE ?", "%#{tokens_orig  }%"),
+          Doujin.where("#{r}.name_romaji LIKE ?", "%#{tokens_kakasi}%"),
+          Doujin.where("#{r}.name_kakasi LIKE ?", "%#{tokens_kakasi}%"),
+          Doujin.where("#{r}.aliases     LIKE ?", "%#{tokens_orig  }%"),
+          Doujin.where("#{r}.aliases     LIKE ?", "%#{tokens_kakasi}%"),
+        ]
+      end
     end
     
     # search only filename terms in user filled fields
@@ -209,8 +211,9 @@ class Doujin < ApplicationRecord
     rel = rel_conditions.shift
     rel_conditions.each{|cond| rel = rel.or cond }
     
+    rel = rel.left_joins(:authors, :circles) if relations
+    
     rel.
-      left_joins(:authors, :circles).
       distinct.select('doujinshi.*').
       order(Arel.sql "COALESCE(NULLIF(doujinshi.name_romaji, ''), NULLIF(doujinshi.name_kakasi, ''))")
   end # self.search
