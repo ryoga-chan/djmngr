@@ -400,9 +400,9 @@ class ProcessController < ApplicationController
         # search dupes by filename
         @info[:dupe_search] ||= @info[:relative_path].tokenize_doujin_filename.join ' '
         params[:dupe_search] ||= @info[:dupe_search]
-        @dupes += Doujin. # NOTE: sqlite LIKE is case insensitive
-          where("name_orig LIKE ?", "%#{params[:dupe_search].tr ' ', '%'}%").
+        @dupes += Doujin.
           where.not(id: @dupes.map(&:id)).
+          search(params[:dupe_search], relations: false).
           order(:name_orig).limit(10).to_a
       
       when 'ident'
