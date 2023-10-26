@@ -23,20 +23,22 @@ module MetadataManagement
     
     # test if the link redirects to another item, and returns it
     def fetch_djorg_alias_url
-      begin
-        req = ::HTTParty.get doujinshi_org_full_url,
-          follow_redirects: false, timeout: 5,
-          headers: {'User-Agent' => ::Setting['scraper_useragent']}
-        
-        return nil if req.code != 302
-        
-        # location header format: /browse/(author|circle|contents)/NUMERIC_ID/item_name/
-        return nil if req.headers[:location].to_s !~ /\/browse\/[^\/]+\/([0-9]+)\/.+/
-        
-        req.headers[:location]
-      rescue
-        nil
-      end
+      #begin
+      #  req = HTTPX.with \
+      #    timeout: { request_timeout: 5 },
+      #    headers: { 'User-Agent' => ::Setting['scraper_useragent'] }
+      #  resp = req.get doujinshi_org_full_url
+      #  
+      #  return nil if resp.status != 302
+      #  
+      #  # location header format: /browse/(author|circle|contents)/NUMERIC_ID/item_name/
+      #  return nil if resp.headers[:location].to_s !~ /\/browse\/[^\/]+\/([0-9]+)\/.+/
+      #  
+      #  resp.headers[:location]
+      #rescue
+      #  nil
+      #end
+      return nil # WEBSITE NO MORE AVAILABLE
     end # fetch_djorg_alias_url
   end # included
 

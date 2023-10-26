@@ -22,10 +22,10 @@ gem 'marcel'                     # mime type of files -- https://github.com/rail
 gem 'progressbar'                # cli progressbar -- https://github.com/jfelchner/ruby-progressbar
 gem 'rubyzip', '~> 2.3', require: 'zip' # manage ZIP files -- https://github.com/rubyzip/rubyzip
 gem 'paper_trail', '~> 15.0'     # track model changes -- https://github.com/paper-trail-gem/paper_trail
-gem 'httparty',    '~> 0.20'     # http requests made easy -- https://github.com/jnunemaker/httparty
-                                 # https://www.rubydoc.info/gems/httparty/0.20.0/HTTParty/ClassMethods
 gem 'colorize', require: 'colorized_string' # terminal colors -- https://github.com/fazibear/colorize
 gem 'terser'                     # Ruby wrapper for Terser JavaScript compressor (nodejs script)
+gem 'httpx'                      # HTTP client -- https://gitlab.com/os85/httpx OR https://github.com/HoneyryderChuck/httpx
+                                 # https://honeyryderchuck.gitlab.io/httpx/wiki/home.html | https://honeyryderchuck.gitlab.io/httpx/rdoc/
 
 # image manipulation  ==>         https://github.com/janko/image_processing
 # used by ActiveStorage variants: https://guides.rubyonrails.org/active_storage_overview.html#transforming-images

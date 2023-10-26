@@ -2,6 +2,7 @@
 //= require      ./components/jQKeyboard.js
 //= require      ./components/js-tagger.js
 //= require      ./components/split-click.js
+//= require      ./components/ehentai-search.js
 
 //= require      ./controllers/base
 //= require_tree ./controllers

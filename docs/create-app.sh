@@ -53,3 +53,5 @@ echo "//= link favicon/browserconfig.xml" >> app/assets/config/manifest.js
 bin/rails assets:clobber
 bin/rails assets:precompile
 bin/server -p
+
+bin/rails g controller ws ehentai

@@ -1,0 +1,20 @@
+#ehentai-search-modal {
+  .modal-card { height: calc(100vh - 3rem); }
+  
+  .left-border { border-left: 1px solid silver; }
+  
+  .lookup-reference {
+    position: sticky;
+    top: -1.5rem;
+    left: 0;
+    z-index: 1000;
+    border-bottom: 1px dashed white;
+  }
+  
+  .lookup-results { z-index: 999; }
+  
+  .result {
+    figure { cursor: pointer; }
+    figure:hover { opacity: 0.75; }
+  }
+}

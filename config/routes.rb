@@ -7,6 +7,8 @@ Rails.application.routes.draw do
   post 'home/settings'
   get  'home/info'
   
+  get  'ws/ehentai'
+
   resources :process, only: %i[ index edit ] do
     collection do
       get     :show_externally

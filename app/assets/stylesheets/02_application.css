@@ -11,5 +11,8 @@
  * It is generally better to create a new file per style scope.
  *
  */
+//= require      ./components/js-tagger
+//= require      ./components/ehentai-search
+
 //= require      ./controllers/base
 //= require_tree ./controllers
