@@ -4,7 +4,7 @@
 
 #js-tagger-modal.modal
   .modal-background
-  .modal-card(style="height: calc(100vh - 40px)")
+  .modal-card
     %header.modal-card-head
       %p.modal-card-title Add tags
       %button.delete.js-tagger-cancel
@@ -12,7 +12,7 @@
       .columns
         .column.is-half
           .field.is-grouped.is-grouped-multiline.current-tags
-        .column.is-half.search-area(style="border-left: 1px solid silver")
+        .column.is-half.search-area.left-border
           .control.has-icons-left
             %input.input.is-rounded.js-tagger-term{type: :text, placeholder: :search}
             %span.icon.is-small.is-left
@@ -21,6 +21,37 @@
     %footer.modal-card-foot
       %button.button.is-success.js-tagger-set Set
       %button.button.js-tagger-cancel Cancel
+
+#ehentai-search-modal.modal
+  .modal-background
+  .modal-card
+    %header.modal-card-head
+      .modal-card-title
+        .columns.is-mobile
+          .column
+            .field.has-addons
+              .control.has-icons-left.is-expanded
+                %input.input.is-rounded.search-term{type: :text, placeholder: :search}
+                %span.icon.is-small.is-left
+                  %i.mi.mi-small search
+              .control
+                %a.button.is-info.is-rounded
+                  %span.icon
+                    %i.mi search
+          .column.is-1
+            %button.delete.mt-2
+    %section.modal-card-body
+      .lookup-reference.has-background-dark.py-2
+        .columns.is-mobile.is-size-7
+          .column.is-4
+            %figure.image.is2by3
+              %img.reference
+          .column.left-border
+            .orig_info.tag.is-info.mb-2
+            .tag.is-warning.mb-2 processing
+            .orig_title.has-text-weight-bold
+            .orig_title_kakasi.is-italic
+      .lookup-results.is-size-8.mt-4
 
 #generic-modal.modal
   .modal-background(onclick="jQuery(this).parent().removeClass('is-active')")

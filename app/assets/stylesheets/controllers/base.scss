@@ -73,7 +73,7 @@ body:not(.nsfw-mode) {
   img#sample_cover:not(:hover) { visibility: hidden; }
   
   // blur all images except the app logo
-  img:not(.app-logo) { opacity: 0.1; }
+  img:not(.sfw) { opacity: 0.1; }
 
   // hide figure images showing a nice background
   figure:not(:hover) {
@@ -87,4 +87,14 @@ body:not(.nsfw-mode) {
     img, canvas { visibility: hidden; }
   }
   figure:hover { img, canvas { opacity: 1; } }
+}
+
+// --- Bulma overrides ---------------------------------------------------------
+.button.button-image.is-small {
+  padding: 0 0.33rem;
+  
+  img {
+    width: 1.5rem;
+    background-color: white;
+  }
 }

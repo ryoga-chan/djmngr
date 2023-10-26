@@ -454,7 +454,7 @@ class ProcessController < ApplicationController
           sort if File.exist?(repo)
         
         # find similar names to suggest
-        search_terms = @info[:dest_filename].tokenize_doujin_filename(remove_numbers: true).join '%'
+        search_terms = @info[:dest_filename].tokenize_doujin_filename(rm_num: true).join '%'
         if search_terms.size > 6
           sql_name = "COALESCE(NULLIF(name_romaji, ''), NULLIF(name_kakasi, ''))"
           # NOTE: sqlite LIKE is case insensitive
