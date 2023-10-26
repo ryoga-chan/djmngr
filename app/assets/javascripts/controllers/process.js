@@ -154,8 +154,21 @@ if ($('body').data('ctrl') +'/'+ $('body').data('action') == 'process/edit') {
     $(this).parents('form:first').submit();
   });
 
+  // ehentai search callback: place titles in kanji/romaji fields, and full text in notes field
+  $('.ehentai-search').data('onselect', function (info) {
+    $('#dest_title').val(info.title_jpn_clean || info.title_clean);
+    $('#notes').append( $('<div/>').html(info.title_jpn || info.title).text() + "\n" );
+    
+    if (info.title_jpn) {
+      $('#dest_title_romaji').val(info.title_clean);
+      $('#notes').append( $('<div/>').html(info.title).text() + "\n" );
+    }//if
+    
+    $.myapp.titles_to_lowercase();
+  });
+
   // scroll tabs container to active tab (for mobile users)
-  $('.tabs.is-boxed').scrollLeft( $('.tabs.is-boxed li.is-active').position().left );  
+  $('.tabs.is-boxed').scrollLeft( $('.tabs.is-boxed li.is-active').position().left );
 }// if /process/edit
 // -----------------------------------------------------------------------------
 }); })(jQuery)
