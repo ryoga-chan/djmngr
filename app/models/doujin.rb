@@ -218,7 +218,7 @@ class Doujin < ApplicationRecord
       order(Arel.sql "COALESCE(NULLIF(doujinshi.name_romaji, ''), NULLIF(doujinshi.name_kakasi, ''))")
   end # self.search
   
-  def cover_fingerprint = CoverMatchingJob.hash_image_buffer(File.read(thumb_disk_path), hash_only: true)
+  def cover_fingerprint = CoverMatchingJob.hash_image_buffer(File.binread(thumb_disk_path), hash_only: true)
   
   def cover_fingerprint!
     raise :record_not_persisted unless persisted?

@@ -317,7 +317,7 @@ class DoujinshiController < ApplicationController
         end
       else
         @fname = 'not-found.png'
-        @content = File.read(Rails.root.join 'public', @fname)
+        @content = File.binread(Rails.root.join 'public', @fname)
       end
       
       send_data @content, type: File.extname(@fname).delete('.').downcase.to_sym,
