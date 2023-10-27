@@ -92,13 +92,13 @@ class EpubConverterJob < ApplicationJob
             # first part of the splitted half
             fname = "#{img_dst}-1.jpg"; puts "\t first half (#{crop_modes[0]})"
             #im.resize_to_fit(width_dst*2, height_dst).resize_to_fill(width_dst, height_dst, crop: crop_modes[0]).call destination: fname
-            img2.smartcrop(width_dst, height_dst, interesting: crop_modes[0]).write_to_file fname
+            img2.smartcrop(width_dst, height_dst, interesting: crop_modes[0]).write_to_file fname, Q: IMG_QUALITY_RESIZE
             images << File.basename(fname)
             
             # second part of the splitted half
             fname = "#{img_dst}-2.jpg"; puts "\t second half (#{crop_modes[1]})"
             #im.resize_to_fit(width_dst*2, height_dst).resize_to_fill(width_dst, height_dst, crop: crop_modes[1]).call destination: fname
-            img2.smartcrop(width_dst, height_dst, interesting: crop_modes[1]).write_to_file fname
+            img2.smartcrop(width_dst, height_dst, interesting: crop_modes[1]).write_to_file fname, Q: IMG_QUALITY_RESIZE
             images << File.basename(fname)
           end # if not 'cg'
         else # resize the image

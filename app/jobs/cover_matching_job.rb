@@ -29,7 +29,7 @@ class CoverMatchingJob < ApplicationJob
   end # self.hash_image_buffer
   
   def self.hash_image(image_path)
-    result = hash_image_buffer File.read(image_path)
+    result = hash_image_buffer File.binread(image_path)
     
     # create metadata + embedded image
     File.atomic_write(File.join(Setting['dir.sorting'], "#{result[:phash]}.yml").to_s) do |f|

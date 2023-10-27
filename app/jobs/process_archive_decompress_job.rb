@@ -80,6 +80,69 @@ class ProcessArchiveDecompressJob < ApplicationJob
       resize_and_pad(THUMB_WIDTH, THUMB_HEIGHT, alpha: true).
       convert('webp').saver(quality: IMG_QUALITY_THUMB).call destination: dst
   end # self.generate_thumbnail
+  
+  def self.duplicate_cover(dst_dir, info, save_info: false)
+    # duplicate first image in "xxx_d0"
+    dst_data = info[:images].first.clone
+    dst_data[:src_path  ] = dst_data[:src_path  ].add_suffix_to_filename :_d0
+    dst_data[:dst_path  ] = dst_data[:dst_path  ].add_suffix_to_filename :_d0
+    dst_data[:thumb_path] = dst_data[:thumb_path].add_suffix_to_filename :_d0
+    FileUtils.cp_f File.join(dst_dir, 'contents', info[:images].first[:src_path]),
+                   File.join(dst_dir, 'contents', dst_data[:src_path])
+    FileUtils.cp_f File.join(dst_dir, 'thumbs'  , info[:images].first[:thumb_path]),
+                   File.join(dst_dir, 'thumbs'  , dst_data[:thumb_path])
+    
+    # rename original image in "xxx_d1"
+    src_data = info[:images].first.clone
+    src_data[:src_path  ] = src_data[:src_path  ].add_suffix_to_filename :_d1
+    src_data[:dst_path  ] = src_data[:dst_path  ].add_suffix_to_filename :_d1
+    src_data[:thumb_path] = src_data[:thumb_path].add_suffix_to_filename :_d1
+    FileUtils.mv File.join(dst_dir, 'contents', info[:images].first[:src_path]),
+                 File.join(dst_dir, 'contents', src_data[:src_path]), force: true
+    FileUtils.mv File.join(dst_dir, 'thumbs'  , info[:images].first[:thumb_path]),
+                 File.join(dst_dir, 'thumbs'  , src_data[:thumb_path]), force: true
+    
+    # update current cover image data
+    info[:images].first.merge! src_data
+    
+    # prepend duplicate image details to images array
+    info[:images].unshift dst_data
+    
+    # update data file
+    File.open(File.join(dst_dir, 'info.yml'), 'w'){|f| f.puts info.to_yaml } if save_info
+    
+    info
+  end # self.duplicate_cover
+  
+  def self.refresh_cover_thumb(dst_dir, info, save_info: false)
+    # refresh image thumb and master image
+    ProcessArchiveDecompressJob.generate_thumbnail \
+      File.join(dst_dir, 'contents', info[:images].first[:src_path  ]),
+      File.join(dst_dir, 'thumbs'  , info[:images].first[:thumb_path])
+    FileUtils.cp_f \
+      File.join(dst_dir, 'thumbs'  , info[:images].first[:thumb_path]),
+      File.join(dst_dir, 'thumbs'  , '0000.webp')
+    
+    # update data file
+    img = Vips::Image.new_from_file File.join(dst_dir, 'contents', info[:images].first[:src_path  ])
+    info[:landscape_cover] = img.is_landscape?
+    
+    File.open(File.join(dst_dir, 'info.yml'), 'w'){|f| f.puts info.to_yaml } if save_info
+    
+    info
+  end # self.refresh_cover_thumb
+
+  def self.rotate_cover(dst_dir, info, dir:, save_info: false)
+    fname = File.join(dst_dir, 'contents', info[:images].first[:src_path])
+    
+    # rotate image 90 degrees clockwise/counter clockwise
+    Vips::Image.
+      new_from_buffer(File.binread(fname), '').
+      rot(dir == 'right' ? 1 : 3).
+      write_to_file fname, Q: IMG_QUALITY_RESIZE
+    
+    ProcessArchiveDecompressJob.refresh_cover_thumb dst_dir, info, save_info: save_info
+  end # self.refresh_cover_thumb
 
   def perform(dst_dir)
     info = YAML.unsafe_load_file(File.join dst_dir, 'info.yml')
