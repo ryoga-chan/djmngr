@@ -191,6 +191,21 @@
             -#  %span finalize
 
     .column.has-text-centered
+      - rotate_bt_l = capture do
+        %span.control
+          = link_to edit_cover_process_path(tab: params[:tab], run: :rotate, dir: :left),
+            class: "button is-small is-rounded" do
+            %span.icon.is-small
+              %i.mi screen_rotation_alt
+            %span L
+      - rotate_bt_r = capture do
+        %span.control
+          = link_to edit_cover_process_path(tab: params[:tab], run: :rotate, dir: :right),
+            class: "button is-small is-rounded" do
+            %span.icon.is-small
+              %i.mi screen_rotation_alt
+            %span R
+        
       - html_cover = capture do
         - if @info[:landscape_cover] && @info[:landscape_cover_method] != :none
           %figure.image.is2by3.mb-2
@@ -205,18 +220,21 @@
               class: 'w100', onchange: %Q| this.form.submit() |
             .icon.is-small.is-left
               %i.mi(title="crop landscape cover") crop
-          %span.control.is-hidden-mobile
-            = link_to edit_cover_process_path(run: :image_editor, format: :json), remote: true, data: {spin_time: 15},
-              class: "button run-progr is-small is-rounded", target: :_blank do
-              %span.icon.is-small
-                %i.mi add_photo_alternate
-              %span duplicate & edit
-          %span.control.is-hidden-mobile
-            = link_to edit_cover_process_path(tab: params[:tab]),
-              class: "button run-progr is-small is-rounded" do
-              %span.icon.is-small
-                %i.mi refresh
-              %span refresh thumb
+          .field.has-addons.is-justify-content-center
+            = rotate_bt_l
+            %span.control.is-hidden-mobile
+              = link_to edit_cover_process_path(run: :duplicate_edit, format: :json), remote: true, data: {spin_time: 15},
+                class: "button run-progr is-small is-rounded", target: :_blank do
+                %span.icon.is-small
+                  %i.mi add_photo_alternate
+                %span clone&edit
+            %span.control.is-hidden-mobile
+              = link_to edit_cover_process_path(tab: params[:tab], run: :refresh),
+                class: "button is-small is-rounded" do
+                %span.icon.is-small
+                  %i.mi refresh
+                %span refresh
+            = rotate_bt_r
         - else
           - cover = @info[:images].first
           %figure.image.is2by3
@@ -224,6 +242,9 @@
             = link_to show_image_process_path(id: @info[:working_dir], path: cover[:src_path]), target: :_blank do
               = thumbnail_tag ProcessArchiveDecompressJob.cover_path(@dname, @info),
                 title: "#{cover[:dst_path]} @ #{number_to_human_size cover[:size]}\n↪#{cover[:src_path]}"
+          .field.has-addons.is-justify-content-center
+            = rotate_bt_l
+            = rotate_bt_r
       
       - if @collision_info
         .columns
