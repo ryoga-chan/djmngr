@@ -20,11 +20,11 @@
     .columns
       - s.each do |img|
         .column.is-2.has-text-centered.nowrap<>
-          = text_field_tag :img_name, img[:dst_path], id: '', size: 11,
-            class: 'update-name', tabindex: (1000 + idx+=1),
+          = text_field_tag :img_name, img[:dst_path], id: '',
+            class: 'update-name w100', tabindex: (1000 + idx+=1),
             data: { url: rename_file_process_path, path: img[:src_path] }
           
-          %span.button.is-small.select-image
+          %span.button.is-small.select-image.is-hidden
             %span.icon.is-small
               %i.mi check_box_outline_blank
           
