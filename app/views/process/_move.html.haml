@@ -196,15 +196,13 @@
           = link_to edit_cover_process_path(tab: params[:tab], run: :rotate, dir: :left),
             class: "button is-small is-rounded" do
             %span.icon.is-small
-              %i.mi screen_rotation_alt
-            %span L
+              %i.mi rotate_left
       - rotate_bt_r = capture do
         %span.control
           = link_to edit_cover_process_path(tab: params[:tab], run: :rotate, dir: :right),
             class: "button is-small is-rounded" do
             %span.icon.is-small
-              %i.mi screen_rotation_alt
-            %span R
+              %i.mi rotate_right
         
       - html_cover = capture do
         - if @info[:landscape_cover] && @info[:landscape_cover_method] != :none
@@ -226,14 +224,12 @@
               = link_to edit_cover_process_path(run: :duplicate_edit, format: :json), remote: true, data: {spin_time: 15},
                 class: "button run-progr is-small is-rounded", target: :_blank do
                 %span.icon.is-small
-                  %i.mi add_photo_alternate
-                %span edit
+                  %i.mi edit
             %span.control.is-hidden-mobile
               = link_to edit_cover_process_path(tab: params[:tab], run: :refresh),
                 class: "button is-small is-rounded" do
                 %span.icon.is-small
                   %i.mi refresh
-                %span refresh
             = rotate_bt_r
         - else
           - cover = @info[:images].first
