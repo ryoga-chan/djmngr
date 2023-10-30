@@ -9,6 +9,13 @@ class ProcessArchiveDecompressJob < ApplicationJob
     Digest::SHA256.hexdigest "djmngr|#{File.basename fname}|#{File.size fname}"
   end # self.file_hash
   
+  def self.rm_entry(path: nil, folder: nil)
+    dir = File.join Setting['dir.sorting'], file_hash(File.join Setting['dir.to_sort'], path) if path
+    dir = folder if folder
+    
+    FileUtils.rm_rf dir, secure: true if dir && File.exist?(dir)
+  end # sefl.rm_entry
+  
   def self.prepare_and_perform(fname, perform_when: :later, title: nil)
     raise :invalid_method unless %i[ later now ].include?(perform_when)
     raise :file_not_found unless File.exist?(fname)
