@@ -185,6 +185,7 @@ class ProcessController < ApplicationController
   end # batch_delete
   
   def delete_archive
+    ProcessArchiveDecompressJob.rm_entry path: params[:path]
     ProcessIndexRefreshJob.rm_entry params[:path], track: true, rm_zip: true
     
     redirect_to(process_index_path(page: params[:page]), notice: "file deleted: [#{params[:path]}]")
@@ -198,7 +199,7 @@ class ProcessController < ApplicationController
         track: @info[:db_doujin_id].blank?, rm_zip: true
     end
     
-    FileUtils.rm_rf @dname, secure: true
+    ProcessArchiveDecompressJob.rm_entry folder: @dname
     
     CoverMatchingJob.rm_results_file @info[:cover_hash]
     
