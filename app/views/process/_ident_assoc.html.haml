@@ -57,7 +57,8 @@
                 %span.is-size-7 /
                 %span.has-text-grey.is-size-7
                   - name = r.name_romaji.present? ? r.name_romaji : r.name_kakasi
-                  = h(name).gsub(term_re, %Q|<span class="has-text-warning">\\0</span>|).html_safe
+                  = link_to h(name).gsub(term_re, %Q|<span class="has-text-warning">\\0</span>|).html_safe,
+                    {term: r.label_name_latin, tab: params[:tab]}
                 - if r.doujinshi_org_aka_id.present?
                   %span.tag.is-danger deprecated
   

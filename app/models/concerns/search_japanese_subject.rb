@@ -38,7 +38,7 @@ module SearchJapaneseSubject
       rel = rel_conditions.shift
       rel_conditions.each{|cond| rel = rel.or cond }
       
-      rel.order(Arel.sql "COALESCE(NULLIF(name_romaji, ''), NULLIF(name_kakasi, ''))")
+      rel.order(Arel.sql("LOWER(COALESCE(NULLIF(name_romaji, ''), NULLIF(name_kakasi, '')))"), id: :desc)
     end # self.search
     
     # search elements by a single term and rank them by score

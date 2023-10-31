@@ -184,12 +184,19 @@ $('body').on('keydown', '#js-tagger-modal .js-tagger-term', function (ev) {
         var used_ids = $('.current-tags input').
           map(function () { return parseInt($(this).val()); }).get();
         $.each(resp.tags, function () {
-          if ($.inArray(parseInt(this.id), used_ids) == -1) // append only unused tags
+          if ($.inArray(parseInt(this.id), used_ids) == -1) { // append only unused tags
+            // split label in two: one main label and a secondary smaller one
+            var tokens = this.label.split('__');
+            var lbl = $('<span class="lbl-main"></span>').text(tokens[0]);
+            if (tokens.length == 2)
+              lbl.append( $('<span class="lbl-dett ml-1 is-size-8"></span>').text(tokens[1]) );
+            
             $('<a class="panel-block"></a>').
-              text(this.label).
+              append(lbl).
               append('<tt style="position: absolute; right: 0;">🆔'+this.id+'</tt>').
-              attr('data-id', this.id).attr('data-lbl', this.label).
+              attr('data-id', this.id).attr('data-lbl', tokens[0]).
               appendTo(list);
+          }//if
         });
       },//success
       complete: function () { input.parent().removeClass('is-loading'); },//complete
