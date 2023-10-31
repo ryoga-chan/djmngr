@@ -407,7 +407,7 @@ class ProcessController < ApplicationController
         end
         
         # search dupes by filename
-        @info[:dupe_search] ||= @info[:relative_path].tokenize_doujin_filename.join ' '
+        @info[:dupe_search] ||= @info[:relative_path].tokenize_doujin_filename(title_only: true).join ' '
         params[:dupe_search] ||= @info[:dupe_search]
         @dupes += Doujin.
           where.not(id: @dupes.map(&:id)).
