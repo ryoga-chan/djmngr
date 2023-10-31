@@ -6,7 +6,7 @@ class ProcessController < ApplicationController
   
   before_action :check_archive_folder,
     only: %i[ edit  set_property  finalize_volume  show_image  rename_images  rename_file
-              delete_archive_cwd  delete_archive_files  edit_cover  inspect_folder ]
+              delete_archive_cwd  delete_archive_files  edit_cover  inspect_folder  add_files ]
 
   # list processable files
   def index
@@ -226,6 +226,10 @@ class ProcessController < ApplicationController
     
     ProcessArchiveDecompressJob.crop_landscape_cover @dname, @info, @info[:landscape_cover_method]
     
+    # check collisions
+    @info[:files_collision ] = @info[:files ].size != @info[:files ].map{|i| i[:dst_path] }.uniq.size
+    @info[:images_collision] = @info[:images].size != @info[:images].map{|i| i[:dst_path] }.uniq.size
+
     File.open(File.join(@dname, 'info.yml'), 'w'){|f| f.puts @info.to_yaml }
     
     # redirect to next tabs when deleting images from "Pics" tab
@@ -615,6 +619,20 @@ class ProcessController < ApplicationController
       }#json
     end
   end # edit_cover
+  
+  def add_files
+    @info = YAML.unsafe_load_file(File.join @dname, 'info.yml')
+    # inject files
+    params[:files].each{|f| ProcessArchiveDecompressJob.inject_file f.original_filename, f.to_path, @dname, @info }
+    # check collisions
+    @info[:files_collision ] = @info[:files ].size != @info[:files ].map{|i| i[:dst_path] }.uniq.size
+    @info[:images_collision] = @info[:images].size != @info[:images].map{|i| i[:dst_path] }.uniq.size
+    # update info
+    File.open(File.join(@dname, 'info.yml'), 'w'){|f| f.puts @info.to_yaml }
+    
+    redirect_to edit_process_path(id: params[:id], tab: params[:tab]),
+      notice: "#{params[:files].size} file/s injected"
+  end # add_files
   
   def inspect_folder
     respond_to do |format|
