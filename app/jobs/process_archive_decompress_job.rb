@@ -121,6 +121,36 @@ class ProcessArchiveDecompressJob < ApplicationJob
     info
   end # self.duplicate_cover
   
+  def self.inject_file(file_name, file_path, dst_dir, info, save_info: false)
+    ts = "zz#{Time.now.strftime '%Y%M%d%H%M%S%9N'}"
+    
+    dst_data = {
+      src_path: "#{ts}-#{File.basename file_name}",
+      dst_path: File.basename(file_name),
+      size:     File.size(file_path),
+    }
+    
+    if file_path =~ RE_IMAGE_EXT
+      dst_data[:alt_label ] = dst_data[:src_path]
+      dst_data[:thumb_path] = "#{ts}.webp"
+      
+      info[:images].push dst_data
+      
+      FileUtils.cp_f file_path, File.join(dst_dir, 'contents', dst_data[:src_path])
+      
+      ProcessArchiveDecompressJob.generate_thumbnail \
+        File.join(dst_dir, 'contents', dst_data[:src_path  ]),
+        File.join(dst_dir, 'thumbs'  , dst_data[:thumb_path])
+    else
+      info[:files].push dst_data
+    end
+        
+    # update data file
+    File.open(File.join(dst_dir, 'info.yml'), 'w'){|f| f.puts info.to_yaml } if save_info
+    
+    info
+  end # self.duplicate_cover
+  
   def self.refresh_cover_thumb(dst_dir, info, save_info: false)
     # refresh image thumb and master image
     ProcessArchiveDecompressJob.generate_thumbnail \

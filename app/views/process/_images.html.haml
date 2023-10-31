@@ -1,3 +1,6 @@
+.inject-files.is-hidden-tablet.has-text-centered= render partial: 'add_files'
+.inject-files.is-hidden-mobile(style="float: right")= render partial: 'add_files'
+
 = form_with url: delete_archive_files_process_path(id: @info[:working_dir]),
   method: :delete, id: 'frm-images',
   data: { image_sel_mode: Setting[:process_img_sel] } do |f|
