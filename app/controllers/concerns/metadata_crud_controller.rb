@@ -64,8 +64,12 @@ module MetadataCrudController
     begin
       records = @model.none
       records = @model.search params[:term] if params[:term].present?
-      records = records.select(:id, :name_romaji, :name_kakasi).order(id: :desc)#.limit(1_000)
-      render json: {result: :ok, tags: records.map{|r| {id: r.id, label: r.label_name_latin}} }
+      records = records.select(:id, :name_romaji, :name_kakasi, :name, :name_kana)#.limit(1_000)
+      render json: {result: :ok, tags: records.map{|r|
+        r.label_name_kanji ?
+          {id: r.id, label: "#{r.label_name_latin}__(#{r.label_name_kanji})"} :
+          {id: r.id, label: r.label_name_latin}
+      }}
     rescue
       render json: {result: :err, msg: $!.to_s }
     end
