@@ -16,11 +16,12 @@ body[data-ctrl="process"][data-action="edit"] {
   
   .scroller {
     width: 100%;
-    height: 6.3rem;
+    height: 4.25rem;
     overflow-x: auto;
     overflow-y: hidden;
     white-space: nowrap;
   }
+  .scroller.two_titles { height: 6.3rem; }
   .fillwidth { width: 90%; }
   .setting { width: calc(86% / 5); }
   

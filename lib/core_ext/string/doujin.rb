@@ -87,10 +87,11 @@ module CoreExt
       end # parse_doujin_filename
       
       def tokenize_doujin_filename(rm_num: false, title_only: false)
-        term = dup
+        term = File.basename dup
         
-        # remove file extension
-        term = File.basename term, File.extname(term)
+        # remove common archive file extension
+        ext = File.extname term
+        term = File.basename term, ext if ext =~ /\A.(zip|cbz|rar|cbr|7z|cb7|tar|t.z)\z/i
         
         # remove unwanted tags
         term = IGNORED_TAGS.inject(term.downcase){|t, re| t.gsub re, '' }.strip
