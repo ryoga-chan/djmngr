@@ -534,7 +534,8 @@ class ProcessController < ApplicationController
   
   def show_image
     sub_path = File.expand_path(params[:path], '/')[1..-1] # sanitize input
-    send_file File.join(@dname, 'contents', sub_path), disposition: :inline
+    send_file File.join(@dname, 'contents', sub_path),
+      disposition: :inline, type: Marcel::MimeType.for(name: params[:path])
   end # show_image
   
   # rezip archive, add metadata, move/register in collection, cleaup WIP folder
