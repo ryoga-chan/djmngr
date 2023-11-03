@@ -2,10 +2,12 @@ class ProcessIndexRefreshJob < ApplicationJob
   queue_as :tools
   
   ORDER = {
-    'name 🔽' => :name,
-    'name 🔼' => :name_desc,
-    'time 🔽' => :time,
-    'time 🔼' => :time_desc,
+    '🔽 name'  => :name,
+    '🔼 name'  => :name_d,
+    '🔽 xlate' => :kakasi,
+    '🔼 xlate' => :kakasi_d,
+    '🔽 time'  => :time,
+    '🔼 time'  => :time_d,
   }
 
   def self.lock_file      = File.join(Setting['dir.to_sort'], 'indexing.lock').to_s
@@ -13,11 +15,14 @@ class ProcessIndexRefreshJob < ApplicationJob
   def self.lock_file?     = File.exist?(lock_file)
   def self.rm_lock_file   = FileUtils.rm_f(lock_file)
   
-  def self.entries(order: :name_asc)
+  def self.entries(order: 'name')
     order_clause = case order
-      when 'name_desc'.freeze then {name: :desc}
-      when 'time_asc' .freeze then :mtime
-      when 'time_desc'.freeze then {mtime: :desc}
+      when 'name'    .freeze then :name
+      when 'name_d'  .freeze then {name: :desc}
+      when 'kakasi'  .freeze then Arel.sql("replace(name_kakasi, ' ', '')")
+      when 'kakasi_d'.freeze then Arel.sql("replace(name_kakasi, ' ', '') DESC")
+      when 'time'    .freeze then :mtime
+      when 'time_d'  .freeze then {mtime: :desc}
       else :name
     end
     
