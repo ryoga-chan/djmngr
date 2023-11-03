@@ -216,6 +216,18 @@
       images[0].el.attr('src', images[0].url);
   }//render_images
   
+  function toggle_fullscreen () {
+    var lbl = $('span.fs-status');
+    
+    if (document.fullscreenElement) {
+      document.exitFullscreen();
+      lbl.text('OFF')
+    } else {
+      $('body').get(0).requestFullscreen();
+      lbl.text('ON')
+    }//if-else
+  }//toggle_fullscreen
+  
   (function($){ $(function () {
     // initialize initial images
     render_image('init', $('img.prev'), imgPath(#{params[:page]}) );
@@ -304,9 +316,9 @@
       %input.button{type: "submit",
         value: (params[:nr].to_i == 0 ? "Auto scale ON" : "Auto scale OFF"),
         onclick: "jQuery('#nr').val( 1 - parseInt(jQuery('#nr').val()) )"}
-      %a.button.fs(href="#" onclick="jQuery('body').get(0).requestFullscreen(); jQuery('a.fs').toggleClass('hidden'); return false") F.Screen OFF
-      %a.button.fs.hidden(href="#" onclick="document.exitFullscreen(); jQuery('a.fs').toggleClass('hidden'); return false") F.Screen ON
-      
+      %a.button(href="#" onclick="toggle_fullscreen(); return false")
+        F.Screen
+        %span.fs-status OFF
   
   .canvas
     - Setting::READING_BG_COLORS.each do |color|

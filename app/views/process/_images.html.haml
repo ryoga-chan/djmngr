@@ -20,9 +20,9 @@
   - base_dir = File.join(Setting['dir.sorting'], @info[:working_dir], 'thumbs')
   - idx = 0
   - @info[:images].each_slice(6).each do |s|
-    .columns
+    .columns.is-mobile
       - s.each do |img|
-        .column.is-2.has-text-centered.nowrap<>
+        .column.is-4-mobile.is-2-tablet.has-text-centered.nowrap<>
           = text_field_tag :img_name, img[:dst_path], id: '',
             class: 'update-name w100', tabindex: (1000 + idx+=1),
             data: { url: rename_file_process_path, path: img[:src_path] }
@@ -38,12 +38,12 @@
           
           = check_box_tag 'path[]', img[:src_path], false, id: '', class: 'is-hidden'
       
-        .is-hidden-tablet.has-text-right
-          %a.button.is-small(href="#page-top")
-            %span.icon.is-small
-              %i.mi vertical_align_top
-          %a.button.is-small(href="#page-bottom")
-            %span.icon.is-small
-              %i.mi vertical_align_bottom
+        -#.is-hidden-tablet.has-text-right
+        -#  %a.button.is-small(href="#page-top")
+        -#    %span.icon.is-small
+        -#      %i.mi vertical_align_top
+        -#  %a.button.is-small(href="#page-bottom")
+        -#    %span.icon.is-small
+        -#      %i.mi vertical_align_bottom
 
   = action_buttons

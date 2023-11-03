@@ -98,11 +98,6 @@
               %i.mi settings
             %span Settings
 
-          = link_to zip_select4read_doujinshi_path, class: 'navbar-item is-hidden-touch' do
-            %span.icon
-              %i.mi chrome_reader_mode
-            %span Read ZIP
-
           %span.navbar-item
             = form_with url: search_cover_doujinshi_path, method: :post, html: {style: 'margin-left: -0.6rem'} do |f|
               .file.is-primary
@@ -115,6 +110,16 @@
                     %span.file-label
                       Cover match
           
+          = link_to '#', class: 'navbar-item no-spinner', onclick: "jQuery.myapp.toggle_fullscreen(); return false" do
+            %span.icon
+              %i.mi fullscreen
+            %span Toggle F.S.
+
+          = link_to zip_select4read_doujinshi_path, class: 'navbar-item is-hidden-touch' do
+            %span.icon
+              %i.mi chrome_reader_mode
+            %span Read ZIP
+
           - ext_lbl, ext_url = Setting[:external_link].to_s.split('|')
           - if ext_lbl.present? && ext_lbl.present?
             = link_to ext_url, class: 'navbar-item no-spinner', target: :_blank do

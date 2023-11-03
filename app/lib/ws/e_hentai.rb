@@ -35,12 +35,12 @@ module Ws::EHentai
   
   FIELDS = %i{ gid token title title_jpn thumb filecount filesize posted error }.freeze
   
-  def self.search(term)
+  def self.search(term, options = {})
     begin
       return result(:no_results) if term.blank?
       
       resp = REQ_HTML.get '/'.freeze, params: { f_search: term.to_s.strip }
-      return result(:server_error) if resp.status != 200
+      return result(:server_error) if resp.is_a?(HTTPX::ErrorResponse) || resp.status != 200
       
       # extract galleries ID & token
       results = resp.body.to_s.
@@ -63,8 +63,8 @@ module Ws::EHentai
         if r[:error].nil?
           r[:posted] = Time.at r[:posted].to_i
           r[:url   ] = "https://e-hentai.org/g/#{r[:gid]}/#{r[:token]}/"
-          r[:title_clean    ] = CGI.unescapeHTML(r[:title    ]).tokenize_doujin_filename(title_only: true).join(' ') if r[:title    ].present?
-          r[:title_jpn_clean] = CGI.unescapeHTML(r[:title_jpn]).tokenize_doujin_filename(title_only: true).join(' ') if r[:title_jpn].present?
+          r[:title_clean    ] = clean_title r[:title    ]
+          r[:title_jpn_clean] = clean_title r[:title_jpn]
         end
         
         r
@@ -77,6 +77,15 @@ module Ws::EHentai
   
   private # ____________________________________________________________________
   
+  
+  def self.clean_title(text)
+    if text.present?
+      CGI.
+        unescapeHTML(text).
+        tokenize_doujin_filename(title_only: true, basename: false).
+        join(' ')
+    end
+  end # self.clean_title
   
   def self.result(msg)
     msg = case msg

@@ -86,8 +86,10 @@ module CoreExt
           fname:         fname.to_s.strip }
       end # parse_doujin_filename
       
-      def tokenize_doujin_filename(rm_num: false, title_only: false)
-        term = File.basename dup
+      def tokenize_doujin_filename(rm_num: false, title_only: false, basename: true)
+        term = dup
+        
+        term = File.basename term if basename
         
         # remove common archive file extension
         ext = File.extname term
