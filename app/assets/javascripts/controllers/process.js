@@ -10,6 +10,28 @@ $.myapp.titles_to_lowercase = function () {
     function () { $('#'+this).val( $('#'+this).val().toLowerCase().trim() ); });
 }// $.myapp.titles_to_lowercase
 
+$.myapp.autotag_titles = function () {
+  var tags = [];
+  
+  if ($('#language').val() != 'jpn' && $('#language').val() != '???')
+    tags.push( $('#language').val() );
+  
+  if ($('#censored').val() == 'false')
+    tags.push('unc');
+  
+  if ($('#colorized').val() == 'true')
+    tags.push('col');
+  
+  tags = tags.length > 0 ? ` (${ tags.join(',') })` : '';
+  
+  var t = $('#dest_title').val().replace(/ *\([^)]+\)$/, '').trim();
+  $('#dest_title').val(`${t}${tags}`);
+  
+  t = $('#dest_title_romaji').val().replace(/ *\([^)]+\)$/, '').trim();
+  if (t.length > 0)
+    $('#dest_title_romaji').val(`${t}${tags}`);
+}// $.myapp.autotag_titles
+
 // remote update the name in "files", "images", and "batch" sections
 $('input.update-name').change(function () {
   var el = $(this);
@@ -156,25 +178,15 @@ if ($('body').data('ctrl') +'/'+ $('body').data('action') == 'process/edit') {
 
   // ehentai search callback: place titles in kanji/romaji fields, and full text in notes field
   $('.ehentai-search').data('onselect', function (info) {
-    var tags = [];
-    
-    if ($('#language').val() != 'jpn' && $('#language').val() != '???')
-      tags.push( $('#language').val() );
-    if ($('#censored').val() == 'false')
-      tags.push('unc');
-    if ($('#colorized').val() == 'true')
-      tags.push('col');
-    
-    tags = tags.length > 0 ? ` (${ tags.join(',') })` : '';
-    
-    $('#dest_title').val(`${info.title_jpn_clean || info.title_clean}${tags}`);
+    $('#dest_title').val(info.title_jpn_clean || info.title_clean);
     $('#notes').append( $('<div/>').html(info.title_jpn || info.title).text() + "\n" );
     
     if (info.title_jpn) {
-      $('#dest_title_romaji').val(`${info.title_clean}${tags}`);
+      $('#dest_title_romaji').val(info.title_clean);
       $('#notes').append( $('<div/>').html(info.title).text() + "\n" );
     }//if
     
+    $.myapp.autotag_titles();
     $.myapp.titles_to_lowercase();
   });
 

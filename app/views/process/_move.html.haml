@@ -35,7 +35,7 @@
           = links_to_search_engines search_term, target: :_blank
       
       .other-settings.mb-1
-        %span.icon.in-text-small.mr-2
+        %span.icon.in-text-small.mr-2(onclick="jQuery.myapp.autotag_titles()")
           %i.mi.mi-small(title="other properties") settings
         
         .select.setting(title="language")= f.select :language,
@@ -100,7 +100,8 @@
           %span.icon
             %i.mi.mi-small(title="convert all titles to downcase") text_rotate_vertical
         
-        - eh_data = { term: search_term, img: 'a[name="cover"] + a img', title: @fname, title_kakasi: @fname.to_romaji, info: @cur_info }
+        - eh_data = { term: search_term, img: 'a[name="cover"] + a img',
+            title: @fname, title_kakasi: @fname.to_romaji, info: @cur_info }
         = link_to '#', class: 'button button-image is-small ml-1 ehentai-search', data: eh_data do
           = image_tag 'eh.svg', class: :sfw, title: 'E-Hentai title search & fill'
 

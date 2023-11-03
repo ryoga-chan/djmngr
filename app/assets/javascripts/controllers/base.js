@@ -14,6 +14,13 @@ $.myapp = {
     $.myapp.nsfw_mode_setup();
   },//nsfw_mode_toggle
   
+  toggle_fullscreen: function () {
+    if (document.fullscreenElement)
+      document.exitFullscreen();
+    else
+      $('body').get(0).requestFullscreen();
+  },//toggle_fullscreen
+  
   show_loading: function () { $('nav.navbar').addClass('loading-bg');    },// show_loading
   
   hide_loading: function () {
