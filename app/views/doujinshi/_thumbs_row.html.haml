@@ -1,36 +1,35 @@
-.columns.thumbs.freezeframe
-  - doujinshi.each do |d|
-    - details = "\n#{d.score.to_i > 0 ? d.score.to_i : '--'}★ / #{d.num_images} pics / #{number_to_human_size d.size, precision: 2}"
-    
-    - if short_label
-      - title = descr = d.label_name_latin
-      - title += "\n#{d.name}" if descr != d.name
-      - title += details
-    - else
-      - title = "#{d.file_dl_name omit_ext: true}#{details}"
-    
-    - if show_name_orig
-      - title += "\nORIGINAL:\n- #{d.name_orig}"
-      - title += "\n- #{d.name_orig_kakasi}" if d.name_orig != d.name_orig_kakasi
-    
-    .column.is-2.has-text-centered(title=title)
-      .thumb
-        %figure.image.is2by3
-          - if show_categ && (icon = DoujinshiController::ICONS[d.category])
-            %span.icon.is-small.categ
-              %i.mi= icon
-          - if d.score
-            %span.icon.is-small.score= d.score
-          - if d.read_pages.to_i > 0
-            %span.icon.is-small.read-perc
-              - if d.percent_read.to_i == 100
-                ✅
-              - else
-                = d.percent_read.round
-                %span %
-          = link_to image_tag("/thumbs/#{d.id}.webp", title: title, loading: :lazy, decoding: :async),
-            doujin_path(d, from_author: params[:author_id], from_circle: params[:circle_id])
-        .descr.is-size-7
-          - if d.cover_similarity.present?
-            %span.tag.is-warning.is-rounded= "#{'%2d' % d.cover_similarity}%"
-          = short_label ? descr : d.name
+- doujinshi.each do |d|
+  - details = "\n#{d.score.to_i > 0 ? d.score.to_i : '--'}★ / #{d.num_images} pics / #{number_to_human_size d.size, precision: 2}"
+  
+  - if short_label
+    - title = descr = d.label_name_latin
+    - title += "\n#{d.name}" if descr != d.name
+    - title += details
+  - else
+    - title = "#{d.file_dl_name omit_ext: true}#{details}"
+  
+  - if show_name_orig
+    - title += "\nORIGINAL:\n- #{d.name_orig}"
+    - title += "\n- #{d.name_orig_kakasi}" if d.name_orig != d.name_orig_kakasi
+  
+  .column.is-4-mobile.is-3-tablet.is-2-desktop.has-text-centered(title=title)
+    .thumb
+      %figure.image.is2by3
+        - if show_categ && (icon = DoujinshiController::ICONS[d.category])
+          %span.icon.is-small.categ
+            %i.mi= icon
+        - if d.score
+          %span.icon.is-small.score= d.score
+        - if d.read_pages.to_i > 0
+          %span.icon.is-small.read-perc
+            - if d.percent_read.to_i == 100
+              ✅
+            - else
+              = d.percent_read.round
+              %span %
+        = link_to image_tag("/thumbs/#{d.id}.webp", title: title, loading: :lazy, decoding: :async),
+          doujin_path(d, from_author: params[:author_id], from_circle: params[:circle_id])
+      .descr.is-size-7
+        - if d.cover_similarity.present?
+          %span.tag.is-warning.is-rounded= "#{'%2d' % d.cover_similarity}%"
+        = short_label ? descr : d.name
