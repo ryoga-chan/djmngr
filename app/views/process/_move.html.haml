@@ -222,12 +222,12 @@
               %i.mi(title="crop landscape cover") crop
           .field.has-addons.is-justify-content-center
             = rotate_bt_l
-            %span.control.is-hidden-mobile
+            %span.control.is-hidden-touch
               = link_to edit_cover_process_path(run: :duplicate_edit, format: :json), remote: true, data: {spin_time: 15},
                 class: "button run-progr is-small is-rounded", target: :_blank do
                 %span.icon.is-small
                   %i.mi edit
-            %span.control.is-hidden-mobile
+            %span.control.is-hidden-touch
               = link_to edit_cover_process_path(tab: params[:tab], run: :refresh),
                 class: "button is-small is-rounded" do
                 %span.icon.is-small
