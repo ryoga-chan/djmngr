@@ -19,25 +19,24 @@
 
   - base_dir = File.join(Setting['dir.sorting'], @info[:working_dir], 'thumbs')
   - tab_idx = 0
-  - @info[:images].each_slice(6).each do |s|
-    .columns.is-mobile.is-multiline
-      - s.each do |img|
-        .column.is-one-third-mobile.has-text-centered.nowrap<>
-          = text_field_tag :img_name, img[:dst_path], id: '',
-            class: 'update-name w100', tabindex: (1000 + tab_idx+=1),
-            data: { url: rename_file_process_path, path: img[:src_path] }
-          
-          %span.button.is-small.select-image.is-hidden
-            %span.icon.is-small
-              %i.mi check_box_outline_blank
-          
-          = link_to show_image_process_path(id: @info[:working_dir], path: img[:src_path]), target: :_blank do
-            %figure.image.is2by3.mt-1= thumbnail_tag File.join(base_dir, img[:thumb_path]),
-              title: "#{img[:dst_path]} @ #{number_to_human_size img[:size]}\n↪#{img[:src_path]}",
-              decoding: :async
-          
-          = check_box_tag 'path[]', img[:src_path], false, id: '', class: 'is-hidden'
-      - (s.size...6).each do
-        .column.is-one-third-mobile.has-text-centered.nowrap<>
+  .columns.is-mobile.is-multiline
+    - @info[:images].each do |img|
+      .column.is-4-mobile.is-2-tablet.is-2-desktop.has-text-centered.nowrap<>
+        = text_field_tag :img_name, img[:dst_path], id: '',
+          class: 'update-name w100', tabindex: (1000 + tab_idx+=1),
+          data: { url: rename_file_process_path, path: img[:src_path] }
+        
+        %span.button.is-small.select-image.is-hidden
+          %span.icon.is-small
+            %i.mi check_box_outline_blank
+        
+        = link_to show_image_process_path(id: @info[:working_dir], path: img[:src_path]), target: :_blank do
+          %figure.image.is2by3.mt-1= thumbnail_tag File.join(base_dir, img[:thumb_path]),
+            title: "#{img[:dst_path]} @ #{number_to_human_size img[:size]}\n↪#{img[:src_path]}",
+            decoding: :async
+        
+        = check_box_tag 'path[]', img[:src_path], false, id: '', class: 'is-hidden'
+    - (@info[:images].size % 6).times do
+      .column.is-4-mobile.is-2-tablet.is-2-desktop<>
 
   = action_buttons

@@ -8,15 +8,14 @@
   .mt-6.is-italic.has-text-centered nothing to see here
 - else
   - if session[:dj_index_detail] == 'thumbs'
-    - if doujinshi.is_a?(ActiveRecord::Relation)
-      - doujinshi.find_each_slice_in_order(DoujinshiController::THUMBS_PER_ROW, batch_size: DoujinshiController::BATCH_SIZE) do |s|
-        = render partial: 'thumbs_row',
-          locals: local_vars.merge(doujinshi: s)
-    - elsif doujinshi.is_a?(Array)
-      - doujinshi.each_slice(DoujinshiController::THUMBS_PER_ROW) do |s|
-        = render partial: 'thumbs_row', locals: local_vars.merge(doujinshi: s)
-    - else
-      unknown object to render
+    .columns.is-mobile.is-multiline.thumbs.freezeframe
+      - if doujinshi.is_a?(ActiveRecord::Relation)
+        - doujinshi.find_in_batches_in_order(batch_size: DoujinshiController::BATCH_SIZE) do |batch|
+          = render partial: 'thumbs_row', locals: local_vars.merge(doujinshi: batch)
+      - elsif doujinshi.is_a?(Array)
+        = render partial: 'thumbs_row', locals: local_vars.merge(doujinshi: doujinshi)
+      - else
+        .column unknown object to render
   - else
     %img#sample_cover.is-hidden
     
