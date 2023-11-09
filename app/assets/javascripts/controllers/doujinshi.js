@@ -83,6 +83,36 @@ if ($('body').data('action') == 'show') {
 }// action show
 
 if ($('body').data('action') == 'edit') {
+  $.myapp.titles_to_lowercase = function () {
+    $.each(['doujin_name', 'doujin_name_romaji', 'doujin_name_eng', 'doujin_file_name', 'doujin_name_orig'],
+      function () { $('#'+this).val( $('#'+this).val().toLowerCase().trim() ); });
+  }// $.myapp.titles_to_lowercase
+
+  $.myapp.autotag_titles = function () {
+    var tags = [];
+    
+    if ($('#doujin_language').val() != 'jpn' && $('#doujin_language').val() != '???')
+      tags.push( $('#doujin_language').val() );
+    
+    if ($('#doujin_censored').val() == 'false')
+      tags.push('unc');
+    
+    if ($('#doujin_colorized').val() == 'true')
+      tags.push('col');
+    
+    tags = tags.length > 0 ? ` (${ tags.join(',') })` : '';
+    
+    var t = $('#doujin_name').val().replace(/ *\([^)]+\)$/, '').trim();
+    $('#doujin_name').val(`${t}${tags}`);
+
+    t = $('#doujin_file_name').val().replace(/ *\([^)]+\).zip$/, '').replace(/\.zip$/, '').trim();
+    $('#doujin_file_name').val(`${t}${tags}.zip`);
+    
+    t = $('#doujin_name_romaji').val().replace(/ *\([^)]+\)$/, '').trim();
+    if (t.length > 0)
+      $('#doujin_name_romaji').val(`${t}${tags}`);
+  }// $.myapp.autotag_titles
+
   // add page shortcuts
   $.myapp.shortcuts.push({ key: 's', ctrl: true, alt: false, descr: 'save details', action: function (ev) { $.myapp.show_loading(); $('section.main-content form:first').submit(); } });
   $.myapp.shortcuts.push({ key: 'l', ctrl: false, alt: false, descr: 'convert all titles to lowercase', action: function (ev) {
@@ -92,6 +122,20 @@ if ($('body').data('action') == 'edit') {
       function () { $('#'+this).val( $('#'+this).val().toLowerCase() ); }
     );
   } });
+
+  // ehentai search callback: place titles in kanji/romaji fields, and full text in notes field
+  $('.ehentai-search').data('onselect', function (info) {
+    $('#doujin_name').val(info.title_jpn_clean || info.title_clean);
+    $('#doujin_notes').append( $('<div/>').html(info.title_jpn || info.title).text() + "\n" );
+    
+    if (info.title_jpn) {
+      $('#doujin_name_romaji').val(info.title_clean);
+      $('#doujin_notes').append( $('<div/>').html(info.title).text() + "\n" );
+    }//if
+    
+    $.myapp.autotag_titles();
+    $.myapp.titles_to_lowercase();
+  });
 }// action edit
 
 if ($('body').data('action') == 'compare') {

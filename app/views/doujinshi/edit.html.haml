@@ -69,7 +69,26 @@
           = f.text_field :name_orig, class: :input, tabindex: 105
           %span.icon.is-small.is-left
             %i.mi.mi-small photo_filter
+      
       = render partial: 'field_versions_toggle', locals: {field: 'name_orig'}
+      
+      = link_to '#', class: 'button is-info is-small is-rounded ml-1 ',
+        onclick: %Q|$.myapp.titles_to_lowercase(); return false| do
+        %span.icon.is-small
+          %i.mi.mi-small(title="convert all titles to downcase") text_rotate_vertical
+      
+      = link_to '#', class: 'button is-info is-small is-rounded ml-1 ',
+        onclick: %Q|$.myapp.autotag_titles(); return false| do
+        %span.icon.is-small
+          %i.mi.mi-small(title="autotag titles") label
+      
+      - eh_data = { term: @doujin.name_orig.tokenize_doujin_filename.join(' '),
+          img: image_tag(doujin_path @doujin, format: :jpg),
+          title: @doujin.name_orig, title_kakasi: @doujin.name_orig_kakasi.to_romaji,
+          info: "#{@doujin.num_images}/#{number_to_human_size @doujin.size}" }
+      = link_to '#', class: 'button button-image is-info is-small is-rounded ml-1 ehentai-search', data: eh_data do
+        = image_tag 'eh.svg', class: :sfw, title: 'E-Hentai title search & fill'
+      
   = render partial: 'field_versions', locals: {versions: versions, prefix: 'doujin', field: 'name_orig'}
 
   .field.is-horizontal
