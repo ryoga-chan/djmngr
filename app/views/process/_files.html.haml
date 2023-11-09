@@ -83,16 +83,16 @@
             Dest
             %span.ml-5= bt_bottom
           %th.w1
-        - @info[:files].each do |f|
+        - @info[:files].each_with_index do |f, i|
           %tr.files
             %td= link_to('🗑', delete_archive_files_process_path(id: @info[:working_dir], path: f[:src_path], tab: params[:tab]),
               method: :delete, data: { confirm: 'Delete this file?' },
               class: 'has-text-danger', title: 'delete file')
             %td.nowrap.has-text-right.is-size-8= number_to_human_size f[:size]
-            %td.select-item.is-hidden= check_box_tag 'path[]', f[:src_path], false, id: ''
+            %td.select-item.is-hidden= check_box_tag 'path[]', f[:src_path], false, id: '', tabindex: (1000+i)
             %td
               = text_field_tag :file_name, f[:dst_path], id: '', size: 50,
-                class: 'update-name is-hidden',
+                class: 'update-name is-hidden', tabindex: (5000+i),
                 data: { url: rename_file_process_path, path: f[:src_path] }
               .src-fname= f[:src_path]
             %td.nowrap
@@ -127,16 +127,16 @@
           Dest
           %span.ml-5= bt_bottom
         %th.w1
-      - @info[:images].each do |img|
+      - @info[:images].each_with_index do |img, i|
         %tr.images
           %td= link_to('🗑', delete_archive_files_process_path(id: @info[:working_dir], path: img[:src_path], tab: params[:tab]),
             method: :delete, data: { confirm: 'Delete this file?' },
             class: 'has-text-danger', title: 'delete file')
           %td.nowrap.has-text-right.is-size-8= number_to_human_size img[:size]
-          %td.select-item.is-hidden= check_box_tag 'path[]', img[:src_path], false, id: ''
+          %td.select-item.is-hidden= check_box_tag 'path[]', img[:src_path], false, id: '', tabindex: (10000+i)
           %td
             = text_field_tag :file_name, img[:dst_path], id: '', size: 50,
-              class: 'update-name is-hidden',
+              class: 'update-name is-hidden', tabindex: (15000+i),
               data: { url: rename_file_process_path, path: img[:src_path] }
             .src-fname= link_to img[:src_path],
               show_image_process_path(id: @info[:working_dir], path: img[:src_path]),
