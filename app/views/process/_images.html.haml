@@ -36,7 +36,7 @@
             decoding: :async
         
         = check_box_tag 'path[]', img[:src_path], false, id: '', class: 'is-hidden'
-    - (@info[:images].size % 6).times do
+    - (6 - @info[:images].size % 6).times do
       .column.is-4-mobile.is-2-tablet.is-2-desktop<>
 
   = action_buttons
