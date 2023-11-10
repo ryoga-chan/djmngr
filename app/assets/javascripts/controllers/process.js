@@ -193,5 +193,13 @@ if ($('body').data('ctrl') +'/'+ $('body').data('action') == 'process/edit') {
   // scroll tabs container to active tab (for mobile users)
   $('.tabs.is-boxed').scrollLeft( $('.tabs.is-boxed li.is-active').position().left );
 }// if /process/edit
+
+
+if ($('body').data('ctrl') +'/'+ $('body').data('action') == 'process/batch') {
+  // js-finder search callback
+  $('a.js-finder').data('onselect', function (info) {
+    $('#options_doujin_id').val(info.id);
+  });
+}// if process/batch
 // -----------------------------------------------------------------------------
 }); })(jQuery)

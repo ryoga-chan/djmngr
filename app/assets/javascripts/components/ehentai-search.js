@@ -28,7 +28,7 @@ $('body').on('click', '#ehentai-search-modal button.delete, #ehentai-search-moda
   modal.find('.search-term').val('');
 });
 
-// search and shiw results
+// search and show results
 function search () {
   var modal = $('#ehentai-search-modal'),
       input = modal.find('.search-term').blur(),
@@ -51,7 +51,7 @@ function search () {
           <div class="columns is-mobile result">
             <div class="column is-4">
               <figure class="image is2by3">
-                <img class="reference" src="${this.thumb || '/not-found.png'}">
+                <img class="reference" src="${this.thumb || '/not-found.png'}" loading="lazy" decoding="async">
               </figure>
             </div>
             <div class="column left-border">
@@ -66,8 +66,7 @@ function search () {
             </div>
           </div>
         `).appendTo(list).
-         find('img').data('info', this).
-         click(function () {
+         find('img').data('info', this).click(function () {
            modal.
              data('caller').
              data('onselect')( $(this).data('info') );

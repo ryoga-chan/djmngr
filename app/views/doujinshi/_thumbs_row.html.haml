@@ -27,7 +27,7 @@
             - else
               = d.percent_read.round
               %span %
-        = link_to image_tag("/thumbs/#{d.id}.webp", title: title, loading: :lazy, decoding: :async),
+        = link_to image_tag(d.thumb_path, title: title, loading: :lazy, decoding: :async),
           doujin_path(d, from_author: params[:author_id], from_circle: params[:circle_id])
       .descr.is-size-7
         - if d.cover_similarity.present?
