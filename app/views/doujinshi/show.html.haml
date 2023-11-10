@@ -133,7 +133,7 @@
         %td
           .columns.is-vcentered
             .column= @doujin.file_path
-            .column.is-3.has-text-centered.is-hidden-mobile
+            .column.is-3.has-text-centered.is-hidden-touch
               .field.has-addons
                 %p.control
                   = link_to doujin_path(@doujin, run: :file_manager, format: :json),
@@ -155,7 +155,7 @@
         %td
           .columns
             .column= @doujin.name_orig
-            .column.is-3.has-text-left
+            .column.is-3-desktop.is-5-tablet.has-text-left
               .nowrap= links_to_search_engines @doujin.name_orig.tokenize_doujin_filename.join(' '), target: :_blank
       
       %tr
@@ -168,7 +168,7 @@
                   %span.tags.has-addons.mr-2.mb-0
                     = link_to '', shelf_doujin_path(@doujin, rm_shelf_id: s.id), class: 'tag is-danger is-delete'
                     %span.tag.is-info= link_to s.name, edit_shelf_path(s)
-            .column.is-3
+            .column.is-3-desktop.is-5-tablet
               = form_with url: shelf_doujin_path(@doujin), method: :get do |f|
                 - shelves = Shelf.where.not(id: @doujin.shelf_ids).order(created_at: :desc).pluck(:name, :id)
                 - shelves.unshift(['&mdash; add &mdash;'.html_safe, nil]).push(['[ NEW Shelf ]', 0])

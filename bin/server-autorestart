@@ -4,7 +4,12 @@ CMD="$(dirname $0)/server p"
 # restart the server periodically
 while : ; do
   $CMD "$@" &
-  sleep 6h
+  
+  while : ; do
+    sleep 55m
+    hour=`date +%H`
+    [ "$hour" = "07" -o "$hour" = "19" ] && break
+  done
   
   echo "############### RESTARTING SERVER ###############"
   pkill -INT -f puma.+djmngr
