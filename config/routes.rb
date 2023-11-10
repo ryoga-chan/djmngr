@@ -56,6 +56,7 @@ Rails.application.routes.draw do
       get  :zip_read
       get  :zip_image
       get  :js_finder
+      post :move
     end
     member do
       get  :read , to: 'doujinshi#zip_read' , model: 'Doujin'

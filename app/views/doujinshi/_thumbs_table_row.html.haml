@@ -8,15 +8,20 @@
     .has-text-info.is-hidden-tablet= perc_read
   %td.show-thumb.is-hidden-mobile.has-text-info= perc_read
   %td.name
-    = link_to(doujin_path(d, from_author: params[:author_id], from_circle: params[:circle_id]), title: title) do
-      - if d.cover_similarity.present?
-        %span.tag.is-warning.is-rounded= "#{'%2d' % d.cover_similarity}%"
-      - if show_categ && (icon = DoujinshiController::ICONS[d.category])
-        %span.icon.is-small.mr-1.in-text
-          %i.mi= icon
-      %span= descr
-    - if show_name_orig
-      .name-orig.is-size-7{title: (d.name_orig_kakasi if d.name_orig_kakasi != d.name_orig)}= d.name_orig
+    .columns.is-mobile
+      .column.is-1.dj-select.is-hidden
+        = check_box_tag :'ids[]', d.id, false, id: nil,
+          tabindex: (@ckbx_dj_select = (@ckbx_dj_select || 100) + 1)
+      .column
+        = link_to(doujin_path(d, from_author: params[:author_id], from_circle: params[:circle_id]), title: title) do
+          - if d.cover_similarity.present?
+            %span.tag.is-warning.is-rounded= "#{'%2d' % d.cover_similarity}%"
+          - if show_categ && (icon = DoujinshiController::ICONS[d.category])
+            %span.icon.is-small.mr-1.in-text
+              %i.mi= icon
+          %span= descr
+        - if show_name_orig
+          .name-orig.is-size-7{title: (d.name_orig_kakasi if d.name_orig_kakasi != d.name_orig)}= d.name_orig
   %td.num.is-hidden-mobile= "#{d.num_images}P"
   %td.num.is-hidden-mobile= number_to_human_size(d.size, precision: 2).delete ' '
   %td.num.is-hidden-tablet
