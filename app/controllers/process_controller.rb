@@ -511,6 +511,8 @@ class ProcessController < ApplicationController
   
   def rename_file
     @info = YAML.unsafe_load_file(File.join @dname, 'info.yml')
+
+    return render(json: {result: 'err', msg: "filename cannot be empty!" }) if params[:name].blank?
     
     if el = @info[:files].detect{|i| i[:src_path] == params[:path] }
       el[:dst_path] = params[:name]
