@@ -68,7 +68,7 @@
     - s.each do |d|
       .column.is-2
         %figure.image.is2by3
-          = link_to image_tag("/thumbs/#{d.id}.webp", loading: :lazy, decoding: :async),
+          = link_to image_tag(d.thumb_path, loading: :lazy, decoding: :async),
             image_doujin_path(d, page: 0), target: :_blank
       .column
         .info

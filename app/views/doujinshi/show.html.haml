@@ -3,7 +3,7 @@
     %span.tag.mb-1.is-hidden-mobile= "ID# #{@doujin.id}"
     
     %figure.image.is2by3.mb-1
-      = image_tag("/thumbs/#{@doujin.id}.webp")
+      = image_tag(@doujin.thumb_path)
     
     %span.tag.mt-2.is-hidden-tablet= "ID# #{@doujin.id}"
     = link_to '&star; fave'.html_safe,

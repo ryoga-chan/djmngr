@@ -140,7 +140,8 @@ class Doujin < ApplicationRecord
       when 'artbook', 'magazine'; "#{info[:filename]}#{info[:ext] unless omit_ext}"
     end
   end # file_dl_name
-  
+
+  def thumb_path      = "/thumbs/#{id}.webp"
   def thumb_disk_path = Rails.root.join('public', 'thumbs', "#{id}.webp").to_s
   
   def destroy_with_files(track: true)

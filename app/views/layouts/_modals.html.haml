@@ -22,6 +22,27 @@
       %button.button.is-success.js-tagger-set Set
       %button.button.js-tagger-cancel Cancel
 
+#js-finder-modal.modal
+  .modal-background
+  .modal-card
+    %header.modal-card-head
+      .modal-card-title
+        .columns.is-mobile
+          .column
+            .field.has-addons
+              .control.has-icons-left.is-expanded
+                %input.input.is-rounded.search-term{type: :text, placeholder: :search}
+                %span.icon.is-small.is-left
+                  %i.mi.mi-small search
+              .control
+                %a.button.is-info.is-rounded
+                  %span.icon
+                    %i.mi search
+          .column.is-1
+            %button.delete.mt-2
+    %section.modal-card-body
+      .lookup-results.is-size-8
+
 #ehentai-search-modal.modal
   .modal-background
   .modal-card

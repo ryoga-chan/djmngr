@@ -128,20 +128,36 @@ class DoujinshiController < ApplicationController
       format.html
       format.ereader
       format.json {
-        send_stream(**file_dl_opts) do |stream|
-          stream.write %Q|{\n"saved":[|
-          @doujinshi.each_with_index{|d, i|
-            info = { id: d.id, name: d.file_dl_name, name_orig: d.name_orig, size: d.size, pages: d.num_images }
-            stream.write info.to_json.prepend(i != 0 ? ',' : '') }
-          stream.write %Q|],\n"deleted":[|
-          @deleted_doujinshi.each_with_index{|d, i|
-            info = { id: d.id, name: d.name_kakasi, name_orig: d.name, size: d.size, pages: d.num_images }
-            stream.write info.to_json.prepend(i != 0 ? ',' : '') }
-          stream.write %Q|],\n"todo":[|
-          @processable_doujinshi.each_with_index{|d, i|
-            info = { id: d.id, name: d.name_kakasi, name_orig: d.name, size: d.size, pages: 0 }
-            stream.write info.to_json.prepend(i != 0 ? ',' : '') }
-          stream.write %Q|]\n}|
+        if params[:js_finder]
+          render json: @doujinshi.limit(25).map{|d|
+            info = {
+              id:     d.id,
+              descr:  d.file_dl_name(omit_ext: true),
+              descr2: d.name_orig.sub('.zip', ''),
+              link:   doujin_path(d),
+              thumb:  d.thumb_path,
+              tag:    "#{d.num_images} P",
+              tag2:   helpers.number_to_human_size(d.size),
+            }
+            info[:descr2] = nil if info[:descr] == info[:descr2]
+            info
+          }
+        else
+          send_stream(**file_dl_opts) do |stream|
+            stream.write %Q|{\n"saved":[|
+            @doujinshi.each_with_index{|d, i|
+              info = { id: d.id, name: d.file_dl_name, name_orig: d.name_orig, size: d.size, pages: d.num_images }
+              stream.write info.to_json.prepend(i != 0 ? ',' : '') }
+            stream.write %Q|],\n"deleted":[|
+            @deleted_doujinshi.each_with_index{|d, i|
+              info = { id: d.id, name: d.name_kakasi, name_orig: d.name, size: d.size, pages: d.num_images }
+              stream.write info.to_json.prepend(i != 0 ? ',' : '') }
+            stream.write %Q|],\n"todo":[|
+            @processable_doujinshi.each_with_index{|d, i|
+              info = { id: d.id, name: d.name_kakasi, name_orig: d.name, size: d.size, pages: 0 }
+              stream.write info.to_json.prepend(i != 0 ? ',' : '') }
+            stream.write %Q|]\n}|
+          end # send_stream
         end
       }#json
       format.tsv {
@@ -157,6 +173,12 @@ class DoujinshiController < ApplicationController
       }#tsv
     end
   end # search
+  
+  def js_finder
+    request.format = :json
+    params[:js_finder] = true
+    return search
+  end # js_finder
   
   def show
     @page_title = 'doujin details'
