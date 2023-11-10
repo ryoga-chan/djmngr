@@ -1,3 +1,4 @@
+// manage mobile swipe actions
 // adaption of https://github.com/hammerjs/jquery.hammer.js/raw/master/jquery.hammer.js
 (function($){
 // -----------------------------------------------------------------------------

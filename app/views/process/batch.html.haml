@@ -8,6 +8,7 @@
       %span Delete
 
   - if @info[:started_at]
+
     - @info[:progress] ||= {}
 
     .title
@@ -81,21 +82,23 @@
       html: { class: "mb-4" } do |f|
       .columns.mb-0
         .column.field.has-addons.mb-0
+          - last_dj = Doujin.order(:created_at).last
+          
           .control
-            = f.number_field :doujin_id, value: @info[:options].try('[]', :doujin_id),
+            = f.number_field :doujin_id,
+              value: (@info[:options].try('[]', :doujin_id) || last_dj&.id),
               placeholder: 'doujin ID', class: "input is-rounded is-small"
-          - if dj = Doujin.order(:created_at).last
-            .control
-              = link_to dj, title: "use ID #{dj.id}", target: :_blank,
-                onclick: %Q|jQuery('#options_doujin_id').val(#{dj.id}); return false|,
-                class: 'button is-small' do
-                %span.icon
-                  %i.mi content_copy
-            .control
-              = link_to dj, title: "view ID #{dj.id}: #{dj.file_dl_name(omit_ext: true)}", target: :_blank,
-                class: 'button is-small' do
-                %span.icon
-                  %i.mi visibility
+          .control
+            = link_to '#', title: "search a doujin", class: 'button is-small js-finder',
+              data: { url: '/doujinshi/js_finder' } do
+              %span.icon
+                %i.mi search
+          .control
+            = link_to '#', title: "view doujin", target: :_blank,
+              onclick: "jQuery(this).attr('href', '/doujinshi/'+jQuery('#options_doujin_id').val())",
+              class: 'button is-small' do
+              %span.icon
+                %i.mi visibility
           .control
             - list, cur = %w{ prepare process }, @info[:options].try('[]', :batch_method)
             .select= f.select :batch_method, options_for_select(list, cur), {}, class: "input is-rounded is-small"
