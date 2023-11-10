@@ -235,6 +235,43 @@ class Doujin < ApplicationRecord
     read_pages.to_i - 1
   end # next_page_to_read
   
+  # change associations and folder like the specified doujin
+  def move_to(dst_dj)
+    result = false # NOTE: do not use return in transaction or it will rollback!
+    
+    Doujin.transaction do
+      # change associations
+      self.author_ids = dst_dj.author_ids
+      self.circle_ids = dst_dj.circle_ids
+      
+      dst_dir  = File.dirname dst_dj.file_path(full: true)
+      dst_file = File.join(dst_dir, file_name)
+
+      # add prefix to filename in case a duplicate exists
+      if File.exist?(dst_file)
+        prefix = "DUPE-#{'%09d' % rand(1_000_000_000)}"
+        update! name:      "#{prefix}_#{name}",
+                file_name: "#{prefix}_#{file_name}"
+      end
+      
+      src_file = file_path(full: true)
+      
+      # change metadata folders
+      update! dst_dj.attributes.slice('category'.freeze, 'file_folder'.freeze)
+      
+      # move file
+      if File.exist?(dst_file)
+        FileUtils.mv src_file, File.join(dst_dir, file_name)
+        result = :dupe
+      else
+        FileUtils.mv src_file, dst_file
+        result = true
+      end
+    end
+    
+    result
+  end # move_to
+  
   
   private # ____________________________________________________________________
   

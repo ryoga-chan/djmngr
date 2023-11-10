@@ -68,10 +68,9 @@
         - show_key = session[:dj_index_detail] == 'thumbs' ? 'table' : 'thumbs'
         = link_to(p_data.merge(detail: session[:dj_index_detail] == 'thumbs' ? 'table' : 'thumbs', anchor: "listing"),
           class: 'bt-thumbs button is-info is-small is-rounded', style: 'float: right') do
-          %span.icon-text
-            %span.icon.is-small
-              %i.mi.mi-small= session[:dj_index_detail] == 'thumbs' ? 'view_list' : 'image'
-            %span= show_key
+          %span.icon.is-small
+            %i.mi= session[:dj_index_detail] == 'thumbs' ? 'view_list' : 'image'
+          %span= show_key
     
     %aside.menu
       %ul.menu-list
@@ -90,5 +89,34 @@
 
   .column.doujinshi
     %a(name="listing")
-    = render partial: 'thumbs_table',
-      locals: { doujinshi: @doujinshi, short_label: true, show_categ: %w{author circle}.include?(params[:tab]) }
+    
+    - if @doujinshi
+      = form_with url: move_doujinshi_path, method: :post do |f|
+        .has-text-centered.mb-1
+          %a.button.is-info.is-rounded.is-small(onclick="jQuery(this).add('.field.move, .dj-select').toggleClass('is-hidden')")
+            %span.icon.is-small
+              %i.mi output
+            %span Move
+          
+          .field.move.has-addons.is-justify-content-center.is-hidden
+            .control
+              = number_field_tag :doujin_id, nil, placeholder: 'doujin ID', class: "input is-rounded is-small"
+            .control
+              = link_to '#', title: "search a doujin", class: 'button js-finder is-small',
+                data: { url: '/doujinshi/js_finder' } do
+                %span.icon.is-small
+                  %i.mi search
+            .control
+              = link_to '#', title: "view doujin", target: :_blank,
+                onclick: "jQuery(this).attr('href', '/doujinshi/'+jQuery('#doujin_id').val() || 0)",
+                class: 'button is-rounded is-small' do
+                %span.icon.is-small
+                  %i.mi visibility
+            .control
+              = button_tag type: :submit, value: :move, class: 'button is-rounded is-link is-small' do
+                %span.icon.is-small
+                  %i.mi output
+                %span Move
+
+      = render partial: 'thumbs_table',
+        locals: { doujinshi: @doujinshi, short_label: true, show_categ: %w{author circle}.include?(params[:tab]) }

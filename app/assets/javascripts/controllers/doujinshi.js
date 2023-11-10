@@ -33,6 +33,11 @@ if ($('body').data('action') == 'index') {
   var sel_entry = $('.menu .is-active');
   if (sel_entry.length > 0)
     $('.menu').scrollTop( sel_entry.position().top - $('.menu').position().top );
+
+  // js-finder search callback
+  $('a.js-finder').data('onselect', function (info) {
+    $('#doujin_id').val(info.id);
+  });
 }// action index
 
 if ($('body').data('action') == 'show') {

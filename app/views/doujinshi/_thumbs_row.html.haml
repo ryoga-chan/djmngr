@@ -33,3 +33,7 @@
         - if d.cover_similarity.present?
           %span.tag.is-warning.is-rounded= "#{'%2d' % d.cover_similarity}%"
         = short_label ? descr : d.name
+      %label.checkbox.button.is-small.is-rounded.dj-select.mt-1.is-hidden
+        = check_box_tag :'ids[]', d.id, false, id: nil,
+          tabindex: (@ckbx_dj_select = (@ckbx_dj_select || 100) + 1)
+        %span select
