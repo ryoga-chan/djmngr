@@ -196,20 +196,19 @@
                 %span.icon
                   %i.mi.mi-small chrome_reader_mode
                 %span= @doujin.read_pages.to_i > 0 ? "Read (#{@doujin.percent_read.round}%)" : :Read
-            %p.control.is-hidden-mobile
+            %p.control.is-hidden-touch
               = link_to doujin_path(@doujin, run: :comics_viewer, format: :json),
                   title: 'read with external viewer',
                   remote: true, class: 'bt-reader button run-progr is-info is-rounded' do
                 %span.icon
                   %i.mi.mi-small launch
                 %span Reader
-            - if @doujin.num_images > 10
-              %p.control
-                - ts = Time.now.to_i
-                = link_to doujin_path(@doujin, sample: ts, anchor: "sample-#{ts}"), class: 'bt-sample button is-info is-rounded' do
-                  %span.icon
-                    %i.mi.mi-small casino
-                  %span Sample
+            %p.control
+              - ts = Time.now.to_i
+              = link_to doujin_path(@doujin, sample: ts, anchor: "sample-#{ts}"), class: 'bt-sample button is-info is-rounded' do
+                %span.icon
+                  %i.mi.mi-small casino
+                %span Sample
       
       .column
         - url_params = params.permit(:from_author, :from_circle).to_h
@@ -231,16 +230,23 @@
 
 = render partial: 'actions'
 
-- if @doujin.num_images > 1 && params[:sample]
+- if params[:sample]
+  :ruby
+    range = 0...(@doujin.num_images)
+    
+    if @doujin.num_images > 7
+      num_images = 6
+      max_idx    = [@doujin.num_images - 1 - num_images, 1].max
+      from_idx   = SecureRandom.random_number(max_idx) + 1
+      to_idx     = [@doujin.num_images - 1, from_idx + 6].min
+      range      = from_idx...to_idx
+    end
+
   %a(name="sample-#{params[:sample]}")
-  - num_images = 6
-  - max_idx  = [@doujin.num_images - 1 - num_images, 1].max
-  - from_idx = SecureRandom.random_number(max_idx) + 1
-  - to_idx   = [@doujin.num_images - 1, from_idx + 6].min
-  - (from_idx...to_idx).to_a.each_slice(3) do |s|
+  - range.to_a.each_slice(3) do |s|
     .columns
       - s.each do |i|
         .column.is-4.has-text-centered
-          .is-size-7= "page #{i}"
+          .is-size-7= "page #{i+1}"
           %figure.image.is2by3
             = trasparent_image_tag class: :async_load, data: {url: image_doujin_path(@doujin, page: i)}
