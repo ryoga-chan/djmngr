@@ -581,6 +581,29 @@ class DoujinshiController < ApplicationController
     @page_title = :compare
     @entries = DoujinCompareJob.data
   end # compare
+  
+  # change associations and folder of a list of doujinshi
+  # as the same as a specific doujin
+  def move
+    unless dest = Doujin.find_by(id: params[:doujin_id])
+      return redirect_to(doujinshi_path, flash: {alert: "doujin [#{params[:doujin_id]}] not found!"})
+    end
+    
+    counters = { num: 0, true => 0, false => 0, :dupe => 0}
+    Doujin.where(id: params[:ids]).each do |d|
+      counters[:num] += 1
+      counters[d.move_to dest] += 1
+    end
+    
+    index_params = dest.authors.any? ?
+      { tab: :author, author_id: dest.author_ids.first } :
+      { tab: :circle, circle_id: dest.circle_ids.first }
+    
+    msg  = "move #{counters[:num]} doujinshi: #{counters[true]} ok"
+    msg += ", #{counters[:dupe]} DUPES"  if counters[:dupe] > 0
+    msg += ", #{counters[false]} ERRORS" if counters[false] > 0
+    redirect_to doujinshi_path(index_params), notice: msg
+  end # move
 
 
   private # ____________________________________________________________________

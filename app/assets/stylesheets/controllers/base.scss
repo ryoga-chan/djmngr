@@ -37,6 +37,8 @@
 
 .button.tiny-bt { font-size: 0.5rem; }
 
+label.checkbox.button input[type="checkbox"] { vertical-align: bottom; }
+
 #mobile-toolbar {
   position: absolute;
   top:  0.7rem;
