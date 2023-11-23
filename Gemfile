@@ -18,6 +18,7 @@ gem 'tzinfo-data', platforms: %i[ mingw mswin x64_mingw jruby ] # zoneinfo files
 gem 'haml-rails',  '~> 2.0'      # https://haml.info
 gem 'kaminari'                   # pagination -- https://github.com/kaminari/kaminari
 gem 'kakasi'                     # kanji kana simple inverter -- https://github.com/knu/kakasi_ffi
+gem 'lograge'                    # greppable logs -- https://github.com/roidrage/lograge
 gem 'marcel'                     # mime type of files -- https://github.com/rails/marcel
 gem 'progressbar'                # cli progressbar -- https://github.com/jfelchner/ruby-progressbar
 gem 'rubyzip', '~> 2.3', require: 'zip' # manage ZIP files -- https://github.com/rubyzip/rubyzip
@@ -34,7 +35,9 @@ gem 'httpx'                      # HTTP client -- https://gitlab.com/os85/httpx 
 #                                 https://github.com/libvips/ruby-vips/blob/master/lib/vips/methods.rb
 #                                 https://www.libvips.org/API/current/func-list.html
 gem 'image_processing', '~> 1.2', require: %w{ ruby-vips image_processing }
-gem 'phashion',         '~> 1.2' # https://github.com/westonplatter/phashion -- pHash: image perceptual hashing
+
+# https://github.com/westonplatter/phashion -- pHash: image perceptual hashing
+gem 'phashion',         '~> 1.2.3', source: 'https://rubygems.pkg.github.com/ryoga-chan'
 
 #gem 'bootsnap', require: false  # Reduces boot times through caching; required in config/boot.rb
 
