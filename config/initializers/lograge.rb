@@ -4,7 +4,7 @@ LOGRAGE_EXCLUDED_PARAMS = Rails.application.config.filter_parameters +
 Rails.application.configure do
   config.lograge.enabled = true
   
-  config.lograge.custom_options = lambda{|event| {
-    params: event.payload[:params].except(*LOGRAGE_EXCLUDED_PARAMS)
-  } }
+  config.lograge.custom_options = lambda{|event|
+    event.payload[:params].except(*LOGRAGE_EXCLUDED_PARAMS)
+  }
 end if Rails.env.production?
