@@ -20,6 +20,7 @@ ARG APP_VERSION=0.26.0
 ARG BUNDLE_PATH=/usr/local/bundle
 ARG DEBIAN_FRONTEND=noninteractive
 ARG APT_OPTS="--no-install-recommends -y"
+ARG BUNDLE_RUBYGEMS__PKG__GITHUB__COM=""
 
 ENV LANG                C.UTF-8
 ENV LC_ALL              C.UTF-8
