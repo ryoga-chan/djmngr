@@ -583,7 +583,7 @@ class DoujinshiController < ApplicationController
   end # compare
   
   # change associations and folder of a list of doujinshi
-  # as the same as a specific doujin
+  # like those of a specific doujin
   def move
     unless dest = Doujin.find_by(id: params[:doujin_id])
       return redirect_to(doujinshi_path, flash: {alert: "doujin [#{params[:doujin_id]}] not found!"})
@@ -595,9 +595,11 @@ class DoujinshiController < ApplicationController
       counters[d.move_to dest] += 1
     end
     
-    index_params = dest.authors.any? ?
-      { tab: :author, author_id: dest.author_ids.first } :
-      { tab: :circle, circle_id: dest.circle_ids.first }
+    index_params = case
+      when dest.authors.any? then { tab: :author, author_id: dest.author_ids.first }
+      when dest.circles.any? then { tab: :circle, circle_id: dest.circle_ids.first }
+      else { tab: dest.category, folder: dest.file_folder }
+    end
     
     msg  = "move #{counters[:num]} doujinshi: #{counters[true]} ok"
     msg += ", #{counters[:dupe]} DUPES"  if counters[:dupe] > 0
