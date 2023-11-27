@@ -3,7 +3,6 @@
 # read APP VERSION
 load 'config/initializers/version.rb' rescue nil
 raise :no_version_found unless defined?(VERSION)
-
 # read RUBY VERSION
 RUBY_VER = File.read('.ruby-version').strip.sub(/.+-([0-9\.]+).*/, '\1') rescue nil
 raise :no_version_found unless RUBY_VER
@@ -17,9 +16,15 @@ case ARGV.shift
     puts "Building image:"
     sleep 2
     
+    # read bundler credentials
+    require 'yaml'
+    GH_BUNDLER_CREDS = YAML.unsafe_load_file("#{ENV['HOME']}/.bundle/config").values.grep(/ryoga-chan/).first
+    raise :no_bundle_config_found unless GH_BUNDLER_CREDS
+    
     build_args = {
       'APP_VERSION'  => VERSION,
       'RUBY_VERSION' => RUBY_VER,
+      'BUNDLE_RUBYGEMS__PKG__GITHUB__COM' => GH_BUNDLER_CREDS
     }.map{|k,v| %Q|--build-arg="#{k}=#{v}"| }.join(' ')
     
     opts = '--no-cache' if ARGV.include?('nc')
