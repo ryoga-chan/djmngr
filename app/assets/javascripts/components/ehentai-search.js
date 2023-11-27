@@ -32,11 +32,15 @@ $('body').on('click', '#ehentai-search-modal button.delete, #ehentai-search-moda
 function search () {
   var modal = $('#ehentai-search-modal'),
       input = modal.find('.search-term').blur(),
-      list  = modal.find('.lookup-results');
+      list  = modal.find('.lookup-results'),
+      term  = input.val().trim();
+  
+  if (term.length == 0)
+    return;
   
   $.ajax({
     url: '/ws/ehentai',
-    data: { term: input.val().trim() },
+    data: { term: term },
     dataType: 'json',
     cache: false,
     beforeSend: function () {
