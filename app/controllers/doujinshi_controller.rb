@@ -107,7 +107,7 @@ class DoujinshiController < ApplicationController
       max_results = THUMBS_PER_ROW * 2
       
       @doujinshi = @doujinshi.
-        reselect(:id, :category, :file_folder, :file_name, :name_orig, :size, :num_images).
+        reselect(:id, :category, :file_folder, :file_name, :name_orig, :size, :num_images, :score).
         limit(max_results)
       
       @deleted_doujinshi = DeletedDoujin.
@@ -136,8 +136,8 @@ class DoujinshiController < ApplicationController
               descr2: d.name_orig.sub('.zip', ''),
               link:   doujin_path(d),
               thumb:  d.thumb_path,
-              tag:    "#{d.num_images} P",
-              tag2:   helpers.number_to_human_size(d.size),
+              tag:    "#{d.score || '--'} &star;",
+              tag2:   "#{d.num_images} P &nbsp;&middot;&nbsp; #{helpers.number_to_human_size(d.size)}",
             }
             info[:descr2] = nil if info[:descr] == info[:descr2]
             info
