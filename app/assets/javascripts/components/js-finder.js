@@ -29,11 +29,15 @@ $('body').on('click', '#js-finder-modal button.delete, #js-finder-modal .modal-b
 function search () {
   var modal = $('#js-finder-modal'),
       input = modal.find('.search-term').blur(),
-      list  = modal.find('.lookup-results');
+      list  = modal.find('.lookup-results'),
+      term  = input.val().trim();
+  
+  if (term.length == 0)
+    return;
   
   $.ajax({
     url: modal.data('caller').data('url'),
-    data: { term: input.val().trim() },
+    data: { term: term },
     dataType: 'json',
     cache: false,
     beforeSend: function () {
