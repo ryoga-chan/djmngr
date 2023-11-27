@@ -261,6 +261,7 @@ class Doujin < ApplicationRecord
       
       # move file
       if File.exist?(dst_file)
+        # move it with the new prefix
         FileUtils.mv src_file, File.join(dst_dir, file_name)
         result = :dupe
       else
