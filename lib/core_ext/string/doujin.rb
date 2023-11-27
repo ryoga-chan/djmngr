@@ -86,6 +86,11 @@ module CoreExt
           fname:         fname.to_s.strip }
       end # parse_doujin_filename
       
+      def first_author_from_filename
+        info = self.parse_doujin_filename
+        "#{info[:ac_explicit].join ' '} #{info[:ac_implicit].join ' '}".strip
+      end # first_author_from_filename
+      
       def tokenize_doujin_filename(rm_num: false, title_only: false, basename: true)
         term = dup
         

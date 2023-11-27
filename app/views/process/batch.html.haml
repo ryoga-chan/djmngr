@@ -90,7 +90,7 @@
               placeholder: 'doujin ID', class: "input is-rounded is-small"
           .control
             = link_to '#', title: "search a doujin", class: 'button is-small js-finder',
-              data: { url: '/doujinshi/js_finder' } do
+              data: { url: '/doujinshi/js_finder', term: @info[:titles].keys.first.first_author_from_filename } do
               %span.icon
                 %i.mi search
           .control
