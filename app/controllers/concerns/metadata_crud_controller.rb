@@ -62,12 +62,18 @@ module MetadataCrudController
   
   def tags_lookup
     begin
+      columns = %i[ id name_romaji name_kakasi name name_kana ]
+      
       records = @model.none
       records = @model.search params[:term] if params[:term].present?
-      records = records.select(:id, :name_romaji, :name_kakasi, :name, :name_kana)#.limit(1_000)
+      records = records.
+        eager_load(:doujinshi).
+        select(columns + ["COUNT(doujinshi.id) AS num_dj"]).
+        group(columns)#.limit(1_000)
       render json: {result: :ok, tags: records.map{|r|
+        lbl_num_dj = "📕#{r.num_dj}🔸️" if r.num_dj.to_i > 0
         r.label_name_kanji ?
-          {id: r.id, label: "#{r.label_name_latin}__(#{r.label_name_kanji})"} :
+          {id: r.id, label: "#{lbl_num_dj}#{r.label_name_latin}__(#{r.label_name_kanji})"} :
           {id: r.id, label: r.label_name_latin}
       }}
     rescue
