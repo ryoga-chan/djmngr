@@ -410,13 +410,18 @@ class ProcessController < ApplicationController
           }.compact
         end
         
-        # search dupes by filename
         @info[:dupe_search] ||= @info[:relative_path].tokenize_doujin_filename(title_only: true).join ' '
         params[:dupe_search] ||= @info[:dupe_search]
+        # search dupes by filename
         @dupes += Doujin.
           where.not(id: @dupes.map(&:id)).
           search(params[:dupe_search], relations: false).
           order(:name_orig).limit(30).to_a
+        # search dupes by filename in deleted doujinshi
+        @dupes_deleted += DeletedDoujin.
+          where.not(id: @dupes_deleted.map(&:id)).
+          search(params[:dupe_search]).
+          order(:name).limit(10).to_a
       
       when 'ident'
         # list possible dest folders
