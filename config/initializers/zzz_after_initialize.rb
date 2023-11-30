@@ -32,4 +32,16 @@ Rails.application.config.after_initialize do
       folders.each{|f| FileUtils.mkdir_p f }
     end
   end
+
+  # change process title after webserver start
+  Thread.new{
+    title = "ruby:djmngr"
+    loop {
+      sleep 1
+      res = HTTPX.head('http://localhost:39102/')&.status rescue 404
+      Process.setproctitle title # $0 = title
+      break if res == 200
+    }# loop
+    Rails.logger.info %Q|process title changed to "#{title}"|
+  }#Thread.new
 end
