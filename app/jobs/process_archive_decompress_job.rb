@@ -10,7 +10,11 @@ class ProcessArchiveDecompressJob < ApplicationJob
   end # self.file_hash
   
   def self.rm_entry(path: nil, folder: nil)
-    dir = File.join Setting['dir.sorting'], file_hash(File.join Setting['dir.to_sort'], path) if path
+    if path
+      fpath = File.join Setting['dir.to_sort'], path
+      dir = File.join(Setting['dir.sorting'], file_hash(fpath)) if File.exist?(fpath)
+    end
+    
     dir = folder if folder
     
     FileUtils.rm_rf dir, secure: true if dir && File.exist?(dir)
