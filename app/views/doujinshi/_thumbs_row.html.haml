@@ -27,8 +27,11 @@
             - else
               = d.percent_read.round
               %span %
-        = link_to image_tag(d.thumb_path, title: title, loading: :lazy, decoding: :async),
-          doujin_path(d, from_author: params[:author_id], from_circle: params[:circle_id])
+        :ruby
+          img_html = local_assigns[:images_ondemand] ?
+            image_tag('', title: title, loading: :lazy, decoding: :async, data: {url: d.thumb_path}) :
+            image_tag(d.thumb_path, title: title, loading: :lazy, decoding: :async)
+        = link_to img_html, doujin_path(d, from_author: params[:author_id], from_circle: params[:circle_id])
       .descr.is-size-7
         - if d.cover_similarity.present?
           %span.tag.is-warning.is-rounded= "#{'%2d' % d.cover_similarity}%"

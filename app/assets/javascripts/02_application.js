@@ -1,3 +1,5 @@
+//= require      ./components/freeze_frame.js
+//= require      ./components/img_ondemand_load.js
 //= require      ./components/img_sequential_load.js
 //= require      ./components/jQKeyboard.js
 //= require      ./components/js-tagger.js

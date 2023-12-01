@@ -3,81 +3,96 @@
   %button.jQKeyboardToggle(type="button" data-field="#term") KB
   = f.submit 'Search', class: 'button'
 
-%h3 Browse collection
-= link_to 'Catalog', doujinshi_path          , class: 'button'
-= link_to 'Faves'  , favorites_doujinshi_path, class: 'button'
-= link_to 'EPUBs'  , epub_doujinshi_path     , class: 'button'
-= link_to 'Scored' , scored_doujinshi_path   , class: 'button'
-= link_to 'Shelves', shelves_path, class: 'button'
-- ext_lbl, ext_url = Setting[:external_link].to_s.split('|')
-- if ext_lbl.present? && ext_lbl.present?
-  = link_to ext_lbl, ext_url, class: 'button'
+.browse
+  -#%span(style="font-size: large; font-weight: bold") Browse collection:
+  .acenter
+    = link_to 'Catalog', doujinshi_path          , class: 'button'
+    = link_to 'Faves'  , favorites_doujinshi_path, class: 'button'
+    = link_to 'EPUBs'  , epub_doujinshi_path     , class: 'button'
+    = link_to 'Scored' , scored_doujinshi_path   , class: 'button'
+    = link_to 'Shelves', shelves_path, class: 'button'
+    - ext_lbl, ext_url = Setting[:external_link].to_s.split('|')
+    - if ext_lbl.present? && ext_lbl.present?
+      = link_to ext_lbl, ext_url, class: 'button'
 
-%h3 Single pick
-= link_to 'Book' , random_pick_doujinshi_path(type: :book  ), class: 'button'
-= link_to 'Faved', random_pick_doujinshi_path(type: :faved ), class: 'button'
-= link_to 'Best Score' , random_pick_doujinshi_path(type: :scored), class: 'button'
-- if s = Shelf.order(created_at: :desc).first
-  = link_to 'Latest Shelf', shelf_path(s), class: 'button'
+.single-pick
+  %span.title Single pick:
+  %span(style="padding-left: 0.5rem")
+    = link_to 'Book' , random_pick_doujinshi_path(type: :book  ), class: 'button'
+    = link_to 'Faved', random_pick_doujinshi_path(type: :faved ), class: 'button'
+    = link_to 'Best Score' , random_pick_doujinshi_path(type: :scored), class: 'button'
+    - if s = Shelf.order(created_at: :desc).first
+      = link_to 'Latest Shelf', shelf_path(s), class: 'button'
 
-%h3 Scoring distribution
+.recent.hidden
+  %span.title Recently added doujinshi:
+  .thumbs
+    - @last_djs.limit(6).each do |d|
+      = render partial: 'doujinshi/thumbs_row',
+        locals: { short_label: true, show_name_orig: true, show_categ: true,
+                  images_ondemand: true, d: d }
 
-%table.scoring-distro
-  %tr.bars
-    %td
-    - @scores.each_with_index do |pair, i|
-      - score, data = pair
-      - bar_size = (6 * data[:perc]).round 2
+.stats
+  %span.title Scoring distribution:
+  = link_to 'Show latest additions', '#', class: 'button',
+    onclick: "jQuery('.stats, .recent').toggleClass('hidden').find('img').addClass('async_load'); $.__sequential_image_loading('init')"
+
+  %table.scoring-distro
+    %tr.bars
       %td
-        .bar{style: "background-color: ##{HomeController::PALETTE[i]}; height: #{bar_size}rem"}
-  %tr.percs
-    %td %
-    - @scores.each do |score, data|
-      %td= '%.1f' % (data[:perc] * 100).round(2)
-  %tr.scores
-    %td score
-    - @scores.each do |score, data|
-      %td= link_to score, scored_doujinshi_path(score_min: score, score_max: score)
+      - @scores.each_with_index do |pair, i|
+        - score, data = pair
+        - bar_size = (6 * data[:perc]).round 2
+        %td
+          .bar{style: "background-color: ##{HomeController::PALETTE[i]}; height: #{bar_size}rem"}
+    %tr.percs
+      %td %
+      - @scores.each do |score, data|
+        %td= '%.1f' % (data[:perc] * 100).round(2)
+    %tr.scores
+      %td score
+      - @scores.each do |score, data|
+        %td= link_to score, scored_doujinshi_path(score_min: score, score_max: score)
 
-%h3
-  Counters:
-  = number_with_delimiter @stats[:dj], delimiter: "'"
-  Doujinshi
-  = "(#{number_to_human_size @stats[:dj_size]})"
+  %h3
+    Counters:
+    = number_with_delimiter @stats[:dj], delimiter: "'"
+    Doujinshi
+    = "(#{number_to_human_size @stats[:dj_size]})"
 
-- @stats[:dj_cat].each_with_index do |data, i|
-  - cat, n = data
-  - if i != 0
-    \|
-  = number_with_delimiter n, delimiter: "'"
-  = cat.pluralize
+  - @stats[:dj_cat].each_with_index do |data, i|
+    - cat, n = data
+    - if i != 0
+      \|
+    = number_with_delimiter n, delimiter: "'"
+    = cat.pluralize
 
-%hr
+  %hr
 
-= number_with_delimiter @stats[:dj_fav], delimiter: "'"
-Faved
-\|
-= number_with_delimiter @stats[:todo], delimiter: "'"
-\/
-= number_to_human_size @stats[:todo_size]
-To process
-\|
-= @stats[:wip]
-WIP
-\|
-= @stats[:epub]
-EPUBs generated
+  = number_with_delimiter @stats[:dj_fav], delimiter: "'"
+  Faved
+  \|
+  = number_with_delimiter @stats[:todo], delimiter: "'"
+  \/
+  = number_to_human_size @stats[:todo_size]
+  To process
+  \|
+  = @stats[:wip]
+  WIP
+  \|
+  = @stats[:epub]
+  EPUBs generated
 
-%hr
+  %hr
 
-= number_with_delimiter @stats[:md_tot], delimiter: "'"
-Metadata /
-= number_with_delimiter @stats[:mda], delimiter: "'"
-Authors
-\|
-= number_with_delimiter @stats[:mdc], delimiter: "'"
-Circles
-\|
-= number_with_delimiter @stats[:mdt], delimiter: "'"
-Themes
+  = number_with_delimiter @stats[:md_tot], delimiter: "'"
+  Metadata /
+  = number_with_delimiter @stats[:mda], delimiter: "'"
+  Authors
+  \|
+  = number_with_delimiter @stats[:mdc], delimiter: "'"
+  Circles
+  \|
+  = number_with_delimiter @stats[:mdt], delimiter: "'"
+  Themes
 

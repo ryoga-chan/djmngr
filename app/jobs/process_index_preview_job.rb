@@ -2,7 +2,7 @@ class ProcessIndexPreviewJob < ProcessIndexRefreshJob
   THUMB_WIDTH  = 320
   THUMB_HEIGHT = 640
   THUMBS_CHUNK = 3
-  THUMBS_NUM   = ProcessController::ROWS_PER_PAGE
+  THUMBS_NUM   = ProcessController::ROWS_PER_PAGE * 2
   
   def self.rm_previews
     pattern = Rails.root.join('public', ProcessableDoujin::THUMB_FOLDER, '*.webp').to_s

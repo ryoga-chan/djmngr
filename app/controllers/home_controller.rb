@@ -33,6 +33,8 @@ class HomeController < ApplicationController
         h.merge key => { n: d.n, perc: perc }
       end
     
+    @last_djs = Doujin.order(created_at: :desc).limit(12)
+    
     # build css properties for the pie chart
     if request.format.html?
       cur_deg = 0

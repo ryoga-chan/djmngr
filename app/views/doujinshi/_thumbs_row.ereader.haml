@@ -5,7 +5,8 @@
 .doujin<>
   .cover<>
     = link_to doujin_path(d, from_author: params[:author_id], from_circle: params[:circle_id]) do
-      %img.thumb.async_load{data: {url: doujin_path(d, format: :jpg)}}
+      - css_class = local_assigns[:images_ondemand] ? '' : 'async_load'
+      %img.thumb{data: {url: doujin_path(d, format: :jpg)}, class: css_class}
   .descr<>
     - if d.read_pages.to_i > 0
       %span.read-perc<>= d.percent_read.to_i == 100 ? '&#10003;'.html_safe : "#{d.percent_read.round}%"
