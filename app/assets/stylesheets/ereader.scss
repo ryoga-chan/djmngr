@@ -231,6 +231,28 @@ body:not([data-env="production"])::before {
 }
 
 body[data-ctrl="home"][data-action="index"] {
+  .browse {
+    border: 1px solid black;
+    border-width: 1px 0;
+    padding: 0.3rem 0 0.2rem 0;
+    margin-top: 0.2rem;
+  }
+  
+  .single-pick {
+    margin-top: 0.5rem;
+    padding-bottom: 0.3rem;
+    border-bottom: 1px solid black;
+  }
+  
+  .stats, .recent { margin-top: 1rem; }
+  
+  span.title {
+    font-size: large;
+    font-weight: bold;
+  }
+  
+  .recent .thumbs { margin-top: 0.3rem; }
+
   table.scoring-distro {
     border-collapse: collapse;
     
