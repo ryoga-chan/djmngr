@@ -104,7 +104,7 @@
               
               %tr{data: {id: f.id}}
                 %td.rm-or-batch
-                  = link_to('🗑', {action: :delete_archive, path: f.name, page: params[:page]},
+                  = link_to('🗑', {action: :delete_archive, path: f.name, page: params[:page], sort_by: params[:sort_by]},
                     method: :delete, data: { confirm: 'Delete this file?' },
                     class: 'has-text-danger', title: 'delete file')
                   .file-select.is-hidden= check_box_tag 'file_ids[]', f.id, false,

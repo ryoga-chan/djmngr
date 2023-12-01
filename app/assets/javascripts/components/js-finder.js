@@ -86,7 +86,7 @@ function search () {
          });
       });//each
       
-      new Freezeframe( list.get(0) );
+      list.freeze_frame();
     },//success
     complete: function () { input.parent().removeClass('is-loading'); },//complete
     error: function () { alert('Server error!'); }//error

@@ -103,7 +103,7 @@
         class: 'button is-info is-rounded mt-3 mx-1 run-progr is-hidden-touch' do
         %span.icon-text
           %span.icon
-            %i.mi new_releases
+            %i.mi casino
           %span shelf
   
     %hr.is-hidden-tablet.my-0.mt-3
@@ -129,3 +129,16 @@
               %span.tag.has-text-black{style: "background-color: ##{HomeController::PALETTE[i]}"}= link_to score,
                 scored_doujinshi_path(score_min: score, score_max: score)
               %span.tag= '%.2f%%' % (data[:perc] * 100).round(2)
+
+- if @last_djs.any?
+  .has-text-centered
+    = link_to '#', onclick: "jQuery('#recent_djs').toggleClass('is-hidden').load_ondemand_images({freezeframe: true})",
+      class: 'button is-info is-rounded mb-3' do
+      %span.icon-text
+        %span.icon
+          %i.mi new_releases
+        %span toggle recent doujinshi
+  #recent_djs.is-hidden.columns.is-mobile.is-multiline.thumbs
+    = render partial: 'doujinshi/thumbs_row',
+      locals: { short_label: true, show_name_orig: true, show_categ: true,
+                images_ondemand: true, doujinshi: @last_djs }

@@ -1,40 +1,4 @@
 body[data-ctrl="doujinshi"] {
-  .columns.thumbs {
-    .thumb {
-      padding-bottom: 0.5rem;
-      background-color: #444;
-    }
-    .thumb, image, canvas { border-radius: 0.5rem; }
-  
-    span.icon {
-      position: absolute;
-      z-index: 2;
-      border-radius: 1rem;
-      border: 1rem solid black;
-    }
-    span.icon.categ {
-      top:  0;
-      left: 0;
-      border-color: darkmagenta;
-    }
-    span.icon.score {
-      bottom: 0;
-      right:  0;
-      border-color: darkorange;
-    }
-    span.icon.read-perc {
-      bottom: 0;
-      left:  0;
-      border-color: darkblue;
-      span { font-size: x-small; }
-    }
-  
-    .descr {
-      height: 1.1rem;
-      overflow: hidden;
-    }
-  }
-  
   table.dj-details {
     margin-bottom: 400px;
     

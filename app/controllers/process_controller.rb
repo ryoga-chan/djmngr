@@ -17,11 +17,18 @@ class ProcessController < ApplicationController
       return redirect_to(action: :index)
     end
     
+    # save and keep previous sort order
+    if params[:sort_by].present?
+      session['process.index.sort_by'] = params[:sort_by]
+    elsif session['process.index.sort_by'].present?
+      return redirect_to(action: :index, sort_by: session['process.index.sort_by'], page: params[:page])
+    end
+    
     # generate preview images collage for ZIP files on the first index page
     if params[:preview]
       ProcessIndexPreviewJob.lock_file!
-      ProcessIndexPreviewJob.perform_later order: params[:sort_by], page: params[:page], id: params[:id]
-      return redirect_to(action: :index, sort_by: params[:sort_by], page: params[:page])
+      ProcessIndexPreviewJob.perform_later order: session['process.index.sort_by'], page: params[:page], id: params[:id]
+      return redirect_to(action: :index, sort_by: session['process.index.sort_by'], page: params[:page])
     end
 
     if ProcessIndexRefreshJob.lock_file? || ProcessIndexPreviewJob.lock_file?
@@ -29,7 +36,7 @@ class ProcessController < ApplicationController
     else
       # read "to_sort" file list
       @files = ProcessIndexRefreshJob.
-        entries(order: params[:sort_by]).
+        entries(order: session['process.index.sort_by']).
         page(params[:page]).per(ROWS_PER_PAGE)
       
       # read "sorting" file list
