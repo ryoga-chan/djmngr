@@ -540,22 +540,31 @@ class DoujinshiController < ApplicationController
     end
   end # search_cover
   
+  # show some random entries
   def random_pick
-    return redirect_to_with_format(root_path) unless %w{ book faved scored }.include?(params[:type])
+    unless %w{ books faved best }.include?(params[:type])
+      flash[:warn] = "unknown [#{params[:type]}] type"
+      return redirect_to_with_format(root_path)
+    end
     
     rel = Doujin.where.not(media_type: :manga)
     
     rel = case params[:type]
-      when 'book'  ; rel
-      when 'faved' ; rel.where favorite: true
-      when 'scored'; rel.where("8 <= score AND score <= 10")
+      when 'books'; rel
+      when 'faved'; rel.where favorite: true
+      when 'best' ; rel.where("8 <= score AND score <= 10")
     end
 
-    n  = SecureRandom.random_number rel.count
-    id = rel.order(:id).offset(n).limit(1).pluck(:id).first
+    # pick one:
+    #n  = SecureRandom.random_number rel.count
+    #id = rel.order(:id).offset(n).limit(1).pluck(:id).first
+    #id ? redirect_to_with_format(doujin_path id: id) :
+    #  redirect_to(root_path, flash: {warn: 'collection is empty'})
     
-    id ? redirect_to_with_format(doujin_path id: id) :
-      redirect_to(root_path, flash: {warn: 'collection is empty'})
+    # pick many:
+    # https://stackoverflow.com/questions/1253561/sqlite-order-by-rand/24591696#24591696
+    @doujinshi = rel.where(id: rel.order('RANDOM()').limit(12).pluck("id")).to_a
+    flash.now[:warn] = 'collection is empty' if @doujinshi.empty?
   end # random_pick
   
   # add/remove doujin from a shelf (creates a new shelf if requested)

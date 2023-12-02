@@ -80,19 +80,19 @@
     %hr.is-hidden-tablet.my-0
     
     .random-links
-      = link_to random_pick_doujinshi_path(type: :book  ), class: 'button is-info is-rounded mt-3 mx-1' do
+      = link_to random_pick_doujinshi_path(type: :books), class: 'button is-info is-rounded mt-3 mx-1' do
         %span.icon-text
           %span.icon
             %i.mi casino
-          %span book
+          %span books
 
-      = link_to random_pick_doujinshi_path(type: :faved ), class: 'button is-info is-rounded mt-3 mx-1' do
+      = link_to random_pick_doujinshi_path(type: :faved), class: 'button is-info is-rounded mt-3 mx-1' do
         %span.icon-text
           %span.icon
             %i.mi casino
           %span faved
 
-      = link_to random_pick_doujinshi_path(type: :scored), class: 'button is-info is-rounded mt-3 mx-1' do
+      = link_to random_pick_doujinshi_path(type: :best), class: 'button is-info is-rounded mt-3 mx-1' do
         %span.icon-text
           %span.icon
             %i.mi casino
