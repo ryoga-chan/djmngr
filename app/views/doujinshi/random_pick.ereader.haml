@@ -1,0 +1,8 @@
+%h3
+  Random
+  = params[:type]
+
+.thumbs
+  - @doujinshi.each do |d|
+    = render partial: 'doujinshi/thumbs_row',
+      locals: { short_label: true, show_name_orig: true, show_categ: true, d: d }

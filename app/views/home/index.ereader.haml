@@ -15,12 +15,12 @@
     - if ext_lbl.present? && ext_lbl.present?
       = link_to ext_lbl, ext_url, class: 'button'
 
-.single-pick
-  %span.title Single pick:
+.random-pick
+  %span.title Random:
   %span(style="padding-left: 0.5rem")
-    = link_to 'Book' , random_pick_doujinshi_path(type: :book  ), class: 'button'
-    = link_to 'Faved', random_pick_doujinshi_path(type: :faved ), class: 'button'
-    = link_to 'Best Score' , random_pick_doujinshi_path(type: :scored), class: 'button'
+    = link_to 'Books', random_pick_doujinshi_path(type: :books), class: 'button'
+    = link_to 'Faved', random_pick_doujinshi_path(type: :faved), class: 'button'
+    = link_to 'Best Score' , random_pick_doujinshi_path(type: :best), class: 'button'
     - if s = Shelf.order(created_at: :desc).first
       = link_to 'Latest Shelf', shelf_path(s), class: 'button'
 
