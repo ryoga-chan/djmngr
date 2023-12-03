@@ -2,12 +2,12 @@ class ProcessIndexRefreshJob < ApplicationJob
   queue_as :tools
   
   ORDER = {
-    '🔽 name'  => :name,
-    '🔼 name'  => :name_d,
-    '🔽 xlate' => :kakasi,
-    '🔼 xlate' => :kakasi_d,
-    '🔽 time'  => :time,
-    '🔼 time'  => :time_d,
+    '🔼 name'  => :name,
+    '🔽 name'  => :name_d,
+    '🔼 xlate' => :kakasi,
+    '🔽 xlate' => :kakasi_d,
+    '🔼 time'  => :time,
+    '🔽 time'  => :time_d,
   }
 
   def self.lock_file      = File.join(Setting['dir.to_sort'], 'indexing.lock').to_s
