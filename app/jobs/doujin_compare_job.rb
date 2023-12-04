@@ -35,8 +35,10 @@ class DoujinCompareJob < ApplicationJob
     end
   end # self.remove
 
-  def perform(rel_path: nil, full_path: nil, doujin: nil)
+  def perform(rel_path: nil, full_path: nil, doujin: nil, mode: 'subset')
     comparison_data = DoujinCompareJob.data
+    
+    mode = 'subset' unless %w{ subset all }.include?(mode.to_s)
   
     info = { images: [], max_height: 0 }
     
@@ -62,7 +64,8 @@ class DoujinCompareJob < ApplicationJob
     Zip::File.open(info[:full_path]) do |zip|
       all_entries = zip.image_entries(sort: true)
       
-      thumb_entries = all_entries.pages_preview(chunk_size: CHUNK_SIZE)
+      thumb_entries = mode == 'all' ?
+        all_entries : all_entries.pages_preview(chunk_size: CHUNK_SIZE)
       
       info[:num_pages] = all_entries.size
       info[:sampled  ] = all_entries.size != thumb_entries.size
