@@ -63,4 +63,15 @@ class Setting < ApplicationRecord
     
     devices
   end # self.epub_devices
+  
+  def self.search_engines
+    @@search_engines ||= self.
+      where("key LIKE 'search_engine.%'").
+      where.not(value: '').
+      order(:key).
+      map{|s|
+        next if s.value.start_with?('-')
+        s.value.to_s.split('|')
+      }.compact
+  end # self.search_engines
 end
