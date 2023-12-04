@@ -315,6 +315,11 @@ class ProcessController < ApplicationController
       end
     end
     
+    if @info[:file_type] == 'artbook' && @info[:media_type] != @info[:file_type]
+      @info[:media_type] = @info[:file_type]
+      info_changed = true
+    end
+    
     @info[:dest_filename] = @info[:orig_dest_filename] if @info[:dest_filename].blank?
     
     # toggle overwrite of file in the collection

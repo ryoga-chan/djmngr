@@ -1,19 +1,60 @@
-.title.is-size-4 Settings
-
 = form_with url: home_settings_path do |f|
+  .title.is-size-4
+    Settings / General
+    .fright= f.submit 'Save all', class: 'button is-primary'
+  
   - { 'dir.to_sort'   => 'rule_folder',
       'dir.sorting'   => 'drive_file_move',
       'dir.sorted'    => 'create_new_folder',
+      'basic_auth'    => 'admin_panel_settings',
       'ext_cmd_env'   => 'holiday_village',
       'comics_viewer' => 'menu_book',
-      'file_manager'  => 'folder',
       'file_picker'   => 'file_open',
-      'image_editor'  => 'draw',
-      'terminal'      => 'terminal',
-      'epub_devices'  => 'screenshot',
-      'external_link' => 'launch',
+    }.each do |key, icon|
+    - s = Setting.find_by key: key
+    = f.hidden_field 'setting[][id]', value: s.id
+    .field.is-horizontal
+      .field-label.is-normal= render partial: 'setting_help', locals: {s: s}
+      .field-body
+        .field
+          .control.is-expanded.has-icons-left
+            = f.text_field 'setting[][value]', value: s.value, class: :input
+            %span.icon.is-small.is-left
+              %i.mi.mi-small= icon
+  
+  - s = Setting.find_by key: :reading_direction
+  = f.hidden_field 'setting[][id]', value: s.id
+  .field.is-horizontal
+    .field-label.is-normal= render partial: 'setting_help', locals: {s: s}
+    .field-body
+      .field
+        .control.is-expanded.has-icons-left
+          .select.is-fullwidth
+            = f.select 'setting[][value]', options_for_select({'right to left' => 'r2l', 'left to right' => 'l2r'}, s.value)
+          %span.icon.is-small.is-left
+            %i.mi.mi-small sync_alt
+
+  - s = Setting.find_by key: :reading_bg_color
+  = f.hidden_field 'setting[][id]', value: s.id
+  .field.is-horizontal
+    .field-label.is-normal= render partial: 'setting_help', locals: {s: s}
+    .field-body
+      .field
+        .control.is-expanded.has-icons-left
+          .select.is-fullwidth
+            = f.select 'setting[][value]', options_for_select(Setting::READING_BG_COLORS, s.value)
+          %span.icon.is-small.is-left
+            %i.mi.mi-small palette
+
+  .title.is-size-4
+    Settings / Processing
+    .fright= f.submit 'Save all', class: 'button is-primary'
+  
+  - { 'image_editor'      => 'draw',
+      'file_manager'      => 'folder',
+      'terminal'          => 'terminal',
+      'epub_devices'      => 'screenshot',
       'scraper_useragent' => 'badge',
-      'basic_auth'    => 'admin_panel_settings',
     }.each do |key, icon|
     - s = Setting.find_by key: key
     = f.hidden_field 'setting[][id]', value: s.id
@@ -40,30 +81,6 @@
   -#          %span.icon.is-small.is-left
   -#            %i.mi.mi-small= icon
 
-  - s = Setting.find_by key: :reading_direction
-  = f.hidden_field 'setting[][id]', value: s.id
-  .field.is-horizontal
-    .field-label.is-normal= render partial: 'setting_help', locals: {s: s}
-    .field-body
-      .field
-        .control.is-expanded.has-icons-left
-          .select.is-fullwidth
-            = f.select 'setting[][value]', options_for_select({'right to left' => 'r2l', 'left to right' => 'l2r'}, s.value)
-          %span.icon.is-small.is-left
-            %i.mi.mi-small sync_alt
-
-  - s = Setting.find_by key: :reading_bg_color
-  = f.hidden_field 'setting[][id]', value: s.id
-  .field.is-horizontal
-    .field-label.is-normal= render partial: 'setting_help', locals: {s: s}
-    .field-body
-      .field
-        .control.is-expanded.has-icons-left
-          .select.is-fullwidth
-            = f.select 'setting[][value]', options_for_select(Setting::READING_BG_COLORS, s.value)
-          %span.icon.is-small.is-left
-            %i.mi.mi-small palette
-
   - s = Setting.find_by key: :process_img_sel
   = f.hidden_field 'setting[][id]', value: s.id
   .field.is-horizontal
@@ -76,8 +93,21 @@
           %span.icon.is-small.is-left
             %i.mi.mi-small check_box
 
-  .field.is-horizontal
-    .field-label.is-normal
-    .field-body
-      .field
-        .control= f.submit 'Save', class: 'button is-primary'
+  .title.is-size-4
+    Settings / External links
+    .fright= f.submit 'Save all', class: 'button is-primary'
+  
+  :ruby
+    list = { 'external_link' => 'launch' }
+    (0..9).each{|i| list["search_engine.0#{i}"] = 'travel_explore'.freeze }
+  - list.each do |key, icon|
+    - s = Setting.find_by key: key
+    = f.hidden_field 'setting[][id]', value: s.id
+    .field.is-horizontal
+      .field-label.is-normal= render partial: 'setting_help', locals: {s: s}
+      .field-body
+        .field
+          .control.is-expanded.has-icons-left
+            = f.text_field 'setting[][value]', value: s.value, class: :input
+            %span.icon.is-small.is-left
+              %i.mi.mi-small= icon

@@ -11,7 +11,7 @@ class Doujin < ApplicationRecord
     'None/Other' => '???',
   }.freeze
   
-  MEDIA_TYPES = %w{ doujin cg manga }.freeze
+  MEDIA_TYPES = %w{ doujin cg manga artbook }.freeze
 
   has_and_belongs_to_many :authors, before_add: -> (d, a) {
     return unless d.authors.where(id: a.id).exists? # ensure uniqueness
@@ -66,6 +66,7 @@ class Doujin < ApplicationRecord
       notes
     ].each{|k| send "#{k}=", send(k).strip if send(k).is_a?(String) }
     
+    self.media_type = category if category == 'artbook'
     self.colorized = true if media_type == 'cg'
   end # sanitize_fields
   
