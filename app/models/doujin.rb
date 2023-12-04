@@ -66,7 +66,6 @@ class Doujin < ApplicationRecord
       notes
     ].each{|k| send "#{k}=", send(k).strip if send(k).is_a?(String) }
     
-    self.media_type = category if category == 'artbook'
     self.colorized = true if media_type == 'cg'
   end # sanitize_fields
   
