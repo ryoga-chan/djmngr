@@ -43,15 +43,21 @@ Rails.application.config.after_initialize do
     end
   end
 
-  # change process title after webserver start
-  Thread.new{
-    title = "ruby:djmngr"
-    loop {
-      sleep 1
-      res = HTTPX.head('http://localhost:39102/')&.status rescue 404
-      Process.setproctitle title # $0 = title
-      break if res == 200
-    }# loop
-    Rails.logger.info %Q|process title changed to "#{title}"|
-  }#Thread.new
+  # change process title
+  # https://stackoverflow.com/questions/4603704/how-can-i-detect-if-my-code-is-running-in-the-console-in-rails-3
+  if Rails.const_defined?(:Console)
+    Process.setproctitle "ruby:djmngr-console" # $0 = title
+  else
+    # do it after webserver start (puma changes the title too)
+    Thread.new{
+      title = "ruby:djmngr-server"
+      loop {
+        sleep 1
+        res = HTTPX.head('http://localhost:39102/')&.status rescue 404
+        Process.setproctitle title # $0 = title
+        break if res == 200
+      }# loop
+      Rails.logger.info %Q|process title changed to "#{title}"|
+    }# Thread.new
+  end
 end
