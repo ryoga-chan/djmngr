@@ -249,6 +249,7 @@ class ProcessArchiveDecompressJob < ApplicationJob
     info[:censored  ] = !(name[:properties].include?('unc') || %w{ decensored uncensored }.any?{|t| fname.include? t })
     info[:colorized ] = info[:file_type] == 'artbook' || name[:properties].include?('col')
     info[:media_type] = (fname =~ /(hcg| cg | cg$)/i ? 'cg' : 'doujin')
+    info[:media_type] = 'artbook' if info[:file_type] == 'artbook'
     
     # restore reprocessing metadata
     md_path = File.join File.dirname(info[:file_path]), "#{File.basename info[:file_path], File.extname(info[:file_path])}.yml"

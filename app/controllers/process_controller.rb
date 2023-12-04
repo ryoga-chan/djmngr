@@ -293,6 +293,11 @@ class ProcessController < ApplicationController
       info_changed = true
     end
     
+    # set "artbook" as default media type for "artbook" category
+    if params[:file_type] == 'artbook' && params[:file_type] != @info[:file_type]
+      params[:media_type] = 'artbook'
+    end
+    
     %i{
       dupe_search
       file_type
@@ -313,11 +318,6 @@ class ProcessController < ApplicationController
         @info[k] = params[k].strip.gsub(/ +/, ' ')
         info_changed = true
       end
-    end
-    
-    if @info[:file_type] == 'artbook' && @info[:media_type] != @info[:file_type]
-      @info[:media_type] = @info[:file_type]
-      info_changed = true
     end
     
     @info[:dest_filename] = @info[:orig_dest_filename] if @info[:dest_filename].blank?
