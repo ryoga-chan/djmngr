@@ -665,7 +665,7 @@ class ProcessController < ApplicationController
   end # inspect_folder
 
   def compare_add
-    DoujinCompareJob.perform_now rel_path: params[:path], full_path: @fname
+    DoujinCompareJob.perform_now rel_path: params[:path], full_path: @fname, mode: params[:mode]
     redirect_to compare_doujinshi_path
   end # compare_add
   
