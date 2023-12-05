@@ -1,8 +1,11 @@
 .columns{style: (@dupes.any? ? 'border-bottom: 1px dashed silver' : '')}
   .column
     %figure.image.is2by3
-      = link_to show_image_process_path(id: @info[:working_dir], path: @info[:images].first[:src_path]), target: :_blank do
-        = thumbnail_tag ProcessArchiveDecompressJob.cover_path(@dname, @info), title: 'current cover'
+      - if @info[:images].any?
+        = link_to show_image_process_path(id: @info[:working_dir], path: @info[:images].first[:src_path]), target: :_blank do
+          = thumbnail_tag ProcessArchiveDecompressJob.cover_path(@dname, @info), title: 'current cover'
+      - else
+        %img(src="/not-found.png")
   
   .column.is-10
     .name_orig.mb-1
