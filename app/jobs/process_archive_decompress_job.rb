@@ -293,7 +293,7 @@ class ProcessArchiveDecompressJob < ApplicationJob
     info[:files] = info[:files].sort_by_method('[]', :dst_path)
     
     # autogenerate portrait cover for landascape first image
-    self.class.crop_landscape_cover dst_dir, info
+    self.class.crop_landscape_cover dst_dir, info if info[:images].any?
     
     # create thumbnails for the images
     info[:images].each_with_index do |img, i|
