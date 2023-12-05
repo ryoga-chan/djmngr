@@ -8,6 +8,8 @@ class ProcessIndexRefreshJob < ApplicationJob
     '🔽 xlate' => :kakasi_d,
     '🔼 time'  => :time,
     '🔽 time'  => :time_d,
+    '🔼 size'  => :size,
+    '🔽 size'  => :size_d,
   }
 
   def self.lock_file      = File.join(Setting['dir.to_sort'], 'indexing.lock').to_s
@@ -23,6 +25,8 @@ class ProcessIndexRefreshJob < ApplicationJob
       when 'kakasi_d'.freeze then Arel.sql("replace(name_kakasi, ' ', '') DESC")
       when 'time'    .freeze then :mtime
       when 'time_d'  .freeze then {mtime: :desc}
+      when 'size'    .freeze then :size
+      when 'size_d'  .freeze then {size: :desc}
       else :name
     end
     
