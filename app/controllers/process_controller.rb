@@ -376,7 +376,7 @@ class ProcessController < ApplicationController
     case params[:tab]
       when 'dupes'
         # refresh cover matching results
-        if params[:rematch_cover]
+        if params[:rematch_cover] && @info[:images].any?
           # update @info rehashing cover and run a new search
           @info = @info.slice! :cover_hash, :cover_results, :cover_status # reset @info
           cover_path = ProcessArchiveDecompressJob.cover_path @dname, @info
@@ -557,6 +557,10 @@ class ProcessController < ApplicationController
   def finalize_volume
     @info = YAML.unsafe_load_file(File.join @dname, 'info.yml')
     perc_file = File.join(@dname, 'finalize.perc')
+    
+    if @info[:images].empty?
+      return redirect_to(edit_process_path(id: params[:id], tab: 'move'), alert: "no images present!")
+    end
     
     unless @info[:dest_filename].to_s.end_with?('.zip')
       return redirect_to(edit_process_path(id: params[:id], tab: 'move'), alert: "destination filename not ending with \".zip\"")

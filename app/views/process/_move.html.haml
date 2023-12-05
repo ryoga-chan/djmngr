@@ -238,12 +238,16 @@
           - cover = @info[:images].first
           %figure.image.is2by3
             %a(name="cover")
-            = link_to show_image_process_path(id: @info[:working_dir], path: cover[:src_path]), target: :_blank do
-              = thumbnail_tag ProcessArchiveDecompressJob.cover_path(@dname, @info),
-                title: "#{cover[:dst_path]} @ #{number_to_human_size cover[:size]}\n↪#{cover[:src_path]}"
-          .field.has-addons.is-justify-content-center
-            = rotate_bt_l
-            = rotate_bt_r
+            - if @info[:images].any?
+              = link_to show_image_process_path(id: @info[:working_dir], path: cover[:src_path]), target: :_blank do
+                = thumbnail_tag ProcessArchiveDecompressJob.cover_path(@dname, @info),
+                  title: "#{cover[:dst_path]} @ #{number_to_human_size cover[:size]}\n↪#{cover[:src_path]}"
+            - else
+              %img(src="/not-found.png")
+          - if @info[:images].any?
+            .field.has-addons.is-justify-content-center
+              = rotate_bt_l
+              = rotate_bt_r
       
       - if @collision_info
         .columns
