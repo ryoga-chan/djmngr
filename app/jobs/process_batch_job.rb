@@ -13,6 +13,10 @@ class ProcessBatchJob < ApplicationJob
       f.puts({
         files:       names.inject({}){|h,n| h.merge n => nil }, # {name: array_of_filesname}
         prepared_at: nil,
+        options: {
+          # autoselect the last added doujin ID
+          doujin_id: Doujin.order(created_at: :desc).limit(1).pluck(:id).first,
+        },
       }.to_yaml)
     end
     
@@ -23,7 +27,7 @@ class ProcessBatchJob < ApplicationJob
   end # self.prepare
 
   def perform(doujin_id, files, options = {})
-    raise %Q|ERROR: doujin ID [#{doujin_id}] not found| unless dj = Doujin.find_by(id: doujin_id)
+    dj = Doujin.find_by id: doujin_id
     
     def update_batch_info(results, options)
       return unless options[:hash]
@@ -93,16 +97,22 @@ class ProcessBatchJob < ApplicationJob
         puts info[:files].map{|i| "#{i[:dst_path]}  #{i[:src_path]}"}
       end; puts "\n"
       
-      # copy data from source doujin
-      info[:file_type    ] = dj.category
-      if %w{ author circle }.include?(dj.category)
-        info[:file_type       ] = 'doujin'
-        info[:doujin_dest_type] = dj.category
+      if dj
+        # copy data from source doujin
+        info[:file_type    ] = dj.category
+        if %w{ author circle }.include?(dj.category)
+          info[:file_type       ] = 'doujin'
+          info[:doujin_dest_type] = dj.category
+        end
+        info[:dest_folder], info[:subfolder] = dj.file_folder.split(File::SEPARATOR)
+        info[:reading_direction] = dj.reading_direction
+        info[:author_ids   ] = dj.author_ids
+        info[:circle_ids   ] = dj.circle_ids
       end
-      info[:dest_folder  ], info[:subfolder] = dj.file_folder.split(File::SEPARATOR)
+      
+      # set data from given options
       info[:dest_title   ] = options[:dest_title] if options[:dest_title].present?
       info[:score        ] = options[:score] if options[:score]
-      info[:reading_direction] = dj.reading_direction
       
       info[:language     ] = options[:lang] unless options[:lang].nil? # dj.language
       info[:censored     ] = options[:cens] unless options[:cens].nil? # dj.censored
@@ -112,8 +122,6 @@ class ProcessBatchJob < ApplicationJob
       
       info[:dest_filename] = options[:dest_filename] if options[:dest_filename]
       info[:dest_filename] = File.basename(fname).sub(/ *\.zip$/i, '.zip') if options[:keep_filename]
-      info[:author_ids   ] = dj.author_ids
-      info[:circle_ids   ] = dj.circle_ids
       File.open(info_fname, 'w'){|f| f.puts info.to_yaml }
       
       # run cover image hash matching

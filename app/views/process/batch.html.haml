@@ -82,11 +82,9 @@
       html: { class: "mb-4" } do |f|
       .columns.mb-0
         .column.field.has-addons.mb-0
-          - last_dj = Doujin.order(:created_at).last
-          
           .control
             = f.number_field :doujin_id,
-              value: (@info[:options].try('[]', :doujin_id) || last_dj&.id),
+              value: @info[:options].try('[]', :doujin_id),
               placeholder: 'doujin ID', class: "input is-rounded is-small"
           .control
             = link_to '#', title: "search a doujin", class: 'button is-small js-finder',
@@ -152,9 +150,14 @@
     -# order entries by the custom title
     - @info[:titles].sort_by_value.map{|k,v| k}.each_with_index do |name, idx|
       - files = @info[:files][name]
+      - thumb = @info[:thumbs][name]
       .columns
         .column.is-2.cover.has-text-centered
-          %figure.image.is2by3= inline_image_tag :'image/webp', @info[:thumbs][name][:base64]
+          %figure.image.is2by3
+            - if thumb
+              = inline_image_tag :'image/webp', thumb[:base64]
+            - else
+              %img(src='/not-found.png')
           .tags.has-addons.is-justify-content-center.mt-1
             %span.tag.is-info
               = files.size
@@ -173,7 +176,7 @@
             = text_field_tag :title, @info[:titles][name], id: '',
               class: 'update-name w100', tabindex: (1000+idx),
               data: { url: batch_process_path, path: name }
-          - if @info[:thumbs][name][:landscape]
+          - if thumb.try('[]', [:landscape])
             .actions.my-1
               .tags.has-addons
                 %span.tag.is-danger LANDSCAPE COVER

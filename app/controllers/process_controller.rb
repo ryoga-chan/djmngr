@@ -125,9 +125,8 @@ class ProcessController < ApplicationController
     if params[:options]
       @info[:options] = { hash: params[:id] }
       
-      if dj = Doujin.find_by(id: params[:options][:doujin_id].to_i)
-        @info[:options][:doujin_id] = params[:options][:doujin_id].to_i
-      end
+      dj = Doujin.find_by(id: params[:options][:doujin_id].to_i)
+      @info[:options][:doujin_id] = dj.id if dj
       
       @info[:options][:score] = params[:options][:score].present? ? params[:options][:score].to_i : nil
       
@@ -141,24 +140,20 @@ class ProcessController < ApplicationController
       File.atomic_write(info_path){|f| f.puts @info.to_yaml }
       
       if params[:button] == 'start'
-        if dj
-          @info[:started_at] = Time.now
-          File.atomic_write(info_path){|f| f.puts @info.to_yaml }
-          
-          # list of files to keep cover auto cropped
-          @info[:options][:keep_cover] = @info[:thumbs].
-            map{|name, data| File.join(Setting['dir.to_sort'], name) if data[:keep_cover] }.compact
-          
-          # hash: { full_path => title }
-          files = @info[:files].keys.
-            inject({}){|h, f| h.merge File.join(Setting['dir.to_sort'], f) => @info[:titles][f] }
-          
-          ProcessBatchJob.perform_later dj.id, files, @info[:options]
+        @info[:started_at] = Time.now
+        File.atomic_write(info_path){|f| f.puts @info.to_yaml }
+        
+        # list of files to keep cover auto cropped
+        @info[:options][:keep_cover] = @info[:thumbs].
+          map{|name, data| File.join(Setting['dir.to_sort'], name) if data[:keep_cover] }.compact
+        
+        # hash: { full_path => title }
+        files = @info[:files].keys.
+          inject({}){|h, f| h.merge File.join(Setting['dir.to_sort'], f) => @info[:titles][f] }
+        
+        ProcessBatchJob.perform_later dj&.id, files, @info[:options]
 
-          flash[:notice] = 'batch processing started'
-        else
-          flash[:notice] = 'no doujin ID specified'
-        end
+        flash[:notice] = 'batch processing started'
       end
       
       return redirect_to(batch_process_path(id: params[:id]))
