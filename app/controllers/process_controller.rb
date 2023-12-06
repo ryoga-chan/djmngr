@@ -1,6 +1,4 @@
 class ProcessController < ApplicationController
-  ROWS_PER_PAGE = 25
-  
   before_action :check_archive_file,
     only: %i[ show_externally  prepare_archive  delete_archive  sample_images  compare_add ]
   
@@ -37,7 +35,7 @@ class ProcessController < ApplicationController
       # read "to_sort" file list
       @files = ProcessIndexRefreshJob.
         entries(order: session['process.index.sort_by']).
-        page(params[:page]).per(ROWS_PER_PAGE)
+        page(params[:page]).per(Setting[:process_epp].to_i)
       
       # read "sorting" file list
       files_glob = File.join Setting['dir.sorting'], '*', 'info.yml'

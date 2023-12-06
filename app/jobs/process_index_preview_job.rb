@@ -2,7 +2,6 @@ class ProcessIndexPreviewJob < ProcessIndexRefreshJob
   THUMB_WIDTH  = 320
   THUMB_HEIGHT = 640
   THUMBS_CHUNK = 3
-  THUMBS_NUM   = ProcessController::ROWS_PER_PAGE
   
   def self.rm_previews
     pattern = Rails.root.join('public', ProcessableDoujin::THUMB_FOLDER, '*.webp').to_s
@@ -36,7 +35,7 @@ class ProcessIndexPreviewJob < ProcessIndexRefreshJob
     
     # generate preview for two pages
     [page.to_i, page.to_i+1].each do |p|
-      rel.page(p).per(THUMBS_NUM).each do |processable_doujin|
+      rel.page(p).per(Setting[:process_epp].to_i).each do |processable_doujin|
         self.class.generate_preview processable_doujin
       end
     end
