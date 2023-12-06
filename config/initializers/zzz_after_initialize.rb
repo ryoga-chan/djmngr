@@ -20,16 +20,16 @@ Rails.application.config.after_initialize do
         { key: 'external_link'    , value: 'DJ.org|https://www.doujinshi.org', notes: 'additional menu item, input format = "text|url"' },
         { key: 'process_img_sel'  , value: '-', notes: 'image selection mode for "Images" tab in process section' },
         { key: 'basic_auth'       , value: '', notes: 'enable basic auth for PCs, input format = "user:password"' },
-        { key: 'search_engine.00' , value: 'DD|https://duckduckgo.com/?q=', notes: 'search engine url, input format = "[-]label|url", restart app after update' },
-        { key: 'search_engine.01' , value: '-GG|https://www.google.com/search?q=', notes: 'search engine url, input format = "[-]label|url", restart app after update' },
-        { key: 'search_engine.02' , value: 'MU|https://www.mangaupdates.com/authors.html?search=', notes: 'search engine url, input format = "[-]label|url", restart app after update' },
-        { key: 'search_engine.03' , value: '', notes: 'search engine url, input format = "[-]label|url", restart app after update' },
-        { key: 'search_engine.04' , value: '', notes: 'search engine url, input format = "[-]label|url", restart app after update' },
-        { key: 'search_engine.05' , value: '', notes: 'search engine url, input format = "[-]label|url", restart app after update' },
-        { key: 'search_engine.06' , value: '', notes: 'search engine url, input format = "[-]label|url", restart app after update' },
-        { key: 'search_engine.07' , value: '', notes: 'search engine url, input format = "[-]label|url", restart app after update' },
-        { key: 'search_engine.08' , value: '', notes: 'search engine url, input format = "[-]label|url", restart app after update' },
-        { key: 'search_engine.09' , value: '', notes: 'search engine url, input format = "[-]label|url", restart app after update' },
+        { key: 'search_engine.00' , value: 'DD|https://duckduckgo.com/?q=', notes: 'search engine url, input format = "[-]label|url"' },
+        { key: 'search_engine.01' , value: '-GG|https://www.google.com/search?q=', notes: 'search engine url, input format = "[-]label|url"' },
+        { key: 'search_engine.02' , value: 'MU|https://www.mangaupdates.com/authors.html?search=', notes: 'search engine url, input format = "[-]label|url"' },
+        { key: 'search_engine.03' , value: '', notes: 'search engine url, input format = "[-]label|url"' },
+        { key: 'search_engine.04' , value: '', notes: 'search engine url, input format = "[-]label|url"' },
+        { key: 'search_engine.05' , value: '', notes: 'search engine url, input format = "[-]label|url"' },
+        { key: 'search_engine.06' , value: '', notes: 'search engine url, input format = "[-]label|url"' },
+        { key: 'search_engine.07' , value: '', notes: 'search engine url, input format = "[-]label|url"' },
+        { key: 'search_engine.08' , value: '', notes: 'search engine url, input format = "[-]label|url"' },
+        { key: 'search_engine.09' , value: '', notes: 'search engine url, input format = "[-]label|url"' },
       ].each do |fields|
         Setting.find_or_initialize_by(fields.slice :key).update fields.slice(:value, :notes) unless Setting[fields[:key]]
       end
@@ -53,7 +53,7 @@ Rails.application.config.after_initialize do
       title = "ruby:djmngr-server"
       loop {
         sleep 1
-        res = HTTPX.head('http://localhost:39102/')&.status rescue 404
+        res = HTTPX.head('http://localhost:39102/home/_alive')&.status rescue 404
         Process.setproctitle title # $0 = title
         break if res == 200
       }# loop
