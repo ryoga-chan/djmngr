@@ -31,6 +31,7 @@ class ApplicationController < ActionController::Base
   
   def authenticate
     return if request.format.symbol != :html
+    return if params[:controller] == 'home'.freeze && params[:action] == '_alive'.freeze
     
     if Setting[:basic_auth].present?
       user, pass = Setting[:basic_auth].split ':', 2
