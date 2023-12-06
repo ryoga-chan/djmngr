@@ -4,6 +4,8 @@ class HomeController < ApplicationController
   PALETTE = %w{ ffadad ffd6a5 fdffb6 caffbf 9bf6ff a0c4ff bdb2ff ffc6ff
                 ffd380 ffa600 ff8531 ff6361 bc5090 8a508f 2c4875 003f5c 00202e }
 
+  def _alive = head(:ok)
+
   def index
     @stats = {
       dj:         Doujin.count,
@@ -52,14 +54,23 @@ class HomeController < ApplicationController
     
     if request.post? && params[:setting].is_a?(Array)
       errors = []
+      restart = false
       
       params[:setting].each do |p|
         s = Setting.find_by(id: p[:id])
-        errors << s unless s.update(p.permit(:value))
+        s.attributes = p.permit(:value)
+        restart = true if s.key.start_with?('search_engine.') && s.value_changed?
+        errors << s unless s.save
       end
       
       flash[:alert] = [] if errors.any?
       errors.each{|s| flash[:alert] += s.errors.full_messages.map{|m| "#{s.key}: #{m}"} }
+      
+      # restart application
+      if restart
+        flash[:notice] = "restarting application..."
+        Thread.new { sleep 1; FileUtils.touch Rails.root.join('tmp', 'restart.txt').to_s }
+      end
       
       return redirect_to home_settings_path
     end
