@@ -19,6 +19,7 @@ Rails.application.config.after_initialize do
         { key: 'scraper_useragent', value: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36', notes: 'user agent used for doujinshi.org scraping' },
         { key: 'external_link'    , value: 'DJ.org|https://www.doujinshi.org', notes: 'additional menu item, input format = "text|url"' },
         { key: 'process_img_sel'  , value: '-', notes: 'image selection mode for "Images" tab in process section' },
+        { key: 'process_epp'      , value: 25, notes: 'entries per page in process section' },
         { key: 'basic_auth'       , value: '', notes: 'enable basic auth for PCs, input format = "user:password"' },
         { key: 'search_engine.00' , value: 'DD|https://duckduckgo.com/?q=', notes: 'search engine url, input format = "[-]label|url"' },
         { key: 'search_engine.01' , value: '-GG|https://www.google.com/search?q=', notes: 'search engine url, input format = "[-]label|url"' },
