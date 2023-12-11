@@ -39,13 +39,16 @@ $('input.update-name').change(function () {
   $.ajax({
     url: el.data('url'),
     data: {
-      name: el.val(),
+      name: el.val().trim(),
       path: el.data('path')
     },
     method: 'POST',
     dataType: 'json',
     cache: false,
-    beforeSend: function () { el.addClass('is-hidden').after(p_bar); },//beforeSend
+    beforeSend: function () {
+      el.val( el.val().trim() );
+      el.addClass('is-hidden').after(p_bar);
+    },//beforeSend
     success: function (resp) {
       if (resp.result != 'ok')
         alert(resp.msg || 'Server error!');
