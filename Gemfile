@@ -37,7 +37,7 @@ gem 'httpx'                      # HTTP client -- https://gitlab.com/os85/httpx 
 gem 'image_processing', '~> 1.2', require: %w{ ruby-vips image_processing }
 
 # https://github.com/westonplatter/phashion -- pHash: image perceptual hashing
-gem 'phashion',         '~> 1.2.3', source: 'https://rubygems.pkg.github.com/ryoga-chan'
+gem 'phashion', '~> 1.2', source: ('https://rubygems.pkg.github.com/ryoga-chan' if RUBY_PLATFORM =~ /aarch64/i)
 
 #gem 'bootsnap', require: false  # Reduces boot times through caching; required in config/boot.rb
 
