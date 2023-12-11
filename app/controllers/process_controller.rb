@@ -526,11 +526,11 @@ class ProcessController < ApplicationController
     return render(json: {result: 'err', msg: "filename cannot be empty!" }) if params[:name].blank?
     
     if el = @info[:files].detect{|i| i[:src_path] == params[:path] }
-      el[:dst_path] = params[:name]
+      el[:dst_path] = params[:name].to_s.strip
       @info[:files] = @info[:files].sort_by_method('[]', :dst_path)
       @info[:files_collision] = @info[:files].size != @info[:files].map{|i| i[:dst_path] }.uniq.size
     elsif el = @info[:images].detect{|i| i[:src_path] == params[:path] }
-      el[:dst_path] = params[:name]
+      el[:dst_path] = params[:name].to_s.strip
       @info[:images] = @info[:images].sort_by_method('[]', :dst_path)
       @info[:images_collision] = @info[:images].size != @info[:images].map{|i| i[:dst_path] }.uniq.size
     end
