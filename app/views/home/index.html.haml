@@ -53,11 +53,11 @@
 
     .tags
       .tags.has-addons.mr-4.mb-0
-        %span.tag.is-info.is-light
-          %span.icon-text
-            %span.icon
-              %i.mi folder_shared
-            %span= number_with_delimiter @stats[:md_tot], delimiter: "'"
+        -#%span.tag.is-info.is-light
+        -#  %span.icon-text
+        -#    %span.icon
+        -#      %i.mi folder_shared
+        -#    %span= number_with_delimiter @stats[:md_tot], delimiter: "'"
         %span.tag.is-info
           %span.icon-text
             %span.icon
@@ -74,7 +74,7 @@
               %i.mi local_offer
             %span= link_to number_with_delimiter(@stats[:mdt], delimiter: "'"), themes_path
 
-  .column.is-2.has-text-centered
+  .column.is-2-desktop.is-3-tablet.has-text-centered
     %span.tag.is-hidden-mobile.mb-5 random picks
     
     %hr.is-hidden-tablet.my-0
@@ -108,7 +108,7 @@
   
     %hr.is-hidden-tablet.my-0.mt-3
     
-  .column.is-5.has-text-centered
+  .column.is-5-desktop.is-4-tablet.has-text-centered
     %span.tag.is-hidden-mobile.mb-5
       scoring distribution over
       = number_with_delimiter @stats[:dj], delimiter: "'"
