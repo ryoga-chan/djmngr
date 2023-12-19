@@ -35,7 +35,7 @@
 .stats
   %span.title Scoring distribution:
   = link_to 'Show latest additions', '#', class: 'button',
-    onclick: "jQuery('.stats, .recent').toggleClass('hidden').find('img').addClass('async_load'); $.__sequential_image_loading('init')"
+    onclick: "jQuery('.stats, .recent').toggleClass('hidden').find('img').addClass('async_load'); $.__sequential_image_loading('init'); return false"
 
   %table.scoring-distro
     %tr.bars
