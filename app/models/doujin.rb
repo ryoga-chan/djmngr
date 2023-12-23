@@ -304,8 +304,8 @@ class Doujin < ApplicationRecord
       doujin_id:        id,
       name:             name_orig,
       name_kakasi:      name_orig_kakasi,
-      alt_name:         fname,
-      alt_name_kakasi:  fname.to_romaji,
+      alt_name:         ("#{fname}.zip"           != name_orig        ? fname           : nil),
+      alt_name_kakasi:  ("#{fname}.zip".to_romaji != name_orig_kakasi ? fname.to_romaji : nil),
     })
   end # save_deletion_data
 end
