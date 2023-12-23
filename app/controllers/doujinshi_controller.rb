@@ -1,7 +1,4 @@
 class DoujinshiController < ApplicationController
-  # https://api.rubyonrails.org/classes/ActionController/Live.html#method-i-send_stream
-  include ActionController::Live
-  
   THUMBS_PER_ROW = 6
   BATCH_SIZE     = 15 * THUMBS_PER_ROW
   ICONS = {
@@ -143,33 +140,26 @@ class DoujinshiController < ApplicationController
             info
           }
         else
-          send_stream(**file_dl_opts) do |stream|
-            stream.write %Q|{\n"saved":[|
-            @doujinshi.each_with_index{|d, i|
-              info = { id: d.id, name: d.file_dl_name, name_orig: d.name_orig, size: d.size, pages: d.num_images }
-              stream.write info.to_json.prepend(i != 0 ? ',' : '') }
-            stream.write %Q|],\n"deleted":[|
-            @deleted_doujinshi.each_with_index{|d, i|
-              info = { id: d.id, name: d.name_kakasi, name_orig: d.name, size: d.size, pages: d.num_images }
-              stream.write info.to_json.prepend(i != 0 ? ',' : '') }
-            stream.write %Q|],\n"todo":[|
-            @processable_doujinshi.each_with_index{|d, i|
-              info = { id: d.id, name: d.name_kakasi, name_orig: d.name, size: d.size, pages: 0 }
-              stream.write info.to_json.prepend(i != 0 ? ',' : '') }
-            stream.write %Q|]\n}|
-          end # send_stream
+          result = { saved: [], deleted: [], todo: [] }
+          @doujinshi.each_with_index{|d, i|
+            result[:saved] << { id: d.id, name: d.file_dl_name, name_orig: d.name_orig, size: d.size, pages: d.num_images } }
+          @deleted_doujinshi.each_with_index{|d, i|
+            result[:deleted] << { id: d.id, name: d.name_kakasi, name_orig: d.name, size: d.size, pages: d.num_images } }
+          @processable_doujinshi.each_with_index{|d, i|
+            result[:todo] << { id: d.id, name: d.name_kakasi, name_orig: d.name, size: d.size, pages: 0 } }
+          send_data result.to_json, file_dl_opts
         end
       }#json
       format.tsv {
-        send_stream(**file_dl_opts) do |stream|
-          stream.write %w{ TYPE ID NAME NAME_ORIG SIZE PAGES }.join("\t")+"\n"
-          @doujinshi.each_with_index{|d, i|
-            stream.write [:saved, d.id, d.file_dl_name, d.name_orig, d.size, d.num_images].join("\t")+"\n" }
-          @deleted_doujinshi.each_with_index{|d, i|
-            stream.write [:deleted, d.id, d.name_kakasi, d.name, d.size, d.num_images].join("\t")+"\n" }
-          @processable_doujinshi.each_with_index{|d, i|
-            stream.write [:todo, d.id, d.name_kakasi, d.name, d.size, 0].join("\t")+"\n" }
-        end
+        result = []
+        result << %w{ TYPE ID NAME NAME_ORIG SIZE PAGES }.join("\t") unless params[:header] == 'false'
+        @doujinshi.each_with_index{|d, i|
+          result << [:saved  , d.id, d.file_dl_name, d.name_orig, d.size, d.num_images].join("\t") }
+        @deleted_doujinshi.each_with_index{|d, i|
+          result << [:deleted, d.id, d.name_kakasi , d.name     , d.size, d.num_images].join("\t") }
+        @processable_doujinshi.each_with_index{|d, i|
+          result << [:todo   , d.id, d.name_kakasi , d.name     , d.size, 0           ].join("\t") }
+        send_data result.join("\n"), file_dl_opts
       }#tsv
     end
   end # search
@@ -487,7 +477,7 @@ class DoujinshiController < ApplicationController
     end
     
     if cover_hash
-      CoverMatchingJob.perform_later cover_hash
+      CoverMatchingJob.perform_now cover_hash
       return redirect_to(hash: cover_hash, format: params[:format])
     end
     
@@ -514,6 +504,8 @@ class DoujinshiController < ApplicationController
         d.cover_similarity = perc
         d
       end
+    else
+      @doujinshi = @doujinshi_deleted = []
     end
 
     file_dl_opts = { type: request.format.to_sym, disposition: :attachment,
@@ -521,21 +513,23 @@ class DoujinshiController < ApplicationController
     respond_to do |format|
       format.html
       format.json {
-        send_stream(**file_dl_opts) do |stream|
-          stream.write %Q|[|
-          @doujinshi.each_with_index{|d, i|
-            info = { id: d.id, name: d.file_dl_name, name_orig: d.name_orig, size: d.size,
-                     pages: d.num_images, similarity: d.cover_similarity }
-            stream.write info.to_json.prepend(i != 0 ? ',' : '') }
-          stream.write %Q|]|
-        end
+        result = { saved: [], deleted: [] }
+        @doujinshi.each{|d|
+          result[:saved  ] << { id: d.id, name: d.file_dl_name, name_orig: d.name_orig, size: d.size,
+                                pages: d.num_images, similarity: d.cover_similarity } }
+        @doujinshi_deleted.each{|d|
+          result[:deleted] << { id: d.id, name: d.name_kakasi, name_orig: d.alt_name_kakasi, size: d.size,
+                                pages: d.num_images, similarity: d.cover_similarity } }
+        send_data result.to_json, file_dl_opts
       }#json
       format.tsv {
-        send_stream(**file_dl_opts) do |stream|
-          stream.write %w{ ID NAME NAME_ORIG SIZE PAGES SIMILARITY }.join("\t")+"\n"
-          @doujinshi.each_with_index{|d, i|
-            stream.write [d.id, d.file_dl_name, d.name_orig, d.size, d.num_images, d.cover_similarity].join("\t")+"\n" }
-        end
+        result = []
+        result << %w{ TYPE ID NAME NAME_ORIG SIZE PAGES SIMILARITY }.join("\t")
+        result += @doujinshi.map{|d|
+          [:saved, d.id, d.file_dl_name, d.name_orig, d.size, d.num_images, d.cover_similarity].join("\t") }
+        result += @doujinshi_deleted.map{|d|
+          [:deleted, d.id, d.name_kakasi, d.alt_name_kakasi, d.size, d.num_images, d.cover_similarity].join("\t") }
+        send_data result.join("\n"), file_dl_opts
       }#tsv
     end
   end # search_cover
