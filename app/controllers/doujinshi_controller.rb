@@ -12,8 +12,8 @@ class DoujinshiController < ApplicationController
     only: %i[ index  favorites  search  scored  search_cover ]
   
   before_action :set_doujin,
-    only: %i[ show  edit  score  read  read_pages  image  update  rehash  delete
-              destroy  reprocess  shelf  compare_add ]
+    only: %i[ show  edit  score  read_pages  update  rehash  delete  destroy
+              reprocess  shelf  compare_add ]
 
   # browse doujinshi by author/circle/folder
   def index

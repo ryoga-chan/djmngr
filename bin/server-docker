@@ -1,10 +1,9 @@
 #!/usr/bin/env bash
-
 cd /app
 
-# copy default db if missing
-[ -f db/production.sqlite3 ] || cp -a -f production.sqlite3 ./db/
-[ -f db/schema.rb          ] || cp -a -f schema.rb          ./db/
+# copy default db if missing (see /docker/Dockerfile)
+[ -f storage/production.sqlite3 ] || cp -a -f production.sqlite3 ./storage/
+[ -f db/schema.rb               ] || cp -a -f schema.rb          ./db/
 
 [ -f './import/metadata.dat' ] && su -c "cd /app ; bundle exec ./bin/rails djorg:metadata:load" rails
 

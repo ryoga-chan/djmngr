@@ -57,7 +57,7 @@ RUN set -x \
      tar --strip-components=1 -xzf - \
   && SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:clobber assets:precompile \
   && ./bin/rails db:migrate db:schema:dump \
-  && mv db/production.sqlite3 db/schema.rb .
+  && mv storage/production.sqlite3 db/schema.rb .
 
 # remove terser/nodejs as it's used only for assets:precompile
 RUN set -x \
@@ -95,3 +95,5 @@ EXPOSE 3000
 #   VOLUME /app/public/samples
 
 CMD /usr/local/bin/entrypoint.sh
+
+# docker run --rm -ti --name temp ryogachan/djmngr:latest bash -il
