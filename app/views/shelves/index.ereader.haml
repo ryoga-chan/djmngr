@@ -16,6 +16,6 @@
         %td.nowrap= l r.created_at
         %td= r.doujinshi_shelves.count
         %td= r.num_images
-        %td= link_to r.name, r
+        %td.title-link= link_to r.name, r
 
 = paginate @records
