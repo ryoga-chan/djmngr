@@ -1,20 +1,19 @@
 source 'https://rubygems.org'
-git_source(:github) { |repo| 'https://github.com/#{repo}.git' }
 
 # HOWTO: update gems and remove old versions
 #   bundle update
 #   gem cleanup
 
-ruby '3.2.2'
+ruby '3.3.0'
 
-gem 'rails',       '~> 7.0.8',     # to use edge: gem 'rails', github: 'rails/rails', branch: 'main'
+gem 'rails',       '~> 7.1.2',     # to use edge: gem 'rails', github: 'rails/rails', branch: 'main'
   require: %w{ shellwords open-uri pp open3 }
 gem 'sqlite3',     '~> 1.4'      # sqlite3 database for Active Record
 gem 'puma',        '~> 6.0'      # puma web server -- https://github.com/puma/puma
 #gem 'rack-brotli', '~> 1.2'      # enable brotli compression !!SEGFAULT using send_file!!
 gem 'sassc-rails'                # sass to process CSS
 gem 'sprockets-rails'            # asset pipeline -- https://github.com/rails/sprockets-rails
-gem 'tzinfo-data', platforms: %i[ mingw mswin x64_mingw jruby ] # zoneinfo files for Windows
+gem 'tzinfo-data', platforms: %i[ windows jruby ] # zoneinfo files for Windows
 gem 'haml-rails',  '~> 2.0'      # https://haml.info
 gem 'kaminari'                   # pagination -- https://github.com/kaminari/kaminari
 gem 'kakasi'                     # kanji kana simple inverter -- https://github.com/knu/kakasi_ffi
@@ -42,7 +41,7 @@ gem 'phashion', '~> 1.2', source: (RUBY_PLATFORM =~ /aarch64/i ? 'https://rubyge
 #gem 'bootsnap', require: false  # Reduces boot times through caching; required in config/boot.rb
 
 group :development do
-  gem 'debug', platforms: %i[ mri mingw x64_mingw ] # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
+  gem 'debug', platforms: %i[ mri windows ] # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem 'rails-erd'                # DB ER diagram -- https://github.com/voormedia/rails-erd
   gem 'rails_real_favicon'       # https://realfavicongenerator.net/favicon/ruby_on_rails
                                  # https://github.com/RealFaviconGenerator/rails_real_favicon

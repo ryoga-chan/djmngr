@@ -1,7 +1,12 @@
-# Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 Rails.application.routes.draw do
+  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
+  
   root 'home#index' # Defines the root path route ("/")
   
+  # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
+  # Can be used by load balancers and uptime monitors to verify that the app is live.
+  get "up" => "rails/health#show", as: :rails_health_check
+
   get  'home/index'
   get  'home/settings'
   post 'home/settings'
@@ -20,7 +25,7 @@ Rails.application.routes.draw do
       get     :sample_images
       get     :compare_add
       get     :compare_remove
-    end
+    end # collection
     member do
       get     :show_image
       post    :rename_file
@@ -39,8 +44,8 @@ Rails.application.routes.draw do
       get     :image, to: 'doujinshi#zip_image', model: 'ProcessableDoujin'
       get     :process_later
       post    :add_files
-    end
-  end # process
+    end # member
+  end # resources :process
 
   resources :doujinshi, except: %i[ new create ] do
     collection do
@@ -58,7 +63,7 @@ Rails.application.routes.draw do
       get  :zip_image
       get  :js_finder
       post :move
-    end
+    end # collection
     member do
       get  :read , to: 'doujinshi#zip_read' , model: 'Doujin'
       get  :image, to: 'doujinshi#zip_image', model: 'Doujin'
@@ -69,23 +74,23 @@ Rails.application.routes.draw do
       post :reprocess
       get  :shelf
       get  :compare_add
-    end
-  end
+    end # member
+  end # resources :doujinshi
   
   concern :metadata_crud do
     collection do
       get  :djorg_dl
       get  :tags_lookup
-    end
+    end # collection
     member do
       get  :djorg_alias_check
-    end
-  end
+    end # member
+  end # concern :metadata_crud
   resources :authors, concerns: :metadata_crud
   resources :circles, concerns: :metadata_crud
   resources :themes , concerns: :metadata_crud
 
   resources :shelves, except: %i[ new create ] do
     get  :random, on: :collection
-  end
+  end # resources :shelves
 end

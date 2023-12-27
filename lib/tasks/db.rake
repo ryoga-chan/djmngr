@@ -2,7 +2,7 @@
 namespace :db do
   desc 'Archive sqlite database'
   task :backup2zip do
-    db_file  = Rails.root.join('db', 'production.sqlite3').to_s
+    db_file  = Rails.root.join('storage', 'production.sqlite3').to_s
     zip_file = Rails.root.join("db-#{Time.now.strftime '%F_%H-%M'}.sql.7z").to_s
     
     print "Dumping DB... " # restore with: 7za x -so db.sql.7z | sqlite3 db.sqlite3
@@ -15,7 +15,7 @@ namespace :db do
   
   desc 'Vacuum sqlite database'
   task :vacuum do
-    db_file = Rails.root.join('db', "production.sqlite3").to_s
+    db_file = Rails.root.join('storage', "production.sqlite3").to_s
     print "Vacuuming database... "
     system %Q| sqlite3 #{db_file.shellescape} 'vacuum;' |
     puts "DONE!"
@@ -27,8 +27,8 @@ namespace :db do
   task :prod2test do
     Rake::Task["db:vacuum"].invoke
 
-    db_prod = Rails.root.join('db', 'production.sqlite3' ).to_s
-    db_test = Rails.root.join('db', 'development.sqlite3').to_s
+    db_prod = Rails.root.join('storage', 'production.sqlite3' ).to_s
+    db_test = Rails.root.join('storage', 'development.sqlite3').to_s
 
     print "Copying prod DB to test DB... "
     Dir["#{db_test}*"].each{|f| File.unlink f }
