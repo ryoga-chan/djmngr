@@ -8,13 +8,18 @@
         = ::VERSION
         - git_rev = `git rev-parse HEAD` rescue nil
         - if git_rev
-          \-
+          &middot;
           = git_rev
     
     %tr
       %th Ruby
-      %td= RUBY_VERSION
-    
+      %td
+        = RUBY_VERSION
+        - if defined? RubyVM::YJIT.enabled? && RubyVM::YJIT.enabled?
+          +YJIT
+        -# https://stackoverflow.com/questions/57303214/how-to-check-ruby-2-6-3-is-using-jemalloc-i-installed-ruby-2-6-3-as-rvm-inst/57303366#57303366
+        - if defined? RbConfig && RbConfig::CONFIG['MAINLIBS'].include?('-ljemalloc')
+          +JEmalloc
     %tr
       %th Rails
       %td= Rails.version
@@ -33,5 +38,5 @@
     
     %tr
       %th DB size
-      - db_file = Rails.root.join('db', "#{Rails.env}.sqlite3").to_s
+      - db_file = Rails.root.join('storage', "#{Rails.env}.sqlite3").to_s
       %td= number_to_human_size File.size(db_file)

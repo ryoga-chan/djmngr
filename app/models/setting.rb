@@ -7,7 +7,7 @@ class Setting < ApplicationRecord
     "/  diagonal   (top-left = zoom, bottom-right = select)" => "/" ,
   }
 
-  serialize :value, JSON
+  serialize :value, coder: JSON
   
   validate  :validate_record, on: :update
   
