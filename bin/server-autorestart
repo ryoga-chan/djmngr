@@ -1,5 +1,6 @@
 #!/usr/bin/bash
 CMD="$(dirname $0)/server p"
+TAG="ruby:djmngr-server"
 
 # restart the server periodically
 while : ; do
@@ -12,7 +13,7 @@ while : ; do
   done
   
   echo "############### RESTARTING SERVER ###############"
-  pkill -INT -f puma.+djmngr
-  sleep 5; pgrep -f puma.+djmngr && pkill -TERM -f puma.+djmngr
-  sleep 2; pgrep -f puma.+djmngr && pkill -KILL -f puma.+djmngr
+  pkill -INT -f $TAG
+  sleep 5; pgrep -f $TAG && pkill -TERM -f $TAG
+  sleep 2; pgrep -f $TAG && pkill -KILL -f $TAG
 done
