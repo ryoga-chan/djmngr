@@ -55,7 +55,7 @@ the *Local installation*.
 docker pull ryogachan/djmngr
 
 # run image
-docker run --rm -ti --name trash \
+docker run --rm -ti --name djmngr \
   -p 3000:3000 \
   -v /path/to/library:/app/dj-library     \
   -v /path/to/epub:/app/public/epub       \
@@ -81,9 +81,9 @@ docker compose down   # stop app
 ### Local installation
 
 ~~~shell
-# install ruby 3.2.x
+# install ruby
 curl -sSL https://get.rvm.io | bash -s stable
-rvm install 3.2.0
+rvm install 3.3.0  # match version in `ruby 'x.y.z'` line within Gemfile
 
 # clone the repository
 git clone https://github.com/ryoga-chan/djmngr.git
@@ -132,14 +132,15 @@ are better at serving many static files.
 Install all on debian with:
 
 ~~~shell
-apt install libvips-dev libkakasi2-dev libjpeg-dev libpng-dev webp \
-            zip unzip findutils grep coreutils nodejs imagemagick
+apt install libvips-dev libkakasi2-dev libjpeg-dev libpng-dev libsqlite3-0 \
+            zip unzip findutils grep coreutils nodejs imagemagick webp
 ~~~
 
 ### Optional tools
 
 - comics viewer: [mcomix](https://packages.debian.org/stable/mcomix)
 - file manager: [thunar](https://packages.debian.org/stable/thunar)
+- terminal emulator: [xfce4-terminal](https://packages.debian.org/stable/xfce4-terminal)
 - DB ER diagram: [graphviz](https://packages.debian.org/stable/graphviz), [sed](https://packages.debian.org/stable/sed)
 - DB dump/restore:
   [sqlite3](https://packages.debian.org/stable/sqlite3),
@@ -148,5 +149,5 @@ apt install libvips-dev libkakasi2-dev libjpeg-dev libpng-dev webp \
 Install all on debian with:
 
 ~~~shell
-apt install mcomix thunar graphviz sqlite3 p7zip-full
+apt install mcomix thunar xfce4-terminal graphviz sqlite3 p7zip-full
 ~~~
