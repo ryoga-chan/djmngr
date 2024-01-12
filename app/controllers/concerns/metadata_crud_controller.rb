@@ -64,10 +64,17 @@ module MetadataCrudController
       
       records = @model.none
       records = @model.search params[:term] if params[:term].present?
-      records = records.
-        eager_load(:doujinshi).
-        select(columns + ["COUNT(doujinshi.id) AS num_dj"]).
-        group(columns)#.limit(1_000)
+      
+      if @model == Theme
+        records = records.select(columns + ["0 AS num_dj"])
+      else
+        records = records.
+          eager_load(:doujinshi).
+          select(columns + ["COUNT(doujinshi.id) AS num_dj"])
+      end
+      
+      records = records.group(columns)#.limit(1_000)
+      
       render json: {result: :ok, tags: records.map{|r|
         lbl_num_dj = "📕#{r.num_dj}🔸️" if r.num_dj.to_i > 0
         r.label_name_kanji ?
