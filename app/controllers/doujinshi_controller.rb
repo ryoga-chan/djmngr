@@ -101,7 +101,7 @@ class DoujinshiController < ApplicationController
     @doujinshi = Doujin.search(params[:term]).limit(THUMBS_PER_ROW * 5)
     
     if request.format.json? || request.format.tsv?
-      max_results = THUMBS_PER_ROW * 2
+      max_results = 100
       
       @doujinshi = @doujinshi.
         reselect(:id, :category, :file_folder, :file_name, :name_orig, :size, :num_images, :score).
