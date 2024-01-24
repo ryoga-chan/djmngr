@@ -80,6 +80,11 @@ $('body').on('keydown', function (ev) {
     if ($('#generic-modal').hasClass('is-active'))
       $.myapp.hide_generic_modal();
     
+    // close ehentai-search modal if opened
+    // TODO: merge ehentai-dialog with the generic one
+    if ($('#ehentai-search-modal').hasClass('is-active'))
+      $('#ehentai-search-modal button.delete').click();
+    
     // remove focus from current input
     if ($(document.activeElement).is(':input'))
       $(document.activeElement).blur();
