@@ -102,7 +102,8 @@ class ProcessController < ApplicationController
         %i{ files thumbs titles }.each{|k| @info[k].delete params[:remove] }
         @info[:filenames] -= [params[:remove]]
         File.atomic_write(info_path){|f| f.puts @info.to_yaml }
-        return redirect_to(batch_process_path(id: params[:id]), notice: "entry removed: [#{params[:remove]}]")
+        row = [0, params[:row].to_i - 1].max
+        return redirect_to(batch_process_path(id: params[:id], anchor: "row_#{row}"), notice: "entry removed: [#{params[:remove]}]")
       else
         File.unlink info_path
         return redirect_to(process_index_path, notice: "batch deleted: [#{params[:id][0..10]}...]")

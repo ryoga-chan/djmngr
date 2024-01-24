@@ -151,6 +151,7 @@
     - @info[:filenames].each_with_index do |name, idx|
       - files = @info[:files][name]
       - thumb = @info[:thumbs][name]
+      %a{name: "row_#{idx}"}
       .columns
         .column.is-2.cover.has-text-centered
           %figure.image.is2by3
@@ -167,7 +168,7 @@
         .column
           .name
             %a{name: Digest::MD5.hexdigest(name)}
-            = link_to('🗑', batch_process_path(id: params[:id], remove: name),
+            = link_to('🗑', batch_process_path(id: params[:id], remove: name, row: idx),
               method: :delete, data: { confirm: 'Remove this entry?' },
               class: 'has-text-danger', title: 'remove from batch')
             %span= render partial: 'file_actions', locals: {fname: name}
