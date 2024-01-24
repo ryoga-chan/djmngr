@@ -357,6 +357,10 @@ class ProcessController < ApplicationController
     if params[:ident_from] && (d = Doujin.find_by id: params[:ident_from])
       @info[:author_ids ], @info[:circle_ids] = d.author_ids, d.circle_ids
       @info[:dest_folder], @info[:subfolder ] = d.file_folder.to_s.split(File::SEPARATOR)
+      @info[:dest_title    ] = d.name
+      @info[:dest_romaji   ] = d.name_romaji if d.name_romaji.present?
+      @info[:dest_title_eng] = d.name_eng    if d.name_eng   .present?
+      @info[:dest_filename ] = d.file_name
       File.atomic_write(File.join @dname, 'info.yml'){|f| f.puts @info.to_yaml }
       return redirect_to({tab: :ident}, notice: "relations and folders cloned")
     end
@@ -470,16 +474,15 @@ class ProcessController < ApplicationController
           sort if File.exist?(repo)
         
         # find similar names to suggest
-        search_terms = @info[:dest_filename].tokenize_doujin_filename(rm_num: true).join '%'
+        search_terms = @info[:dest_filename].tokenize_doujin_filename(rm_num: true).join ' '
         if search_terms.size > 6
           sql_name = "COALESCE(NULLIF(name_romaji, ''), NULLIF(name_kakasi, ''))"
-          # NOTE: sqlite LIKE is case insensitive
           @suggestions = Doujin.
-            distinct.select(Arel.sql "#{sql_name} AS name").
-            where(category: @info[:file_type]).
-            where("name_romaji LIKE :terms OR name_kakasi LIKE :terms", terms: "%#{search_terms}%").
-            order(Arel.sql sql_name).limit(50).
-            map(&:name)
+            where(category: cat).
+            where("file_folder LIKE ?", "#{@info[:dest_folder]}%").
+            search(search_terms, relations: false).
+            reselect(Arel.sql "#{sql_name} AS name").
+            limit(50).map(&:name)
         end
         
         # check if file already exists on disk/collection
