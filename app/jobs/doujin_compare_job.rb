@@ -1,12 +1,13 @@
 class DoujinCompareJob < ApplicationJob
   CHUNK_SIZE = 6
   THUMB_SIZE = { width: 320, height: 640 }.freeze # aspect 2/3, eg. 480x960
-  DATAFILE = File.join(Setting['dir.sorting'], "comparison.yml").to_s.freeze
 
   queue_as :default
   
+  def self.data_file = File.join(Setting['dir.sorting'], 'comparison.yml'.freeze).to_s
+  
   def self.data
-    comparison_data = YAML.unsafe_load_file(DATAFILE) rescue []
+    comparison_data = YAML.unsafe_load_file(DoujinCompareJob.data_file) rescue []
     num_entries = comparison_data.size
     
     # auto remove non existent entries
@@ -19,7 +20,7 @@ class DoujinCompareJob < ApplicationJob
     end
     # update data file
     if num_entries != comparison_data.size
-      File.atomic_write(DATAFILE){|f| f.puts comparison_data.to_yaml }
+      File.atomic_write(DoujinCompareJob.data_file){|f| f.puts comparison_data.to_yaml }
     end
     
     comparison_data
@@ -27,11 +28,11 @@ class DoujinCompareJob < ApplicationJob
   
   def self.remove(index)
     if index == 'all'.freeze
-      FileUtils.rm_f DATAFILE
+      FileUtils.rm_f DoujinCompareJob.data_file
     else
       comparison_data = DoujinCompareJob.data
       comparison_data.delete_at index.to_i
-      File.atomic_write(DATAFILE){|f| f.puts comparison_data.to_yaml }
+      File.atomic_write(DoujinCompareJob.data_file){|f| f.puts comparison_data.to_yaml }
     end
   end # self.remove
 
@@ -81,6 +82,6 @@ class DoujinCompareJob < ApplicationJob
       end
     end
     
-    File.atomic_write(DATAFILE){|f| f.puts comparison_data.push(info).to_yaml }
-  end
+    File.atomic_write(DoujinCompareJob.data_file){|f| f.puts comparison_data.push(info).to_yaml }
+  end # perform
 end

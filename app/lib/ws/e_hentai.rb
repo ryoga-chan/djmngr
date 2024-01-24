@@ -27,19 +27,23 @@
 #   ]}
 module Ws::EHentai
   REQ = HTTPX.with \
-    timeout: { request_timeout: 6 },
-    #debug: STDERR, debug_level: 2,
-    headers: { 'User-Agent' => ::Setting['scraper_useragent'] }
+    timeout: { request_timeout: 6 }
+    #debug: STDERR, debug_level: 2
+    
   REQ_HTML = REQ.with origin: 'https://e-hentai.org'
   REQ_API  = REQ.with origin: 'https://api.e-hentai.org'
   
   FIELDS = %i{ gid token title title_jpn thumb filecount filesize posted error }.freeze
   
   def self.search(term, options = {})
+    headers = { 'User-Agent' => ::Setting['scraper_useragent'] }
+    
     begin
       return result(:no_results) if term.blank?
       
-      resp = REQ_HTML.get '/'.freeze, params: { f_search: term.to_s.strip }
+      resp = REQ_HTML.
+        with(headers: headers).
+        get '/'.freeze, params: { f_search: term.to_s.strip }
       return result(:server_error) if resp.is_a?(HTTPX::ErrorResponse) || resp.status != 200
       
       # extract galleries ID & token
@@ -50,7 +54,7 @@ module Ws::EHentai
       
       # query the API for results details
       resp = REQ_API.
-        with(headers: { 'Accept' => 'application/json' }).
+        with(headers: headers.merge('Accept' => 'application/json')).
         post '/api.php'.freeze, json: { method: :gdata, gidlist: results, namespace: 1 }
       return result(:server_error) if resp.status != 200
       

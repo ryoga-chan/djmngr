@@ -1,4 +1,4 @@
-# OBSOLETE: superseded by /config/application.rb - config.autoload_lib
+# NOTE: superseded in production by `config.autoload_lib` in /config/application.rb
 #   https://www.shakacode.com/blog/rails-7-1-introduces-config-autoload_lib/
 #   https://github.com/rails/rails/pull/49032
 ## load all core extensions
