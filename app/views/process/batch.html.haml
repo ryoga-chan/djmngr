@@ -41,7 +41,7 @@
             %span Stalled? Undo!
       
       :javascript
-        setTimeout(function () { window.location.reload(); }, 5000)
+        setTimeout(function () { window.location.reload(); }, 3000)
       
     -# show errors on top
     - names = (@info[:progress].keys - [:completed_at]).sort
@@ -59,7 +59,7 @@
               .tags.has-addons.is-flex-wrap-nowrap.mx-0.my-0
                 %span.tag.is-danger KO
                 %span.tag.is-info= err
-          %figure.image.is2by3.cover.is-hidden= inline_image_tag :'image/webp', @info[:thumbs][fname][:base64]
+          %figure.image.is2by3.cover.is-hidden= inline_image_tag :'image/webp', @info[:thumbs][fname][:image]
         .column.py-0
           - if result[:id]
             = link_to fname, doujin_path(id: result[:id])
@@ -147,15 +147,15 @@
               %i.mi send
             %span Start
 
-    -# order entries by the custom title
-    - @info[:titles].sort_by_value.map{|k,v| k}.each_with_index do |name, idx|
+    -# print entries by sorted/grouped filename
+    - @info[:filenames].each_with_index do |name, idx|
       - files = @info[:files][name]
       - thumb = @info[:thumbs][name]
       .columns
         .column.is-2.cover.has-text-centered
           %figure.image.is2by3
             - if thumb
-              = inline_image_tag :'image/webp', thumb[:base64]
+              = inline_image_tag :'image/webp', thumb[:image]
             - else
               %img(src='/not-found.png')
           .tags.has-addons.is-justify-content-center.mt-1
@@ -199,7 +199,7 @@
     .title.is-6= "Analyzing file names, please wait ... #{done.size}/#{@info[:files].size}"
     
     :javascript
-      setTimeout(function () { window.location.reload(); }, 5000)
+      setTimeout(function () { window.location.reload(); }, 3000)
 
   = link_to 'show metadata', '#', class: 'button is-info',
     onclick: %Q|$(this).hide().next().removeClass('is-hidden'); return false|
