@@ -576,7 +576,7 @@ class DoujinshiController < ApplicationController
   end # shelf
 
   def compare_add
-    DoujinCompareJob.perform_now doujin: @doujin
+    DoujinCompareJob.perform_now doujin: @doujin, mode: params[:mode]
     redirect_to compare_doujinshi_path
   end # compare_add
   

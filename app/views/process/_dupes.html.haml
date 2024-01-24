@@ -100,6 +100,7 @@
           - bt_compare = capture do
             = link_to compare_add_doujin_path(d),
               title: 'add to comparison', target: :_blank,
+              onclick: "jQuery(this).attr('href', jQuery(this).attr('href') + '?mode=' + (confirm('Use a SUBSET of images?') ? 'subset' : 'all'))",
               class: 'button is-info is-rounded is-small tiny-bt' do
               %span.icon.is-small
                 %i.mi.mi-small compare

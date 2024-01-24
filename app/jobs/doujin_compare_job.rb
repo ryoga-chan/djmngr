@@ -40,7 +40,7 @@ class DoujinCompareJob < ApplicationJob
     comparison_data = DoujinCompareJob.data
     
     mode = 'subset' unless %w{ subset all }.include?(mode.to_s)
-  
+    
     info = { images: [], max_height: 0 }
     
     if full_path && rel_path && full_path.ends_with?(rel_path)

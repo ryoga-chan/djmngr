@@ -17,7 +17,8 @@
             class: 'button is-info is-rounded'
         
         %p.control
-          = link_to compare_add_doujin_path(@doujin), class: 'button is-info is-rounded' do
+          = link_to compare_add_doujin_path(@doujin), class: 'button is-info is-rounded',
+            onclick: "jQuery(this).attr('href', jQuery(this).attr('href') + '?mode=' + (confirm('Use a SUBSET of images?') ? 'subset' : 'all'))" do
             %span.icon
               %i.mi.mi-small compare
             %span Compare
