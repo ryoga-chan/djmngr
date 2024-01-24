@@ -21,19 +21,33 @@ class ProcessBatchInspectJob < ApplicationJob
         info[:files][name] = image_entries.map &:name
         
         if cover = image_entries.first # extract cover image
-          thumb = Vips::Image.webp_cropped_thumb \
-            cover.get_input_stream.read,
-            width:  ProcessArchiveCompressJob::THUMB_WIDTH,
-            height: ProcessArchiveCompressJob::THUMB_HEIGHT
-          
-          info[:thumbs][name] = { landscape: thumb[:landscape],
-                                  base64:    Base64.encode64(thumb[:image].webpsave_buffer).chomp }
+          info[:thumbs][name] = CoverMatchingJob.
+            hash_image_buffer cover.get_input_stream.read
         end
       end
       
       File.atomic_write(info_path){|f| f.puts info.to_yaml }
     end
     
+    # sort and group filenames by hamming distance
+    groups = {}
+    info[:titles].keys.sort.map{|k,v| k}.each do |f|
+      matching_found = false
+      
+      groups.keys.each do |g|
+        hd = Phashion.hamming_distance info[:thumbs][f][:phash].to_i(16), info[:thumbs][g][:phash].to_i(16)
+        if hd < CoverMatchingJob::MAX_HAMMING_DISTANCE
+          groups[g] << f
+          matching_found = true
+          break
+        end
+      end
+      
+      groups[f] = [f] unless matching_found
+    end
+    info[:filenames] = groups.values.flatten
+    
+    # write info to disk
     info[:prepared_at] = Time.now
     File.atomic_write(info_path){|f| f.puts info.to_yaml }
   end # perform
