@@ -76,7 +76,7 @@
     .title.is-6= "Preparing archive, please wait ... #{@perc}%"
     
     :javascript
-      setTimeout(function () { window.location.reload(); }, 5000)
+      setTimeout(function () { window.location.reload(); }, 1000)
 
   = link_to inspect_folder_process_path(run: :file_manager, format: :json), remote: true,
     class: "button run-progr is-info mr-3 is-hidden-touch", target: :_blank do
