@@ -3,6 +3,8 @@ class ProcessIndexPreviewJob < ProcessIndexRefreshJob
   THUMB_HEIGHT = 640
   THUMBS_CHUNK = 3
   
+  def self.description = :'generating previews'
+  
   def self.rm_previews
     pattern = Rails.root.join('public', ProcessableDoujin::THUMB_FOLDER, '*.webp').to_s
     Dir[pattern].each{|f| FileUtils.rm_f f }
@@ -26,21 +28,19 @@ class ProcessIndexPreviewJob < ProcessIndexRefreshJob
   end # self.img_transparent
   
   def perform(id: nil, order: nil, page: nil)
-    self.class.lock_file!
-    
     page = 1 if page.to_i <= 0
     
     rel = self.class.entries(order: order)
     rel = rel.where(id: id) if id
     
     # generate preview for two pages
-    [page.to_i, page.to_i+1].each do |p|
-      rel.page(p).per(Setting[:process_epp].to_i).each do |processable_doujin|
-        self.class.generate_preview processable_doujin
-      end
+    records  = rel.page(p.to_i  ).per(Setting[:process_epp].to_i).to_a
+    records += rel.page(p.to_i+1).per(Setting[:process_epp].to_i).to_a
+    
+    records.each_with_index do |processable_doujin, i|
+      self.class.progress_update step: i+1, steps: records.size
+      self.class.generate_preview processable_doujin
     end
-
-    self.class.rm_lock_file
   end # perform
   
   def self.generate_preview(processable_doujin)
