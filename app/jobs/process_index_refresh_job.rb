@@ -12,10 +12,30 @@ class ProcessIndexRefreshJob < ApplicationJob
     '🔽 size'  => :size_d,
   }
 
+  around_perform do |job, block|
+    self.class.lock_file!
+    block.call
+    self.class.rm_lock_file
+    self.class.rm_progress_file
+  end # around_perform
+  
   def self.lock_file      = File.join(Setting['dir.to_sort'], 'indexing.lock').to_s
   def self.lock_file!     = FileUtils.touch(lock_file)
   def self.lock_file?     = File.exist?(lock_file)
   def self.rm_lock_file   = FileUtils.rm_f(lock_file)
+  
+  def self.description      = :'indexing files'
+  def self.progress_file    = File.join(Setting['dir.sorting'], 'process-job.progress').to_s
+  def self.rm_progress_file = FileUtils.rm_f(progress_file)
+  def self.progress
+    text = File.read(progress_file) rescue nil
+    text || "#{description} @ --% (--/--)"
+  end # self.progress
+  def self.progress_update(step:, steps:, msg: nil)
+    text = "#{msg || description} @ #{(step/steps.to_f*100).to_i}% (#{step}/#{steps})"
+    File.atomic_write(progress_file){|f| f.write text }
+    text
+  end # self.progress_update
   
   def self.entries(order: 'name')
     order_clause = case order
@@ -86,19 +106,17 @@ class ProcessIndexRefreshJob < ApplicationJob
   end # self.add_entry
   
   def perform(*args)
-    self.class.lock_file!
-    
     ProcessableDoujin.transaction do
       ProcessIndexPreviewJob.rm_previews
-      
       ProcessableDoujin.truncate_and_restart_sequence
       
       files_glob = File.join Setting['dir.to_sort'], '**', '*.zip'
       list = Dir[files_glob].sort
       list = list[0...100] unless Rails.env.production?
-      list.each{|f| self.class.add_entry f }
-    end
-    
-    self.class.rm_lock_file
+      list.each_with_index do |f, i|
+        self.class.progress_update step: i+1, steps: list.size
+        self.class.add_entry f
+      end
+    end # transaction
   end # perform
 end

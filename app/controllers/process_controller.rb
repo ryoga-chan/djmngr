@@ -8,18 +8,18 @@ class ProcessController < ApplicationController
 
   # list processable files
   def index
-    # create "to_sort" file list
-    if params[:refresh]
-      ProcessIndexRefreshJob.lock_file!
-      ProcessIndexRefreshJob.perform_later
-      return redirect_to(action: :index)
-    end
-    
     # save and keep previous sort order
     if params[:sort_by].present?
       session['process.index.sort_by'] = params[:sort_by]
     elsif session['process.index.sort_by'].present?
       return redirect_to(action: :index, sort_by: session['process.index.sort_by'], page: params[:page])
+    end
+    
+    # create "to_sort" file list
+    if params[:refresh]
+      ProcessIndexRefreshJob.lock_file!
+      ProcessIndexRefreshJob.perform_later
+      return redirect_to(action: :index)
     end
     
     # generate preview images collage for ZIP files on the first index page
@@ -29,8 +29,9 @@ class ProcessController < ApplicationController
       return redirect_to(action: :index, sort_by: session['process.index.sort_by'], page: params[:page])
     end
 
-    if ProcessIndexRefreshJob.lock_file? || ProcessIndexPreviewJob.lock_file?
-      @refreshing = true
+    if ProcessIndexRefreshJob.lock_file? # jobs: Refresh, Preview
+      @refreshing       = true
+      @refresh_progress = ProcessIndexRefreshJob.progress
     else
       # read "to_sort" file list
       @files = ProcessIndexRefreshJob.
