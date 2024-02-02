@@ -55,3 +55,5 @@ bin/rails assets:precompile
 bin/server -p
 
 bin/rails g controller ws ehentai
+
+bin/rails g model processable_doujin_dupe pd_parent_id:integer pd_child_id:integer likeness:integer

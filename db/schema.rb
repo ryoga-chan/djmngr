@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_11_22_131240) do
+ActiveRecord::Schema[7.1].define(version: 2024_02_01_164045) do
   create_table "authors", force: :cascade do |t|
     t.string "name", null: false
     t.string "name_romaji"
@@ -106,6 +106,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_22_131240) do
     t.integer "num_files", null: false
     t.integer "doujin_id"
     t.datetime "created_at"
+    t.integer "cover_phash"
   end
 
   create_table "doujinshi", force: :cascade do |t|
@@ -147,11 +148,23 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_22_131240) do
     t.index ["shelf_id"], name: "index_doujinshi_shelves_on_shelf_id"
   end
 
+  create_table "processable_doujin_dupes", force: :cascade do |t|
+    t.integer "pd_parent_id", null: false
+    t.integer "pd_child_id", null: false
+    t.integer "likeness", null: false
+    t.datetime "created_at"
+    t.index ["pd_child_id"], name: "index_processable_doujin_dupes_on_pd_child_id"
+    t.index ["pd_parent_id"], name: "index_processable_doujin_dupes_on_pd_parent_id"
+  end
+
   create_table "processable_doujinshi", force: :cascade do |t|
     t.string "name", null: false
     t.string "name_kakasi", null: false
     t.integer "size", null: false
     t.datetime "created_at"
+    t.datetime "mtime"
+    t.integer "images"
+    t.integer "cover_phash"
   end
 
   create_table "settings", force: :cascade do |t|
@@ -209,4 +222,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_22_131240) do
   add_foreign_key "circles_themes", "themes"
   add_foreign_key "doujinshi_shelves", "doujinshi"
   add_foreign_key "doujinshi_shelves", "shelves"
+  add_foreign_key "processable_doujin_dupes", "processable_doujinshi", column: "pd_child_id"
+  add_foreign_key "processable_doujin_dupes", "processable_doujinshi", column: "pd_parent_id"
 end

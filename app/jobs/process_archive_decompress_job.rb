@@ -134,7 +134,7 @@ class ProcessArchiveDecompressJob < ApplicationJob
       size:     File.size(file_path),
     }
     
-    if file_path =~ RE_IMAGE_EXT
+    if file_path.is_image_filename?
       dst_data[:alt_label ] = dst_data[:src_path]
       dst_data[:thumb_path] = "#{ts}.webp"
       
@@ -282,7 +282,7 @@ class ProcessArchiveDecompressJob < ApplicationJob
     info[:images], info[:files] = Dir[File.join path_contents, '**', '*'].
       select{|i| File.file? i }.
       map{|i| { src_path: Pathname.new(i).relative_path_from(path_contents).to_s, size: File.size(i) } }.
-      partition{|i| i[:src_path] =~ RE_IMAGE_EXT }
+      partition{|i| i[:src_path].is_image_filename? }
     
     # auto rename images with default method
     info[:ren_images_method] = ZipImagesRenamer::DEFAULT_METHOD.to_s

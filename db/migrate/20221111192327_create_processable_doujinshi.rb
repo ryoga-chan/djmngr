@@ -6,6 +6,7 @@ class CreateProcessableDoujinshi < ActiveRecord::Migration[7.0]
       t.integer  :size       , null: false
       t.datetime :mtime
       t.integer  :images
+      t.integer  :cover_phash
 
       t.datetime :created_at
     end

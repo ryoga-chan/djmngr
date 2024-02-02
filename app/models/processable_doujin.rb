@@ -1,5 +1,14 @@
 class ProcessableDoujin < ApplicationRecord
+  THUMB_WIDTH  = 320
+  THUMB_HEIGHT = 640
+  THUMBS_CHUNK = 3
   THUMB_FOLDER = 'samples'
+  
+  has_many :processable_doujin_dupes_childs , foreign_key: :pd_parent_id, class_name: 'ProcessableDoujinDupe', dependent: :delete_all
+  has_many :processable_doujin_dupes_parents, foreign_key: :pd_child_id , class_name: 'ProcessableDoujinDupe', dependent: :delete_all
+  
+  has_many :processable_doujin_parents, through: :processable_doujin_dupes_parents
+  has_many :processable_doujin_childs , through: :processable_doujin_dupes_childs
   
   after_destroy :delete_files
   
@@ -59,4 +68,94 @@ class ProcessableDoujin < ApplicationRecord
       FileUtils.mv src_file, dst_file, force: true
     end
   end # process_later
+
+  # extract cover from zip file and generate its phash
+  def cover_fingerprint
+    fname = file_path full: true
+    return unless File.exist?(fname)
+    
+    phash = nil
+    
+    Zip::File.open(fname) do |zip|
+      zip_images = zip.image_entries(sort: true)
+      
+      if zip_images.any?
+        phash = CoverMatchingJob.hash_image_buffer zip_images.first.get_input_stream.read, hash_only: true
+        @images = zip_images.size
+      end
+    end
+    
+    phash
+  end # cover_fingerprint
+  
+  def cover_fingerprint!
+    raise :record_not_persisted unless persisted?
+    fp = cover_fingerprint
+    self.class.connection.execute \
+      %Q|UPDATE #{self.class.table_name} SET cover_phash = 0x#{fp} WHERE id = #{id}|
+    update images: @images
+    fp
+  end # cover_fingerprint!
+
+  def generate_preview
+    return if File.exist?(thumb_path)
+    
+    fname = file_path full: true
+    return unless File.exist?(fname)
+    
+    Zip::File.open(fname) do |zip|
+      zip_images = zip.image_entries(sort: true)
+      update images: zip_images.size
+      
+      thumb_entries = zip_images.pages_preview(chunk_size: THUMBS_CHUNK)
+      
+      images = thumb_entries.map{|e|
+        i = Vips::Image.webp_cropped_thumb(
+          e.get_input_stream.read,
+          width:   THUMB_WIDTH,
+          height:  THUMB_HEIGHT,
+          padding: false
+        )[:image]
+        
+        # https://github.com/libvips/pyvips/issues/202
+        # https://github.com/libvips/libvips/issues/1525
+        i = i.colourspace('srgb') if i.bands  < 3
+        i = i.bandjoin(255)       if i.bands == 3
+        
+        i
+      }.compact
+      
+      # display missing image if no images are found
+      images << self.class.img_not_found if images.empty?
+      
+      # use transparent images for the remaining thumbs
+      num_fill = (images.size.to_f / 3).ceil * 3
+      images += (images.size ... num_fill).map{ self.class.img_transparent }
+      
+      # https://github.com/libvips/ruby-vips/blob/master/lib/vips/methods.rb#L362
+      # 1. create a long thumbnail for desktop
+      collage = Vips::Image.arrayjoin images, background: 0
+      collage.write_to_file thumb_path(mobile: false)
+      # 2. create a portrait thumbnail for mobile
+      collage = Vips::Image.arrayjoin images, background: 0, across: THUMBS_CHUNK
+      collage.write_to_file thumb_path(mobile: true)
+    end
+  end # generate_preview
+
+  def self.img_not_found
+    @@img_not_found ||= Vips::Image.webp_cropped_thumb(
+      File.binread(Rails.root.join('public', 'not-found.png').to_s),
+      width:   THUMB_WIDTH,
+      height:  THUMB_HEIGHT,
+      padding: false
+    )[:image]
+  end # self.img_not_found
+  
+  def self.img_transparent
+    # https://github.com/libvips/pyvips/issues/326
+    @@img_trasparent ||= Vips::Image.
+      black(2,2). # with x height in pixels
+      copy(interpretation: "srgb").
+      new_from_image([0, 0, 0, 0])
+  end # self.img_transparent
 end

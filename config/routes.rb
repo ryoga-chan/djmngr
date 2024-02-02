@@ -44,6 +44,7 @@ Rails.application.routes.draw do
       get     :image, to: 'doujinshi#zip_image', model: 'ProcessableDoujin'
       get     :process_later
       post    :add_files
+      delete  :group_rm
     end # member
   end # resources :process
 
