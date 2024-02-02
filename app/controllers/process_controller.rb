@@ -1,4 +1,7 @@
 class ProcessController < ApplicationController
+  GROUP_EPP = 5 # entries per page when using group order
+  JOBS = %w{ clear_job refresh preview group }.freeze
+
   before_action :check_archive_file,
     only: %i[ show_externally  prepare_archive  delete_archive  sample_images  compare_add ]
   
@@ -14,29 +17,31 @@ class ProcessController < ApplicationController
     elsif session['process.index.sort_by'].present?
       return redirect_to(action: :index, sort_by: session['process.index.sort_by'], page: params[:page])
     end
-    
-    # create "to_sort" file list
-    if params[:refresh]
-      ProcessIndexRefreshJob.lock_file!
-      ProcessIndexRefreshJob.perform_later
-      return redirect_to(action: :index)
-    end
-    
-    # generate preview images collage for ZIP files on the first index page
-    if params[:preview]
-      ProcessIndexPreviewJob.lock_file!
-      ProcessIndexPreviewJob.perform_later order: session['process.index.sort_by'], page: params[:page], id: params[:id]
+
+    # run requested job
+    if JOBS.include?(params[:job])
+      case params[:job]
+        when 'clear_job'.freeze
+          ProcessIndexRefreshJob.cleanup_files
+        else
+          job = "ProcessIndex#{params[:job].capitalize}Job".constantize
+          job.lock_file!
+          job.perform_later order: session['process.index.sort_by'], page: params[:page], id: params[:id]
+      end
+      
       return redirect_to(action: :index, sort_by: session['process.index.sort_by'], page: params[:page])
     end
-
+    
     if ProcessIndexRefreshJob.lock_file? # jobs: Refresh, Preview
       @refreshing       = true
-      @refresh_progress = ProcessIndexRefreshJob.progress
+      @refresh_progress = ProcessIndexRefreshJob.progress.to_s.split ' | '.freeze
     else
+      @group_sort = session['process.index.sort_by'].to_s.starts_with?('group')
+      
       # read "to_sort" file list
       @files = ProcessIndexRefreshJob.
         entries(order: session['process.index.sort_by']).
-        page(params[:page]).per(Setting[:process_epp].to_i)
+        page(params[:page]).per(@group_sort ? GROUP_EPP : Setting[:process_epp].to_i)
       
       # read "sorting" file list
       files_glob = File.join Setting['dir.sorting'], '*', 'info.yml'
@@ -681,6 +686,14 @@ class ProcessController < ApplicationController
     ProcessableDoujin.find_by(id: params[:id])&.process_later
     redirect_to process_index_path, notice: "file moved in [#{DJ_DIR_PROCESS_LATER}] folder"
   end # process_later
+  
+  def group_rm
+    ProcessIndexGroupJob.rm_entry params[:id]
+    
+    row = [0, params[:row].to_i - 1].max
+    redirect_to(process_index_path(page: params[:page], anchor: "row_#{row}", sort_by: params[:sort_by]),
+      notice: "file removed from group ##{params[:parent_id]}")
+  end # group_rm
   
   
   private # ____________________________________________________________________

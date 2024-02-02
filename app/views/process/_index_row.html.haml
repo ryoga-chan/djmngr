@@ -1,0 +1,62 @@
+- has_thumb = File.exist?(f.thumb_path)
+
+%tr{data: {id: f.id}}
+  %td.rm-or-batch
+    - if @group_sort
+      .likeness.is-size-7
+        - if local_assigns[:pair_data]
+          .tag.is-warning= "#{local_assigns[:pair_data].likeness}%"
+        - else
+          .tag.is-info ref
+    = link_to('🗑',
+      {action: :delete_archive, path: f.name, page: params[:page], sort_by: params[:sort_by], row: idx},
+      method: :delete, data: { confirm: 'Delete this file?' },
+      class: 'has-text-danger', title: 'delete file')
+    .file-select.is-hidden= check_box_tag 'file_ids[]', f.id, false,
+      id: '', data: {size: f.size}, tabindex: (1000+idx)
+  %td.batch.file-size.has-text-right
+    .size= number_to_human_size f.size
+    - if f.images
+      .images
+        = f.images
+        P
+  %td.batch= render partial: 'file_actions', locals: {fname: f.name, id: f.id, vertical: true}
+  %td
+    %a{name: "row_#{idx}"}
+    .name
+      - if @preparing_paths.include?(f.name)
+        %span.tag.is-warning(title="processing") 🛠
+      = link_to f.name, action: :prepare_archive, path: f.name
+      - unless has_thumb
+        = link_to({job: :preview, id: f.id, page: params[:page]}, title: 'generate file preview',
+          class: 'button is-info is-rounded is-small tiny-bt ml-2') do
+          %span.icon.is-small
+            %i.mi.mi-small preview
+      - unless f.name.starts_with?(DJ_DIR_PROCESS_LATER) || f.name.starts_with?(DJ_DIR_REPROCESS)
+        = link_to(process_later_process_path(id: f.id), title: 'process later',
+          class: 'button is-info is-rounded is-small tiny-bt ml-2') do
+          %span.icon.is-small
+            %i.mi.mi-small fast_forward
+    - if f.name != f.name_kakasi
+      .name_kakasi.is-size-7= f.name_kakasi
+    - if @group_sort && local_assigns[:pair_data]
+      .grop-actions
+        = link_to(group_rm_process_path(id: local_assigns[:pair_data].id,
+                                        page: params[:page], sort_by: params[:sort_by], row: idx),
+          method: :delete, data: { confirm: 'Remove file from group?' },
+          title: 'remove from group', class: 'button is-info is-rounded is-small ml-2 mt-2') do
+          %span.icon.is-small
+            %i.mi.mi-small remove
+          %span
+            ungroup @
+            = "##{local_assigns[:pair_data].pd_parent_id}"
+- if has_thumb
+  %tr.sample
+    %td
+    %td(colspan=3)
+      %figure.image
+        = link_to f.thumb_url(mobile: true), target: :_blank do
+          %picture
+            %source{media: "(min-width: 769px)", srcset: f.thumb_url(mobile: false) }/
+            %source{media: "(min-width: 320px)", srcset: f.thumb_url(mobile: true ) }/
+            %img{src: f.thumb_url(mobile: true)}/

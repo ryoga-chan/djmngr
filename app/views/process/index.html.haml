@@ -1,9 +1,17 @@
 .container.is-max-desktop
   - if @refreshing
-    = @refresh_progress
-    .columns
+    .info1= @refresh_progress[0]
+    .info2= @refresh_progress[1]
+    .info3.is-size-7= @refresh_progress[2]
+    .columns.mt-2
       .column.is-3
         %progress.progress.is-small.is-primary
+    
+    = link_to(process_index_path(job: :clear_job),
+      class: 'button is-success is-light is-rounded mt-2', title: 'clear stale job files')  do
+      %span.icon
+        %i.mi.mi-small undo
+      %span Stalled? Reset!
     
     :javascript
       setTimeout(function () { window.location.reload(); }, 5000)
@@ -57,7 +65,7 @@
                   %span thumbs
               .control
                 = link_to '#', class: 'bt-batch button is-small',
-                  onclick: %Q|jQuery('.batch-bt, .batch-rm, td.rm-or-batch > *, td.batch, .bt-reindex, .bt-preview').toggleClass('is-hidden'); return false| do
+                  onclick: %Q|jQuery('.batch-bt, .batch-rm, td.rm-or-batch > *, td.batch, .bt-index').toggleClass('is-hidden'); return false| do
                   %span.icon.is-small
                     %i.mi.mi-small inventory_2
                   %span batch
@@ -82,15 +90,21 @@
                   %span prepare
                   %span.tot-file-size.is-size-8.ml-1
               .control
-                = link_to({refresh: true}, class: 'bt-reindex button is-info is-small') do
+                = link_to({job: :refresh}, class: 'bt-index bt-reindex button is-info is-small') do
                   %span.icon.is-small
                     %i.mi.mi-small refresh
                   %span refresh
               .control
-                = link_to({preview: true, sort_by: params[:sort_by], page: params[:page]}, class: 'bt-preview button is-info is-small') do
+                = link_to({job: :preview, sort_by: params[:sort_by], page: params[:page]}, class: 'bt-index bt-preview button is-info is-small') do
                   %span.icon.is-small
                     %i.mi.mi-small preview
                   %span preview
+              .control
+                = link_to({job: :group}, class: 'bt-index bt-groups button is-info is-small',
+                          data: {confirm: 'Hash all covers and group them by similarity?'}) do
+                  %span.icon.is-small
+                    %i.mi.mi-small preview
+                  %span group
       
       - if @files.empty?
         %em no files to process
@@ -99,51 +113,22 @@
 
         %table.to_process.table.is-striped.is-hoverable.ml-4
           %tbody
-            - @files.each_with_index do |f, idx|
-              - has_thumb = File.exist?(f.thumb_path)
-              
-              %tr{data: {id: f.id}}
-                %td.rm-or-batch
-                  = link_to('🗑',
-                    {action: :delete_archive, path: f.name, page: params[:page], sort_by: params[:sort_by], row: idx},
-                    method: :delete, data: { confirm: 'Delete this file?' },
-                    class: 'has-text-danger', title: 'delete file')
-                  .file-select.is-hidden= check_box_tag 'file_ids[]', f.id, false,
-                    id: '', data: {size: f.size}, tabindex: (1000+idx)
-                %td.batch.file-size.has-text-right
-                  .size= number_to_human_size f.size
-                  - if f.images
-                    .images
-                      = f.images
-                      P
-                %td.batch= render partial: 'file_actions', locals: {fname: f.name, id: f.id, vertical: true}
-                %td
-                  %a{name: "row_#{idx}"}
-                  .name
-                    - if @preparing_paths.include?(f.name)
-                      %span.tag.is-warning(title="processing") 🛠
-                    = link_to f.name, action: :prepare_archive, path: f.name
-                    - unless has_thumb
-                      = link_to({preview: true, id: f.id}, title: 'generate file preview',
-                        class: 'button is-info is-rounded is-small tiny-bt ml-2') do
-                        %span.icon.is-small
-                          %i.mi.mi-small preview
-                    - unless f.name.starts_with?(DJ_DIR_PROCESS_LATER) || f.name.starts_with?(DJ_DIR_REPROCESS)
-                      = link_to(process_later_process_path(id: f.id), title: 'process later',
-                        class: 'button is-info is-rounded is-small tiny-bt ml-2') do
-                        %span.icon.is-small
-                          %i.mi.mi-small fast_forward
-                  - if f.name != f.name_kakasi
-                    .name_kakasi.is-size-7= f.name_kakasi
-              - if has_thumb
-                %tr.sample
-                  %td
-                  %td(colspan=3)
-                    %figure.image
-                      = link_to f.thumb_url(mobile: true), target: :_blank do
-                        %picture
-                          %source{media: "(min-width: 769px)", srcset: f.thumb_url(mobile: false) }/
-                          %source{media: "(min-width: 320px)", srcset: f.thumb_url(mobile: true ) }/
-                          %img{src: f.thumb_url(mobile: true)}/
+            - idx = 0
+            - @files.each do |f|
+              - if @group_sort
+                %tr
+                  %td.has-background-grey-light(colspan=4)
+                    .columns.is-mobile.is-vcentered
+                      .column.is-2
+                        %hr.has-background-grey
+                      .column.is-4.has-text-centered.has-text-grey.has-text-weight-bold
+                        = "##{f.id} (#{f.processable_doujin_childs.size + 1})"
+                      .column
+                        %hr.has-background-grey
+              = render partial: 'index_row', locals: { f: f, idx: idx+=1 }
+              - if @group_sort
+                - f.processable_doujin_childs.sort{|a,b| a.name <=> b.name }.each do |f_child|
+                  - pdd = f.processable_doujin_dupes_childs.detect{|pddc| pddc.pd_child_id == f_child.id }
+                  = render partial: 'index_row', locals: { f: f_child, idx: idx+=1, pair_data: pdd }
         
         = paginate @files, params: {sort_by: params[:sort_by]}
