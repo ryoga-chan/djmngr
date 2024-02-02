@@ -470,7 +470,7 @@ class DoujinshiController < ApplicationController
     # download and hash an image file
     url = URI.parse(params[:url]) rescue nil
     if url.is_a?(URI::HTTP)
-      image_data = URI.open(params[:url], read_timeout: 10).read rescue File.read(File.join Rails.root, 'public', 'not-found.png')
+      image_data = URI.open(params[:url], read_timeout: 10).read rescue File.binread(File.join(Rails.root, 'public', 'not-found.png').to_s)
       f = Tempfile.open{|f| f.write(image_data); f }
       cover_hash = CoverMatchingJob.hash_image f.path
       f.unlink

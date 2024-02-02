@@ -10,47 +10,58 @@ class ProcessIndexRefreshJob < ApplicationJob
     '🔽 time'  => :time_d,
     '🔼 size'  => :size,
     '🔽 size'  => :size_d,
+    '🔼 group' => :group,
+    '🔽 group' => :group_d,
   }
 
   around_perform do |job, block|
     self.class.lock_file!
     block.call
-    self.class.rm_lock_file
-    self.class.rm_progress_file
+    self.class.cleanup_files
   end # around_perform
   
-  def self.lock_file      = File.join(Setting['dir.to_sort'], 'indexing.lock').to_s
-  def self.lock_file!     = FileUtils.touch(lock_file)
-  def self.lock_file?     = File.exist?(lock_file)
-  def self.rm_lock_file   = FileUtils.rm_f(lock_file)
+  def self.cleanup_files
+    rm_lock_file
+    rm_progress_file
+  end # self.cleanup_files
   
   def self.description      = :'indexing files'
+  
+  def self.lock_file        = File.join(Setting['dir.to_sort'], 'indexing.lock').to_s
+  def self.lock_file!       = FileUtils.touch(lock_file)
+  def self.lock_file?       = File.exist?(lock_file)
+  def self.rm_lock_file     = FileUtils.rm_f(lock_file)
+  
   def self.progress_file    = File.join(Setting['dir.sorting'], 'process-job.progress').to_s
   def self.rm_progress_file = FileUtils.rm_f(progress_file)
-  def self.progress
-    text = File.read(progress_file) rescue nil
-    text || "#{description} @ --% (--/--)"
-  end # self.progress
+  def self.progress = File.exist?(progress_file) ? File.read(progress_file) : :"starting job..."
   def self.progress_update(step:, steps:, msg: nil)
-    text = "#{msg || description} @ #{(step/steps.to_f*100).to_i}% (#{step}/#{steps})"
+    text = "#{msg || description} | #{'%0.2f' % (step/steps.to_f*100)}% (#{step}/#{steps}) | #{Time.now.strftime '%F %T'}"
     File.atomic_write(progress_file){|f| f.write text }
     text
   end # self.progress_update
   
   def self.entries(order: 'name')
-    order_clause = case order
-      when 'name'    .freeze then :name
-      when 'name_d'  .freeze then {name: :desc}
-      when 'kakasi'  .freeze then Arel.sql("replace(name_kakasi, ' ', '')")
-      when 'kakasi_d'.freeze then Arel.sql("replace(name_kakasi, ' ', '') DESC")
-      when 'time'    .freeze then :mtime
-      when 'time_d'  .freeze then {mtime: :desc}
-      when 'size'    .freeze then :size
-      when 'size_d'  .freeze then {size: :desc}
-      else :name
-    end
+    m = ProcessableDoujin
     
-    ProcessableDoujin.order(order_clause)
+    m_group = m.
+      eager_load(:processable_doujin_childs, :processable_doujin_dupes_childs).
+      where(id: ProcessableDoujinDupe.distinct.select(:pd_parent_id)).
+      where.not(id: ProcessableDoujinDupe.distinct.select(:pd_child_id))
+    
+    order_clause = case order
+      when 'name'    .freeze then m.order :name
+      when 'name_d'  .freeze then m.order name: :desc
+      when 'kakasi'  .freeze then m.order Arel.sql("replace(name_kakasi, ' ', '')")
+      when 'kakasi_d'.freeze then m.order Arel.sql("replace(name_kakasi, ' ', '') DESC")
+      when 'time'    .freeze then m.order :mtime
+      when 'time_d'  .freeze then m.order mtime: :desc
+      when 'size'    .freeze then m.order :size
+      when 'size_d'  .freeze then m.order size: :desc
+      when 'group'   .freeze then m_group.order(:name)
+      when 'group_d' .freeze then m_group.order(name: :desc)
+      else                        m.order :name
+    end
   end # self.entries
   
   def self.rm_entry(path_or_id, track: false, rm_zip: false)
@@ -70,7 +81,7 @@ class ProcessIndexRefreshJob < ApplicationJob
           zip.entries.sort_by_method(:name).each do |e|
             next unless e.file?
             
-            is_image = e.name =~ RE_IMAGE_EXT
+            is_image = e.name.is_image_filename?
             
             # generate phash for the first image file
             if cover_hash.nil? && is_image
@@ -108,7 +119,8 @@ class ProcessIndexRefreshJob < ApplicationJob
   def perform(*args)
     ProcessableDoujin.transaction do
       ProcessIndexPreviewJob.rm_previews
-      ProcessableDoujin.truncate_and_restart_sequence
+      ProcessableDoujin    .truncate_and_restart_sequence
+      ProcessableDoujinDupe.truncate_and_restart_sequence
       
       files_glob = File.join Setting['dir.to_sort'], '**', '*.zip'
       list = Dir[files_glob].sort
