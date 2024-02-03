@@ -111,22 +111,41 @@ class ProcessIndexRefreshJob < ApplicationJob
   def self.add_entry(full_path)
     fs = File.stat full_path
     rel_name = Pathname.new(full_path).relative_path_from(Setting['dir.to_sort']).to_s
-    ProcessableDoujin.create name: rel_name, name_kakasi: rel_name.to_romaji,
-      size: fs.size, mtime: fs.mtime
+    # ensure no dupes are created
+    ProcessableDoujin.
+      find_or_initialize_by(name: rel_name).
+      update!(name_kakasi: rel_name.to_romaji, size: fs.size, mtime: fs.mtime)
   end # self.add_entry
   
   def perform(*args)
     ProcessableDoujin.transaction do
-      ProcessIndexPreviewJob.rm_previews
-      ProcessableDoujin    .truncate_and_restart_sequence
-      ProcessableDoujinDupe.truncate_and_restart_sequence
+      unless ProcessableDoujin.exists?
+        ProcessIndexPreviewJob.rm_previews
+        ProcessableDoujin     .truncate_and_restart_sequence
+        ProcessableDoujinDupe .truncate_and_restart_sequence
+      end
       
+      files_ids = []
+      
+      # add new files
       files_glob = File.join Setting['dir.to_sort'], '**', '*.zip'
-      list = Dir[files_glob].sort
-      list = list[0...100] unless Rails.env.production?
-      list.each_with_index do |f, i|
-        self.class.progress_update step: i+1, steps: list.size
-        self.class.add_entry f
+      files = Dir[files_glob].sort
+      files.each_with_index do |f, i|
+        self.class.progress_update step: i+1, steps: files.size
+        
+        realtive_path = Pathname.new(f).relative_path_from(Setting['dir.to_sort']).to_s
+        pd = ProcessableDoujin.find_by(name: realtive_path)
+        pd = self.class.add_entry(f) unless pd
+        files_ids << pd.id
+      end
+      
+      # remove vanished files
+      files_ids.sort!
+      num_pd = ProcessableDoujin.count
+      ProcessableDoujin.order(:id).find_each.with_index do |pd, i|
+        self.class.progress_update step: i+1, steps: num_pd, msg: :'deindexing vanished files'
+        next if files_ids.include?(pd.id)
+        pd.destroy
       end
     end # transaction
   end # perform
