@@ -149,10 +149,12 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_01_164045) do
   end
 
   create_table "processable_doujin_dupes", force: :cascade do |t|
-    t.integer "pd_parent_id", null: false
-    t.integer "pd_child_id", null: false
+    t.integer "pd_parent_id"
+    t.integer "pd_child_id"
+    t.integer "doujin_id"
     t.integer "likeness", null: false
     t.datetime "created_at"
+    t.index ["doujin_id"], name: "index_processable_doujin_dupes_on_doujin_id"
     t.index ["pd_child_id"], name: "index_processable_doujin_dupes_on_pd_child_id"
     t.index ["pd_parent_id"], name: "index_processable_doujin_dupes_on_pd_parent_id"
   end
@@ -222,6 +224,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_01_164045) do
   add_foreign_key "circles_themes", "themes"
   add_foreign_key "doujinshi_shelves", "doujinshi"
   add_foreign_key "doujinshi_shelves", "shelves"
+  add_foreign_key "processable_doujin_dupes", "doujinshi"
   add_foreign_key "processable_doujin_dupes", "processable_doujinshi", column: "pd_child_id"
   add_foreign_key "processable_doujin_dupes", "processable_doujinshi", column: "pd_parent_id"
 end
