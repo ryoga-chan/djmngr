@@ -27,7 +27,7 @@ class Doujin < ApplicationRecord
   has_many :doujinshi_shelves, dependent: :delete_all
     has_many :shelves, through: :doujinshi_shelves
   
-  has_many :processable_doujin_dupes
+  has_many :processable_doujin_dupes, dependent: :delete_all
     has_many :processable_doujinshi, through: :processable_doujin_dupes
   
   has_paper_trail only: %i[ name name_romaji name_orig ], on: %i[ update ]
