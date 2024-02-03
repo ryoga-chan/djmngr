@@ -58,6 +58,29 @@ $('input.update-name').change(function () {
   });
 });
 
+// remote update notes for ProcessableDoujin
+$('input.pd-notes').change(function () {
+  var el = $(this);
+  
+  $.ajax({
+    url: el.data('url'),
+    data: { text: el.val().trim() },
+    method: 'POST',
+    dataType: 'json',
+    cache: false,
+    beforeSend: function () {
+      el.val( el.val().trim() );
+      el.addClass('is-hidden').after(p_bar);
+    },//beforeSend
+    success: function (resp) {
+      if (resp.result != 'ok')
+        alert(resp.msg || 'Server error!');
+    },//success
+    complete: function () { el.removeClass('is-hidden').next().remove(); },//complete
+    error: function () { alert('Server error!'); }//error
+  });
+});
+
 
 if ($('body').data('ctrl') +'/'+ $('body').data('action') == 'process/index') {
   // add page shortcuts

@@ -556,6 +556,12 @@ class ProcessController < ApplicationController
     end
   end # rename_file
   
+  def pd_notes
+    ProcessableDoujin.find_by(id: params[:id])&.update(notes: params[:text].to_s[0...255].strip) ?
+      render(json: {result: 'ok'}) :
+      render(json: {result: 'err', msg: "item not found" })
+  end # pd_notes
+  
   def show_image
     sub_path = File.expand_path(params[:path], '/')[1..-1] # sanitize input
     send_file File.join(@dname, 'contents', sub_path),

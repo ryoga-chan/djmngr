@@ -45,6 +45,7 @@ Rails.application.routes.draw do
       get     :process_later
       post    :add_files
       delete  :group_rm
+      post    :pd_notes
     end # member
   end # resources :process
 

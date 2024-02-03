@@ -190,6 +190,10 @@ class ProcessArchiveDecompressJob < ApplicationJob
     
     # parse the title from batch processing or the relative filename
     fname = info[:title] || File.basename(info[:relative_path].to_s).downcase
+    
+    # copy notes from ProcessableDoujin
+    notes = ProcessableDoujin.find_by(name: info[:relative_path].to_s)&.notes
+    info[:notes] = notes if notes
 
     # auto associate doujin authors/circles when a 100% match is found
     name = fname.parse_doujin_filename
