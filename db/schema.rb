@@ -167,6 +167,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_01_164045) do
     t.datetime "mtime"
     t.integer "images"
     t.integer "cover_phash"
+    t.string "notes"
   end
 
   create_table "settings", force: :cascade do |t|
