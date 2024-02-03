@@ -41,12 +41,22 @@
   %td
     %a{name: "row_#{idx}"}
     .name
+      - bt_copy = capture do
+        = link_to('#', title: 'copy file name',
+          onclick: %Q|jQuery.myapp.copy_to_clipboard( jQuery(this).prev().text().trim() ); return false|,
+          class: 'button is-info is-rounded is-small tiny-bt ml-2') do
+          %span.icon.is-small
+            %i.mi.mi-small content_copy
+      
       - if @group_sort && is_doujin
         = link_to f.name, doujin_path(f), target: :_blank
+        = bt_copy
       - else
         - if @preparing_paths.include?(f.name)
           %span.tag.is-warning(title="processing") 🛠
         = link_to f.name, action: :prepare_archive, path: f.name
+        = bt_copy
+        
         - unless has_thumb
           = link_to({job: :preview, id: f.id, page: params[:page]}, title: 'generate file preview',
             class: 'button is-info is-rounded is-small tiny-bt ml-2') do
@@ -54,6 +64,7 @@
               %i.mi.mi-small preview
         - unless f.name.starts_with?(DJ_DIR_PROCESS_LATER) || f.name.starts_with?(DJ_DIR_REPROCESS)
           = link_to(process_later_process_path(id: f.id), title: 'process later',
+            data: { confirm: 'Process this file later?' },
             class: 'button is-info is-rounded is-small tiny-bt ml-2') do
             %span.icon.is-small
               %i.mi.mi-small fast_forward
@@ -70,6 +81,7 @@
           %span
             ungroup @
             = "##{local_assigns[:pair_data].pd_parent_id}"
+
 - if @group_sort && is_doujin
   %tr.sample.freezeframe
     %td
@@ -79,13 +91,16 @@
           %figure.image.is2by3
             = link_to image_tag(f.thumb_path, loading: :lazy, decoding: :async),
               image_doujin_path(f, page: 0), target: :_blank
-- elsif has_thumb
-  %tr.sample
+- else
+  %tr
     %td
     %td(colspan=3)
-      %figure.image
-        = link_to f.thumb_url(mobile: true), target: :_blank do
-          %picture
-            %source{media: "(min-width: 769px)", srcset: f.thumb_url(mobile: false) }/
-            %source{media: "(min-width: 320px)", srcset: f.thumb_url(mobile: true ) }/
-            %img{src: f.thumb_url(mobile: true)}/
+      %input.input.is-small.pd-notes{value: f.notes, tabindex: (900+idx), placeholder: :notes, maxlength: 255, data: {url: pd_notes_process_path(f.id)}}
+      
+      - if has_thumb
+        %figure.image.sample.mt-2
+          = link_to f.thumb_url(mobile: true), target: :_blank do
+            %picture
+              %source{media: "(min-width: 769px)", srcset: f.thumb_url(mobile: false) }/
+              %source{media: "(min-width: 320px)", srcset: f.thumb_url(mobile: true ) }/
+              %img{src: f.thumb_url(mobile: true)}/
