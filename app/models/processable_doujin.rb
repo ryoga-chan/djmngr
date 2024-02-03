@@ -4,11 +4,11 @@ class ProcessableDoujin < ApplicationRecord
   THUMBS_CHUNK = 3
   THUMB_FOLDER = 'samples'
   
-  has_many :processable_doujin_dupes_childs , foreign_key: :pd_parent_id, class_name: 'ProcessableDoujinDupe', dependent: :delete_all
   has_many :processable_doujin_dupes_parents, foreign_key: :pd_child_id , class_name: 'ProcessableDoujinDupe', dependent: :delete_all
-  
-  has_many :processable_doujin_parents, through: :processable_doujin_dupes_parents
-  has_many :processable_doujin_childs , through: :processable_doujin_dupes_childs
+  has_many :processable_doujin_dupes_childs , foreign_key: :pd_parent_id, class_name: 'ProcessableDoujinDupe', dependent: :delete_all
+    has_many :processable_doujin_parents, through: :processable_doujin_dupes_parents
+    has_many :processable_doujin_childs , through: :processable_doujin_dupes_childs
+    has_many :doujinshi                 , through: :processable_doujin_dupes_childs
   
   after_destroy :delete_files
   

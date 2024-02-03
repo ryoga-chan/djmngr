@@ -31,10 +31,15 @@ class ProcessIndexGroupJob < ProcessIndexRefreshJob
       puts(ris) if i % print_info_freq == 0
       
       ProcessableDoujin.transaction do
-        CoverMatchingJob.find(ProcessableDoujin, pd.cover_phash_hex).each do |id, perc|
+        CoverMatchingJob.find(ProcessableDoujin, pd.cover_phash_hex, from_id: pd.id).each do |id, perc|
           next if pd.id == id
           ids = [pd.id, id].sort
           pdd = ProcessableDoujinDupe.find_or_initialize_by(pd_parent_id: ids[0], pd_child_id: ids[1])
+          pdd.update likeness: perc
+        end # each dupe
+        
+        CoverMatchingJob.find(Doujin, pd.cover_phash_hex).each do |id, perc|
+          pdd = ProcessableDoujinDupe.find_or_initialize_by(pd_parent_id: pd.id, doujin_id: id)
           pdd.update likeness: perc
         end # each dupe
       end # transaction

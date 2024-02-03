@@ -45,9 +45,8 @@ class ProcessIndexRefreshJob < ApplicationJob
     m = ProcessableDoujin
     
     m_group = m.
-      eager_load(:processable_doujin_childs, :processable_doujin_dupes_childs).
-      where(id: ProcessableDoujinDupe.distinct.select(:pd_parent_id)).
-      where.not(id: ProcessableDoujinDupe.distinct.select(:pd_child_id))
+      eager_load(:processable_doujin_dupes_childs, :processable_doujin_childs, :doujinshi).
+      where(id: ProcessableDoujinDupe.distinct.select(:pd_parent_id))
     
     order_clause = case order
       when 'name'    .freeze then m.order :name

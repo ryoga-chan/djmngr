@@ -58,7 +58,7 @@ class CoverMatchingJob < ApplicationJob
     FileUtils.rm_f File.join(Setting['dir.sorting'], "#{image_hash}.yml").to_s
   end # self.rm_results_file
   
-  def self.find(model, phash, max_distance: MAX_HAMMING_DISTANCE)
+  def self.find(model, phash, max_distance: MAX_HAMMING_DISTANCE, from_id: 0)
     # https://stackoverflow.com/questions/2281580/is-there-any-way-to-convert-an-integer-3-in-decimal-form-to-its-binary-equival/2310694#2310694
     # https://stackoverflow.com/questions/49601249/string-to-binary-and-back-using-pure-sqlite
     # GENERATE TERMS: puts (0..63).map{|i| "(x>>#{i.to_s.rjust 2}&1)" }.each_slice(5).map{|s| s.join(' + ') }.join(" +\n")
@@ -88,6 +88,7 @@ class CoverMatchingJob < ApplicationJob
                , cover_phash  AS b
           FROM #{model.table_name}
           WHERE cover_phash IS NOT NULL
+            AND id > #{from_id}
         )
       )
       WHERE hamming_distance < #{max_distance.to_i}
