@@ -25,7 +25,10 @@ class Doujin < ApplicationRecord
   }
   
   has_many :doujinshi_shelves, dependent: :delete_all
-  has_many :shelves, through: :doujinshi_shelves
+    has_many :shelves, through: :doujinshi_shelves
+  
+  has_many :processable_doujin_dupes
+    has_many :processable_doujinshi, through: :processable_doujin_dupes
   
   has_paper_trail only: %i[ name name_romaji name_orig ], on: %i[ update ]
   
@@ -46,6 +49,8 @@ class Doujin < ApplicationRecord
   
   # attribute used to store cover matching similarity based on hamming distance of pHashes
   attr_internal_accessor :cover_similarity
+  
+  def images = num_images
   
   def sanitize_fields
     self.scored_at = Time.now if score_changed?
