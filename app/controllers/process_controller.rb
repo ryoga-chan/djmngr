@@ -369,6 +369,7 @@ class ProcessController < ApplicationController
       @info[:dest_romaji   ] = d.name_romaji if d.name_romaji.present?
       @info[:dest_title_eng] = d.name_eng    if d.name_eng   .present?
       @info[:dest_filename ] = d.file_name
+      @info[:score         ] = d.score
       File.atomic_write(File.join @dname, 'info.yml'){|f| f.puts @info.to_yaml }
       return redirect_to({tab: :ident}, notice: "relations and folders cloned")
     end
