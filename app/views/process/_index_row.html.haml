@@ -70,17 +70,24 @@
               %i.mi.mi-small fast_forward
     - if f.name != f.name_kakasi
       .name_kakasi.is-size-7= f.name_kakasi
-    - if @group_sort && local_assigns[:pair_data]
+    - if @group_sort
       .grop-actions
-        = link_to(group_rm_process_path(id: local_assigns[:pair_data].id,
-                                        page: params[:page], sort_by: params[:sort_by], row: idx),
-          method: :delete, data: { confirm: 'Remove file from group?' },
-          title: 'remove from group', class: 'button is-info is-rounded is-small ml-2 mt-2') do
-          %span.icon.is-small
-            %i.mi.mi-small remove
-          %span
-            ungroup @
-            = "##{local_assigns[:pair_data].pd_parent_id}"
+        - if local_assigns[:pair_data].nil?
+          %a.button.is-info.is-rounded.is-small.ml-2.mt-2(href="#" disabled title="can't ungroup the reference file")
+            %span.icon.is-small
+              %i.mi.mi-small remove
+            %span= "ungroup #{f.id} @ ##{f.id}"
+        - else
+          = link_to(group_rm_process_path(id: local_assigns[:pair_data].id,
+                                          page: params[:page], sort_by: params[:sort_by], row: idx),
+            method: :delete, data: { confirm: 'Remove file from group?' },
+            title: 'remove from group', class: 'button is-info is-rounded is-small ml-2 mt-2') do
+            %span.icon.is-small
+              %i.mi.mi-small remove
+            %span
+              ungroup
+              = is_doujin ? "[#{f.id}]" : f.id
+              = "@ ##{local_assigns[:pair_data].pd_parent_id}"
 
 - if @group_sort && is_doujin
   %tr.sample.freezeframe
