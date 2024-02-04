@@ -122,7 +122,7 @@
                       .column.is-2
                         %hr.has-background-grey
                       .column.is-4.has-text-centered.has-text-grey.has-text-weight-bold
-                        = "##{f.id} (#{f.processable_doujin_childs.size + 1})"
+                        = "##{f.id} (#{f.processable_doujin_dupes_childs.size + 1})"
                       .column
                         %hr.has-background-grey
               = render partial: 'index_row', locals: { f: f, idx: idx+=1 }
