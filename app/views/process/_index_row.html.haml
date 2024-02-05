@@ -33,6 +33,9 @@
       .images
         = f.images
         P
+    - mean_page_weight = (f.size.to_f / f.images)
+    - if mean_page_weight > 0.6.megabytes
+      .tag.is-warning.is-size-8= "#{number_to_human_size mean_page_weight}/P"
   %td.batch
     - if @group_sort && is_doujin
       = render partial: 'doujin_actions', locals: { d: f, vertical: true }
@@ -79,6 +82,7 @@
             %span= "ungroup #{f.id} @ ##{f.id}"
         - else
           = link_to(group_rm_process_path(id: local_assigns[:pair_data].id,
+                                          parent_id: local_assigns[:pair_data].pd_parent_id,
                                           page: params[:page], sort_by: params[:sort_by], row: idx),
             method: :delete, data: { confirm: 'Remove file from group?' },
             title: 'remove from group', class: 'button is-info is-rounded is-small ml-2 mt-2') do
