@@ -1,5 +1,5 @@
 class ProcessController < ApplicationController
-  GROUP_EPP = 5 # entries per page when using group order
+  GROUP_EPP = 10 # entries per page when using group order
   JOBS = %w{ clear_job refresh preview group }.freeze
 
   before_action :check_archive_file,
@@ -11,13 +11,6 @@ class ProcessController < ApplicationController
 
   # list processable files
   def index
-    # save and keep previous sort order
-    if params[:sort_by].present?
-      session['process.index.sort_by'] = params[:sort_by]
-    elsif session['process.index.sort_by'].present?
-      return redirect_to(action: :index, sort_by: session['process.index.sort_by'], page: params[:page])
-    end
-
     # run requested job
     if JOBS.include?(params[:job])
       case params[:job]
@@ -32,6 +25,13 @@ class ProcessController < ApplicationController
       return redirect_to(action: :index, sort_by: session['process.index.sort_by'], page: params[:page])
     end
     
+    # save and keep previous sort order
+    if params[:sort_by].present?
+      session['process.index.sort_by'] = params[:sort_by]
+    elsif session['process.index.sort_by'].present?
+      return redirect_to(action: :index, sort_by: session['process.index.sort_by'], page: params[:page])
+    end
+
     if ProcessIndexRefreshJob.lock_file? # jobs: Refresh, Preview
       @refreshing       = true
       @refresh_progress = ProcessIndexRefreshJob.progress.to_s.split ' | '.freeze
@@ -379,7 +379,7 @@ class ProcessController < ApplicationController
     
     if %w{ dupes move }.include?(params[:tab])
       # current file stats
-      f_size = helpers.number_to_human_size File.size(@info[:file_path])
+      f_size = helpers.number_to_human_size @info[:file_size]
       f_imgs = @info[:images].size
       @cur_info = "#{f_imgs} pics/#{f_size}"
     end
@@ -501,7 +501,7 @@ class ProcessController < ApplicationController
           
           c_size = helpers.number_to_human_size File.size(collection_file_path)
           c_imgs = doujin.try(:num_images) || 'N.D.'
-          f_size = helpers.number_to_human_size File.size(@info[:file_path])
+          f_size = helpers.number_to_human_size @info[:file_size]
           f_imgs = @info[:images].size
           
           @collision_info = { collection: "#{c_imgs} pics/#{c_size}", current: "#{f_imgs} pics/#{f_size}", doujin: doujin }
