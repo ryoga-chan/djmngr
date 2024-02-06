@@ -125,6 +125,7 @@
                         = "##{f.id} (#{f.processable_doujin_dupes_childs.size + 1})"
                       .column
                         %hr.has-background-grey
+                %tr
               = render partial: 'index_row', locals: { f: f, idx: idx+=1 }
               - if @group_sort
                 - f.processable_doujin_childs.sort{|a,b| a.name <=> b.name }.each do |f_child|
