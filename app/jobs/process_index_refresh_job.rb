@@ -126,27 +126,25 @@ class ProcessIndexRefreshJob < ApplicationJob
         ProcessableDoujinDupe .truncate_and_restart_sequence
       end
       
-      files_ids = []
+      self.class.progress_update step: 1, steps: 3, msg: 'listing db files'
+      files_db   = ProcessableDoujin.order(:name).pluck :name
+      
+      self.class.progress_update step: 2, steps: 3, msg: 'listing disk files'
+      files_glob = File.join Setting['dir.to_sort'], '**', '*.zip'
+      files      = Dir[files_glob].sort
       
       # add new files
-      files_glob = File.join Setting['dir.to_sort'], '**', '*.zip'
-      files = Dir[files_glob].sort
       files.each_with_index do |f, i|
         self.class.progress_update step: i+1, steps: files.size
         
-        realtive_path = Pathname.new(f).relative_path_from(Setting['dir.to_sort']).to_s
-        pd = ProcessableDoujin.find_by(name: realtive_path)
-        pd = self.class.add_entry(f) unless pd
-        files_ids << pd.id
+        name = Pathname.new(f).relative_path_from(Setting['dir.to_sort']).to_s
+        self.class.add_entry(f) unless files_db.delete(name)
       end
       
       # remove vanished files
-      files_ids.sort!
-      num_pd = ProcessableDoujin.count
-      ProcessableDoujin.order(:id).find_each.with_index do |pd, i|
-        self.class.progress_update step: i+1, steps: num_pd, msg: :'deindexing vanished files'
-        next if files_ids.include?(pd.id)
-        pd.destroy
+      files_db.each_with_index do |name, i|
+        self.class.progress_update step: i+1, steps: files_db.size, msg: :'deindexing vanished files'
+        ProcessableDoujin.find_by(name: name)&.destroy
       end
     end # transaction
   end # perform
