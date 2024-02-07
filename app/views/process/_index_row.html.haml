@@ -33,9 +33,9 @@
       .images
         = f.images
         P
-    - mean_page_weight = (f.size.to_f / f.images)
-    - if mean_page_weight > 0.6.megabytes
-      .tag.is-warning.is-size-8= "#{number_to_human_size mean_page_weight}/P"
+      - mean_page_weight = (f.size.to_f / f.images)
+      - if mean_page_weight > 0.6.megabytes
+        .tag.is-warning.is-size-8= "#{number_to_human_size mean_page_weight}/P"
   %td.batch
     - if @group_sort && is_doujin
       = render partial: 'doujin_actions', locals: { d: f, vertical: true }

@@ -9,7 +9,7 @@ class ProcessIndexGroupJob < ProcessIndexRefreshJob
     # generate covers fingerprints
     rel = ProcessableDoujin.where(cover_phash: nil)
     num_entries = rel.count
-    print_info_freq = [num_entries / 100, 10].min
+    print_info_freq = [num_entries / 100 + 1, 10].max
     rel.find_each.with_index do |pd, i|
       break if Rails.env.development? && i >= DEVEL_LIMIT
     
@@ -23,7 +23,7 @@ class ProcessIndexGroupJob < ProcessIndexRefreshJob
     last_id = ProcessableDoujinDupe.maximum(:pd_parent_id)
     rel = ProcessableDoujin.where.not(cover_phash: nil).where("id >= ?", last_id)
     num_entries = rel.count
-    print_info_freq = [num_entries / 100, 10].min
+    print_info_freq = [num_entries / 100 + 1, 10].max
     rel.select("id, PRINTF('%016x', cover_phash) AS cover_phash_hex").find_each.with_index do |pd, i|
       break if Rails.env.development? && i >= DEVEL_LIMIT
     
