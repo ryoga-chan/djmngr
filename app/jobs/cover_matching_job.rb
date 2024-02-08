@@ -88,7 +88,7 @@ class CoverMatchingJob < ApplicationJob
                , cover_phash  AS b
           FROM #{model.table_name}
           WHERE cover_phash IS NOT NULL
-            AND id > #{from_id}
+            AND id > #{from_id.to_i}
         )
       )
       WHERE hamming_distance < #{max_distance.to_i}
