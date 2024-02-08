@@ -90,18 +90,21 @@
                   %span prepare
                   %span.tot-file-size.is-size-8.ml-1
               .control
-                = link_to({job: :refresh}, class: 'bt-index bt-reindex button is-info is-small') do
+                = link_to({job: :refresh}, class: 'bt-index bt-reindex button is-info is-small',
+                          data: {confirm: 'Rescan to-sort folder?'}) do
                   %span.icon.is-small
                     %i.mi.mi-small refresh
                   %span refresh
               .control
-                = link_to({job: :preview, sort_by: params[:sort_by], page: params[:page]}, class: 'bt-index bt-preview button is-info is-small') do
+                = link_to({job: :preview, sort_by: params[:sort_by], page: params[:page]},
+                          data: {confirm: 'Generate previews for two pages of entries?'},
+                          class: 'bt-index bt-preview button is-info is-small') do
                   %span.icon.is-small
                     %i.mi.mi-small preview
                   %span preview
               .control
                 = link_to({job: :group}, class: 'bt-index bt-groups button is-info is-small',
-                          data: {confirm: 'Hash and compare all covers to enable "sort by group" mode?'}) do
+                          data: {confirm: 'Compare all covers enabling "sort by group" mode?'}) do
                   %span.icon.is-small
                     %i.mi.mi-small preview
                   %span group
