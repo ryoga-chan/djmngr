@@ -1,7 +1,8 @@
 - has_thumb = File.exist?(f.thumb_path)
 - is_doujin = f.is_a? Doujin
+- tr_class  = cycle :odd, :even
 
-%tr{data: {id: f.id}}
+%tr{class: tr_class, data: {id: f.id}}
   %td.rm-or-batch
     - if @group_sort && is_doujin
       .likeness.is-size-7
@@ -52,7 +53,7 @@
             %i.mi.mi-small content_copy
       
       - if @group_sort && is_doujin
-        = link_to f.name, doujin_path(f), target: :_blank
+        = link_to f.file_dl_name(omit_ext: true), doujin_path(f), target: :_blank
         = bt_copy
       - else
         - if @preparing_paths.include?(f.name)
@@ -71,8 +72,14 @@
             class: 'button is-info is-rounded is-small tiny-bt ml-2') do
             %span.icon.is-small
               %i.mi.mi-small fast_forward
-    - if f.name != f.name_kakasi
-      .name_kakasi.is-size-7= f.name_kakasi
+    - if @group_sort && is_doujin
+      - if f.name_romaji.present?
+        .name_kakasi.is-size-7= f.name_romaji
+      - if f.name_eng.present?
+        .name_eng.is-italic.is-size-7= f.name_eng
+    - else
+      - if f.name != f.name_kakasi
+        .name_kakasi.is-size-7= f.name_kakasi
     - if @group_sort
       .grop-actions
         - if local_assigns[:pair_data].nil?
@@ -94,7 +101,7 @@
               = "@ ##{local_assigns[:pair_data].pd_parent_id}"
 
 - if @group_sort && is_doujin
-  %tr.sample.freezeframe
+  %tr.sample.freezeframe{class: tr_class}
     %td
     %td(colspan=3)
       .columns
@@ -103,7 +110,7 @@
             = link_to image_tag(f.thumb_path, loading: :lazy, decoding: :async),
               image_doujin_path(f, page: 0), target: :_blank
 - else
-  %tr
+  %tr{class: tr_class}
     %td
     %td(colspan=3)
       %input.input.is-small.pd-notes{value: f.notes, tabindex: (900+idx), placeholder: :notes, maxlength: 255, data: {url: pd_notes_process_path(f.id)}}
