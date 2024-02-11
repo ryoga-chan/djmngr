@@ -66,7 +66,8 @@ function search () {
                 <a href="https://e-hentai.org/g/${this.gid}/${this.token}/" target="_blank">view</a>
               </div>
               <div class="mb-1 has-text-weight-bold">${this.title || this.error || '--'}</div>
-              <div class="is-italic">${this.title_jpn || this.error || '--'}</div>
+              <div>${this.title_jpn || this.error || '--'}</div>
+              <div class="is-italic">${this.title_eng}</div>
             </div>
           </div>
         `).appendTo(list).
