@@ -9,7 +9,7 @@ Rails.application.config.after_initialize do
         { key: 'dir.sorted'       , value: Rails.root.join('dj-libray', 'sorted' ).to_s, notes: 'folder containing processed doujinshi' },
         { key: 'reading_direction', value: 'r2l'      , notes: 'default reading direction' }, # r2l, l2r
         { key: 'reading_bg_color' , value: 'dark'     , notes: 'default reading background color' }, # white, smoke, dark, black
-        { key: 'epub_devices'     , value: 'Kobo_Sage@1440x1920, Kobo_Glo@758x1024', notes: 'screen dimension of your devices, used for epub creation' },
+        { key: 'epub_devices'     , value: 'Kobo_Sage@1440x1920, Kobo_Glo@758x1024', notes: 'screen dimension of your devices, used for epub creation\ninput format = Name@WxH, Name2@WxH, ...' },
         { key: 'comics_viewer'    , value: 'mcomix -f', notes: 'application for reading CBZ files (comic book viewer)' },
         { key: 'file_manager'     , value: 'thunar'   , notes: 'application for browsing files (file manager)' },
         { key: 'file_picker'      , value: "zenity --file-selection --file-filter='*.zip *.cbz'", notes: 'application for file selection (prints file path to stdout)' },
@@ -21,6 +21,7 @@ Rails.application.config.after_initialize do
         { key: 'process_img_sel'  , value: '-', notes: 'image selection mode for "Images" tab in process section' },
         { key: 'process_epp'      , value: 25, notes: 'entries per page in process section' },
         { key: 'basic_auth'       , value: '', notes: 'enable basic auth for PCs, input format = "user:password"' },
+        { key: 'ehentai_auth'     , value: '', notes: 'optional ehentai credentials, input format = "user:password"' },
         { key: 'search_engine.00' , value: 'DD|https://duckduckgo.com/?q=', notes: 'search engine url, input format = "[-]label|url"' },
         { key: 'search_engine.01' , value: '-GG|https://www.google.com/search?q=', notes: 'search engine url, input format = "[-]label|url"' },
         { key: 'search_engine.02' , value: 'MU|https://www.mangaupdates.com/authors.html?search=', notes: 'search engine url, input format = "[-]label|url"' },
