@@ -78,17 +78,18 @@
     :javascript
       setTimeout(function () { window.location.reload(); }, 1000)
 
-  = link_to inspect_folder_process_path(run: :file_manager, format: :json), remote: true,
-    class: "button run-progr is-info mr-3 is-hidden-touch", target: :_blank do
-    %span.icon.is-small
-      %i.mi folder
-    %span inspect folder
-  
-  = link_to inspect_folder_process_path(run: :terminal, format: :json), remote: true,
-    class: "button run-progr is-info mr-3 is-hidden-touch", target: :_blank do
-    %span.icon.is-small
-      %i.mi terminal
-    %span open in terminal
+  - unless DOCKER_VM
+    = link_to inspect_folder_process_path(run: :file_manager, format: :json), remote: true,
+      class: "button run-progr is-info mr-3 is-hidden-touch", target: :_blank do
+      %span.icon.is-small
+        %i.mi folder
+      %span inspect folder
+    
+    = link_to inspect_folder_process_path(run: :terminal, format: :json), remote: true,
+      class: "button run-progr is-info mr-3 is-hidden-touch", target: :_blank do
+      %span.icon.is-small
+        %i.mi terminal
+      %span open in terminal
   
   = link_to 'show metadata', '#', class: 'button is-info',
     onclick: %Q|$(this).hide().next().removeClass('is-hidden'); return false|
