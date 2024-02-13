@@ -40,7 +40,7 @@ RUN set -x \
 # install required packages for the build steps
   && apt-get install ${APT_OPTS} \
     build-essential sqlite3 nodejs wget \
-    libvips-dev libkakasi2-dev libjpeg-dev libpng-dev webp \
+    libvips-dev libkakasi2-dev libjpeg62-turbo-dev libpng-dev  webp \
 # cleanup cache
   && rm -rf /var/lib/apt/lists/*
 
@@ -73,7 +73,7 @@ RUN set -x \
 # install required packages for runtime
   && apt-get install ${APT_OPTS} \
     sqlite3 webp zip unzip findutils grep coreutils \
-    libvips42 libkakasi2-dev libjpeg62-turbo libpng16-16 webp imagemagick \
+    libvips42   libkakasi2     libjpeg62-turbo     libpng16-16 webp imagemagick \
     nginx s6 execline \
 # add a new user
   && adduser --gecos "" --disabled-password rails \
