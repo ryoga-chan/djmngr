@@ -3,9 +3,9 @@ version: "3.7"
 # GUIDE: https://docs.docker.com/get-started/08_using_compose/
 services:
   djmngr:
-    image: ryogachan/djmngr
+    image: ryogachan/djmngr:latest
     volumes:
-      - /path/to/db:/app/db
+      - /path/to/db:/app/storage
       - /path/to/library:/app/dj-library
       - /path/to/epub:/app/public/epub
       - /path/to/thumbs:/app/public/thumbs
