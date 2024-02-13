@@ -4,9 +4,9 @@ Rails.application.config.after_initialize do
     if Setting.table_exists?
       # create default settings
       [
-        { key: 'dir.to_sort'      , value: Rails.root.join('dj-libray', 'to-sort').to_s, notes: 'folder containing doujinshi to process' },
-        { key: 'dir.sorting'      , value: Rails.root.join('dj-libray', 'sorting').to_s, notes: 'folder containing doujinshi under process' },
-        { key: 'dir.sorted'       , value: Rails.root.join('dj-libray', 'sorted' ).to_s, notes: 'folder containing processed doujinshi' },
+        { key: 'dir.to_sort'      , value: Rails.root.join('dj-library', 'to-sort').to_s, notes: 'folder containing doujinshi to process' },
+        { key: 'dir.sorting'      , value: Rails.root.join('dj-library', 'sorting').to_s, notes: 'folder containing doujinshi under process' },
+        { key: 'dir.sorted'       , value: Rails.root.join('dj-library', 'sorted' ).to_s, notes: 'folder containing processed doujinshi' },
         { key: 'reading_direction', value: 'r2l'      , notes: 'default reading direction' }, # r2l, l2r
         { key: 'reading_bg_color' , value: 'dark'     , notes: 'default reading background color' }, # white, smoke, dark, black
         { key: 'epub_devices'     , value: 'Kobo_Sage@1440x1920, Kobo_Glo@758x1024', notes: 'screen dimension of your devices, used for epub creation\ninput format = Name@WxH, Name2@WxH, ...' },
