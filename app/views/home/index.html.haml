@@ -98,13 +98,14 @@
             %i.mi casino
           %span best
 
-      = link_to random_shelves_path(run: :batch_comics_viewer, format: :json),
-        remote: true, title: 'best sample slideshow',
-        class: 'button is-info is-rounded mt-3 mx-1 run-progr is-hidden-touch' do
-        %span.icon-text
-          %span.icon
-            %i.mi casino
-          %span shelf
+      - unless DOCKER_VM
+        = link_to random_shelves_path(run: :batch_comics_viewer, format: :json),
+          remote: true, title: 'best sample slideshow',
+          class: 'button is-info is-rounded mt-3 mx-1 run-progr is-hidden-touch' do
+          %span.icon-text
+            %span.icon
+              %i.mi casino
+            %span shelf
   
     %hr.is-hidden-tablet.my-0.mt-3
     

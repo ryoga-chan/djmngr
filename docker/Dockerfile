@@ -27,6 +27,7 @@ ENV LC_ALL              C.UTF-8
 ENV RAILS_ENV           production
 ENV BUNDLE_PATH         $BUNDLE_PATH
 ENV BUNDLE_WITHOUT      development
+ENV DOCKER_RUNNING      true
 # enforce the presense of Gemfile.lock
 #ENV BUNDLE_DEPLOYMENT   1
 

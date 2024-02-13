@@ -26,18 +26,19 @@
     .field.has-addons
       %p.control= bt_read
       %p.control= bt_sample
-      %p.control
-        = link_to doujin_path(d, run: :comics_viewer, format: :json),
-            title: 'read with external viewer',
-            remote: true, class: 'button is-info is-rounded is-small tiny-bt run-progr' do
-          %span.icon.is-small
-            %i.mi.mi-small launch
-      %p.control
-        = link_to doujin_path(d, run: :file_manager, format: :json),
-            title: 'open in file manager',
-            remote: true, class: 'button run-progr is-info is-rounded is-small tiny-bt is-hidden-touch' do
-          %span.icon.is-small
-            %i.mi.mi-small folder
+      - unless DOCKER_VM
+        %p.control
+          = link_to doujin_path(d, run: :comics_viewer, format: :json),
+              title: 'read with external viewer',
+              remote: true, class: 'button is-info is-rounded is-small tiny-bt run-progr' do
+            %span.icon.is-small
+              %i.mi.mi-small launch
+        %p.control
+          = link_to doujin_path(d, run: :file_manager, format: :json),
+              title: 'open in file manager',
+              remote: true, class: 'button run-progr is-info is-rounded is-small tiny-bt is-hidden-touch' do
+            %span.icon.is-small
+              %i.mi.mi-small folder
       %p.control= bt_compare
   
   - if local_assigns[:vertical]

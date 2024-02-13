@@ -133,22 +133,23 @@
         %td
           .columns.is-vcentered
             .column= @doujin.file_path
-            .column.is-3.has-text-centered.is-hidden-touch
-              .field.has-addons
-                %p.control
-                  = link_to doujin_path(@doujin, run: :file_manager, format: :json),
-                      title: 'open folder in file manager',
-                      remote: true, class: 'bt-fm button run-progr is-info is-rounded' do
-                    %span.icon
-                      %i.mi.mi-small folder
-                    %span FM
-                %p.control
-                  = link_to doujin_path(@doujin, run: :terminal, format: :json),
-                      title: 'open folder in terminal',
-                      remote: true, class: 'bt-term button run-progr is-info is-rounded' do
-                    %span.icon
-                      %i.mi.mi-small terminal
-                    %span Term
+            - unless DOCKER_VM
+              .column.is-3.has-text-centered.is-hidden-touch
+                .field.has-addons
+                  %p.control
+                    = link_to doujin_path(@doujin, run: :file_manager, format: :json),
+                        title: 'open folder in file manager',
+                        remote: true, class: 'bt-fm button run-progr is-info is-rounded' do
+                      %span.icon
+                        %i.mi.mi-small folder
+                      %span FM
+                  %p.control
+                    = link_to doujin_path(@doujin, run: :terminal, format: :json),
+                        title: 'open folder in terminal',
+                        remote: true, class: 'bt-term button run-progr is-info is-rounded' do
+                      %span.icon
+                        %i.mi.mi-small terminal
+                      %span Term
 
       %tr
         %th Orig.
@@ -197,13 +198,14 @@
                 %span.icon
                   %i.mi.mi-small chrome_reader_mode
                 %span= @doujin.read_pages.to_i > 0 ? "Read (#{@doujin.percent_read.round}%)" : :Read
-            %p.control.is-hidden-touch
-              = link_to doujin_path(@doujin, run: :comics_viewer, format: :json),
-                  title: 'read with external viewer',
-                  remote: true, class: 'bt-reader button run-progr is-info is-rounded' do
-                %span.icon
-                  %i.mi.mi-small launch
-                %span Reader
+            - unless DOCKER_VM
+              %p.control.is-hidden-touch
+                = link_to doujin_path(@doujin, run: :comics_viewer, format: :json),
+                    title: 'read with external viewer',
+                    remote: true, class: 'bt-reader button run-progr is-info is-rounded' do
+                  %span.icon
+                    %i.mi.mi-small launch
+                  %span Reader
             %p.control
               - ts = Time.now.to_i
               = link_to doujin_path(@doujin, sample: ts, anchor: "sample-#{ts}"), class: 'bt-sample button is-info is-rounded' do
