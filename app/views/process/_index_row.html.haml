@@ -54,6 +54,10 @@
       
       - if @group_sort && is_doujin
         = link_to f.file_dl_name(omit_ext: true), doujin_path(f), target: :_blank
+        %span.is-size-7
+          &middot;
+          = f.score || :'--'
+          &star;
         = bt_copy
       - else
         - if @preparing_paths.include?(f.name)
