@@ -5,10 +5,13 @@ body[data-ctrl="process"][data-action="index"] {
     tr {
       border-style: solid;
       border-width: 0 0.1rem;
+      td { border-bottom-width: 0; }
     }
     tr.sep  { border-color: #999; }
-    tr.odd  { border-color: coral; }
     tr.even { border-color: mediumpurple; }
+    tr.odd  { border-color: coral; }
+    
+    tr:nth-child(2n) td {border-bottom-width: 1px; }
   }
 }
 
