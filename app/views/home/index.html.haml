@@ -15,7 +15,7 @@
             %span
               = number_with_delimiter @stats[:dj], delimiter: "'"
               \/
-              = number_to_human_size @stats[:dj_size]
+              = number_to_human_size @stats[:dj_size], precision: 2, significant: false
         %span.tag.is-info
           %span.icon-text
             %span.icon
@@ -39,7 +39,7 @@
               = link_to process_index_path do
                 = number_with_delimiter @stats[:todo], delimiter: "'"
                 \/
-                = number_to_human_size @stats[:todo_size]
+                = number_to_human_size @stats[:todo_size], precision: 2, significant: false
         %span.tag.is-info
           %span.icon-text
             %span.icon

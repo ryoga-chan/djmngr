@@ -46,7 +46,9 @@
 
     -# files listing
     = form_with url: prepare_batch_process_index_path, method: :post do |f|
-      .title.is-size-4= "Processable archives (#{@files.total_count})"
+      .title
+        %span.is-size-4 Processable archives
+        %span.is-size-6.nowrap= "(#{@files.total_count} / #{number_to_human_size ProcessableDoujin.sum(:size), precision: 2, significant: false})"
       
       .columns.my-0
         .column.py-0.pb-2
