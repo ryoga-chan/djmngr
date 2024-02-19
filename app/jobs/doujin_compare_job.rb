@@ -3,13 +3,13 @@ class DoujinCompareJob < ApplicationJob
   THUMB_SIZE = { width: 320, height: 640 }.freeze # aspect 2/3, eg. 480x960
 
   queue_as :default
-  
+
   def self.data_file = File.join(Setting['dir.sorting'], 'comparison.yml'.freeze).to_s
-  
+
   def self.data
     comparison_data = YAML.unsafe_load_file(DoujinCompareJob.data_file) rescue []
     num_entries = comparison_data.size
-    
+
     # auto remove non existent entries
     comparison_data.delete_if do |entry|
       if entry[:source] == :process
@@ -22,10 +22,10 @@ class DoujinCompareJob < ApplicationJob
     if num_entries != comparison_data.size
       File.atomic_write(DoujinCompareJob.data_file){|f| f.puts comparison_data.to_yaml }
     end
-    
+
     comparison_data
   end # self.data
-  
+
   def self.remove(index)
     if index == 'all'.freeze
       FileUtils.rm_f DoujinCompareJob.data_file
@@ -38,11 +38,11 @@ class DoujinCompareJob < ApplicationJob
 
   def perform(rel_path: nil, full_path: nil, doujin: nil, mode: 'subset')
     comparison_data = DoujinCompareJob.data
-    
-    mode = 'subset' unless %w{ subset all }.include?(mode.to_s)
-    
+
+    mode = 'subset' unless %w[ subset all ].include?(mode.to_s)
+
     info = { images: [], max_height: 0 }
-    
+
     if full_path && rel_path && full_path.ends_with?(rel_path)
       return if comparison_data.any?{|entry| entry[:rel_path] == rel_path }
       info[:source   ] = :process
@@ -59,18 +59,18 @@ class DoujinCompareJob < ApplicationJob
     else
       return
     end
-    
+
     return unless File.exist?(info[:full_path])
-    
+
     Zip::File.open(info[:full_path]) do |zip|
       all_entries = zip.image_entries(sort: true)
-      
+
       thumb_entries = mode == 'all' ?
         all_entries : all_entries.pages_preview(chunk_size: CHUNK_SIZE)
-      
+
       info[:num_pages] = all_entries.size
       info[:sampled  ] = all_entries.size != thumb_entries.size
-      
+
       thumb_entries.each do |e|
         thumb = Vips::Image.webp_cropped_thumb \
           e.get_input_stream.read,
@@ -81,7 +81,7 @@ class DoujinCompareJob < ApplicationJob
         info[:images] << { name: e.name, data: Base64.encode64(thumb[:image].webpsave_buffer).chomp }
       end
     end
-    
+
     File.atomic_write(DoujinCompareJob.data_file){|f| f.puts comparison_data.push(info).to_yaml }
   end # perform
 end

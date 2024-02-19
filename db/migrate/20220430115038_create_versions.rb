@@ -12,17 +12,17 @@ class CreateVersions < ActiveRecord::Migration[7.0]
       t.bigint   :item_id,   null: false
       t.string   :event,     null: false
       t.string   :whodunnit
-      
+
       # https://github.com/paper-trail-gem/paper_trail#6d-excluding-the-object-column
       #t.text     :object, limit: TEXT_BYTES
-      
+
       # https://github.com/paper-trail-gem/paper_trail#3c-diffing-versions
       # record.versions.map(&:changeset)
       t.text     :object_changes#, limit: TEXT_BYTES
 
       t.datetime :created_at
     end
-    
-    add_index :versions, %i(item_type item_id)
+
+    add_index :versions, %i[item_type item_id]
   end
 end

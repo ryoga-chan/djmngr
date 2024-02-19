@@ -10,22 +10,22 @@ module CoreExt::Enumerable::Progressbar
       title:          'steps',
       format:         '%t: %J%% [%B] %e',
     }
-    
+
     def create_progressbar(options = {})
       ProgressBar.create PROGRESSBAR_OPTIONS.
         merge({ total: (respond_to?(:length) ? self.length : 100) }).
         merge(options)
     end # create_progressbar
-    
+
     # shortcut
     def self.create_progressbar(total, title = 'steps') = ProgressBar.
       create(PROGRESSBAR_OPTIONS.merge(total: total, title: title))
-    
+
     self.singleton_class.send :alias_method, :create_pb, :create_progressbar
-    
+
     def each_with_progressbar(options = {})
       pb = self.create_progressbar options
-      
+
       each do |item|
         result = yield item, pb
         pb.increment
@@ -34,10 +34,10 @@ module CoreExt::Enumerable::Progressbar
     end # each_with_progressbar --------------------------------------------------
     alias :each_with_pb           :each_with_progressbar
     alias :each_with_progress_bar :each_with_progressbar
-    
+
     def map_with_progressbar(options = {})
       pb = self.create_progressbar options
-      
+
       map do |item|
         result = yield item, pb
         pb.increment

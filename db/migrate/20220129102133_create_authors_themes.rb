@@ -6,7 +6,7 @@ class CreateAuthorsThemes < ActiveRecord::Migration[7.0]
 
       t.datetime   :created_at
     end
-    
-    add_index :authors_themes, %i{author_id theme_id}, unique: true # no duplicates
+
+    add_index :authors_themes, %i[author_id theme_id], unique: true # no duplicates
   end
 end

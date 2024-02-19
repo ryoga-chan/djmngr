@@ -4,7 +4,7 @@ $VERBOSE = nil
 # load './docs/import_initial_db.rb'
 
 # https://github.com/sparklemotion/sqlite3-ruby
-%w{ sqlite3 pp progressbar }.each{|l| require l }
+%w[ sqlite3 pp progressbar ].each{|l| require l }
 
 ActiveRecord::Base.logger.level = 1
 pb_opts = {title: 'record', starting_at: 0, total: 100, progress_mark:  '#', remainder_mark: '_', length: 79, format: '%t: %J%% [%B] %e'}

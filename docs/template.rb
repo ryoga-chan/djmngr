@@ -9,7 +9,7 @@
 require 'fileutils'
 
 FileUtils.mkdir 'docs', mode: 0755
-FileUtils.cp %w{ ../railsrc ../template.rb ../create-app.sh }, './docs/'
+FileUtils.cp %w[ ../railsrc ../template.rb ../create-app.sh ], './docs/'
 
 # --- setup gems ----------------------------------------------------------
 # https://guides.rubyonrails.org/asset_pipeline.html
@@ -33,16 +33,16 @@ append_to_file  'app/assets/config/manifest.js', "//= link_directory ../javascri
 
 create_file     'app/assets/javascripts/application.js' , ''
 append_to_file  'app/assets/javascripts/application.js' , "//= require jquery\n"
-# https://github.com/rails/rails-ujs ==> MOVED TO: 
+# https://github.com/rails/rails-ujs ==> MOVED TO:
 # https://github.com/rails/rails/tree/main/actionview/app/assets/javascripts
 append_to_file  'app/assets/javascripts/application.js' , "//= require rails-ujs\n"
 append_to_file  'app/assets/javascripts/application.js' , "//= require_tree .\n"
 
 gsub_file       'app/assets/stylesheets/application.css', /.+= require_.+$/, ''
 append_to_file  'app/assets/stylesheets/application.css', "//= require ./bulma/theme_darkly\n"
- 
+
 # use javascript_include_tag
-gsub_file 'app/views/layouts/application.html.erb', '  </head>', %Q|    <%= javascript_include_tag "application" %>\n  </head>|
+gsub_file 'app/views/layouts/application.html.erb', '  </head>', %Q(    <%= javascript_include_tag "application" %>\n  </head>)
 
 # compress JS files in production
 environment 'config.assets.js_compressor  = :uglify', env: 'production'
@@ -56,13 +56,13 @@ after_bundle do
   # convert layout from ERB to HAML
   rails_command 'generate haml:application_layout convert'
   remove_file   'app/views/layouts/application.html.erb'
-  
+
   # default landing page
   rails_command 'generate controller home index'
   route "root 'home#index'"
 
   append_to_file '.gitignore', "\nGemfile.lock\n"
-  
+
   create_file 'app/models/current.rb', <<~'RUBY'
     # https://api.rubyonrails.org/classes/ActiveSupport/CurrentAttributes.html
     # https://stackoverflow.com/questions/2513383/access-current-user-in-model#2513456
@@ -72,7 +72,7 @@ after_bundle do
   RUBY
 
   git add: '.' ; git commit: "-a -m 'Initial commit'"
-  
+
   # jQuery: update script & download
   create_file 'bin/update-jquery', <<~'SHELL'
     #!/bin/sh
@@ -81,8 +81,8 @@ after_bundle do
     echo "DL $VER @ $URL"
     curl -Lo app/assets/javascripts/jquery.js $URL
   SHELL
-  run %Q| chmod 755 bin/update-jquery |
-  run %Q| bin/update-jquery |
+  run %Q( chmod 755 bin/update-jquery )
+  run %Q( bin/update-jquery )
   git add: '.' ; git commit: "-a -m 'add jQuery'"
 
   # Bulma: update script & download
@@ -96,9 +96,9 @@ after_bundle do
     unzip -oqd app/assets/stylesheets tmp/bulma.zip bulma/bulma.sass 'bulma/sass/*' -x '*.DS_Store' \
       && rm -f tmp/bulma.zip
   SHELL
-  run %Q| chmod 755 bin/update-bulma |
-  run %Q| bin/update-bulma |
-  
+  run %Q( chmod 755 bin/update-bulma )
+  run %Q( bin/update-bulma )
+
   create_file 'config/initializers/field_error_proc.rb', <<~'RUBY'
     # https://stackoverflow.com/questions/12252286/how-to-change-the-default-rails-error-div-field-with-errors
     ActionView::Base.field_error_proc = Proc.new do |html_tag, instance|
@@ -111,10 +111,10 @@ after_bundle do
       end
     end
   RUBY
-  
+
   # https://jenil.github.io/bulmaswatch/darkly/
-  run %Q[ curl -sL https://github.com/jenil/bulmaswatch/raw/gh-pages/darkly/_variables.scss > app/assets/stylesheets/bulma/theme_darkly-variables.scss ]
-  run %Q[ curl -sL https://github.com/jenil/bulmaswatch/raw/gh-pages/darkly/_overrides.scss > app/assets/stylesheets/bulma/theme_darkly-overrides.scss ]
+  run %Q( curl -sL https://github.com/jenil/bulmaswatch/raw/gh-pages/darkly/_variables.scss > app/assets/stylesheets/bulma/theme_darkly-variables.scss )
+  run %Q( curl -sL https://github.com/jenil/bulmaswatch/raw/gh-pages/darkly/_overrides.scss > app/assets/stylesheets/bulma/theme_darkly-overrides.scss )
   create_file 'app/assets/stylesheets/bulma/theme_darkly.scss', <<~'SCSS'
     @charset "utf-8"
     /*! bulmaswatch v0.8.1 | MIT License */
@@ -122,6 +122,6 @@ after_bundle do
     @import "bulma";
     @import "theme_darkly-overrides";
   SCSS
-  
+
   git add: '.' ; git commit: "-a -m 'add Bulma CSS'"
 end

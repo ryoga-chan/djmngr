@@ -2,7 +2,7 @@ module CoreExt::FileUtils::Operations
   def self.included(base)
     base.extend ClassMethods
   end
-  
+
   module ClassMethods
     # append string to filename
     def cp_f(src, dst)

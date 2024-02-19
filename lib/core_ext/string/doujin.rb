@@ -56,11 +56,11 @@ module CoreExt::String::Doujin
     / *[\(（]僕ラブ!サンシャインin沼津[0-9]+[）\)] */,
     / *\[雑誌\] */,
   ]
-  
+
   TOKENIZE_RE_NAME = /^(\[[^\[\]]+\])*\s*(\([^\[\]]+\))*\s*\[([^\]\(\)]+)(\([^\[\]]+\))*\]\s*([^\[\]\(\)]+)(\([^\[\]]+\))*\s*(\[[^\[\]]+\])*\s*/
-  
+
   TOKENIZE_RE_SYM  = /[!@\[;\]^%*\(\);\-_+=\?\.,'\/&\\|$\{#\}<>:`~"]/
-  
+
   # returns the explicit and implicit groups of authors_or_circles
   def parse_doujin_filename
     # GENERIC EXAMPLE:
@@ -71,10 +71,10 @@ module CoreExt::String::Doujin
     #   '[author_circle name (author_or_alias1 name, author_or_alias2 name)] file name.ext'
     #   '[author1 name, author2 name (circle name)] file name.ext'
     #   '[author_circle1 name, author_circle2 name (author_or_alias1 name, author_or_alias2 name)] file name.ext'
-    
+
     # extract groups
     ac1, ac2, fname = self.match(/^\[([^\]\(\)]+)(\([^\[\]]+\))*\]\s*(.+)/).try(:captures)
-    
+
     # extract authors/circles by splitting groups
     { ac_explicit:   ac1  .to_s.strip             .split(/\s*[,\|]\s*/),
       ac_implicit:   ac2  .to_s.strip[1...-1].to_s.split(/\s*[,\|]\s*/),
@@ -83,27 +83,27 @@ module CoreExt::String::Doujin
                        self.sub(/.+\(([a-z,]+)\)\....$/, '\1').split(',') : '',
       fname:         fname.to_s.strip }
   end # parse_doujin_filename
-  
+
   def first_author_from_filename
     info = self.parse_doujin_filename
     "#{info[:ac_explicit].join ' '} #{info[:ac_implicit].join ' '}".strip
   end # first_author_from_filename
-  
+
   def tokenize_doujin_filename(rm_num: false, title_only: false, basename: true)
     term = dup
-    
+
     term = File.basename term if basename
-    
+
     # remove common archive file extension
     ext = File.extname term
     term = File.basename term, ext if ext =~ /\A.(zip|cbz|rar|cbr|7z|cb7|tar|t.z)\z/i
-    
+
     # remove unwanted tags
     term = IGNORED_TAGS.inject(term.downcase){|t, re| t.gsub re, '' }.strip
-    
+
     # remove numbers
     term.gsub!(/[0-9]+/, ' ') if rm_num
-    
+
     # [tags] (tags) [csv_circles (csv_authors)] title (tags) [tags]
     if md = term.match(TOKENIZE_RE_NAME)
       s_tag1, r_tag1, author1, author2, title, r_tag2, s_tag2 = md.captures
@@ -111,7 +111,7 @@ module CoreExt::String::Doujin
       author2.delete! '()' if author2
       term = title_only ? title : [author1, author2, title].compact.join(' ')
     end
-    
+
     # drop symbols and multiple spaces
     term.gsub(TOKENIZE_RE_SYM, ' ').split(' ')
   end # tokenize_doujin_filename

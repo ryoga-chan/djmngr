@@ -17,7 +17,7 @@ class CreateAuthors < ActiveRecord::Migration[7.0]
 
       t.timestamps
     end
-    
+
     add_index :authors, :doujinshi_org_id
     add_index :authors, :doujinshi_org_aka_id
   end

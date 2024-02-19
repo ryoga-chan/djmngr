@@ -11,13 +11,13 @@ module CoreExt::Array::Utils
       self
     end
   end # pages_preview
-  
+
   def sort_by_method(method, params = [], reverse: false)
     params = [params] unless params.is_a?(::Array)
-    
+
     reverse ?
-      sort{|a,b| b.send(method, *params) <=> a.send(method, *params) } :
-      sort{|a,b| a.send(method, *params) <=> b.send(method, *params) }
+      sort{|a, b| b.send(method, *params) <=> a.send(method, *params) } :
+      sort{|a, b| a.send(method, *params) <=> b.send(method, *params) }
   end # sort_by_method
 end
 
