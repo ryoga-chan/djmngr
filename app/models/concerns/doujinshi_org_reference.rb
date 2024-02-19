@@ -1,6 +1,6 @@
 module DoujinshiOrgReference
   extend ActiveSupport::Concern
-  
+
   DOUJINSHI_ORG_BASE_URL = 'https://www.doujinshi.org'.freeze
 
   included do

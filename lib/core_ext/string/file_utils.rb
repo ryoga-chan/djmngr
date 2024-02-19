@@ -1,10 +1,10 @@
 module CoreExt::String::FileUtils
   RE_IMAGE_EXT = /\.(jpe*g|gif|png)$/i
-  
+
   UTF8_ENC_OPTIONS = { invalid: :replace, undef: :replace, replace: '_' }.freeze
-  
+
   def is_image_filename? = encode(Encoding::UTF_8, **UTF8_ENC_OPTIONS).match?(RE_IMAGE_EXT)
-  
+
   # append a suffix to filename
   def add_suffix_to_filename(sfix)
     my_dir   = File.dirname  self

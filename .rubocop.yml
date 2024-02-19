@@ -1,0 +1,92 @@
+# https://github.com/rubocop/rubocop/blob/master/config/default.yml
+# https://github.com/rails/rubocop-rails-omakase/blob/main/rubocop.yml
+#
+# check all files
+#   ./bin/rubocop --auto-gen-config
+#   edit ./.rubocop_todo.yml
+#   ./bin/rubocop --autocorrect
+# check changed files
+#   ./bin/rubocop-changed
+
+#inherit_from: .rubocop_todo.yml
+
+# Omakase Ruby styling for Rails
+inherit_gem:
+  rubocop-rails-omakase: rubocop.yml
+
+# Your own specialized rules go here
+AllCops:
+  Exclude:
+    - 'tmp*/**/*'
+
+# Project cops -----------------------------------------------------------------
+# Configuration parameters: EnforcedStyle, IndentOneStep, IndentationWidth.
+# SupportedStyles: case, end
+Layout/CaseIndentation:
+  IndentOneStep: true
+
+# Configuration parameters: EnforcedStyle.
+# SupportedStyles: require_no_space, require_space
+Layout/SpaceInLambdaLiteral:
+  EnforcedStyle: require_space
+
+# Configuration parameters: AllowInHeredoc.
+#Layout/TrailingWhitespace:
+#  Enabled: true
+
+# Configuration parameters: EnforcedStyle, EnforcedShorthandSyntax, UseHashRocketsWithSymbolValues, PreferHashRocketsForNonAlnumEndingSymbols.
+# SupportedStyles: ruby19, hash_rockets, no_mixed_keys, ruby19_no_mixed_keys
+# SupportedShorthandSyntax: always, never, either, consistent
+#Style/HashSyntax:
+#  Enabled: true
+
+# Configuration parameters: PreferredDelimiters.
+#Style/PercentLiteralDelimiters:
+#  Enabled: true
+
+# Configuration parameters: AllowMultipleReturnValues.
+#Style/RedundantReturn:
+#  Enabled: true
+
+# Disabled cops ----------------------------------------------------------------
+Layout/CommentIndentation:
+  Enabled: false
+
+Layout/LeadingCommentSpace:
+  Enabled: false
+
+Layout/SpaceBeforeComma:
+  Enabled: false
+
+Layout/SpaceBeforeFirstArg:
+  Enabled: false
+
+Layout/SpaceInsideArrayLiteralBrackets:
+  Enabled: false
+
+Layout/SpaceInsideArrayPercentLiteral:
+  Enabled: false
+
+Layout/SpaceInsideBlockBraces:
+  Enabled: false
+
+Layout/SpaceInsideHashLiteralBraces:
+  Enabled: false
+
+Layout/SpaceInsideParens:
+  Enabled: false
+
+Layout/SpaceBeforeBlockBraces:
+  Enabled: false
+
+Layout/SpaceInsideReferenceBrackets:
+  Enabled: false
+
+Style/StringLiterals:
+  Enabled: false
+
+Style/TrailingCommaInArrayLiteral:
+  Enabled: false
+
+Style/TrailingCommaInHashLiteral:
+  Enabled: false

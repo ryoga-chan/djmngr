@@ -2,7 +2,7 @@ module CoreExt::Kernel::Utils
   def self.included(base)
     base.extend ClassMethods
   end
-  
+
   module ClassMethods
     # suppress stdout and/or stderr
     # https://gist.github.com/moertel/11091573  | moertel/suppress_ruby_output.rb
@@ -11,12 +11,12 @@ module CoreExt::Kernel::Utils
         orig_stdout = $stdout.clone
         $stdout.reopen(File.new(File::NULL, 'w'))
       end
-      
+
       if stderr
         orig_stderr = $stderr.clone
         $stderr.reopen(File.new(File::NULL, 'w'))
       end
-      
+
       yield
     ensure
       $stdout.reopen orig_stdout if stdout

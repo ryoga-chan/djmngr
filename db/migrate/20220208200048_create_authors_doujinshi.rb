@@ -6,7 +6,7 @@ class CreateAuthorsDoujinshi < ActiveRecord::Migration[7.0]
 
       t.datetime   :created_at
     end
-    
-    add_index :authors_doujinshi, %i{author_id doujin_id}, unique: true # no duplicates
+
+    add_index :authors_doujinshi, %i[author_id doujin_id], unique: true # no duplicates
   end
 end

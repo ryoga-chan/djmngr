@@ -5,7 +5,7 @@ Rails.application.configure do
 
   # silence sqlite3 usage warning
   config.active_record.sqlite3_production_warning = false
-  
+
   config.assets.css_compressor = :scss
   config.assets.js_compressor  = :terser
 

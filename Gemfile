@@ -7,7 +7,7 @@ source 'https://rubygems.org'
 ruby '3.3.0'
 
 gem 'rails',       '~> 7.1.2',     # to use edge: gem 'rails', github: 'rails/rails', branch: 'main'
-  require: %w{ shellwords open-uri pp open3 }
+  require: %w[ shellwords open-uri pp open3 ]
 gem 'sqlite3',     '~> 1.4'      # sqlite3 database for Active Record
 gem 'puma',        '~> 6.0'      # puma web server -- https://github.com/puma/puma
 #gem 'rack-brotli', '~> 1.2'      # enable brotli compression !!SEGFAULT using send_file!!
@@ -33,7 +33,7 @@ gem 'httpx'                      # HTTP client -- https://gitlab.com/os85/httpx 
 #                                 https://rubydoc.info/gems/ruby-vips/Vips/Image#webpsave-instance_method
 #                                 https://github.com/libvips/ruby-vips/blob/master/lib/vips/methods.rb
 #                                 https://www.libvips.org/API/current/func-list.html
-gem 'image_processing', '~> 1.2', require: %w{ ruby-vips image_processing }
+gem 'image_processing', '~> 1.2', require: %w[ ruby-vips image_processing ]
 
 # https://github.com/westonplatter/phashion -- pHash: image perceptual hashing
 #   using a custom version because the original author still hasn't updated the
@@ -44,8 +44,9 @@ gem 'phashion', '~> 1.2', source: 'https://rubygems.pkg.github.com/ryoga-chan'
 #gem 'bootsnap', require: false  # Reduces boot times through caching; required in config/boot.rb
 
 group :development do
-  gem 'debug', platforms: %i[ mri windows ] # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
+  gem 'debug', platforms: %i[ mri windows ] # https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem 'rails-erd'                # DB ER diagram -- https://github.com/voormedia/rails-erd
   gem 'rails_real_favicon'       # https://realfavicongenerator.net/favicon/ruby_on_rails
                                  # https://github.com/RealFaviconGenerator/rails_real_favicon
+  gem 'rubocop-rails-omakase', require: false # see .rubocop.yml -- https://github.com/rails/rubocop-rails-omakase/
 end

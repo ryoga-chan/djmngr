@@ -33,29 +33,29 @@ module Ws::EHentai
   REQ_EH  = REQ.with origin: 'https://e-hentai.org'
   REQ_EX  = REQ.with origin: 'https://exhentai.org'
   REQ_API = REQ.with origin: 'https://api.e-hentai.org'
-  
-  FIELDS = %i{ gid token title title_jpn thumb filecount filesize posted error }.freeze
-  
+
+  FIELDS = %i[ gid token title title_jpn thumb filecount filesize posted error ].freeze
+
   def self.do_login
     return nil if Setting[:ehentai_auth].blank?
-    
+
     user, pass = Setting[:ehentai_auth].split(':', 2)
-    
+
     r = REQ.with(headers: { 'User-Agent' => ::Setting['scraper_useragent'] })
     p = r.post 'https://forums.e-hentai.org/index.php?act=Login&CODE=01',
       form: { UserName: user, PassWord: pass,
               CookieDate: 1, b: :d, bt: '1-1', ipb_login_submit: 'Login!' }
     return nil unless p.to_s.include?('You are now logged in')
-    
+
     p = r.get 'https://e-hentai.org/bounce_login.php?b=d&bt=1-1'
     return nil unless p.to_s.include?('Moderation Power')
-    
+
     r
   end # self.do_login
 
   def self.dump_cookies(req, fpath)
     return unless req
-    
+
     File.open(fpath, 'w') do |f|
       f.puts req.cookies.map{|c| {
         name: c.name, value: c.value,
@@ -64,29 +64,29 @@ module Ws::EHentai
       }.compact }.to_yaml
     end
   end # self.dump_cookies
-  
+
   def self.load_cookies(req, fpath) = req.with_cookies(YAML.unsafe_load_file fpath)
-  
+
   def self.search(term, options = {})
     headers = { 'User-Agent' => ::Setting['scraper_useragent'] }
     cookies_file = File.join(Setting[:'dir.sorting'], 'eh-cookies.yml')
-    
+
     begin
       return result(:no_results) if term.blank?
-      
+
       unless File.exist?(cookies_file)
         req = do_login
         dump_cookies req, cookies_file
       end
-      
+
       site = :'e-hentai'
       resp = nil
-      
+
       if File.exist?(cookies_file)
         req  = load_cookies(REQ_EX, cookies_file).with(headers: headers)
         resp = req.get '/'.freeze, params: { f_search: term.to_s.strip }
         return result(:server_error) if resp.is_a?(HTTPX::ErrorResponse) || resp.status != 200
-        
+
         if resp.to_s.include?('ExHentai.org') && resp.to_s.include?('Search Keywords')
           site = :'exhentai'
           dump_cookies req, cookies_file
@@ -94,32 +94,32 @@ module Ws::EHentai
           File.unlink cookies_file
         end
       end
-      
+
       unless File.exist?(cookies_file)
         resp = REQ_EH.
           with(headers: headers).
           get '/'.freeze, params: { f_search: term.to_s.strip }
         return result(:server_error) if resp.is_a?(HTTPX::ErrorResponse) || resp.status != 200
       end
-      
+
       # extract galleries ID & token
       results = resp.body.to_s.
         split('"').grep(/https:\/\/#{site}.org\/g\/[0-9]+\/[^\/]+\//).
         map{|url| url.split('/')[-2..-1] }
       return result(:no_results) if results.empty?
-      
+
       # query the API for results details
       resp = REQ_API.
         with(headers: headers.merge('Accept' => 'application/json')).
         post '/api.php'.freeze, json: { method: :gdata, gidlist: results, namespace: 1 }
       return result(:server_error) if resp.status != 200
-      
+
       results = JSON.parse resp, symbolize_names: true rescue result(:parse)
-      
+
       # extract and format results
       results[:gmetadata].map do |r|
         r.slice! *FIELDS
-        
+
         if r[:error].nil?
           r[:site  ] = site
           r[:posted] = Time.at r[:posted].to_i
@@ -131,18 +131,18 @@ module Ws::EHentai
           r[:title_clean    ] = clean_title r[:title    ]
           r[:title_jpn_clean] = clean_title r[:title_jpn]
         end
-        
+
         r
       end
     rescue HTTPX::TimeoutError
-      return result(:server_error)
+      result :server_error
     end
   end # self.search
-  
-  
+
+
   private # ____________________________________________________________________
-  
-  
+
+
   def self.clean_title(text)
     if text.present?
       CGI.
@@ -151,7 +151,7 @@ module Ws::EHentai
         join(' ')
     end
   end # self.clean_title
-  
+
   def self.result(msg)
     msg = case msg
       when :server_error  then :'e-hentai server error'
@@ -159,7 +159,7 @@ module Ws::EHentai
       when :parse         then :'response parsing error'
       else                     :'unknown error'
     end
-    
+
     [{ gid: 0, error: msg }]
   end # self.result
 end # module EHentai

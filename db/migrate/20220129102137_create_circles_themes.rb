@@ -6,7 +6,7 @@ class CreateCirclesThemes < ActiveRecord::Migration[7.0]
 
       t.datetime   :created_at
     end
-    
-    add_index :circles_themes, %i{circle_id theme_id}, unique: true # no duplicates
+
+    add_index :circles_themes, %i[circle_id theme_id], unique: true # no duplicates
   end
 end

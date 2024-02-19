@@ -6,11 +6,11 @@ module SearchJapaneseSubject
   class_methods do
     def search(terms, search_method: 'linear')
       return self.none if terms.blank?
-      
+
       tokens_orig    = terms.to_s          .tokenize_doujin_filename
       tokens_kakasi  = terms.to_s.to_romaji.tokenize_doujin_filename
       rel_conditions = []
-      
+
       if search_method == 'sparse'
         # OPTION 1: search every term in any position
         %i[ name name_kana name_romaji name_kakasi aliases ].each do |k|
@@ -33,20 +33,20 @@ module SearchJapaneseSubject
           self.where("#{table_name}.aliases     LIKE ?", "%#{tokens_kakasi}%"),
         ]
       end
-      
+
       # build query with all conditions in OR
       rel = rel_conditions.shift
       rel_conditions.each{|cond| rel = rel.or cond }
-      
+
       rel.order(Arel.sql("LOWER(COALESCE(NULLIF(#{table_name}.name_romaji, ''), NULLIF(#{table_name}.name_kakasi, '')))"), id: :desc)
     end # self.search
-    
+
     # search elements by a single term and rank them by score
     def search_by_name(term, limit: 10)
       return self.where("1 <> 1") if term.to_s.blank?
-      
+
       klass = self.name.downcase
-      
+
       query = <<~SQL
         SELECT
             t.*
@@ -78,14 +78,14 @@ module SearchJapaneseSubject
         ORDER BY weigth DESC, LOWER(name_romaji), id DESC
         LIMIT :limit
       SQL
-      
+
       term_weight = term.downcase
       query_params = { term_weight:  term_weight,
                        term_weightk: term_weight.to_romaji,
                        term_where:   "%#{term.tr(' ', '%')          }%",
                        term_wherek:  "%#{term.tr(' ', '%').to_romaji}%",
                        limit:        limit }
-      
+
       self.find_by_sql [query, query_params]
     end # search_by_name
   end

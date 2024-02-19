@@ -1,8 +1,8 @@
 class HomeController < ApplicationController
   # https://colorkit.co/palette/ffadad-ffd6a5-fdffb6-caffbf-9bf6ff-a0c4ff-bdb2ff-ffc6ff/
   # https://colorkit.co/palette/00202e-003f5c-2c4875-8a508f-bc5090-ff6361-ff8531-ffa600-ffd380/
-  PALETTE = %w{ ffadad ffd6a5 fdffb6 caffbf 9bf6ff a0c4ff bdb2ff ffc6ff
-                ffd380 ffa600 ff8531 ff6361 bc5090 8a508f 2c4875 003f5c 00202e }
+  PALETTE = %w[ ffadad ffd6a5 fdffb6 caffbf 9bf6ff a0c4ff bdb2ff ffc6ff
+                ffd380 ffa600 ff8531 ff6361 bc5090 8a508f 2c4875 003f5c 00202e ]
 
   def _alive = head(:ok)
 
@@ -23,7 +23,7 @@ class HomeController < ApplicationController
       mdt:        Theme.count,
     }
     @stats[:md_tot] = @stats[:mda]+@stats[:mdc]+@stats[:mdt]
-    
+
     tot_dj   = Doujin.count
     @scores  = Doujin.
       select("score, COUNT(id) AS n").
@@ -34,9 +34,9 @@ class HomeController < ApplicationController
         perc = (d.n.to_f / tot_dj).round 4
         h.merge key => { n: d.n, perc: perc }
       end
-    
+
     @last_djs = Doujin.order(created_at: :desc).limit(12)
-    
+
     # build css properties for the pie chart
     if request.format.html?
       cur_deg = 0
@@ -48,31 +48,31 @@ class HomeController < ApplicationController
       end
     end
   end # index
-  
+
   def settings
     @page_title = :settings
-    
+
     if request.post? && params[:setting].is_a?(Array)
       errors = []
       restart = false
-      
+
       params[:setting].each do |p|
         s = Setting.find_by(id: p[:id])
         s.attributes = p.permit(:value)
         restart = true if s.key.start_with?('search_engine.') && s.value_changed?
         errors << s unless s.save
       end
-      
+
       flash[:alert] = [] if errors.any?
       errors.each{|s| flash[:alert] += s.errors.full_messages.map{|m| "#{s.key}: #{m}"} }
-      
+
       # restart application
       if restart
         flash[:notice] = "restarting application..."
         Thread.new { sleep 1; FileUtils.touch Rails.root.join('tmp', 'restart.txt').to_s }
       end
-      
-      return redirect_to home_settings_path
+
+      redirect_to home_settings_path
     end
   end # settings
 end

@@ -16,7 +16,7 @@ class CreateThemes < ActiveRecord::Migration[7.0]
 
       t.timestamps
     end
-    
+
     add_index :themes, :doujinshi_org_id
     add_index :themes, :doujinshi_org_aka_id
   end

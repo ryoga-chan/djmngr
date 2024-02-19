@@ -38,7 +38,7 @@ Rails.application.config.after_initialize do
 
       # create collection folders
       folders  = [ Setting['dir.to_sort'], Setting['dir.sorting'], Setting['dir.sorted'] ]
-      folders += %w{ author circle magazine artbook }.map{|d| File.join(Setting['dir.sorted'], d).to_s }
+      folders += %w[ author circle magazine artbook ].map{|d| File.join(Setting['dir.sorted'], d).to_s }
       folders << File.join(Setting['dir.to_sort'], DJ_DIR_REPROCESS)
       folders << File.join(Setting['dir.to_sort'], DJ_DIR_PROCESS_LATER)
       folders.each{|f| FileUtils.mkdir_p f }
@@ -59,7 +59,7 @@ Rails.application.config.after_initialize do
         Process.setproctitle title # $0 = title
         break if res == 200
       }# loop
-      Rails.logger.info %Q|process title changed to "#{title}"|
+      Rails.logger.info %Q(process title changed to "#{title}")
     }# Thread.new
   end
 end

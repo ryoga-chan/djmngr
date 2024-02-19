@@ -14,7 +14,7 @@ class Author < ApplicationRecord
     a.errors.add :base, "doujin already associated [#{d.id}: #{d.file_path}]"
     throw :abort
   }
-  
+
   include DoujinshiOrgReference
   include FavoriteManagement
   include JapaneseLabels
