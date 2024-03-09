@@ -60,7 +60,7 @@
           .actions
             .field.has-addons.mb-4.is-justify-content-end
               .control
-                = link_to '#', onclick: %Q|jQuery('tr.sample').toggleClass('is-hidden')|,
+                = link_to '#', onclick: %Q|jQuery('figure.image').toggleClass('is-hidden')|,
                   class: 'button is-small' do
                   %span.icon.is-small
                     %i.mi compare
@@ -119,6 +119,7 @@
         %table.to_process.table.is-striped.is-hoverable.ml-4
           %tbody
             - idx = 0
+            - max_page_weight = Setting[:process_aps].to_f.megabytes
             - @files.each do |f|
               - if @group_sort
                 %tr.sep
@@ -131,7 +132,7 @@
                       .column
                         %hr.has-background-grey
                 %tr
-              = render partial: 'index_row', locals: { f: f, idx: idx+=1 }
+              = render partial: 'index_row', locals: { f: f, idx: idx+=1, max_page_weight: max_page_weight }
               - if @group_sort
                 - f.processable_doujin_childs.sort{|a,b| a.name <=> b.name }.each do |f_child|
                   - pdd = f.processable_doujin_dupes_childs.detect{|pddc| pddc.pd_child_id == f_child.id }

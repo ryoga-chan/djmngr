@@ -12,6 +12,12 @@ body[data-ctrl="process"][data-action="index"] {
     tr.odd  { border-color: coral; }
     
     tr:nth-child(2n) td {border-bottom-width: 1px; }
+    
+    // https://stackoverflow.com/questions/306924/can-i-change-the-checkbox-size-using-css/10415275#10415275
+    div.file-select input[type=checkbox] {
+      margin: 0.5rem;
+      transform: scale(2.5);
+    }
   }
 }
 
