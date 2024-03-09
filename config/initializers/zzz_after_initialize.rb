@@ -20,6 +20,7 @@ Rails.application.config.after_initialize do
         { key: 'external_link'    , value: 'DJ.org|https://www.doujinshi.org', notes: 'additional menu item, input format = "text|url"' },
         { key: 'process_img_sel'  , value: '-', notes: 'image selection mode for "Images" tab in process section' },
         { key: 'process_epp'      , value: 25, notes: 'entries per page in process section' },
+        { key: 'process_aps'      , value: 0.6, notes: 'max average page size (in MiB) in process section (a warning is shown when exceeding this value)' },
         { key: 'basic_auth'       , value: '', notes: 'enable basic auth for PCs, input format = "user:password"' },
         { key: 'ehentai_auth'     , value: '', notes: 'optional ehentai credentials, input format = "user:password"' },
         { key: 'search_engine.00' , value: 'DD|https://duckduckgo.com/?q=', notes: 'search engine url, input format = "[-]label|url"' },

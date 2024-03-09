@@ -119,6 +119,11 @@
             = f.select :colorized, {'black & white' => false, 'colorized' => true}
           %span.icon.is-small.is-left
             %i.mi.mi-small format_paint
+
+  .field.is-horizontal
+    .field-label.is-normal
+      -#%label.label Specs
+    .field-body
       .field
         .control.has-icons-left
           .select.is-fullwidth(title="media type (paper or computer graphics)")
@@ -131,6 +136,12 @@
             = f.select :read_pages, (1..@doujin.num_images).map{|i| [i, i] }.unshift([:unread, 0])
           %span.icon.is-small.is-left
             %i.mi.mi-small auto_stories
+
+      .field
+        .control.has-icons-left
+          = f.date_field :released_at, class: :input, title: "release date"
+          %span.icon.is-small.is-left
+            %i.mi.mi-small publish
 
   .field.is-horizontal
     .field-label.is-normal

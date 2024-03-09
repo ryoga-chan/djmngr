@@ -137,6 +137,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_01_164045) do
     t.integer "cover_phash"
     t.string "name_eng"
     t.string "media_type", default: "doujin"
+    t.date "released_at"
   end
 
   create_table "doujinshi_shelves", force: :cascade do |t|

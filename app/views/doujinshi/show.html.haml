@@ -109,6 +109,11 @@
               %span.icon.is-small.ml-5
                 %i.mi star_rate
               %span= "#{@doujin.score}/10"
+            
+            - if @doujin.released_at
+              %span.icon.is-small.ml-5
+                %i.mi publish
+              %span= l @doujin.released_at
       %tr
         %th Score
         %td

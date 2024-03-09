@@ -349,7 +349,7 @@ class DoujinshiController < ApplicationController
     doujin_params = params.require(:doujin).
       permit(:name, :name_romaji, :name_kakasi, :name_orig, :name_eng, :reading_direction,
              :read_pages, :language, :censored, :colorized, :media_type, :notes, :file_name,
-             {author_ids: []}, {circle_ids: []})
+             :released_at, {author_ids: []}, {circle_ids: []})
 
     @doujin.update(doujin_params) ?
       redirect_to(doujin_path(@doujin, params.permit(:from_author, :from_circle)), notice: "doujin [#{params[:id]}] updated") :

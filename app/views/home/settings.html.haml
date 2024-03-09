@@ -47,6 +47,8 @@
           %span.icon.is-small.is-left
             %i.mi.mi-small palette
 
+  -# ---------------------------------------------------------------------------
+
   .title.is-size-4
     Settings / Processing
     .fright= f.submit 'Save all', class: 'button is-primary'
@@ -104,6 +106,19 @@
           = f.number_field 'setting[][value]', value: s.value, class: :input, step: 1, min: 2, max: 100
           %span.icon.is-small.is-left
             %i.mi.mi-small view_list
+
+  - s = Setting.find_by key: :process_aps
+  = f.hidden_field 'setting[][id]', value: s.id
+  .field.is-horizontal
+    .field-label.is-normal= render partial: 'setting_help', locals: {s: s}
+    .field-body
+      .field
+        .control.is-expanded.has-icons-left
+          = f.number_field 'setting[][value]', value: s.value, class: :input, step: 0.1, min: 0.1
+          %span.icon.is-small.is-left
+            %i.mi.mi-small monitor_weight
+
+  -# ---------------------------------------------------------------------------
 
   .title.is-size-4
     Settings / External links
