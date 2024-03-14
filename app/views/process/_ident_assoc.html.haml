@@ -103,7 +103,7 @@
           %tt= "🆔#{r.id}"
           
           - members_name = type == 'authors' ? :circles : :authors
-          - members = r.send(members_name).order(:name)
+          - members = r.send(members_name).where(doujinshi_org_aka_id: nil).order(:name)
           - if members.any?
             .related_names.is-size-7.pl-4
               %ul
