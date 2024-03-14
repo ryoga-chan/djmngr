@@ -69,12 +69,15 @@ module SearchJapaneseSubject
             AS weigth
           , (SELECT COUNT(1) FROM #{klass.pluralize}_doujinshi WHERE #{klass}_id = t.id) AS num_dj
         FROM #{self.table_name} t
-        WHERE name              LIKE :term_where
+        WHERE doujinshi_org_aka_id IS NULL
+         AND (
+              name              LIKE :term_where
            OR name_kana         LIKE :term_where
            OR name_romaji       LIKE :term_where
            OR name_kakasi       LIKE :term_wherek
            OR aliases           LIKE :term_where
            OR doujinshi_org_url LIKE :term_where
+         )
         ORDER BY weigth DESC, LOWER(name_romaji), id DESC
         LIMIT :limit
       SQL
