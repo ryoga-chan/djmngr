@@ -382,19 +382,23 @@ class DoujinshiController < ApplicationController
     dd_id = (paths[0] == 'author' ? @doujin.author_ids.first : (paths[0] == 'circle' ? @doujin.circle_ids.first : -1))
     is_author_or_circle = %w[ author circle ].include? paths[0]
     File.atomic_write(md_path){|f| f.puts({
-      author_ids:     @doujin.author_ids,
-      circle_ids:     @doujin.circle_ids,
-      doujin_dest_type: paths[0],
-      doujin_dest_id: dd_id.to_s,
-      file_type:      (is_author_or_circle ? 'doujin' : paths[0]),
-      dest_folder:    (is_author_or_circle ? paths[1] : (paths[2] ? paths[1] : '')),
-      subfolder:      (paths[2].to_s.include?(File::SEPARATOR) ? File.dirname(paths[2]) : ''),
-      dest_filename:  File.basename(paths[2] || paths[1]),
-      score:          @doujin.score,
-      language:       @doujin.language,
-      censored:       @doujin.censored,
-      colorized:      @doujin.colorized,
-      media_type:     @doujin.media_type,
+      author_ids:        @doujin.author_ids,
+      circle_ids:        @doujin.circle_ids,
+      doujin_dest_type:  paths[0],
+      doujin_dest_id:    dd_id.to_s,
+      file_type:         (is_author_or_circle ? 'doujin' : paths[0]),
+      dest_folder:       (is_author_or_circle ? paths[1] : (paths[2] ? paths[1] : '')),
+      subfolder:         (paths[2].to_s.include?(File::SEPARATOR) ? File.dirname(paths[2]) : ''),
+      dest_filename:     File.basename(paths[2] || paths[1]),
+      score:             @doujin.score,
+      language:          @doujin.language,
+      censored:          @doujin.censored,
+      colorized:         @doujin.colorized,
+      media_type:        @doujin.media_type,
+      dest_title:        @doujin.name,
+      dest_title_romaji: @doujin.name_romaji,
+      dest_title_eng:    @doujin.name_eng,
+      notes:             @doujin.notes,
     }.to_yaml) }
 
     # move current ZIP file to that folder
