@@ -6,8 +6,9 @@ class ProcessController < ApplicationController
     only: %i[ show_externally  prepare_archive  delete_archive  sample_images  compare_add ]
 
   before_action :check_archive_folder,
-    only: %i[ edit  set_property  finalize_volume  show_image  rename_images  rename_file
-              delete_archive_cwd  delete_archive_files  edit_cover  inspect_folder  add_files ]
+    only: %i[ edit  set_property  finalize_volume  show_image edit_cover
+              rename_images  rename_file inspect_folder  add_files
+              delete_archive_cwd  delete_archive_files  split_archive ]
 
   # list processable files
   def index
@@ -215,6 +216,11 @@ class ProcessController < ApplicationController
     msg = params[:archive_too] == 'true' ? "archive and folder deleted:" : "folder deleted for"
     redirect_to process_index_path, notice: "#{msg} [#{@info[:relative_path]}] in [#{params[:id][0..10]}...]"
   end # delete_archive_cwd
+
+  def split_archive
+    num_splits = ProcessArchiveSplitJob.perform_now @dname, params[:path]
+    redirect_to process_index_path, notice: "#{num_splits} splits created"
+  end # split_archive
 
   def delete_archive_files
     @info = YAML.unsafe_load_file(File.join @dname, 'info.yml')

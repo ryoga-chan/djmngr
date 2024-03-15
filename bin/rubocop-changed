@@ -1,10 +1,11 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
+puts "USAGE: rubocop-changed [-a|...]"
 
 # check changed files -- https://www.red56.uk/2017/03/26/running-rubocop-on-changed-files/
 #   git diff origin/main --name-only | xargs ./bin/rubocop --force-exclusion
 argv  = %x[ git diff          --name-only ].split "\n"
 argv += %x[ git diff --staged --name-only ].split "\n"
 
-ARGV.replace argv.sort.compact.uniq.unshift('--force-exclusion')
+ARGV.concat argv.sort.compact.uniq.unshift('--force-exclusion')
 load File.join(File.dirname(__FILE__), 'rubocop')

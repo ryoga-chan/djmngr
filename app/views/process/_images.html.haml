@@ -1,21 +1,31 @@
 .inject-files.is-hidden-tablet.has-text-centered= render partial: 'add_files'
 .inject-files.is-hidden-mobile(style="float: right")= render partial: 'add_files'
 
-= form_with url: delete_archive_files_process_path(id: @info[:working_dir]),
-  method: :delete, id: 'frm-images',
+-# set a noop safe url in this form and override it via button attributes
+= form_with url: edit_process_path(id: @info[:working_dir]),
+  method: :get, id: 'frm-images',
   data: { image_sel_mode: Setting[:process_img_sel] } do |f|
   = hidden_field_tag :tab, params[:tab]
 
   = action_buttons = capture do
     .has-text-centered.mb-4
-      = f.button class: 'button is-rounded is-info mr-4', onclick: %Q|jQuery('.columns .column span.select-image').click(); return false| do
+      = f.button class: 'button is-rounded is-info mr-3',
+        onclick: %Q|jQuery('.columns .column span.select-image').click(); return false| do
         %span.icon.is-small
           %i.mi select_all
-        %span Toggle all images
-      = f.button type: :submit, class: 'button is-rounded is-danger delete-images', data: { confirm: 'Delete 0 selected images?' } do
+        %span Toggle
+      = f.button type: :submit, class: 'button is-rounded is-danger delete-images mr-3',
+        formaction: delete_archive_files_process_path(id: @info[:working_dir]), formmethod: :delete,
+        data: { confirm: 'Delete 0 selected images?' } do
         %span.icon.is-small
           %i.mi delete
-        %span Delete selected images
+        %span Delete
+      = f.button type: :submit, class: 'button is-rounded is-primary split-images',
+        formaction: split_archive_process_path(id: @info[:working_dir]), formmethod: :post,
+        data: { confirm: 'Split archive to selected images?' } do
+        %span.icon.is-small
+          %i.mi call_split
+        %span Split
 
   - base_dir = File.join(Setting['dir.sorting'], @info[:working_dir], 'thumbs')
   - tab_idx = 0
