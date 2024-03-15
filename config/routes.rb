@@ -35,6 +35,7 @@ Rails.application.routes.draw do
       get     :finalize_volume
       delete  :delete_archive_cwd
       delete  :delete_archive_files
+      post    :split_archive
       get     :edit_cover
       get     :inspect_folder
       get     :batch            # start/monitor mass processing

@@ -24,11 +24,7 @@ class ProcessArchiveCompressJob < ApplicationJob
         src_path = File.join(src_dir, 'contents', img[:src_path])
         if File.extname(img[:src_path]).downcase == File.extname(img[:dst_path]).downcase
           dst_path = File.join(out_dir, img[:dst_path])
-          if OS_LINUX
-            File.link    src_path, dst_path # efficient copy via hard link
-          else
-            FileUtils.cp src_path, dst_path
-          end
+          FileUtils.cp_hard src_path, dst_path
         else
           ImageProcessing::Vips.
             source(src_path).

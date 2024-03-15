@@ -153,7 +153,7 @@ class ProcessArchiveDecompressJob < ApplicationJob
     File.open(File.join(dst_dir, 'info.yml'), 'w'){|f| f.puts info.to_yaml } if save_info
 
     info
-  end # self.duplicate_cover
+  end # self.inject_file
 
   def self.refresh_cover_thumb(dst_dir, info, save_info: false)
     # refresh image thumb and master image
