@@ -283,19 +283,20 @@ class ProcessArchiveDecompressJob < ApplicationJob
 
     FileUtils.rm_f File.join(path_contents, 'metadata.yml') # remove reprocessing file
     
-    # append notes from file and delete it
-    notes_file = File.join path_contents, 'notes.txt'
-    if File.exist?(notes_file)
-      info[:notes] = "#{info[:notes]}\n#{File.read(notes_file)}".strip
-      File.unlink notes_file
-    end
-    
     # detect images and other files
     info[:images], info[:files] = Dir[File.join path_contents, '**', '*'].
       select{|i| File.file? i }.
       map{|i| { src_path: Pathname.new(i).relative_path_from(path_contents).to_s, size: File.size(i) } }.
       partition{|i| i[:src_path].is_image_filename? }
 
+    # append notes from file and delete it
+    if notes_element = info[:files].detect{|i| i[:src_path].include? 'notes.txt' }
+      notes_file = File.join path_contents, notes_element[:src_path]
+      info[:notes] = "#{info[:notes]}\n#{File.read(notes_file)}".strip
+      info[:files].delete notes_element
+      File.unlink notes_file
+    end
+    
     # auto rename images with default method
     info[:ren_images_method] = ZipImagesRenamer::DEFAULT_METHOD.to_s
     info[:images] = ZipImagesRenamer.rename(info[:images]).sort_by_method('[]', :dst_path)
