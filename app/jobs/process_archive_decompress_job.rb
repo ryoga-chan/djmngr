@@ -273,7 +273,6 @@ class ProcessArchiveDecompressJob < ApplicationJob
     FileUtils.mkdir_p path_cover
 
     system %Q( unzip -q -d #{path_contents.shellescape} #{info[:file_path].shellescape} )
-    FileUtils.rm_f File.join(path_contents, 'metadata.yml') # remove reprocessing file
 
     # reset file/folder permissions
     if OS_LINUX
@@ -282,6 +281,15 @@ class ProcessArchiveDecompressJob < ApplicationJob
       FileUtils.chmod 0644, files
     end
 
+    FileUtils.rm_f File.join(path_contents, 'metadata.yml') # remove reprocessing file
+    
+    # append notes from file and delete it
+    notes_file = File.join path_contents, 'notes.txt'
+    if File.exist?(notes_file)
+      info[:notes] = "#{info[:notes]}\n#{File.read(notes_file)}".strip
+      File.unlink notes_file
+    end
+    
     # detect images and other files
     info[:images], info[:files] = Dir[File.join path_contents, '**', '*'].
       select{|i| File.file? i }.
