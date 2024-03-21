@@ -41,7 +41,7 @@ class ProcessIndexRefreshJob < ApplicationJob
     text
   end # self.progress_update
 
-  def self.entries(order: 'name')
+  def self.entries(order: 'name', term: nil)
     m = ProcessableDoujin
 
     m_group = m.
@@ -49,7 +49,7 @@ class ProcessIndexRefreshJob < ApplicationJob
       where(id: ProcessableDoujinDupe.distinct.select(:pd_parent_id)).
       where.not(id: ProcessableDoujinDupe.where.not(pd_child_id: nil).distinct.select(:pd_child_id))
 
-    order_clause = case order
+    rel = case order
       when 'name'    .freeze then m.order :name
       when 'name_d'  .freeze then m.order name: :desc
       when 'kakasi'  .freeze then m.order Arel.sql("replace(name_kakasi, ' ', '')")
@@ -62,6 +62,10 @@ class ProcessIndexRefreshJob < ApplicationJob
       when 'group_d' .freeze then m_group.order(name: :desc)
       else                        m.order :name
     end
+
+    rel = rel.search(term) if term.present?
+
+    rel
   end # self.entries
 
   def self.rm_entry(path_or_id, track: false, rm_zip: false)

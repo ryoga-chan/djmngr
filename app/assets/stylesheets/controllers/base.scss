@@ -41,7 +41,7 @@
 label.checkbox.button input[type="checkbox"] { vertical-align: bottom; }
 
 #mobile-toolbar {
-  position: absolute;
+  position: fixed;
   top:  0.7rem;
   left: calc(50% - 1rem);
   z-index: 1000;

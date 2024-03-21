@@ -45,71 +45,100 @@
               %td= link_to f[:relative_path], action: :edit, id: f[:working_dir]
 
     -# files listing
-    = form_with url: prepare_batch_process_index_path, method: :post do |f|
-      .title
-        %span.is-size-4 Processable archives
-        %span.is-size-6.nowrap= "(#{@files.total_count} / #{number_to_human_size ProcessableDoujin.sum(:size), precision: 2, significant: false})"
+    .title
+      %span.is-size-4 Processable archives
+      %span.is-size-6.nowrap= "(#{@files.total_count} / #{number_to_human_size ProcessableDoujin.sum(:size), precision: 2, significant: false})"
       
+    = form_with url: process_index_path, method: :get,
+      html: {onsubmit: %Q|jQuery(this).find('button').addClass('is-loading'); jQuery.myapp.show_loading()|,
+             class: "filters mb-2 #{'is-hidden' unless params[:term]}" } do |f|
+      = f.hidden_field :sort_by, value: params[:sort_by]
+      
+      .field.has-addons.is-justify-content-center
+        .control= f.text_field :term, value: params[:term], placeholder: :search, class: 'input is-rounded'
+        .control
+          = f.button class: 'button is-light is-rounded is-outlined' do
+            %span.icon
+              %i.mi search
+    
+    = form_with url: prepare_batch_process_index_path, method: :post do |f|
       .columns.my-0
         .column.py-0.pb-2
-          %span Sort files by
-          .select(style="vertical-align: middle")= select_tag :sort_by,
-            options_for_select(ProcessIndexRefreshJob::ORDER, params[:sort_by]),
-            onchange: %Q|window.location = '/process?sort_by='+jQuery(this).val()|
+          -#%span Sort files by
+          .field.has-addons
+            .control
+              .select(style="vertical-align: middle")= select_tag :sort_by,
+                options_for_select(ProcessIndexRefreshJob::ORDER, params[:sort_by]),
+                onchange: %Q|window.location = '/process?sort_by='+jQuery(this).val()|
+            .control
+              = link_to '#', onclick: %Q|jQuery('figure.image').toggleClass('is-hidden')|,
+                class: 'button' do
+                %span.icon
+                  %i.mi compare
+                %span thumbs
+            .control
+              %button.button(type="button" onclick="jQuery('form.filters').removeClass('is-hidden').find('input[type=\"text\"]').focus()")
+                %span.icon
+                  %i.mi(title="show search bar") filter_list
+              %span.tot-file-size.nowrap.is-size-8.ml-2
         .column.py-0
           .actions
             .field.has-addons.mb-4.is-justify-content-end
-              .control
-                = link_to '#', onclick: %Q|jQuery('figure.image').toggleClass('is-hidden')|,
-                  class: 'button is-small' do
-                  %span.icon.is-small
-                    %i.mi compare
-                  %span thumbs
-              .control
-                = link_to '#', class: 'bt-batch button is-small',
-                  onclick: %Q|jQuery('.batch-bt, .batch-rm, td.rm-or-batch > *, td.batch, .bt-index').toggleClass('is-hidden'); return false| do
-                  %span.icon.is-small
-                    %i.mi.mi-small inventory_2
-                  %span batch
+              .control.bt-mass
+                .dropdown.is-hoverable.has-text-left(onclick="jQuery(this).toggleClass('is-active')")
+                  .dropdown-trigger
+                    %button.button(type="button")
+                      %span mass
+                      %span.icon.is-small
+                        %i.mi.mi-small expand_more
+                  .dropdown-menu
+                    .dropdown-content
+                      = link_to({job: :preview, sort_by: params[:sort_by], page: params[:page], term: params[:term]},
+                                data: {confirm: 'Generate previews for two pages of entries?'},
+                                class: 'dropdown-item') do
+                        %span.icon-text
+                          %span.icon
+                            %i.mi preview
+                          %span preview
+                      %hr.dropdown-divider
+                      = link_to({job: :group}, class: 'dropdown-item',
+                                data: {confirm: 'Compare all covers enabling "sort by group" mode?'}) do
+                        %span.icon-text
+                          %span.icon
+                            %i.mi image
+                          %span group
+                      %hr.dropdown-divider
+                      = link_to({job: :refresh}, class: 'dropdown-item',
+                                data: {confirm: 'Rescan to-sort folder?'}) do
+                        %span.icon-text
+                          %span.icon
+                            %i.mi refresh
+                          %span refresh
               .control.batch-bt.is-hidden
-                = link_to '#', class: 'bt-toggle-all button is-small',
+                = link_to '#', class: 'bt-toggle-all button',
                   onclick: %Q|jQuery('td.rm-or-batch :checkbox').each(function(){ $(this).prop('checked', !$(this).prop('checked')) }).first(); jQuery.app.update_tot_filesize(); return false| do
-                  %span.icon.is-small
+                  %span.icon
                     %i.mi select_all
                   %span toggle
               .control.batch-rm.is-hidden
                 -# # https://stackoverflow.com/questions/3027149/how-do-i-create-multiple-submit-buttons-for-the-same-form-in-rails
-                = f.button(type: :submit, class: 'button is-small is-danger',
+                = f.button(type: :submit, class: 'button is-danger',
                            formaction: batch_delete_process_index_path,
                            data: {confirm: 'Delete selected files?'}) do
-                  %span.icon.is-small
+                  %span.icon
                     %i.mi delete_forever
                   %span delete
               .control.batch-bt.is-hidden
-                = f.button type: :submit, class: 'button is-link is-small' do
-                  %span.icon.is-small
+                = f.button type: :submit, class: 'button is-link' do
+                  %span.icon
                     %i.mi send
                   %span prepare
-                  %span.tot-file-size.is-size-8.ml-1
               .control
-                = link_to({job: :refresh}, class: 'bt-index bt-reindex button is-info is-small',
-                          data: {confirm: 'Rescan to-sort folder?'}) do
-                  %span.icon.is-small
-                    %i.mi.mi-small refresh
-                  %span refresh
-              .control
-                = link_to({job: :group}, class: 'bt-index bt-groups button is-info is-small',
-                          data: {confirm: 'Compare all covers enabling "sort by group" mode?'}) do
-                  %span.icon.is-small
-                    %i.mi.mi-small preview
-                  %span group
-              .control
-                = link_to({job: :preview, sort_by: params[:sort_by], page: params[:page]},
-                          data: {confirm: 'Generate previews for two pages of entries?'},
-                          class: 'bt-index bt-preview button is-info is-small') do
-                  %span.icon.is-small
-                    %i.mi.mi-small preview
-                  %span preview
+                = link_to '#', class: 'bt-batch button',
+                  onclick: %Q|jQuery('.batch-bt, .batch-rm, td.rm-or-batch > *, td.batch, .bt-mass').toggleClass('is-hidden'); return false| do
+                  %span.icon
+                    %i.mi inventory_2
+                  %span batch
       
       - if @files.empty?
         %em no files to process
