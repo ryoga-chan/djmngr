@@ -31,7 +31,7 @@ class ProcessArchiveSplitJob < ApplicationJob
       set.each do |image|
         # copy image
         src_path = File.join src_dir, 'contents', image[:src_path]
-        dst_path = File.join dir    , 'contents', image[:src_path].tr!(File::SEPARATOR, '_')
+        dst_path = File.join dir    , 'contents', (image[:src_path].tr!(File::SEPARATOR, '_') || image[:src_path])
         FileUtils.cp_hard src_path, dst_path, force: true
         # copy thumb
         src_path = File.join src_dir, 'thumbs', image[:thumb_path]
