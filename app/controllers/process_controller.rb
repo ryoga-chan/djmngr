@@ -31,7 +31,7 @@ class ProcessController < ApplicationController
     if params[:sort_by].present?
       session['process.index.sort_by'] = params[:sort_by]
     elsif session['process.index.sort_by'].present?
-      return redirect_to(action: :index, sort_by: session['process.index.sort_by'], page: params[:page])
+      return redirect_to(action: :index, sort_by: session['process.index.sort_by'], page: params[:page], term: params[:term])
     end
 
     if ProcessIndexRefreshJob.lock_file? # jobs: Refresh, Preview
@@ -189,9 +189,9 @@ class ProcessController < ApplicationController
     if params[:file_ids].to_a.any?
       params[:file_ids].each{|id| ProcessIndexRefreshJob.rm_entry id, track: true, rm_zip: true }
 
-      redirect_to process_index_path, notice: "#{params[:file_ids].size} files deleted"
+      redirect_to process_index_path(term: params[:term]), notice: "#{params[:file_ids].size} files deleted"
     else
-      redirect_to process_index_path, alert: "no files selected!"
+      redirect_to process_index_path(term: params[:term]), alert: "no files selected!"
     end
   end # batch_delete
 
@@ -200,7 +200,7 @@ class ProcessController < ApplicationController
     ProcessIndexRefreshJob.rm_entry params[:path], track: true, rm_zip: true
 
     row = [0, params[:row].to_i - 1].max
-    redirect_to(process_index_path(page: params[:page], anchor: "row_#{row}"), notice: "file deleted: [#{params[:path]}]")
+    redirect_to(process_index_path(page: params[:page], term: params[:term], anchor: "row_#{row}"), notice: "file deleted: [#{params[:path]}]")
   end # delete_archive
 
   def delete_archive_cwd
