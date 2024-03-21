@@ -51,7 +51,7 @@
       
     = form_with url: process_index_path, method: :get,
       html: {onsubmit: %Q|jQuery(this).find('button').addClass('is-loading'); jQuery.myapp.show_loading()|,
-             class: "filters mb-2 #{'is-hidden' unless params[:term]}" } do |f|
+             class: "filters mb-2 #{'is-hidden' if params[:term].blank?}" } do |f|
       = f.hidden_field :sort_by, value: params[:sort_by]
       
       .field.has-addons.is-justify-content-center
@@ -62,6 +62,8 @@
               %i.mi search
     
     = form_with url: prepare_batch_process_index_path, method: :post do |f|
+      = f.hidden_field :term, value: params[:term]
+    
       .columns.my-0
         .column.py-0.pb-2
           -#%span Sort files by
