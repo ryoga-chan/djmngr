@@ -6,9 +6,9 @@ class ProcessIndexPreviewJob < ProcessIndexRefreshJob
     Dir[pattern].each{|f| FileUtils.rm_f f }
   end # self.rm_previews
 
-  def perform(order: nil, page: nil, id: nil)
+  def perform(order: nil, term: nil, page: nil, id: nil)
     page    = 1 if page.to_i <= 0
-    rel     = self.class.entries(order: order)
+    rel     = self.class.entries(order: order, term: term)
     records = []
 
     if id

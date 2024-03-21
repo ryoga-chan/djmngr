@@ -20,10 +20,11 @@ class ProcessController < ApplicationController
         else
           job = "ProcessIndex#{params[:job].capitalize}Job".constantize
           job.lock_file!
-          job.perform_later order: session['process.index.sort_by'], page: params[:page], id: params[:id]
+          job.perform_later order: session['process.index.sort_by'],
+            term: params[:term], page: params[:page], id: params[:id]
       end
 
-      return redirect_to(action: :index, sort_by: session['process.index.sort_by'], page: params[:page])
+      return redirect_to(action: :index, sort_by: session['process.index.sort_by'], term: params[:term], page: params[:page])
     end
 
     # save and keep previous sort order
@@ -43,6 +44,7 @@ class ProcessController < ApplicationController
       @files = ProcessIndexRefreshJob.
         entries(order: session['process.index.sort_by']).
         page(params[:page]).per(@group_sort ? GROUP_EPP : Setting[:process_epp].to_i)
+      @files = @files.search(params[:term]) if params[:term].present?
 
       # read "sorting" file list
       files_glob = File.join Setting['dir.sorting'], '*', 'info.yml'
