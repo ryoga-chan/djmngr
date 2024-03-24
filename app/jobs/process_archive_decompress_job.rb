@@ -20,24 +20,38 @@ class ProcessArchiveDecompressJob < ApplicationJob
     FileUtils.rm_rf dir, secure: true if dir && File.exist?(dir)
   end # sefl.rm_entry
 
-  def self.prepare_and_perform(fname, perform_when: :later, title: nil)
+  def self.prepare_and_perform(fname_or_ids, perform_when: :later, title: nil)
     raise :invalid_method unless %i[ later now ].include?(perform_when)
-    raise :file_not_found unless File.exist?(fname)
+    
+    fnames   = []
+    tot_size = 0
+    
+    if fname_or_ids.is_a?(Array)
+      ProcessableDoujin.where(id: fname_or_ids).each do |pd|
+        fnames   << pd.file_path(full: true)
+        tot_size += pd.size
+      end
+      author = File.basename(fnames.first.to_s).sub(/^(\[[^\]]+\]).+/, '\1')
+      title = "#{author} #{fnames.size} merged files.zip"
+    else
+      fnames   = [fname_or_ids]
+      tot_size = File.size fname_or_ids
+    end
+    
+    raise :file_not_found unless fnames.all?{|i| File.exist? i }
+    return :invalid_zip if fnames.any?{|i| Marcel::MimeType.for(Pathname.new i) != 'application/zip' }
 
-    return :invalid_zip if Marcel::MimeType.for(Pathname.new fname) != 'application/zip'
-
-    # create WIP folder named as the hash
-    hash = file_hash fname
+    # create WIP folder
+    hash = fnames.one? ? file_hash(fnames.first) : SecureRandom.uuid
     dst_dir = File.join Setting['dir.sorting'], hash
     FileUtils.mkdir_p dst_dir
 
-    if Dir.empty?(dst_dir)
-      # create metadata file
+    if Dir.empty?(dst_dir) # create metadata file
       File.atomic_write(File.join(dst_dir, 'info.yml')) do |f|
         f.puts({
-          file_path:     fname,
-          file_size:     File.size(fname),
-          relative_path: Pathname.new(fname).relative_path_from(Setting['dir.to_sort']).to_s,
+          file_path:     fnames,
+          file_size:     tot_size,
+          relative_path: fnames.map{|i| Pathname.new(i).relative_path_from(Setting['dir.to_sort']).to_s },
           title:         title, # optional title from batch processing
           working_dir:   hash,
           prepared_at:   nil,
@@ -45,11 +59,11 @@ class ProcessArchiveDecompressJob < ApplicationJob
       end
 
       # create a symlink just in case of manual folder inspection (unsupported on windows)
-      File.symlink fname, File.join(dst_dir, 'file.zip') if OS_LINUX
+      fnames.each_with_index{|f,i| File.symlink f, File.join(dst_dir, "file_#{'%03d' % i}.zip") } if OS_LINUX
 
       ProcessArchiveDecompressJob.send "perform_#{perform_when}", dst_dir
     end
-
+    
     hash
   end # self.prepare_and_perform
 
@@ -189,11 +203,13 @@ class ProcessArchiveDecompressJob < ApplicationJob
     info = YAML.unsafe_load_file(File.join dst_dir, 'info.yml')
 
     # parse the title from batch processing or the relative filename
-    fname = info[:title] || File.basename(info[:relative_path].to_s).downcase
+    fname = info[:title] || File.basename(info[:relative_path].first.to_s).downcase
 
     # copy notes from ProcessableDoujin
-    notes = ProcessableDoujin.find_by(name: info[:relative_path].to_s)&.notes
-    info[:notes] = notes if notes
+    notes = info[:relative_path].
+      map{|rp| ProcessableDoujin.find_by(name: rp.to_s)&.notes }.
+      compact.join("\n")
+    info[:notes] = notes if notes.present?
 
     # auto associate doujin authors/circles when a 100% match is found
     name = fname.parse_doujin_filename
@@ -256,11 +272,14 @@ class ProcessArchiveDecompressJob < ApplicationJob
     info[:media_type] = 'artbook' if info[:file_type] == 'artbook'
 
     # restore reprocessing metadata
-    md_path = File.join File.dirname(info[:file_path]), "#{File.basename info[:file_path], File.extname(info[:file_path])}.yml"
-    md_info = YAML.unsafe_load_file(md_path) rescue {}
-    if File.exist?(md_path) && md_info.is_a?(Hash)
-      info.merge! md_info
-      File.unlink md_path
+    info[:file_path].each do |i|
+      md_path = File.join File.dirname(i), "#{File.basename i, File.extname(i)}.yml"
+      md_info = YAML.unsafe_load_file(md_path) rescue {}
+      if File.exist?(md_path) && md_info.is_a?(Hash)
+        info.merge! md_info
+        File.unlink md_path
+        break
+      end
     end
 
     # create folder and unzip archive
@@ -272,7 +291,16 @@ class ProcessArchiveDecompressJob < ApplicationJob
     FileUtils.mkdir_p path_contents
     FileUtils.mkdir_p path_cover
 
-    system %Q( unzip -q -d #{path_contents.shellescape} #{info[:file_path].shellescape} )
+    if info[:file_path].one?
+      system %Q( unzip -q -d #{path_contents.shellescape} #{info[:file_path].first.shellescape} )
+    else
+      info[:file_path].sort.each_with_index do |file_path, i|
+        pd = ProcessableDoujin.find_by name: info[:relative_path][i]
+        title = pd&.notes.present? ? pd&.notes : file_path
+        path = File.join path_contents, title.to_romaji.tokenize_doujin_filename(title_only: true).join(' ')
+        system %Q( unzip -q -d #{path.shellescape} #{file_path.shellescape} )
+      end
+    end
 
     # reset file/folder permissions
     if OS_LINUX
@@ -281,7 +309,8 @@ class ProcessArchiveDecompressJob < ApplicationJob
       FileUtils.chmod 0644, files
     end
 
-    FileUtils.rm_f File.join(path_contents, 'metadata.yml') # remove reprocessing file
+    # remove reprocessing files
+    Dir[File.join path_contents, '**/metadata.yml'].each{|f| FileUtils.rm_f f }
     
     # detect images and other files
     info[:images], info[:files] = Dir[File.join path_contents, '**', '*'].
@@ -290,7 +319,7 @@ class ProcessArchiveDecompressJob < ApplicationJob
       partition{|i| i[:src_path].is_image_filename? }
 
     # append notes from file and delete it
-    if notes_element = info[:files].detect{|i| i[:src_path].include? 'notes.txt' }
+    info[:files].select{|i| i[:src_path].include? 'notes.txt' }.each do |notes_element|
       notes_file = File.join path_contents, notes_element[:src_path]
       info[:notes] = "#{info[:notes]}\n#{File.read(notes_file)}".strip
       info[:files].delete notes_element
@@ -298,9 +327,24 @@ class ProcessArchiveDecompressJob < ApplicationJob
     end
     
     # auto rename images with default method
-    info[:ren_images_method] = ZipImagesRenamer::DEFAULT_METHOD.to_s
-    info[:images] = ZipImagesRenamer.rename(info[:images]).sort_by_method('[]', :dst_path)
-
+    if info[:file_path].one?
+      info[:ren_images_method] = ZipImagesRenamer::DEFAULT_METHOD.to_s
+      info[:images] = ZipImagesRenamer.rename(info[:images]).sort_by_method('[]', :dst_path)
+    else
+      # rename files: subfolder/(x/y/z/...)/image.jpg => subfolder_image.jpg
+      sep = File::SEPARATOR
+      sep = sep*2 if sep == '\\'
+      info[:ren_images_method      ] = 'regex_replacement'
+      info[:images_last_regexp     ] = "([^#{sep}]+)#{sep}(.+#{sep})*(.+)"
+      info[:images_last_regexp_repl] = '\\1__\\3'
+      info[:images] = ZipImagesRenamer.rename(
+        info[:images],
+        info[:ren_images_method].to_sym,
+        rename_regexp:      info[:images_last_regexp     ],
+        rename_regexp_repl: info[:images_last_regexp_repl]
+      ).sort_by_method('[]', :dst_path)
+    end
+    
     # copy filename for files
     info[:files].each_with_index{|f, i| f[:dst_path] = "#{'%04d' % i}-#{f[:src_path].gsub '/', '_'}" }
     info[:files] = info[:files].sort_by_method('[]', :dst_path)
@@ -311,12 +355,8 @@ class ProcessArchiveDecompressJob < ApplicationJob
     # create thumbnails for the images
     info[:images].each_with_index do |img, i|
       begin
-        num = '%04d' % (i+1)
-        img[:dst_path  ] = "#{num}#{File.extname img[:src_path]}"
-        img[:thumb_path] = "#{num}.webp"
-
+        img[:thumb_path] = "#{'%04d' % (i+1)}.webp"
         tpath = File.join(path_thumbs, img[:thumb_path])
-
         ProcessArchiveDecompressJob.generate_thumbnail File.join(path_contents, img[:src_path]), tpath
       rescue
         img[:dst_path] = "RESIZE ERROR: #{$!}"

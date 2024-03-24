@@ -38,7 +38,9 @@ class ProcessArchiveCompressJob < ApplicationJob
 
       # 1. add metadata file
       File.atomic_write(File.join(out_dir, 'metadata.yml')){|f| f.write({
-        source_file:    File.basename(info[:relative_path]),
+        source_file:    (info[:relative_path].one? ?
+                           info[:relative_path].first :
+                           info[:relative_path].map{|i| File.basename i }),
         file_size:      info[:file_size],
         file_type:      info[:file_type],
         dest_folder:    info[:dest_folder],
@@ -85,7 +87,9 @@ class ProcessArchiveCompressJob < ApplicationJob
           category:     (info[:file_type] == 'doujin' ? info[:doujin_dest_type] : info[:file_type]),
           file_folder:  File.dirname(info[:collection_relative_path]),
           file_name:    File.basename(info[:collection_relative_path]),
-          name_orig:    info[:relative_path].sub(/^#{DJ_DIR_REPROCESS}\//, '').sub(/^#{DJ_DIR_PROCESS_LATER}\//, ''),
+          name_orig:    (info[:relative_path].one? ?
+                           info[:relative_path].first.sub(/^#{DJ_DIR_REPROCESS}\//, '').sub(/^#{DJ_DIR_PROCESS_LATER}\//, '') :
+                           info[:title]),
           reading_direction: info[:reading_direction],
           language:     info[:language],
           censored:     info[:censored],

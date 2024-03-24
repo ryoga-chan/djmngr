@@ -28,7 +28,7 @@
         class: 'has-text-danger', title: 'delete file')
       .file-select.is-hidden= check_box_tag 'file_ids[]', f.id, false,
         id: '', data: {size: f.size}, tabindex: (1000+idx)
-  %td.batch.file-size.has-text-right
+  %td.batch-size.file-size.has-text-right
     .size= number_to_human_size f.size
     - if f.images
       .images
@@ -37,7 +37,7 @@
       - mean_page_weight = (f.size.to_f / f.images)
       - if mean_page_weight > (local_assigns[:max_page_weight] || 0.6.megabytes)
         .tag.is-warning.is-size-8= "#{number_to_human_size mean_page_weight}/P"
-  %td.batch
+  %td.batch-bts
     - if @group_sort && is_doujin
       = render partial: 'doujin_actions', locals: { d: f, vertical: true }
     - else
@@ -117,7 +117,7 @@
   %tr{class: tr_class}
     %td
     %td(colspan=3)
-      %input.input.is-small.pd-notes{value: f.notes, tabindex: (900+idx), placeholder: :notes, maxlength: 255, data: {url: pd_notes_process_path(f.id)}}
+      %input.input.is-small.pd-notes{value: f.notes, tabindex: (1100+idx), placeholder: :notes, maxlength: 255, data: {url: pd_notes_process_path(f.id)}}
       
       - if has_thumb
         %figure.image.sample.mt-2

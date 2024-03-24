@@ -42,7 +42,8 @@
                 method: :delete, data: { confirm: 'Delete this processing folder?' },
                 class: 'has-text-danger', title: 'delete processing folder')
               %td.has-text-right= number_to_human_size f[:tot_size]
-              %td= link_to f[:relative_path], action: :edit, id: f[:working_dir]
+              - lbl = f[:relative_path].one? ? f[:relative_path].first : f[:title]
+              %td= link_to lbl, action: :edit, id: f[:working_dir]
 
     -# files listing
     .title
@@ -51,7 +52,7 @@
       
     = form_with url: process_index_path, method: :get,
       html: {onsubmit: %Q|jQuery(this).find('button').addClass('is-loading'); jQuery.myapp.show_loading()|,
-             class: "filters mb-2 #{'is-hidden' if params[:term].blank?}" } do |f|
+             id: 'frm_search', class: "filters mb-2 #{'is-hidden' if params[:term].blank?}" } do |f|
       = f.hidden_field :sort_by, value: params[:sort_by]
       
       .field.has-addons.is-justify-content-center
@@ -63,7 +64,7 @@
     
     = form_with url: prepare_batch_process_index_path, method: :post do |f|
       = f.hidden_field :term, value: params[:term]
-    
+      
       .columns.my-0
         .column.py-0.pb-2
           -#%span Sort files by
@@ -71,17 +72,20 @@
             .control
               .select(style="vertical-align: middle")= select_tag :sort_by,
                 options_for_select(ProcessIndexRefreshJob::ORDER, params[:sort_by]),
-                onchange: %Q|window.location = '/process?sort_by='+jQuery(this).val()|
+                onchange: %Q|jQuery('#frm_search').find('input[name="sort_by"]').val(jQuery(this).val()).end().submit()|
             .control
               = link_to '#', onclick: %Q|jQuery('figure.image').toggleClass('is-hidden')|,
                 class: 'button' do
+                %span.is-hidden
                 %span.icon
                   %i.mi compare
-                %span thumbs
+                %span.is-hidden-mobile.ml-1 thumbs
             .control
               %button.button(type="button" onclick="jQuery('form.filters').removeClass('is-hidden').find('input[type=\"text\"]').focus()")
+                %span.is-hidden
                 %span.icon
                   %i.mi(title="show search bar") filter_list
+                %span.is-hidden-mobile.ml-1 search
               %span.tot-file-size.nowrap.is-size-8.ml-2
         .column.py-0
           .actions
@@ -119,25 +123,36 @@
               .control.batch-bt.is-hidden
                 = link_to '#', class: 'bt-toggle-all button',
                   onclick: %Q|jQuery('td.rm-or-batch :checkbox').each(function(){ $(this).prop('checked', !$(this).prop('checked')) }).first(); jQuery.app.update_tot_filesize(); return false| do
+                  %span.is-hidden
                   %span.icon
                     %i.mi select_all
-                  %span toggle
+                  %span.is-hidden-mobile.ml-1 toggle
               .control.batch-rm.is-hidden
                 -# # https://stackoverflow.com/questions/3027149/how-do-i-create-multiple-submit-buttons-for-the-same-form-in-rails
                 = f.button(type: :submit, class: 'button is-danger',
                            formaction: batch_delete_process_index_path,
                            data: {confirm: 'Delete selected files?'}) do
+                  %span.is-hidden
                   %span.icon
                     %i.mi delete_forever
-                  %span delete
+                  %span.is-hidden-mobile.ml-1 delete
+              .control.batch-bt.is-hidden
+                = f.button(type: :submit, class: 'button is-info',
+                           formaction: batch_merge_process_index_path,
+                           data: {confirm: 'Merge selected files?'}) do
+                  %span.is-hidden
+                  %span.icon
+                    %i.mi merge
+                  %span.is-hidden-mobile.ml-1 merge
               .control.batch-bt.is-hidden
                 = f.button type: :submit, class: 'button is-link' do
+                  %span.is-hidden
                   %span.icon
                     %i.mi send
-                  %span prepare
+                  %span.is-hidden-mobile.ml-1 prepare
               .control
                 = link_to '#', class: 'bt-batch button',
-                  onclick: %Q|jQuery('.batch-bt, .batch-rm, td.rm-or-batch > *, td.batch, .bt-mass').toggleClass('is-hidden'); return false| do
+                  onclick: %Q|jQuery('.batch-bt, .batch-rm, td.rm-or-batch > *, td.batch-bts, .bt-mass').toggleClass('is-hidden'); return false| do
                   %span.icon
                     %i.mi inventory_2
                   %span batch

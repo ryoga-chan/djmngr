@@ -29,7 +29,7 @@
       Archive processing
       %br.is-hidden-tablet
       %span.is-size-5= @info[:prepared_at].strftime '@ %F %H:%M'
-    .subtitle= @info[:relative_path]
+    .subtitle= @fname
     
     .tabs.is-boxed
       %ul
@@ -72,7 +72,7 @@
   - else
 
     .title Archive processing
-    .title.is-4= @info[:relative_path]
+    .title.is-4= @info[:relative_path].one? ? @info[:relative_path].first : @info[:title]
     .title.is-6= "Preparing archive, please wait ... #{@perc}%"
     
     :javascript
