@@ -11,17 +11,19 @@
     .name_orig.mb-1
       %span.icon.in-text-small.mr-2
         %i.mi.mi-small(title="original filename") photo_filter
-      %span= render partial: 'file_actions', locals: {fname: @info[:relative_path]}
+      - if @info[:relative_path].one?
+        %span= render partial: 'file_actions', locals: {fname: @info[:relative_path].first}
       = @fname
 
     .dest-filename.mb-1
+      - title = @fname.tokenize_doujin_filename(title_only: true).join ' '
       = form_with url: set_property_process_path do |f|
         = f.hidden_field :tab, value: params[:tab]
         %span.icon.in-text-small.mr-2
           %i.mi.mi-small(title="terms for catalog search") search
         = f.text_field :dupe_search, value: @info[:dupe_search], placeholder: 'search terms in sequence',
           class: 'input is-small', style: 'width: 18rem',
-          data: { orig_name: @info[:relative_path].tokenize_doujin_filename.join(' ') }
+          data: { orig_name: title }
         = f.button class: 'button is-small' do
           %span.icon
             %i.mi.mi-small send
@@ -30,7 +32,7 @@
           %span.icon
             %i.mi.mi-small(title="restore initial search term") restore
         
-        %span.ml-6= links_to_search_engines @info[:relative_path].tokenize_doujin_filename.join(' '), target: :_blank
+        %span.ml-6= links_to_search_engines @info[:dupe_search], target: :_blank
 
     .tags.has-addons.my-3
       %span.tag.is-info= @cur_info

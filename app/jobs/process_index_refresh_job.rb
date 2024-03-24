@@ -68,7 +68,7 @@ class ProcessIndexRefreshJob < ApplicationJob
     rel
   end # self.entries
 
-  def self.rm_entry(path_or_id, track: false, rm_zip: false)
+  def self.rm_entry(path_or_id, track: false, rm_zip: false, merged: false, doujin_id: nil)
     pd = ProcessableDoujin.find_by(id: path_or_id.to_i) ||
          ProcessableDoujin.find_by(name: path_or_id)
     return false unless pd
@@ -102,6 +102,8 @@ class ProcessIndexRefreshJob < ApplicationJob
           name:             name,
           name_kakasi:      name.to_romaji,
           size:             File.size(zip_path),
+          merged:           merged,
+          doujin_id:        doujin_id,
         })
         dd.cover_fingerprint! cover_hash if cover_hash.present?
       end # if track

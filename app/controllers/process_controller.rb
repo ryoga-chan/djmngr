@@ -101,34 +101,38 @@ class ProcessController < ApplicationController
 
     @info = YAML.unsafe_load_file info_path
 
-    # remove single entry or entire batch data file
     if request.delete?
       if params[:undo]
+        # halt batch processing
         @info.delete :started_at
         File.atomic_write(info_path){|f| f.puts @info.to_yaml }
         return redirect_to(batch_process_path(id: params[:id]), notice: "batch processing halted")
       elsif params[:remove].present?
+        # remove the entry from batch data file
         %i[ files thumbs titles ].each{|k| @info[k].delete params[:remove] }
         @info[:filenames] -= [params[:remove]]
         File.atomic_write(info_path){|f| f.puts @info.to_yaml }
         row = [0, params[:row].to_i - 1].max
         return redirect_to(batch_process_path(id: params[:id], anchor: "row_#{row}"), notice: "entry removed: [#{params[:remove]}]")
       else
+        # remove entire batch data file
         File.unlink info_path
         return redirect_to(process_index_path, notice: "batch deleted: [#{params[:id][0..10]}...]")
       end
-    end
+    end # DELETE
 
-    # change destination title
-    if request.post? && params[:name].present?
-      if @info[:titles][params[:path]]
-        @info[:titles][params[:path]] = params[:name].strip
-        File.atomic_write(info_path){|f| f.puts @info.to_yaml }
-        return render(json: {result: 'ok'})
-      else
-        return render(json: {result: 'err', msg: "path not found [#{params[:path]}]"})
+    if request.post?
+      if params[:name].present?
+        # change the entry destination title
+        if @info[:titles][params[:path]]
+          @info[:titles][params[:path]] = params[:name].strip
+          File.atomic_write(info_path){|f| f.puts @info.to_yaml }
+          return render(json: {result: 'ok'})
+        else
+          return render(json: {result: 'err', msg: "path not found [#{params[:path]}]"})
+        end
       end
-    end
+    end # POST
 
     # update options
     if params[:options]
@@ -194,6 +198,15 @@ class ProcessController < ApplicationController
       redirect_to process_index_path(term: params[:term]), alert: "no files selected!"
     end
   end # batch_delete
+  
+  # process multiple files into a single folder
+  def batch_merge
+    hash = ProcessArchiveDecompressJob.prepare_and_perform params[:file_ids]
+    
+    hash == :invalid_zip ?
+      redirect_to(process_index_path, alert: "invalid MIME type: not a ZIP file!") :
+      redirect_to(edit_process_path id: hash)
+  end # batch_merge
 
   def delete_archive
     ProcessArchiveDecompressJob.rm_entry path: params[:path]
@@ -207,16 +220,23 @@ class ProcessController < ApplicationController
     @info = YAML.unsafe_load_file(File.join @dname, 'info.yml')
 
     if params[:archive_too] == 'true'
-      ProcessIndexRefreshJob.rm_entry @info[:relative_path],
-        track: @info[:db_doujin_id].blank?, rm_zip: true
+      if @info[:relative_path].one?
+        ProcessIndexRefreshJob.rm_entry @info[:relative_path].first, track: @info[:db_doujin_id].blank?, rm_zip: true
+      else
+        # always track merged entries
+        doujin_id = @info[:db_doujin_id].to_i if @info[:db_doujin_id].to_i > 0
+        @info[:relative_path].
+          each{|rp| ProcessIndexRefreshJob.rm_entry rp, track: true, rm_zip: true, merged: true, doujin_id: doujin_id }
+      end
     end
 
     ProcessArchiveDecompressJob.rm_entry folder: @dname
 
     CoverMatchingJob.rm_results_file @info[:cover_hash]
 
-    msg = params[:archive_too] == 'true' ? "archive and folder deleted:" : "folder deleted for"
-    redirect_to process_index_path, notice: "#{msg} [#{@info[:relative_path]}] in [#{params[:id][0..10]}...]"
+    msg   = params[:archive_too] == 'true' ? "archive and folder deleted:" : "folder deleted for"
+    title = @info[:relative_path].one?     ? @info[:relative_path].first   : @info[:title]
+    redirect_to process_index_path, notice: "#{msg} [#{title}] in [#{params[:id][0..10]}...]"
   end # delete_archive_cwd
 
   def split_archive
@@ -261,7 +281,6 @@ class ProcessController < ApplicationController
   def set_property
     @info  = YAML.unsafe_load_file(File.join @dname, 'info.yml')
     @perc  = File.read(File.join @dname, 'completion.perc').to_f rescue 0.0 unless @info[:prepared_at]
-    @fname = File.basename(@info[:relative_path].to_s)
     info_changed = false
     redir_anchor = nil
 
@@ -365,7 +384,7 @@ class ProcessController < ApplicationController
 
     @info  = YAML.unsafe_load_file(File.join @dname, 'info.yml')
     @perc  = File.read(File.join @dname, 'completion.perc').to_f rescue 0.0 unless @info[:prepared_at]
-    @fname = File.basename(@info[:relative_path].to_s)
+    @fname = File.basename(@info[:relative_path].one? ? @info[:relative_path].first.to_s : @info[:title].to_s)
 
     return render unless @info[:prepared_at]
 
@@ -391,7 +410,7 @@ class ProcessController < ApplicationController
       f_imgs = @info[:images].size
       @cur_info = "#{f_imgs} pics/#{f_size}"
     end
-
+    
     case params[:tab]
       when 'dupes'
         # refresh cover matching results
@@ -437,7 +456,7 @@ class ProcessController < ApplicationController
           }.compact
         end
 
-        @info[:dupe_search] ||= @info[:relative_path].tokenize_doujin_filename(title_only: true).join ' '
+        @info[:dupe_search] ||= @fname.tokenize_doujin_filename(title_only: true).join ' '
         params[:dupe_search] ||= @info[:dupe_search]
         # search dupes by filename
         @dupes += Doujin.
@@ -471,7 +490,7 @@ class ProcessController < ApplicationController
         @associated_circles = Circle.where(id: @info[:circle_ids]).order("LOWER(name), id DESC")
 
         # filename analisys
-        @name = File.basename(@info[:relative_path].to_s).parse_doujin_filename
+        @name = File.basename(@fname).parse_doujin_filename
         # single term search
         params[:term] = @name[:ac_explicit][0] || @name[:ac_implicit][0] if params[:term].blank?
         @authors = Author.search_by_name params[:term], limit: 50
@@ -580,6 +599,7 @@ class ProcessController < ApplicationController
   # rezip archive, add metadata, move/register in collection, cleaup WIP folder
   def finalize_volume
     @info = YAML.unsafe_load_file(File.join @dname, 'info.yml')
+    @fname = File.basename(@info[:relative_path].one? ? @info[:relative_path].first.to_s : @info[:title].to_s)
     perc_file = File.join(@dname, 'finalize.perc')
 
     if @info[:images].empty?

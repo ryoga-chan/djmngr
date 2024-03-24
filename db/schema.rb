@@ -107,6 +107,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_01_164045) do
     t.integer "doujin_id"
     t.datetime "created_at"
     t.integer "cover_phash"
+    t.boolean "merged", default: false
   end
 
   create_table "doujinshi", force: :cascade do |t|

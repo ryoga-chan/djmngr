@@ -1,4 +1,4 @@
-- search_term = @info[:relative_path].tokenize_doujin_filename.join(' ')
+- search_term = @fname.tokenize_doujin_filename.join(' ')
 
 = form_with url: set_property_process_path do |f|
   = f.hidden_field :tab, value: params[:tab]
@@ -30,7 +30,8 @@
             - else
               = @info[:file_type]
           
-          %span.mr-3= render partial: 'file_actions', locals: {fname: @info[:relative_path]}
+          - if @info[:relative_path].one?
+            %span.mr-3= render partial: 'file_actions', locals: {fname: @info[:relative_path].first}
           
           = links_to_search_engines search_term, target: :_blank
       
