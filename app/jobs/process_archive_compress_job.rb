@@ -99,8 +99,8 @@ class ProcessArchiveCompressJob < ApplicationJob
         d.file_folder = Pathname.new(d.file_folder).relative_path_from("/#{d.category}").to_s
         d.save!
 
-        d.author_ids = info[:author_ids] if info[:author_ids].try(:any?)
-        d.circle_ids = info[:circle_ids] if info[:circle_ids].try(:any?)
+        d.author_ids = Author.where(id: info[:author_ids]).pluck(:id) if info[:author_ids].try(:any?)
+        d.circle_ids = Circle.where(id: info[:circle_ids]).pluck(:id) if info[:circle_ids].try(:any?)
 
         # used in ProcessController#finalize_volume to skip the redirect to edit
         info[:db_doujin_id] = d.id
