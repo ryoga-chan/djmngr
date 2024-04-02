@@ -205,16 +205,16 @@ if ($('body').data('ctrl') +'/'+ $('body').data('action') == 'process/edit') {
   // ehentai search callback: place titles in kanji/romaji/eng fields, and full text in notes field
   $('.ehentai-search').data('onselect', function (info) {
     $('#dest_title').val(info.title_jpn_clean || info.title_clean);
-    $('#notes').append( $('<div/>').html(info.title_jpn || info.title).text() + "\n" );
+    $.myapp.append_to_textarea('#notes', info.title_jpn || info.title);
     
     if (info.title_eng) {
       $('#dest_title_eng').val(info.title_eng_clean);
-      $('#notes').append( 'ENG: ' + $('<div/>').html(info.title_eng).text() + "\n" );
+      $.myapp.append_to_textarea('#notes', 'ENG: '+info.title_eng);
     }//if
     
     if (info.title_jpn) {
       $('#dest_title_romaji').val(info.title_clean);
-      $('#notes').append( $('<div/>').html(info.title).text() + "\n" );
+      $.myapp.append_to_textarea('#notes', info.title);
     }//if
     
     $.myapp.autotag_titles();
