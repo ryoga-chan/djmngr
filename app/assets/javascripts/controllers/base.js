@@ -45,6 +45,12 @@ $.myapp = {
     document.execCommand('copy');
     input.remove();
   },//copy_to_clipboard
+
+  append_to_textarea: function (selector, text) {
+    var ta = $(selector);
+    var new_text = ta.val().trim() + "\n" + $('<div/>').html(text).text();
+    ta.val(new_text.trim());
+  },//append_to_textarea
   
   // https://www.freecodecamp.org/news/javascript-keycode-list-keypress-event-key-codes/#a-full-list-of-key-event-values
   shortcuts: [
