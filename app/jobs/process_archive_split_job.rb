@@ -39,17 +39,19 @@ class ProcessArchiveSplitJob < ApplicationJob
         FileUtils.cp_hard src_path, dst_path, force: true
       end # each image
       
-      # info
-      info_new[:images           ]  = set
-      info_new[:working_dir      ]  = File.basename dir
-      info_new[:prepared_at      ]  = Time.now
-      info_new[:cover_hash       ]  = nil
-      info_new[:dest_title       ] += " #{num}" if info_new[:dest_title       ].present?
-      info_new[:dest_title_romaji] += " #{num}" if info_new[:dest_title_romaji].present?
-      info_new[:dest_title_eng   ] += " #{num}" if info_new[:dest_title_eng   ].present?
-      info_new[:dest_filename    ]  = info[:dest_filename].sub(/ *\.zip/i, " #{num}.zip")
-      info_new[:file_path        ] += ".#{num}"
-      info_new[:relative_path    ] += ".#{num}"
+      # update info
+      info_new[:images           ] = set
+      info_new[:working_dir      ] = File.basename dir
+      info_new[:prepared_at      ] = Time.now
+      info_new[:cover_hash       ] = nil
+      # place the index number before trailing parenthesis
+      re_expr, re_repl = /(.+?)( \(.+\))*(\.zip)*$/i, "\\1 #{num}\\2\\3"
+      info_new[:dest_title       ] = info[:dest_title       ].sub(re_expr, re_repl) if info[:dest_title       ].present?
+      info_new[:dest_title_romaji] = info[:dest_title_romaji].sub(re_expr, re_repl) if info[:dest_title_romaji].present?
+      info_new[:dest_title_eng   ] = info[:dest_title_eng   ].sub(re_expr, re_repl) if info[:dest_title_eng   ].present?
+      info_new[:dest_filename    ] = info[:dest_filename    ].sub(re_expr, re_repl)
+      info_new[:file_path        ] = [info[:file_path    ][0].sub(re_expr, re_repl)]
+      info_new[:relative_path    ] = [info[:relative_path][0].sub(re_expr, re_repl)]
 
       # autogenerate portrait cover for landascape first image
       ProcessArchiveDecompressJob.crop_landscape_cover dir, info_new
