@@ -152,7 +152,7 @@ class ProcessArchiveDecompressJob < ApplicationJob
       dst_data[:alt_label ] = dst_data[:src_path]
       dst_data[:thumb_path] = "#{ts}.webp"
 
-      info[:images].push dst_data
+      info[:images] = info[:images].push(dst_data).sort_by_method('[]', :dst_path)
 
       FileUtils.cp_f file_path, File.join(dst_dir, 'contents', dst_data[:src_path])
 
