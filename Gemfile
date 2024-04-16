@@ -51,4 +51,5 @@ group :development do
   gem 'rails_real_favicon'       # https://realfavicongenerator.net/favicon/ruby_on_rails
                                  # https://github.com/RealFaviconGenerator/rails_real_favicon
   gem 'rubocop-rails-omakase', require: false # see .rubocop.yml -- https://github.com/rails/rubocop-rails-omakase/
+  gem 'amazing_print'#, require: 'amazing_print'
 end
