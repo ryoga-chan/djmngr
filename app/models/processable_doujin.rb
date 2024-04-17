@@ -19,10 +19,12 @@ class ProcessableDoujin < ApplicationRecord
 
     return self.none if tokens_orig.size < 3
 
+    tn = ProcessableDoujin.table_name
+
     # search all terms on the original filename
     rel_conditions = [
-      ProcessableDoujin.where("name            LIKE ?", "%#{tokens_orig  }%"),
-      ProcessableDoujin.where("name_kakasi     LIKE ?", "%#{tokens_kakasi}%"),
+      ProcessableDoujin.where("#{tn}.name            LIKE ?", "%#{tokens_orig  }%"),
+      ProcessableDoujin.where("#{tn}.name_kakasi     LIKE ?", "%#{tokens_kakasi}%"),
     ]
 
     # search only filename terms
@@ -30,8 +32,8 @@ class ProcessableDoujin < ApplicationRecord
       tokens_orig   = fname_info[:fname].to_s          .tokenize_doujin_filename.join '%'
       tokens_kakasi = fname_info[:fname].to_s.to_romaji.tokenize_doujin_filename.join '%'
       rel_conditions += [
-        ProcessableDoujin.where("name            LIKE ?", "%#{tokens_orig  }%"),
-        ProcessableDoujin.where("name_kakasi     LIKE ?", "%#{tokens_kakasi}%"),
+        ProcessableDoujin.where("#{tn}.name            LIKE ?", "%#{tokens_orig  }%"),
+        ProcessableDoujin.where("#{tn}.name_kakasi     LIKE ?", "%#{tokens_kakasi}%"),
       ]
     end
 
