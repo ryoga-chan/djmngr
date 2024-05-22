@@ -312,8 +312,19 @@ class ProcessArchiveDecompressJob < ApplicationJob
     # remove reprocessing files
     Dir[File.join path_contents, '**/metadata.yml'].each{|f| FileUtils.rm_f f }
     
+    # fix invalid files names
+    all_files = Dir[File.join path_contents, '**', '*'].map do |f|
+      if f.valid_encoding?
+        f
+      else
+        f_fixed = f.encode('UTF-8', invalid: :replace, undef: :replace, replace: rand(10000).to_s.rjust(4,'0'))
+        File.rename f, f_fixed
+        f_fixed
+      end
+    end
+
     # detect images and other files
-    info[:images], info[:files] = Dir[File.join path_contents, '**', '*'].
+    info[:images], info[:files] = all_files.
       select{|i| File.file? i }.
       map{|i| { src_path: Pathname.new(i).relative_path_from(path_contents).to_s, size: File.size(i) } }.
       partition{|i| i[:src_path].is_image_filename? }
