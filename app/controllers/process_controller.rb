@@ -392,6 +392,7 @@ class ProcessController < ApplicationController
     if params[:ident_from] && (d = Doujin.find_by id: params[:ident_from])
       @info[:author_ids ], @info[:circle_ids] = d.author_ids, d.circle_ids
       @info[:dest_folder], @info[:subfolder ] = d.file_folder.to_s.split(File::SEPARATOR)
+      @info[:doujin_dest_type ] = d.category
       @info[:dest_title       ] = d.name
       @info[:dest_title_romaji] = d.name_romaji if d.name_romaji.present?
       @info[:dest_title_eng   ] = d.name_eng    if d.name_eng   .present?
