@@ -253,7 +253,7 @@ class Doujin < ApplicationRecord
       dst_file = File.join(dst_dir, file_name)
 
       # add prefix to filename in case a duplicate exists
-      if File.exist?(dst_file)
+      if file_path(full: true) != dst_file && File.exist?(dst_file)
         prefix = "DUPE-#{'%09d' % rand(1_000_000_000)}"
         update! name:      "#{prefix}_#{name}",
                 file_name: "#{prefix}_#{file_name}"
@@ -265,7 +265,9 @@ class Doujin < ApplicationRecord
       update! dst_dj.attributes.slice('category'.freeze, 'file_folder'.freeze)
 
       # move file
-      if File.exist?(dst_file)
+      if dst_file == src_file
+        result = true
+      elsif File.exist?(dst_file)
         # move it with the new prefix
         FileUtils.mv src_file, File.join(dst_dir, file_name)
         result = :dupe
