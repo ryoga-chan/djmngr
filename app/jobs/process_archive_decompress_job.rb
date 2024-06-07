@@ -297,7 +297,10 @@ class ProcessArchiveDecompressJob < ApplicationJob
       info[:file_path].sort.each_with_index do |file_path, i|
         pd = ProcessableDoujin.find_by name: info[:relative_path][i]
         title = pd&.notes.present? ? pd&.notes : file_path
-        path = File.join path_contents, title.to_romaji.tokenize_doujin_filename(title_only: true).join(' ')
+        path = File.join path_contents,
+          i.to_s.rjust(3,'0'),
+          title.to_romaji.tokenize_doujin_filename(title_only: true).join(' ')
+        FileUtils.mkdir_p path
         system %Q( unzip -q -d #{path.shellescape} #{file_path.shellescape} )
       end
     end
@@ -342,12 +345,12 @@ class ProcessArchiveDecompressJob < ApplicationJob
       info[:ren_images_method] = ZipImagesRenamer::DEFAULT_METHOD.to_s
       info[:images] = ZipImagesRenamer.rename(info[:images]).sort_by_method('[]', :dst_path)
     else
-      # rename files: subfolder/(x/y/z/...)/image.jpg => subfolder_image.jpg
+      # rename files: /###/subfolder/(x/y/z/...)/image.jpg => ###_subfolder_image.jpg
       sep = File::SEPARATOR
       sep = sep*2 if sep == '\\'
       info[:ren_images_method      ] = 'regex_replacement'
-      info[:images_last_regexp     ] = "([^#{sep}]+)#{sep}(.+#{sep})*(.+)"
-      info[:images_last_regexp_repl] = '\\1__\\3'
+      info[:images_last_regexp     ] = "([0-9]{3})#{sep}([^#{sep}]+)#{sep}(.+#{sep})*(.+)"
+      info[:images_last_regexp_repl] = '\\1__\\2__\\4'
       info[:images] = ZipImagesRenamer.rename(
         info[:images],
         info[:ren_images_method].to_sym,
