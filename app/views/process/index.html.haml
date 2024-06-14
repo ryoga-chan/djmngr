@@ -151,8 +151,9 @@
                     %i.mi send
                   %span.is-hidden-mobile.ml-1 prepare
               .control
+                -# add "td.batch-bts" to toggle row buttons
                 = link_to '#', class: 'bt-batch button',
-                  onclick: %Q|jQuery('.batch-bt, .batch-rm, td.rm-or-batch > *, td.batch-bts, .bt-mass').toggleClass('is-hidden'); return false| do
+                  onclick: %Q|jQuery('.batch-bt, .batch-rm, td.rm-or-batch > *, .bt-mass').toggleClass('is-hidden'); return false| do
                   %span.icon
                     %i.mi inventory_2
                   %span batch

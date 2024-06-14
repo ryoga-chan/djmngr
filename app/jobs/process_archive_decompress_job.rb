@@ -55,6 +55,8 @@ class ProcessArchiveDecompressJob < ApplicationJob
           title:         title, # optional title from batch processing
           working_dir:   hash,
           prepared_at:   nil,
+          notes:         (fnames.one? ? '' :
+                          fnames.map{|i| File.basename(i, '.zip').parse_doujin_filename[:fname] }.join("\n").strip),
         }.to_yaml)
       end
 

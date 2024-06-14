@@ -172,18 +172,47 @@ if ($('body').data('ctrl') +'/'+ $('body').data('action') == 'process/edit') {
     $('button.delete-images').attr('data-confirm', 'Delete '+num_images+' selected images?');
   });
   
+  $('button.range_select').click(function () {
+    $('button.range_select').toggleClass('is-light');
+    $('.images .column.range_start').removeClass('range_start');
+  });
+
   // manage click on linked image: area1 = select image, area2 = open link
   $('.images .column a').split_click({
     mode:  $('#frm-images').data('image-sel-mode'),
     area1: function (el, ev) {
       ev.preventDefault(); // do not open the link/zoom image
+      
       // select the image
       el.siblings('.select-image').click();
+      
       // animate selection
       if (el.siblings(':checkbox').prop('checked'))
         el.parent().addClass('clicked').
           find('figure').fadeTo(0,0).
           fadeTo(300, 1, function () { el.parent().removeClass('clicked'); });
+      
+      // range selection mode
+      if ($('button.range_select').hasClass('is-light')) {
+        if ($('.images .column.range_start').length == 0)
+          el.parent().addClass('range_start'); // mark the first element of selection
+        else {
+          el.parent().addClass('range_end');
+          var start = $('.images .column.range_start');
+          // select all elements between the first element and this one
+          var range = $('');
+          if (start.nextAll('.range_end').length == 1) range = start.nextUntil('.range_end');
+          if (start.prevAll('.range_end').length == 1) range = start.prevUntil('.range_end');
+          range.each(function () {
+            if ($(this).find(':checkbox:checked').length == 0)
+              $(this).find('.select-image').click();
+          });
+          $('button.range_select').removeClass('is-light');
+          el.parent().removeClass('range_end');
+          $('.images .column.range_start').removeClass('range_start');
+          console.log(range);
+        }//if-else
+      }//if
     }//area1
   });
 

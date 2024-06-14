@@ -8,24 +8,32 @@
   = hidden_field_tag :tab, params[:tab]
 
   = action_buttons = capture do
-    .has-text-centered.mb-4
-      = f.button class: 'button is-rounded is-info mr-3',
-        onclick: %Q|jQuery('.columns .column span.select-image').click(); return false| do
-        %span.icon.is-small
-          %i.mi select_all
-        %span Toggle
-      = f.button type: :submit, class: 'button is-rounded is-danger delete-images mr-3',
-        formaction: delete_archive_files_process_path(id: @info[:working_dir]), formmethod: :delete,
-        data: { confirm: 'Delete 0 selected images?' } do
-        %span.icon.is-small
-          %i.mi delete
-        %span Delete
-      = f.button type: :submit, class: 'button is-rounded is-primary split-images',
-        formaction: split_archive_process_path(id: @info[:working_dir]), formmethod: :post,
-        data: { confirm: 'Split archive to selected images?' } do
-        %span.icon.is-small
-          %i.mi call_split
-        %span Split
+    .field.has-addons.is-justify-content-center.mb-4
+      .control
+        = f.button type: :button, class: 'button is-rounded is-info',
+          onclick: %Q|jQuery('.columns .column span.select-image').click()| do
+          %span.icon.is-small
+            %i.mi select_all
+          %span Toggle
+      .control
+        = f.button type: :button, class: 'range_select button is-rounded is-info' do
+          %span.icon.is-small
+            %i.mi settings_ethernet
+          %span Range
+      .control
+        = f.button type: :submit, class: 'button is-rounded is-danger delete-images',
+          formaction: delete_archive_files_process_path(id: @info[:working_dir]), formmethod: :delete,
+          data: { confirm: 'Delete 0 selected images?' } do
+          %span.icon.is-small
+            %i.mi delete
+          %span Delete
+      .control
+        = f.button type: :submit, class: 'button is-rounded is-primary split-images',
+          formaction: split_archive_process_path(id: @info[:working_dir]), formmethod: :post,
+          data: { confirm: 'Split archive to selected images?' } do
+          %span.icon.is-small
+            %i.mi call_split
+          %span Split
 
   - base_dir = File.join(Setting['dir.sorting'], @info[:working_dir], 'thumbs')
   - tab_idx = 0
