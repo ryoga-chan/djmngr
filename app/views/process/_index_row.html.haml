@@ -11,6 +11,9 @@
             %i.mi.mi-small save
         .tag.is-warning= "#{local_assigns[:pair_data]&.likeness}%"
     - else
+      .file-select.mb-2.is-hidden= check_box_tag 'file_ids[]', f.id, false,
+        id: '', data: {size: f.size}, tabindex: (1000+idx)
+      
       - if @group_sort
         .likeness.is-size-7
           - if local_assigns[:pair_data]
@@ -22,12 +25,11 @@
             .tag.has-background-grey(title="reference")
               %span.icon.is-small
                 %i.mi.mi-small plagiarism
+      
       = link_to('🗑',
         {action: :delete_archive, path: f.name, page: params[:page], sort_by: params[:sort_by], term: params[:term], row: idx},
         method: :delete, data: { confirm: 'Delete this file?' },
-        class: 'has-text-danger', title: 'delete file')
-      .file-select.is-hidden= check_box_tag 'file_ids[]', f.id, false,
-        id: '', data: {size: f.size}, tabindex: (1000+idx)
+        class: 'has-text-danger delete-file', title: 'delete file')
   %td.batch-size.file-size.has-text-right
     .size= number_to_human_size f.size
     - if f.images

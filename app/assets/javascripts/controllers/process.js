@@ -92,7 +92,11 @@ if ($('body').data('ctrl') +'/'+ $('body').data('action') == 'process/index') {
     update_tot_filesize: function () {
       var tot_bytes = 0;
       $('.file-select :checkbox:checked').each(function(){ tot_bytes += $(this).data('size'); });
-      $('span.tot-file-size').text(tot_bytes > 0 ? '(~'+(tot_bytes / 1024 / 1024).toFixed(0)+' MB)' : '');
+      // update confirm deletion message
+      var msg = $('button.batch-delete').data('msg').
+        replace('NUM' , $('.file-select :checkbox:checked').length).
+        replace('SIZE', tot_bytes > 0 ? '~'+(tot_bytes / 1024 / 1024).toFixed(0)+'MiB' : '');
+      $('button.batch-delete').data('confirm', msg).attr('data-confirm', msg);
     }//update_tot_filesize
   });
   
