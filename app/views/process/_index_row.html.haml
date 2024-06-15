@@ -2,6 +2,18 @@
 - is_doujin = f.is_a? Doujin
 - tr_class  = cycle :odd, :even
 
+- group_entry_tags = nil
+- if @group_sort
+  - group_entry_tags = capture do
+    - if is_doujin ? (!f.censored)         : f.group_sort_flags[0] == '0'
+      .tag.is-danger.is-light.is-small  unc
+    - if is_doujin ? (f.language == 'eng') : f.group_sort_flags[1] == '0'
+      .tag.is-danger.is-light.is-small  eng
+    - if is_doujin ? (f.language == 'jpn') : f.group_sort_flags[2] == '0'
+      .tag.is-success.is-light.is-small jpn
+    - if is_doujin ? (f.language == 'kor') : f.group_sort_flags[3] == '0'
+      .tag.is-info.is-light.is-small    kor
+
 %tr{class: tr_class, data: {id: f.id}}
   %td.rm-or-batch
     - if @group_sort && is_doujin
@@ -25,11 +37,15 @@
             .tag.has-background-grey(title="reference")
               %span.icon.is-small
                 %i.mi.mi-small plagiarism
+
+    - if @group_sort
+      .group-entry-tags.is-hidden-desktop= group_entry_tags
       
       = link_to('🗑',
         {action: :delete_archive, path: f.name, page: params[:page], sort_by: params[:sort_by], term: params[:term], row: idx},
         method: :delete, data: { confirm: 'Delete this file?' },
         class: 'has-text-danger delete-file', title: 'delete file')
+    
   %td.batch-size.file-size.has-text-right
     .size= number_to_human_size f.size
     - if f.images
@@ -44,6 +60,7 @@
       = render partial: 'doujin_actions', locals: { d: f, vertical: true }
     - else
       = render partial: 'file_actions', locals: {fname: f.name, id: f.id, vertical: true}
+    .group-entry-tags.is-hidden-touch= group_entry_tags
   %td
     %a{name: "row_#{idx}"}
     .name
@@ -91,8 +108,12 @@
         - if local_assigns[:pair_data].nil?
           %a.button.is-info.is-rounded.is-small.ml-2.mt-2(href="#" disabled title="can't ungroup the reference file")
             %span.icon.is-small
-              %i.mi.mi-small remove
-            %span= "ungroup #{f.id} @ ##{f.id}"
+              %i.mi.mi-small clear
+            %span.is-hidden-touch.mr-1 ungroup
+            %span= f.id
+            %span.icon.is-small
+              %i.mi.mi-small group_work
+            %span= f.id
         - else
           = link_to(group_rm_process_path(id: local_assigns[:pair_data].id,
                                           parent_id: local_assigns[:pair_data].pd_parent_id,
@@ -100,11 +121,12 @@
             method: :delete, data: { confirm: 'Remove file from group?' },
             title: 'remove from group', class: 'button is-info is-rounded is-small ml-2 mt-2') do
             %span.icon.is-small
-              %i.mi.mi-small remove
-            %span
-              ungroup
-              = is_doujin ? "[#{f.id}]" : f.id
-              = "@ ##{local_assigns[:pair_data].pd_parent_id}"
+              %i.mi.mi-small clear
+            %span.is-hidden-touch.mr-1 ungroup
+            %span= is_doujin ? "[#{f.id}]" : f.id
+            %span.icon.is-small
+              %i.mi.mi-small group_work
+            %span= local_assigns[:pair_data].pd_parent_id
 
 - if @group_sort && is_doujin
   %tr.sample.freezeframe{class: tr_class}

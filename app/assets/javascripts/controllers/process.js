@@ -95,7 +95,7 @@ if ($('body').data('ctrl') +'/'+ $('body').data('action') == 'process/index') {
       // update confirm deletion message
       var msg = $('button.batch-delete').data('msg').
         replace('NUM' , $('.file-select :checkbox:checked').length).
-        replace('SIZE', tot_bytes > 0 ? '~'+(tot_bytes / 1024 / 1024).toFixed(0)+'MiB' : '');
+        replace('SIZE', tot_bytes > 0 ? '~'+(tot_bytes / 1024 / 1024).toFixed(0)+'MB' : '');
       $('button.batch-delete').data('confirm', msg).attr('data-confirm', msg);
     }//update_tot_filesize
   });

@@ -265,10 +265,8 @@ class ProcessArchiveDecompressJob < ApplicationJob
     info[:orig_dest_filename] = info[:dest_filename]
 
     # set properties
-    info[:language  ]   = Doujin::LANGUAGES.
-      detect{|descr, lbl| name[:properties].include?(lbl) || fname.include?(descr.downcase) }.
-      try('[]', 1) || Doujin::LANGUAGES.values.first
-    info[:censored  ] = !(name[:properties].include?('unc') || %w[ decensored uncensored ].any?{|t| fname.include? t })
+    info[:language  ] = name[:language]
+    info[:censored  ] = !name[:properties].include?('unc')
     info[:colorized ] = info[:file_type] == 'artbook' || name[:properties].include?('col')
     info[:media_type] = (fname =~ /(hcg| cg | cg$)/i ? 'cg' : 'doujin')
     info[:media_type] = 'artbook' if info[:file_type] == 'artbook'

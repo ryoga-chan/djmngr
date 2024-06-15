@@ -160,4 +160,16 @@ class ProcessableDoujin < ApplicationRecord
       copy(interpretation: "srgb").
       new_from_image([0, 0, 0, 0])
   end # self.img_transparent
+  
+  def parse_name = @cache_parse_name ||= name.parse_doujin_filename
+  
+  def group_sort_flags
+    return @cache_group_sort_flags if @cache_group_sort_flags
+    @cache_group_sort_flags = '1111' # unc, eng, jpn, kor
+    @cache_group_sort_flags[0] = '0' if parse_name[:properties].include?('unc')
+    @cache_group_sort_flags[1] = '0' if parse_name[:language] == 'eng'
+    @cache_group_sort_flags[2] = '0' if parse_name[:language] == 'jpn'
+    @cache_group_sort_flags[3] = '0' if parse_name[:language] == 'kor'
+    @cache_group_sort_flags
+  end # group_sort_flags
 end

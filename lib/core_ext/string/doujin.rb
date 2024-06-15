@@ -59,7 +59,7 @@ module CoreExt::String::Doujin
 
   TOKENIZE_RE_NAME = /^(\[[^\[\]]+\])*\s*(\([^\[\]]+\))*\s*\[([^\]\(\)]+)(\([^\[\]]+\))*\]\s*([^\[\]\(\)]+)(\([^\[\]]+\))*\s*(\[[^\[\]]+\])*\s*/
 
-  TOKENIZE_RE_SYM  = /[!@\[;\]^%*\(\);\-_+=\?\.,'\/&\\|$\{#\}<>:`~"]/
+  TOKENIZE_RE_SYMBOLS  = /[!@\[;\]^%*\(\);\-_+=\?\.,'\/&\\|$\{#\}<>:`~"]/
 
   # returns the explicit and implicit groups of authors_or_circles
   def parse_doujin_filename
@@ -76,12 +76,33 @@ module CoreExt::String::Doujin
     ac1, ac2, fname = self.match(/^\[([^\]\(\)]+)(\([^\[\]]+\))*\]\s*(.+)/).try(:captures)
 
     # extract authors/circles by splitting groups
-    { ac_explicit:   ac1  .to_s.strip             .split(/\s*[,\|]\s*/),
+    result = {
+      ac_explicit:   ac1  .to_s.strip             .split(/\s*[,\|]\s*/),
       ac_implicit:   ac2  .to_s.strip[1...-1].to_s.split(/\s*[,\|]\s*/),
       subjects:      fname.present? ? self.sub(/^\[([^\]]+)\].+/, '\1') : '', # everything between []
       properties:    self.match(/.+\([a-z,]+\)\....$/) ?  # eg. (eng,col,unc)
                        self.sub(/.+\(([a-z,]+)\)\....$/, '\1').split(',') : '',
-      fname:         fname.to_s.strip }
+      fname:         fname.to_s.strip
+    }
+    
+    self_downcase = self.downcase
+    
+    # detect censorship
+    unless result[:properties].include?('unc')
+      # decensored uncensored, 無修正 (jap), 未经审查 (chi), 무수정 (kor)
+      result[:properties] << 'unc' if %w(decens uncens 無修正 未经审查 무수정).any?{|i| self_downcase.include?(i) }
+    end
+    
+    # detect language
+    result[:language] = Doujin::LANGUAGES.
+      detect{|descr, lbl| result[:properties].include?(lbl) || self_downcase.include?(descr.downcase) }.try('[]', 1)
+    result[:language] ||= 'jpn' if self_downcase.include?('日本語')
+    result[:language] ||= 'eng' if self_downcase.include?('英語')
+    result[:language] ||= 'kor' if self_downcase.include?('韓国語')
+    result[:language] ||= 'chi' if self_downcase.include?('中国') # 中国語, 中国翻訳
+    result[:language] ||= Doujin::LANGUAGES.values.first
+    
+    result
   end # parse_doujin_filename
 
   def first_author_from_filename
@@ -113,7 +134,7 @@ module CoreExt::String::Doujin
     end
 
     # drop symbols and multiple spaces
-    term.gsub(TOKENIZE_RE_SYM, ' ').split(' ')
+    term.gsub(TOKENIZE_RE_SYMBOLS, ' ').split(' ')
   end # tokenize_doujin_filename
 end
 

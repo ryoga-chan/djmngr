@@ -173,14 +173,15 @@
                       .column
                         %hr.has-background-grey
                 %tr
-              = render partial: 'index_row', locals: { f: f, idx: idx+=1, max_page_weight: max_page_weight }
               - if @group_sort
-                - f.processable_doujin_childs.sort{|a,b| a.name <=> b.name }.each do |f_child|
+                - f.processable_doujin_childs.to_a.unshift(f).sort_by_method(:group_sort_flags).each do |f_child|
                   - pdd = f.processable_doujin_dupes_childs.detect{|pddc| pddc.pd_child_id == f_child.id }
                   = render partial: 'index_row', locals: { f: f_child, idx: idx+=1, pair_data: pdd }
                 
                 - f.doujinshi.sort{|a,b| a.name <=> b.name }.each do |f_child|
                   - pdd = f.processable_doujin_dupes_childs.detect{|pddc| pddc.doujin_id == f_child.id }
                   = render partial: 'index_row', locals: { f: f_child, idx: idx+=1, pair_data: pdd }
+              - else
+                = render partial: 'index_row', locals: { f: f, idx: idx+=1, max_page_weight: max_page_weight }
         
         = paginate @files, params: {sort_by: params[:sort_by]}
