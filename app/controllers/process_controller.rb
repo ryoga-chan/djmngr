@@ -498,8 +498,8 @@ class ProcessController < ApplicationController
         @circles = Circle.search_by_name params[:term], limit: 50
 
       when 'move'
-        if @info[:file_type] == 'doujin' && @info[:doujin_dest_type].blank?
-          return redirect_to(edit_process_path(id: params[:id], tab: 'ident'), alert: "choose the primary association")
+        if @info[:file_type] == 'doujin' && (@info[:doujin_dest_type].blank? || @info[:dest_folder].blank?)
+          return redirect_to(edit_process_path(id: params[:id], tab: 'ident'), alert: "select the primary association and destination folder")
         end
 
         # list possible dest subfolders

@@ -31,8 +31,7 @@ class ProcessArchiveDecompressJob < ApplicationJob
         fnames   << pd.file_path(full: true)
         tot_size += pd.size
       end
-      author = File.basename(fnames.first.to_s).sub(/^(\[[^\]]+\]).+/, '\1')
-      title = "#{author} #{fnames.size} merged files.zip"
+      title = File.basename(fnames.first.to_s).sub(' *.zip', " (#{fnames.size} merged files).zip")
     else
       fnames   = [fname_or_ids]
       tot_size = File.size fname_or_ids
@@ -56,7 +55,7 @@ class ProcessArchiveDecompressJob < ApplicationJob
           working_dir:   hash,
           prepared_at:   nil,
           notes:         (fnames.one? ? '' :
-                          fnames.map{|i| File.basename(i, '.zip').parse_doujin_filename[:fname] }.join("\n").strip),
+                          fnames.map.with_index{|f, i| "#{i+1}) " + File.basename(f, '.zip') }.join("\n").strip),
         }.to_yaml)
       end
 
@@ -211,7 +210,7 @@ class ProcessArchiveDecompressJob < ApplicationJob
     notes = info[:relative_path].
       map{|rp| ProcessableDoujin.find_by(name: rp.to_s)&.notes }.
       compact.join("\n")
-    info[:notes] = notes if notes.present?
+    info[:notes] = "#{info[:notes]}\n\npre-process notes:\n#{notes}".strip if notes.present?
 
     # auto associate doujin authors/circles when a 100% match is found
     name = fname.parse_doujin_filename
