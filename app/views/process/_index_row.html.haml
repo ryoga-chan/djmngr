@@ -13,6 +13,8 @@
       .tag.is-success.is-light.is-small jpn
     - if is_doujin ? (f.language == 'kor') : f.group_sort_flags[3] == '0'
       .tag.is-info.is-light.is-small    kor
+    - if is_doujin ? (f.language == 'chi') : f.group_sort_flags[4] == '0'
+      .tag.is-danger.is-lightX.is-small  chi
 
 %tr{class: tr_class, data: {id: f.id}}
   %td.rm-or-batch

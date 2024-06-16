@@ -99,7 +99,7 @@ module CoreExt::String::Doujin
     result[:language] ||= 'jpn' if self_downcase.include?('日本語')
     result[:language] ||= 'eng' if self_downcase.include?('英語')
     result[:language] ||= 'kor' if self_downcase.include?('韓国語')
-    result[:language] ||= 'chi' if self_downcase.include?('中国') # 中国語, 中国翻訳
+    result[:language] ||= 'chi' if %w(中国語 中国翻訳 中文翻译).any?{|i| self_downcase.include?(i) }
     result[:language] ||= Doujin::LANGUAGES.values.first
     
     result

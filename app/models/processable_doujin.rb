@@ -165,11 +165,12 @@ class ProcessableDoujin < ApplicationRecord
   
   def group_sort_flags
     return @cache_group_sort_flags if @cache_group_sort_flags
-    @cache_group_sort_flags = '1111' # unc, eng, jpn, kor
+    @cache_group_sort_flags = '11111' # unc, eng, jpn, kor, chi
     @cache_group_sort_flags[0] = '0' if parse_name[:properties].include?('unc')
     @cache_group_sort_flags[1] = '0' if parse_name[:language] == 'eng'
     @cache_group_sort_flags[2] = '0' if parse_name[:language] == 'jpn'
     @cache_group_sort_flags[3] = '0' if parse_name[:language] == 'kor'
+    @cache_group_sort_flags[4] = '0' if parse_name[:language] == 'chi'
     @cache_group_sort_flags
   end # group_sort_flags
 end
