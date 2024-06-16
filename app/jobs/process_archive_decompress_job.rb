@@ -31,7 +31,7 @@ class ProcessArchiveDecompressJob < ApplicationJob
         fnames   << pd.file_path(full: true)
         tot_size += pd.size
       end
-      title = File.basename(fnames.first.to_s).sub(' *.zip', " (#{fnames.size} merged files).zip")
+      title = File.basename(fnames.first.to_s, '.zip') + " (#{fnames.size} merged files)"
     else
       fnames   = [fname_or_ids]
       tot_size = File.size fname_or_ids
