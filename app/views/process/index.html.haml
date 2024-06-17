@@ -119,38 +119,39 @@
                           %span.icon
                             %i.mi refresh
                           %span refresh
-              .control.batch-bt.is-hidden
-                = link_to '#', class: 'bt-toggle-all button',
-                  onclick: %Q|jQuery('td.rm-or-batch :checkbox').each(function(){ $(this).prop('checked', !$(this).prop('checked')) }).first(); jQuery.app.update_tot_filesize(); return false| do
-                  %span.icon.ml-1
-                    %i.mi select_all
-                  %span.is-hidden-touch.ml-1 toggle
-              .control.batch-rm.is-hidden
-                -# https://stackoverflow.com/questions/3027149/how-do-i-create-multiple-submit-buttons-for-the-same-form-in-rails
-                = f.button(type: :submit, class: 'button is-danger batch-delete',
-                           formaction: batch_delete_process_index_path,
-                           data: {msg: 'Delete NUM (SIZE) files?', confirm: 'Delete selected files?'}) do
-                  %span.icon.ml-1
-                    %i.mi delete_forever
-                  %span.is-hidden-mobile.ml-1 delete
-              .control.batch-bt.is-hidden
-                = f.button(type: :submit, class: 'button is-info',
-                           formaction: batch_merge_process_index_path,
-                           data: {confirm: 'Merge selected files?'}) do
-                  %span.icon.ml-1
-                    %i.mi merge
-                  %span.is-hidden-mobile.ml-1 merge
-              .control.batch-bt.is-hidden
-                = f.button type: :submit, class: 'button is-link' do
-                  %span.icon.ml-1
-                    %i.mi send
-                  %span.is-hidden-mobile.ml-1 prepare
-              .control
-                = link_to '#', class: 'bt-batch button',
-                  onclick: %Q|jQuery('.batch-bt, .batch-rm, .delete-file, .file-select, .bt-mass').toggleClass('is-hidden'); return false| do
-                  %span.icon.ml-1
-                    %i.mi inventory_2
-                  %span.is-hidden-touch batch
+              = bts_batch_actions = capture do
+                .control.batch-bt.is-hidden
+                  = link_to '#', class: 'bt-toggle-all button',
+                    onclick: %Q|jQuery('td.rm-or-batch :checkbox').each(function(){ $(this).prop('checked', !$(this).prop('checked')) }).first(); jQuery.app.update_tot_filesize(); return false| do
+                    %span.icon.ml-1
+                      %i.mi select_all
+                    %span.is-hidden-touch.ml-1 toggle
+                .control.batch-rm.is-hidden
+                  -# https://stackoverflow.com/questions/3027149/how-do-i-create-multiple-submit-buttons-for-the-same-form-in-rails
+                  = f.button(type: :submit, class: 'button is-danger batch-delete',
+                             formaction: batch_delete_process_index_path,
+                             data: {msg: 'Delete NUM (SIZE) files?', confirm: 'Delete selected files?'}) do
+                    %span.icon.ml-1
+                      %i.mi delete_forever
+                    %span.is-hidden-mobile.ml-1 delete
+                .control.batch-bt.is-hidden
+                  = f.button(type: :submit, class: 'button is-info',
+                             formaction: batch_merge_process_index_path,
+                             data: {confirm: 'Merge selected files?'}) do
+                    %span.icon.ml-1
+                      %i.mi merge
+                    %span.is-hidden-mobile.ml-1 merge
+                .control.batch-bt.is-hidden
+                  = f.button type: :submit, class: 'button is-link' do
+                    %span.icon.ml-1
+                      %i.mi send
+                    %span.is-hidden-mobile.ml-1 prepare
+                .control
+                  = link_to '#', class: 'bt-batch button',
+                    onclick: %Q|jQuery('.batch-bt, .batch-rm, .delete-file, .file-select, .bt-mass').toggleClass('is-hidden'); return false| do
+                    %span.icon.ml-1
+                      %i.mi inventory_2
+                    %span.is-hidden-touch batch
       
       - if @files.empty?
         %em no files to process
@@ -183,5 +184,10 @@
                   = render partial: 'index_row', locals: { f: f_child, idx: idx+=1, pair_data: pdd }
               - else
                 = render partial: 'index_row', locals: { f: f, idx: idx+=1, max_page_weight: max_page_weight }
+        
+        .columns.my-0
+          .column.py-0
+            .actions
+              .field.has-addons.mb-4.is-justify-content-end= bts_batch_actions
         
         = paginate @files, params: {sort_by: params[:sort_by]}
