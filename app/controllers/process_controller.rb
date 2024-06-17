@@ -726,9 +726,13 @@ class ProcessController < ApplicationController
   def group_rm
     ProcessIndexGroupJob.rm_entry params[:id]
 
-    row = [0, params[:row].to_i - 1].max
-    redirect_to(process_index_path(page: params[:page], anchor: "row_#{row}", sort_by: params[:sort_by]),
-      notice: "file removed from group ##{params[:parent_id]}")
+    if request.xhr?
+      render json: {id: params[:id].to_i}
+    else
+      row = [0, params[:row].to_i - 1].max
+      redirect_to process_index_path(page: params[:page], anchor: "row_#{row}", sort_by: params[:sort_by]),
+        notice: "file removed from group ##{params[:parent_id]}"
+    end
   end # group_rm
 
 

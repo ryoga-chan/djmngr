@@ -110,7 +110,7 @@ module CoreExt::String::Doujin
     "#{info[:ac_explicit].join ' '} #{info[:ac_implicit].join ' '}".strip
   end # first_author_from_filename
 
-  def tokenize_doujin_filename(rm_num: false, title_only: false, basename: true)
+  def tokenize_doujin_filename(rm_num: false, rm_sym: true, title_only: false, basename: true)
     term = dup
 
     term = File.basename term if basename
@@ -133,8 +133,10 @@ module CoreExt::String::Doujin
       term = title_only ? title : [author1, author2, title].compact.join(' ')
     end
 
-    # drop symbols and multiple spaces
-    term.gsub(TOKENIZE_RE_SYMBOLS, ' ').split(' ')
+    # drop symbols
+    term.gsub!(TOKENIZE_RE_SYMBOLS, ' ') if rm_sym
+    
+    term.split(' ') # note: this collapses multiple spaces
   end # tokenize_doujin_filename
 end
 

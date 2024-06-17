@@ -147,7 +147,7 @@ module Ws::EHentai
     if text.present?
       CGI.
         unescapeHTML(text).
-        tokenize_doujin_filename(title_only: true, basename: false).
+        tokenize_doujin_filename(title_only: true, basename: false, rm_sym: false).
         join(' ')
     end
   end # self.clean_title

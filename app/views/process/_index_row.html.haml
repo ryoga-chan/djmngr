@@ -16,7 +16,7 @@
     - if is_doujin ? (f.language == 'chi') : f.group_sort_flags[4] == '0'
       .tag.is-danger.is-lightX.is-small  chi
 
-%tr{class: tr_class, data: {id: f.id}}
+%tr{class: tr_class, data: {id: f.id, group_item_id: local_assigns[:pair_data]&.id}}
   %td.rm-or-batch
     - if @group_sort && is_doujin
       .likeness.is-size-7
@@ -120,8 +120,8 @@
           = link_to(group_rm_process_path(id: local_assigns[:pair_data].id,
                                           parent_id: local_assigns[:pair_data].pd_parent_id,
                                           page: params[:page], sort_by: params[:sort_by], row: idx),
-            method: :delete, data: { confirm: 'Remove file from group?' },
-            title: 'remove from group', class: 'button is-info is-rounded is-small ml-2 mt-2') do
+            method: :delete, remote: true, data: { confirm: 'Remove file from group?' },
+            title: 'remove from group', class: 'button is-info is-rounded is-small ml-2 mt-2 remove') do
             %span.icon.is-small
               %i.mi.mi-small clear
             %span.is-hidden-touch.mr-1 ungroup

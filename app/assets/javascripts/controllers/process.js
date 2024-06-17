@@ -102,6 +102,13 @@ if ($('body').data('ctrl') +'/'+ $('body').data('action') == 'process/index') {
   
   // update total file size label
   $('.file-select').click($.app.update_tot_filesize);
+  
+  // fade out and remove the ungrouped entry in group mode
+  $('.grop-actions a.remove').on('ajax:success', function (ev) {
+    let [resp, status, jxhr] = ev.originalEvent.detail;
+    var rows = $(`tr[data-group-item-id="${resp.id}"]`).next().addBack();
+    rows.fadeOut(function () { rows.remove(); });
+  });
 }//if /process/index
 
 
