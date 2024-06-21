@@ -60,6 +60,13 @@ module CoreExt::String::Doujin
   TOKENIZE_RE_NAME = /^(\[[^\[\]]+\])*\s*(\([^\[\]]+\))*\s*\[([^\]\(\)]+)(\([^\[\]]+\))*\]\s*([^\[\]\(\)]+)(\([^\[\]]+\))*\s*(\[[^\[\]]+\])*\s*/
 
   TOKENIZE_RE_SYMBOLS  = /[!@\[;\]^%*\(\);\-_+=\?\.,'\/&\\|$\{#\}<>:`~"]/
+  
+  TAGS = {
+    eng: %w( 英語 ),
+    jpn: %w( 日本語 ),
+    kor: %w( 韓国  韓国語  韓国翻訳 ),
+    chi: %w( 中国  中国語  中国翻訳  中文翻译 ),
+  }
 
   # returns the explicit and implicit groups of authors_or_circles
   def parse_doujin_filename
@@ -96,10 +103,10 @@ module CoreExt::String::Doujin
     # detect language
     result[:language] = Doujin::LANGUAGES.
       detect{|descr, lbl| result[:properties].include?(lbl) || self_downcase.include?(descr.downcase) }.try('[]', 1)
-    result[:language] ||= 'jpn' if self_downcase.include?('日本語')
-    result[:language] ||= 'eng' if self_downcase.include?('英語')
-    result[:language] ||= 'kor' if self_downcase.include?('韓国語')
-    result[:language] ||= 'chi' if %w(中国語 中国翻訳 中文翻译).any?{|i| self_downcase.include?(i) }
+    TAGS.each do |lang, tags|
+      break if result[:language]
+      result[:language] ||= lang.to_s if tags.any?{|i| self_downcase.include?(i) }
+    end
     result[:language] ||= Doujin::LANGUAGES.values.first
     
     result
