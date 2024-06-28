@@ -312,7 +312,7 @@ class DoujinshiController < ApplicationController
     if stale?(last_modified: file_updated_at.utc, template: false,
               strong_etag: "#{params[:model] || params[:file]}-#{params[:id] || 0}_page-#{params[:page]}_#{params[:w]}x#{params[:h]}")
       Zip::File.open(params[:file]) do |zip|
-        entry = zip.image_entries(sort: true)[params[:page].to_i]
+        entry    = zip.image_entries(sort: true)[params[:page].to_i]
         @fname   = File.basename entry&.name.to_s
         @content = entry&.get_input_stream&.read
       end

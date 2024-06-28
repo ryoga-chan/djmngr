@@ -2,16 +2,16 @@ class ProcessIndexRefreshJob < ApplicationJob
   queue_as :tools
 
   ORDER = {
-    '🔼 name'  => :name,
-    '🔽 name'  => :name_d,
-    '🔼 xlate' => :kakasi,
-    '🔽 xlate' => :kakasi_d,
-    '🔼 time'  => :time,
-    '🔽 time'  => :time_d,
-    '🔼 size'  => :size,
-    '🔽 size'  => :size_d,
-    '🔼 group' => :group,
-    '🔽 group' => :group_d,
+    '📄 name'  => :name,
+    '📃 xlate' => :kakasi,
+    '🕛 time'  => :time,
+    '🧰 size'  => :size,
+    '📦 group' => :group,
+    #'🔽 name'  => :name_d,
+    #'🔽 xlate' => :kakasi_d,
+    #'🔽 time'  => :time_d,
+    #'🔽 size'  => :size_d,
+    #'🔽 group' => :group_d,
   }
 
   around_perform do |job, block|

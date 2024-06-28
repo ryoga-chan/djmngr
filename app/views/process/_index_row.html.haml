@@ -43,10 +43,15 @@
     - if @group_sort
       .group-entry-tags.is-hidden-desktop= group_entry_tags
       
-    = link_to('🗑',
-      {action: :delete_archive, path: f.name, page: params[:page], sort_by: params[:sort_by], term: params[:term], row: idx},
-      method: :delete, data: { confirm: 'Delete this file?' },
-      class: 'has-text-danger delete-file', title: 'delete file')
+    - if is_doujin
+      = link_to '🗑', doujin_path(id: f.id),
+        method: :delete, data: { confirm: 'Delete from collection?' },
+        class: 'has-text-danger delete-file', title: 'delete from collection'
+    - else
+      = link_to '🗑',
+        {action: :delete_archive, path: f.name, page: params[:page], sort_by: params[:sort_by], term: params[:term], row: idx},
+        method: :delete, data: { confirm: 'Delete from to-sort folder?' },
+        class: 'has-text-danger delete-file', title: 'delete from to-sort folder'
     
   %td.batch-size.file-size.has-text-right
     .size= number_to_human_size f.size

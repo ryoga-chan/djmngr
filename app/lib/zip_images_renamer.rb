@@ -20,10 +20,7 @@ module ZipImagesRenamer
 
       when :numbers_only
         # create a sortable label
-        images.each do |img|
-          img[:alt_label]  = img[:src_path].tr("^0-9", ' ').split(' ').map{|n| '%010d' % n.to_i }.join(',')
-          img[:alt_label] += img[:src_path] # preserve the alphabetic order at the end
-        end
+        images.each{|img| img[:alt_label] = img[:src_path].to_sortable_by_numbers }
         rename_by_alt_label images
 
       when :to_integer

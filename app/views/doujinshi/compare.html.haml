@@ -1,11 +1,13 @@
+- clear_all_bt = capture do
+  = link_to compare_remove_process_index_path(idx: :all),
+    data: { confirm: 'Remove all entries?' },
+    class: 'button is-danger is-rounded' do
+    %span.icon
+      %i.mi clear_all
+    %span Clear list
+
 - if @entries.any?
-  .actions-danger(style="float: right")
-    = link_to compare_remove_process_index_path(idx: :all),
-      data: { confirm: 'Remove all entries?' },
-      class: 'button is-danger is-rounded' do
-      %span.icon
-        %i.mi clear_all
-      %span Clear list
+  .actions-danger(style="float: right")= clear_all_bt
 
 .title.is-size-4 Doujinshi comparison
 
@@ -19,46 +21,47 @@
 
   %table#compare.table.has-text-centered
     %thead
-      %tr
-        - @entries.each_with_index do |entry, idx|
-          %td
-            .filetype.mb-2.has-text-weight-bold
-              %span.tag.is-info
-                %span.icon-text.is-flex-wrap-nowrap
-                  %span.icon
-                    %i.mi.mi-small= entry[:source] == :doujin ? :book : :swap_horiz
-                  %span= "#{entry[:num_pages]} pics/#{number_to_human_size entry[:file_size]}"
-            
-            .field.is-grouped.is-justify-content-center
-              .field.has-addons
-                %p.control
-                  = link_to compare_remove_process_index_path(idx: idx),
-                    title: 'remove from comparison', class: 'button is-info is-rounded' do
+      = info_row = capture do
+        %tr
+          - @entries.each_with_index do |entry, idx|
+            %td
+              .filetype.mb-2.has-text-weight-bold
+                %span.tag.is-info
+                  %span.icon-text.is-flex-wrap-nowrap
                     %span.icon
-                      %i.mi remove
+                      %i.mi.mi-small= entry[:source] == :doujin ? :book : :swap_horiz
+                    %span= "#{entry[:num_pages]} pics/#{number_to_human_size entry[:file_size]}"
+              
+              .field.is-grouped.is-justify-content-center
+                .field.has-addons
+                  %p.control
+                    = link_to compare_remove_process_index_path(idx: idx),
+                      title: 'remove from comparison', class: 'button is-info is-rounded' do
+                      %span.icon
+                        %i.mi remove
 
-                - if entry[:source] == :doujin && Doujin.exists?(id: entry[:doujin_id])
-                  %p.control
-                    = link_to doujin_path(id: entry[:doujin_id]),
-                        data: { confirm: 'Delete from collection?' }, method: :delete,
-                        title: 'delete from collection', class: 'button is-danger is-rounded' do
-                      %span.icon
-                        %i.mi delete
+                  - if entry[:source] == :doujin && Doujin.exists?(id: entry[:doujin_id])
+                    %p.control
+                      = link_to doujin_path(id: entry[:doujin_id]),
+                          data: { confirm: 'Delete from collection?' }, method: :delete,
+                          title: 'delete from collection', class: 'button is-danger is-rounded' do
+                        %span.icon
+                          %i.mi delete
+                  - elsif entry[:source] == :process
+                    %p.control
+                      = link_to delete_archive_process_index_path(path: entry[:rel_path]),
+                        data: { confirm: 'Delete from to-sort folder?' }, method: :delete,
+                        title: 'delete from to-sort folder', class: 'button is-danger is-rounded' do
+                        %span.icon
+                          %i.mi delete
+              
+              .filename.is-size-7
+                - if entry[:source] == :doujin
+                  = link_to entry[:rel_path], doujin_path(id: entry[:doujin_id]),
+                    title: 'view details in collection'
                 - elsif entry[:source] == :process
-                  %p.control
-                    = link_to delete_archive_process_index_path(path: entry[:rel_path]),
-                      data: { confirm: 'Delete from to-sort folder?' }, method: :delete,
-                      title: 'delete from to-sort folder', class: 'button is-danger is-rounded' do
-                      %span.icon
-                        %i.mi delete
-            
-            .filename.is-size-7
-              - if entry[:source] == :doujin
-                = link_to entry[:rel_path], doujin_path(id: entry[:doujin_id]),
-                  title: 'view details in collection'
-              - elsif entry[:source] == :process
-                = link_to entry[:rel_path], prepare_archive_process_index_path(path: entry[:rel_path]),
-                  title: 'prepare for processing'
+                  = link_to entry[:rel_path], prepare_archive_process_index_path(path: entry[:rel_path]),
+                    title: 'prepare for processing'
     %tbody
       %tr
         - @entries.each do |entry|
@@ -68,3 +71,7 @@
               .pic.p-0.m-0.my-1{class: ('separator' if show_separator)}
                 %figure.image.is2by3
                   = inline_image_tag :'image/webp', img[:data], title: img[:name]
+
+    %tfoot= info_row    
+  
+  .has-text-centered= clear_all_bt
