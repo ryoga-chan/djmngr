@@ -49,7 +49,7 @@ class ProcessController < ApplicationController
       # read "sorting" file list
       files_glob = File.join Setting['dir.sorting'], '*', 'info.yml'
       @preparing = Dir[files_glob].map{|f|
-        tot_size = Dir.glob("#{File.dirname f}/**/*").
+        tot_size = Dir.glob("#{File.dirname f}/contents/**/*").
           map{|f| f.ends_with?('/file.zip') ? 0 : File.size(f) rescue 0 }.sum
         YAML.unsafe_load_file(f).merge tot_size: tot_size
       }.sort_by_method('[]', :relative_path)
@@ -687,16 +687,21 @@ class ProcessController < ApplicationController
 
   def add_files
     @info = YAML.unsafe_load_file(File.join @dname, 'info.yml')
+    
     # inject files
-    params[:files].each{|f| ProcessArchiveDecompressJob.inject_file f.original_filename, f.to_path, @dname, @info }
+    params[:files]&.each{|f| ProcessArchiveDecompressJob.inject_file f.original_filename, f.to_path, @dname, @info }
+    params[:paths]&.each{|p| ProcessArchiveDecompressJob.inject_file File.basename(p)   , p        , @dname, @info }
+    
     # check collisions
     @info[:files_collision ] = @info[:files ].size != @info[:files ].map{|i| i[:dst_path] }.uniq.size
     @info[:images_collision] = @info[:images].size != @info[:images].map{|i| i[:dst_path] }.uniq.size
+    
     # update info
     File.open(File.join(@dname, 'info.yml'), 'w'){|f| f.puts @info.to_yaml }
 
+    num_injected = params[:files]&.size.to_i + params[:paths]&.size.to_i
     redirect_to edit_process_path(id: params[:id], tab: params[:tab]),
-      notice: "#{params[:files].size} file/s injected"
+      notice: "#{num_injected} file/s injected"
   end # add_files
 
   def inspect_folder

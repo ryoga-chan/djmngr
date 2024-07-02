@@ -139,3 +139,12 @@ body:not(.nsfw-mode) {
     background-color: white;
   }
 }
+
+// Multiline Bulma Buttons by Tim MacDonald -- https://codepen.io/timacdonald/pen/EQmQbL
+.button.is-multiline {
+  min-height: 2.25em;
+  white-space: unset;
+  height: auto;
+  flex-direction: column;
+  text-align: left;
+}

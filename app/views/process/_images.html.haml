@@ -1,10 +1,9 @@
-.inject-files.is-hidden-tablet.has-text-centered= render partial: 'add_files'
-.inject-files.is-hidden-mobile(style="float: right")= render partial: 'add_files'
+= render partial: 'add_files'
 
 -# set a noop safe url in this form and override it via button attributes
 = form_with url: edit_process_path(id: @info[:working_dir]),
   method: :get, id: 'frm-images',
-  data: { image_sel_mode: Setting[:process_img_sel] } do |f|
+  data: { image_sel_mode: Setting[:process_img_sel], folder: File.join(@dname, 'contents', '') } do |f|
   = hidden_field_tag :tab, params[:tab]
 
   = action_buttons = capture do

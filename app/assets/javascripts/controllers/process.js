@@ -183,6 +183,22 @@ if ($('body').data('ctrl') +'/'+ $('body').data('action') == 'process/edit') {
     $('button.delete-images').attr('data-confirm', 'Delete '+num_images+' selected images?');
   });
   
+  // show export to folder list + populate paths[]
+  $('button.export-images').click(function (ev) {
+    // add paths[] fields
+    var base_dir = $('#frm-images').data('folder');
+    var base_el = $('#frm_export #paths');
+    $('#frm_export input.paths').remove();
+    $('#frm-images :checkbox:checked').each(function () {
+      base_el.clone().
+        removeAttr('id disabled').addClass('paths').
+        val(base_dir + $(this).val()).
+        insertAfter(base_el);
+    });
+    // toggle target buttons
+    $('#frm_export').parent().toggleClass('is-hidden');
+  });
+    
   $('button.range_select').click(function () {
     $('button.range_select').toggleClass('is-light');
     $('.images .column.range_start').removeClass('range_start');

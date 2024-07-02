@@ -1,14 +1,46 @@
-= form_with url: add_files_process_path(id: @info[:working_dir]), method: :post, multipart: true,
-  html: {style: "display: inline-block"} do |f|
-  = hidden_field_tag :tab, params[:tab]
+- if local_assigns[:export] != false
+  .box.is-hidden
+    = form_with url: '/', method: :post,
+      id: :frm_export, html: {style: "display: inline-block"} do |f|
+      = hidden_field_tag :tab, params[:tab]
+      = hidden_field_tag :'paths[]', nil, id: :paths, disabled: true
+      
+      Choose the folder to export selected images into:
+      .wip-targets.my-3.pl-5
+        - files_glob = File.join Setting['dir.sorting'], '*', 'info.yml'
+        - folders_info = Dir[files_glob].map{|f| YAML.unsafe_load_file(f) }.sort_by_method('[]', :relative_path)
+        - folders_info.each do |folder_info|
+          - next if folder_info[:relative_path] == @info[:relative_path]
+          .wip-target
+            = f.button formaction: add_files_process_path(id: folder_info[:working_dir]),
+              onclick: "$(this).parents('.wip-targets:first').next().addBack().toggleClass('is-hidden')",
+              class: 'button is-info is-multiline mb-1' do
+              &rarr;
+              = folder_info[:relative_path].first.sub(/.zip$/i, '')
+      %progress.progress.is-small.is-info.is-hidden(max="100") i
 
-  .file
-    %label.file-label
-      = f.file_field :files, multiple: true, class: 'file-input',
-        onchange: "jQuery(this).parents('.file:first').next().addBack().toggleClass('is-hidden'); this.form.submit()"
-      %span.file-cta
-        %span.file-icon
-          %i.mi archive
-        %span.file-label
-          Inject files
-  %progress.progress.is-small.is-info.is-hidden(max="100" style="width: 10rem") i
+- frm_buttons = capture do
+  = form_with url: add_files_process_path(id: @info[:working_dir]), method: :post, multipart: true,
+    id: :frm_import, html: {style: "display: inline-block"} do |f|
+    = hidden_field_tag :tab, params[:tab]
+
+    .file
+      %label.file-label
+        = f.file_field :files, multiple: true, class: 'file-input',
+          onchange: "$(this).parents('.file:first').next().addBack().toggleClass('is-hidden'); this.form.submit()"
+        %span.file-cta
+          %span.file-icon
+            %i.mi archive
+          %span.file-label
+            Import
+    %progress.progress.is-small.is-info.is-hidden(max="100" style="width: 10rem") i
+
+  - if local_assigns[:export] != false
+    %button.button.export-images.ml-1(type="button" style="border-width: 1px")
+      %span.icon
+        %i.mi unarchive
+      %span
+        Export
+
+.inject-files.is-hidden-tablet.has-text-centered=     frm_buttons
+.inject-files.is-hidden-mobile(style="float: right")= frm_buttons
