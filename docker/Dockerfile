@@ -5,7 +5,7 @@
 ARG RUBY_VERSION=3.2.2
 
 # ----- base -------------------------------------------------------------------
-FROM ruby:$RUBY_VERSION-slim as base
+FROM ruby:$RUBY_VERSION-slim AS base
 
 LABEL org.opencontainers.image.source=https://github.com/ryoga-chan/djmngr
 LABEL org.opencontainers.image.title=DjMngr
@@ -22,19 +22,19 @@ ARG DEBIAN_FRONTEND=noninteractive
 ARG APT_OPTS="--no-install-recommends -y"
 ARG BUNDLE_RUBYGEMS__PKG__GITHUB__COM=""
 
-ENV LANG                C.UTF-8
-ENV LC_ALL              C.UTF-8
-ENV RAILS_ENV           production
-ENV BUNDLE_PATH         $BUNDLE_PATH
-ENV BUNDLE_WITHOUT      development
-ENV DOCKER_RUNNING      true
+ENV LANG=C.UTF-8
+ENV LC_ALL=C.UTF-8
+ENV RAILS_ENV=production
+ENV BUNDLE_PATH=$BUNDLE_PATH
+ENV BUNDLE_WITHOUT=development
+ENV DOCKER_RUNNING=true
 # enforce the presense of Gemfile.lock
-#ENV BUNDLE_DEPLOYMENT   1
+#ENV BUNDLE_DEPLOYMENT=1
 
 WORKDIR /app
 
 # ----- build ------------------------------------------------------------------
-FROM base as build
+FROM base AS build
 
 RUN set -x \
   && apt-get update -qq \
@@ -95,6 +95,7 @@ EXPOSE 3000
 #   VOLUME /app/public/thumbs
 #   VOLUME /app/public/samples
 
-CMD /usr/local/bin/entrypoint.sh
+# https://docs.docker.com/reference/build-checks/json-args-recommended/
+CMD ["/usr/bin/s6-svscan", "/etc/services.d"]
 
 # docker run --rm -ti --name temp ryogachan/djmngr:latest bash -il
