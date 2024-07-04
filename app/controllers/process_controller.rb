@@ -688,9 +688,16 @@ class ProcessController < ApplicationController
   def add_files
     @info = YAML.unsafe_load_file(File.join @dname, 'info.yml')
     
-    # inject files
+    # inject uploaded files
     params[:files]&.each{|f| ProcessArchiveDecompressJob.inject_file f.original_filename, f.to_path, @dname, @info }
-    params[:paths]&.each{|p| ProcessArchiveDecompressJob.inject_file File.basename(p)   , p        , @dname, @info }
+    
+    # inject local files
+    last_name = @info[:images].last.try('[]', :dst_path)
+    last_name = File.basename last_name, File.extname(last_name)
+    params[:paths]&.each do |p|
+      name = "#{last_name.next!}#{File.extname p}"
+      ProcessArchiveDecompressJob.inject_file name, p, @dname, @info
+    end
     
     # check collisions
     @info[:files_collision ] = @info[:files ].size != @info[:files ].map{|i| i[:dst_path] }.uniq.size

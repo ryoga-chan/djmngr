@@ -23,8 +23,6 @@
 
   - if @info[:prepared_at]
 
-    %a(name="page-top")
-
     .title
       Archive processing
       %br.is-hidden-tablet
@@ -64,8 +62,6 @@
             %span Finalize
     
     %div{class: params[:tab]}= render partial: params[:tab]
-    
-    %a(name="page-bottom")
     
     %hr
     

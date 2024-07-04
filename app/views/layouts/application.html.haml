@@ -13,6 +13,8 @@
     = javascript_include_tag "01_libs"
     = javascript_include_tag "02_application"
   %body{data: {env: Rails.env.to_s, ctrl: params[:controller], action: params[:action], id: params[:id]}}
+    %a(name="page-top")
+    
     = render partial: '/layouts/menu'
 
     %section.section.main-content
@@ -26,3 +28,5 @@
         %span.icon-text
           %span.icon
             %i.mi shield
+
+    %a(name="page-bottom")

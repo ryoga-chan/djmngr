@@ -7,7 +7,11 @@
     %span Clear list
 
 - if @entries.any?
-  .actions-danger(style="float: right")= clear_all_bt
+  .actions-danger(style="float: right")
+    = clear_all_bt
+    = link_to '#page-bottom', class: 'button ml-1' do
+      %span.icon
+        %i.mi vertical_align_bottom
 
 .title.is-size-4 Doujinshi comparison
 
@@ -74,4 +78,8 @@
 
     %tfoot= info_row    
   
-  .has-text-centered= clear_all_bt
+  .has-text-centered
+    = clear_all_bt
+    = link_to '#page-top', class: 'button ml-1' do
+      %span.icon
+        %i.mi vertical_align_top
