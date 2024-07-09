@@ -3,6 +3,7 @@ module ZipImagesRenamer
     "alphabetical index"                  => :alphabetical_index,
     "use numbers only"                    => :numbers_only,
     "filename to number"                  => :to_integer,
+    "current order"                       => :current,
     "regexp \\1 to number"                => :regex_number,
     "regexp \\1 as prefix, \\2 as number" => :regex_pref_num,
     "regexp \\1 to number, \\2 as prefix" => :regex_num_pref,
@@ -25,6 +26,9 @@ module ZipImagesRenamer
 
       when :to_integer
         images.each{|img| img[:dst_path] = "%04d#{File.extname(img[:src_path]).downcase}" % img[:src_path].to_i }
+
+      when :current
+        images.each_with_index{|img, i| img[:dst_path] = "%04d#{File.extname(img[:src_path]).downcase}" % (i+1) }
 
       when :regex_number
         re = Regexp.new options[:rename_regexp]
