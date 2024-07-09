@@ -72,6 +72,8 @@ module Ws::EHentai
     cookies_file = File.join(Setting[:'dir.sorting'], 'eh-cookies.yml')
 
     begin
+      term = term.split(' ').reject{|i| i.size == 1}.join(' ').gsub(/([^0-9])0+([0-9]+)/, '\1\2')
+      
       return result(:no_results) if term.blank?
 
       unless File.exist?(cookies_file)

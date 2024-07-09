@@ -138,6 +138,11 @@ if ($('body').data('action') == 'edit') {
       $('#doujin_notes').append( $('<div/>').html(info.title).text() + "\n" );
     }//if
     
+    if (info.title_eng) {
+      $('#doujin_name_eng').val(info.title_eng_clean);
+      $('#doujin_notes').append( $('<div/>').html(info.title_eng).text() + "\n" );
+    }//if
+    
     $.myapp.autotag_titles();
     $.myapp.titles_to_lowercase();
   });
