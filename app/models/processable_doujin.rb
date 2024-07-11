@@ -112,19 +112,23 @@ class ProcessableDoujin < ApplicationRecord
       thumb_entries = zip_images.pages_preview(chunk_size: THUMBS_CHUNK)
 
       images = thumb_entries.map{|e|
-        i = Vips::Image.webp_cropped_thumb(
-          e.get_input_stream.read,
-          width:   THUMB_WIDTH,
-          height:  THUMB_HEIGHT,
-          padding: false
-        )[:image]
+        begin
+          i = Vips::Image.webp_cropped_thumb(
+            e.get_input_stream.read,
+            width:   THUMB_WIDTH,
+            height:  THUMB_HEIGHT,
+            padding: false
+          )[:image]
 
-        # https://github.com/libvips/pyvips/issues/202
-        # https://github.com/libvips/libvips/issues/1525
-        i = i.colourspace('srgb') if i.bands  < 3
-        i = i.bandjoin(255)       if i.bands == 3
+          # https://github.com/libvips/pyvips/issues/202
+          # https://github.com/libvips/libvips/issues/1525
+          i = i.colourspace('srgb') if i.bands  < 3
+          i = i.bandjoin(255)       if i.bands == 3
 
-        i
+          i
+        rescue Vips::Error
+          self.class.img_not_found
+        end
       }.compact
 
       # display missing image if no images are found
