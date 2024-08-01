@@ -71,37 +71,35 @@
   %td
     %a{name: "row_#{idx}"}
     .name
-      - bt_copy = capture do
-        = link_to('#', title: 'copy file name',
-          onclick: %Q|jQuery.myapp.copy_to_clipboard( jQuery(this).prev().text().trim() ); return false|,
-          class: 'button is-info is-rounded is-small tiny-bt ml-2') do
-          %span.icon.is-small
-            %i.mi.mi-small content_copy
-      
       - if @group_sort && is_doujin
         = link_to f.file_dl_name(omit_ext: true), doujin_path(f), target: :_blank
         %span.is-size-7
           &middot;
           = f.score || :'--'
           &star;
-        = bt_copy
       - else
         - if @preparing_paths.include?(f.name)
           %span.tag.is-warning(title="processing") 🛠
         = link_to f.name, action: :prepare_archive, path: f.name
-        = bt_copy
-        
-        - unless has_thumb
-          = link_to({job: :preview, id: f.id, page: params[:page]}, title: 'generate file preview',
-            class: 'button is-info is-rounded is-small tiny-bt ml-2') do
-            %span.icon.is-small
-              %i.mi.mi-small preview
+    .item-actions.mt-2
+      = link_to('#', title: 'copy file name',
+        onclick: %Q|jQuery.myapp.copy_to_clipboard( $(this).parent().find('a:not(.button:first)').text().trim() ); return false|,
+        class: 'button is-info is-rounded is-small tiny-bt mr-4') do
+        %span.icon.is-small
+          %i.mi.mi-small content_copy
+      - unless @group_sort && is_doujin
         - unless f.name.starts_with?(DJ_DIR_PROCESS_LATER) || f.name.starts_with?(DJ_DIR_REPROCESS)
           = link_to(process_later_process_path(id: f.id), title: 'process later',
             data: { confirm: 'Process this file later?' },
-            class: 'button is-info is-rounded is-small tiny-bt ml-2') do
+            class: 'button is-info is-rounded is-small tiny-bt mr-4') do
             %span.icon.is-small
               %i.mi.mi-small fast_forward
+        - unless has_thumb
+          = link_to({job: :preview, id: f.id, page: params[:page]}, title: 'generate file preview',
+            class: 'button is-info is-rounded is-small tiny-bt mr-4') do
+            %span.icon.is-small
+              %i.mi.mi-small preview
+    
     - if @group_sort && is_doujin
       - if f.name_romaji.present?
         .name_kakasi.is-size-7= f.name_romaji
@@ -111,9 +109,9 @@
       - if f.name != f.name_kakasi
         .name_kakasi.is-size-7= f.name_kakasi
     - if @group_sort
-      .grop-actions
+      .grop-actions.mt-2
         - if local_assigns[:pair_data].nil?
-          %a.button.is-info.is-rounded.is-small.ml-2.mt-2(href="#" disabled title="can't ungroup the reference file")
+          %a.button.is-info.is-rounded.is-small.ml-6(href="#" disabled title="can't ungroup the reference file")
             %span.icon.is-small
               %i.mi.mi-small clear
             %span.is-hidden-touch.mr-1 ungroup
@@ -126,7 +124,7 @@
                                           parent_id: local_assigns[:pair_data].pd_parent_id,
                                           page: params[:page], sort_by: params[:sort_by], row: idx),
             method: :delete, remote: true, data: { confirm: 'Remove file from group?' },
-            title: 'remove from group', class: 'button is-info is-rounded is-small ml-2 mt-2 remove') do
+            title: 'remove from group', class: 'button is-info is-rounded is-small ml-6 remove') do
             %span.icon.is-small
               %i.mi.mi-small clear
             %span.is-hidden-touch.mr-1 ungroup
@@ -146,9 +144,15 @@
               image_doujin_path(f, page: 0), target: :_blank
 - else
   %tr{class: tr_class}
-    %td
+    %td.has-text-right
+      = button_tag(type: :button, title: 'paste clipboard contents into notes',
+          onclick: %Q|var el=$(this).parent().next().find('.pd-notes'); $.myapp.paste_clipboard(function (text) { el.val(text).change(); })|,
+          class: 'button is-info is-rounded is-small tiny-bt ml-2') do
+        %span.icon.is-small
+          %i.mi.mi-small content_paste
     %td(colspan=3)
-      %input.input.is-small.pd-notes{value: f.notes, tabindex: (1100+idx), placeholder: :notes, maxlength: 255, data: {url: pd_notes_process_path(f.id)}}
+      %input.input.is-small.pd-notes{value: f.notes, tabindex: (1100+idx),
+        placeholder: :notes, maxlength: 255, data: {url: pd_notes_process_path(f.id)}}
       
       - if has_thumb
         %figure.image.sample.mt-2

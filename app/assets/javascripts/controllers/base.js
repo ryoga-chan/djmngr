@@ -41,10 +41,15 @@ $.myapp = {
   
   // http://stackoverflow.com/a/30905277
   copy_to_clipboard: function (text) {
-    var input = $('<input type="text" style="visibility: none">').appendTo('body').val(text).select();
-    document.execCommand('copy');
-    input.remove();
+    $.myapp.last_text_copied_to_clipboard = text; // local copy, clipboard API only work in HTTPS and localhost
+    try { navigator.clipboard.writeText(text); }
+    catch (err) { console.log(err); }
   },//copy_to_clipboard
+  
+  paste_clipboard: function (callback) {
+    try { navigator.clipboard.readText().then(callback); }
+    catch (err) { callback($.myapp.last_text_copied_to_clipboard || ''); }
+  },//paste_clipboard
 
   append_to_textarea: function (selector, text) {
     var ta = $(selector);
