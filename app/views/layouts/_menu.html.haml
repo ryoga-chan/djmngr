@@ -110,6 +110,18 @@
                     %span.file-label
                       Cover match
           
+          = link_to clear_process_index_path(what: :samples), class: 'navbar-item no-spinner',
+            data: { confirm: 'clear temporary sample images?' } do
+            %span.icon
+              %i.mi image_not_supported
+            %span Clear samples
+
+          = link_to clear_process_index_path(what: :eh_cookies), class: 'navbar-item no-spinner',
+            data: { confirm: 'clear EH cookies?' } do
+            %span.icon
+              %i.mi cookie
+            %span Clear EH cookies
+
           = link_to '#', class: 'navbar-item no-spinner', onclick: "jQuery.myapp.toggle_fullscreen(); return false" do
             %span.icon
               %i.mi fullscreen

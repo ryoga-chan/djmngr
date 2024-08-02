@@ -746,6 +746,21 @@ class ProcessController < ApplicationController
         notice: "file removed from group ##{params[:parent_id]}"
     end
   end # group_rm
+  
+  def clear
+    msg = case params[:what]
+      when 'samples'
+        ProcessIndexPreviewJob.rm_previews
+        'sample images cleared'
+      when 'eh_cookies'
+        Ws::EHentai.clear_cookies
+        'EH coockies cleared'
+      else
+        'nothing to clear'.freeze
+    end
+    
+    redirect_to process_index_path, notice: msg
+  end # process_later
 
 
   private # ____________________________________________________________________

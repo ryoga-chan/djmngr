@@ -53,6 +53,8 @@ module Ws::EHentai
     r
   end # self.do_login
 
+  def self.cookies_path = File.join(Setting[:'dir.sorting'], 'eh-cookies.yml')
+
   def self.dump_cookies(req, fpath)
     return unless req
 
@@ -66,10 +68,12 @@ module Ws::EHentai
   end # self.dump_cookies
 
   def self.load_cookies(req, fpath) = req.with_cookies(YAML.unsafe_load_file fpath)
+  
+  def self.clear_cookies = FileUtils.rm_f(cookies_path)
 
   def self.search(term, options = {})
     headers = { 'User-Agent' => ::Setting['scraper_useragent'] }
-    cookies_file = File.join(Setting[:'dir.sorting'], 'eh-cookies.yml')
+    cookies_file = cookies_path
 
     begin
       term = term.split(' ').reject{|i| i.size == 1}.join(' ').gsub(/([^0-9])0+([0-9]+)/, '\1\2')

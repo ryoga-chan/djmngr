@@ -24,6 +24,7 @@ Rails.application.routes.draw do
       post    :batch_delete     # delete selected files
       post    :batch_merge      # process selected files into a single folder
       get     :sample_images
+      get     :clear
       get     :compare_add
       get     :compare_remove
     end # collection
