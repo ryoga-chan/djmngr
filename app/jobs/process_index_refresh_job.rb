@@ -7,11 +7,6 @@ class ProcessIndexRefreshJob < ApplicationJob
     '🕛 time'  => :time,
     '🧰 size'  => :size,
     '📦 group' => :group,
-    #'🔽 name'  => :name_d,
-    #'🔽 xlate' => :kakasi_d,
-    #'🔽 time'  => :time_d,
-    #'🔽 size'  => :size_d,
-    #'🔽 group' => :group_d,
   }
 
   around_perform do |job, block|
@@ -51,15 +46,10 @@ class ProcessIndexRefreshJob < ApplicationJob
 
     rel = case order
       when 'name'    .freeze then m.order :name
-      when 'name_d'  .freeze then m.order name: :desc
       when 'kakasi'  .freeze then m.order Arel.sql("replace(name_kakasi, ' ', '')")
-      when 'kakasi_d'.freeze then m.order Arel.sql("replace(name_kakasi, ' ', '') DESC")
-      when 'time'    .freeze then m.order :mtime
-      when 'time_d'  .freeze then m.order mtime: :desc
-      when 'size'    .freeze then m.order :size
-      when 'size_d'  .freeze then m.order size: :desc
+      when 'time'    .freeze then m.order mtime: :desc
+      when 'size'    .freeze then m.order size: :desc
       when 'group'   .freeze then m_group.order(:name)
-      when 'group_d' .freeze then m_group.order(name: :desc)
       else                        m.order :name
     end
 
