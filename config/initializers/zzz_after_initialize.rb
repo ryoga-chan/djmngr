@@ -52,15 +52,14 @@ Rails.application.config.after_initialize do
     Process.setproctitle "ruby:djmngr-console" # $0 = title
   else
     # do it after webserver start (puma changes the title too)
+    # see also ApplicationController#setproctitle
     Thread.new{
-      title = "ruby:djmngr-server"
       loop {
         sleep 1
-        res = HTTPX.head('http://localhost:39102/home/_alive')&.status rescue 404
-        Process.setproctitle title # $0 = title
+        res = HTTPX.head("http://localhost:39102/up")&.status rescue 404
+        Process.setproctitle ApplicationController::PROCTITLE
         break if res == 200
       }# loop
-      Rails.logger.info %Q(process title changed to "#{title}")
     }# Thread.new
   end
 end

@@ -1,6 +1,9 @@
 class ApplicationController < ActionController::Base
+  PROCTITLE = "ruby:djmngr-server"
+  
   layout -> { 'ereader' if request.format.ereader? }
 
+  before_action :setproctitle
   before_action :authenticate
 
   def default_url_options
@@ -28,10 +31,11 @@ class ApplicationController < ActionController::Base
     session[:dj_index_detail] = params[:detail] if %w[ thumbs table ].include?(params[:detail])
     session[:dj_index_detail] ||= 'table'
   end # set_doujin_list_detail
+  
+  def setproctitle = Process.setproctitle(PROCTITLE)
 
   def authenticate
     return if request.format.symbol != :html
-    return if params[:controller] == 'home'.freeze && params[:action] == '_alive'.freeze
 
     if Setting[:basic_auth].present?
       user, pass = Setting[:basic_auth].split ':', 2

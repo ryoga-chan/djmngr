@@ -10,6 +10,7 @@ gem 'rails',       '~> 7.1.2',     # to use edge: gem 'rails', github: 'rails/ra
   require: %w[ shellwords open-uri pp open3 ]
 gem 'sqlite3',     '~> 1.4'      # sqlite3 database for Active Record
 gem 'puma',        '~> 6.0'      # puma web server -- https://github.com/puma/puma
+gem 'puma-daemon', '~> 0.3', require: false # daemonize puma -- https://github.com/kigster/puma-daemon
 #gem 'rack-brotli', '~> 1.2'      # enable brotli compression !!SEGFAULT using send_file!!
 gem 'sassc-rails'                # sass to process CSS
 gem 'sprockets-rails'            # asset pipeline -- https://github.com/rails/sprockets-rails

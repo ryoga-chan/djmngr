@@ -4,8 +4,6 @@ class HomeController < ApplicationController
   PALETTE = %w[ ffadad ffd6a5 fdffb6 caffbf 9bf6ff a0c4ff bdb2ff ffc6ff
                 ffd380 ffa600 ff8531 ff6361 bc5090 8a508f 2c4875 003f5c 00202e ]
 
-  def _alive = head(:ok)
-
   def index
     @stats = {
       dj:         Doujin.count,

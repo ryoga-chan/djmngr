@@ -11,7 +11,6 @@ Rails.application.routes.draw do
   get  'home/settings'
   post 'home/settings'
   get  'home/info'
-  get  'home/_alive'
 
   get  'ws/ehentai'
 

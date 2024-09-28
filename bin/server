@@ -1,12 +1,17 @@
 #!/usr/bin/env ruby
+puts "USAGE: bin/server [p|d]"
+puts "  p     run production foreground server"
+puts "  d     run production background server"
+puts "        otherwise run development server\n\n"
+
 argv = %w{ s -b 0.0.0.0 -p 39102 }
 
 root_path   = File.expand_path File.join(File.dirname(__FILE__), '..')
 assets_path = File.join root_path, 'public', 'assets'
 cache_path  = File.join root_path, 'tmp', 'cache', 'assets'
 
-if ARGV.include?('p')
-  ENV['RAILS_LOG_TO_STDOUT'] = 'true'
+if ARGV.include?('p') || ARGV.include?('d')
+  ENV['PUMA_DAEMON'] = 'true' if ARGV.include?('d')
   argv.concat %w{ -e production }
   unless File.exist?(assets_path)
     puts '=> recompiling assets...'
@@ -21,6 +26,7 @@ else
 end
 
 ARGV.delete 'p'
+ARGV.delete 'd'
 argv.concat ARGV
 
 ARGV.replace argv
