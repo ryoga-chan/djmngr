@@ -3,7 +3,7 @@ class ApplicationController < ActionController::Base
   
   layout -> { 'ereader' if request.format.ereader? }
 
-  before_action :setproctitle
+  before_action :setproctitle if ENV['PUMA_DAEMON']
   before_action :authenticate
 
   def default_url_options
