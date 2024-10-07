@@ -57,7 +57,7 @@ Rails.application.configure do
   logger_args = ENV['PUMA_DAEMON'] \
     ? [File.join(Dir.tmpdir(), 'djmngr.log'), 2]
     : [STDOUT]
-  puts "* Logging to #{logger_args.first.inspect}"
+  puts "* Logging to #{logger_args.first.inspect}" unless Rails.const_defined?(:Console)
   config.logger = ActiveSupport::Logger.new(*logger_args)
     .tap  { |logger| logger.formatter = ::Logger::Formatter.new }
     .then { |logger| ActiveSupport::TaggedLogging.new(logger) }

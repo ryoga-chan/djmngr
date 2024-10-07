@@ -46,16 +46,15 @@ class ProcessBatchJob < ApplicationJob
 
       update_batch_info results, opts
 
-      print ColorizedString['ERROR'].black.on_red
-      puts  ColorizedString[" #{msg}"].red
+      Rails.logger.error ColorizedString['ERROR'].black.on_red + ColorizedString[" #{msg}"].red
     end # add_error
 
     results = {}
 
     # fill results with each files to process
     files.each do |dj_fname, dj_title|
-      puts '-'*70
-      puts "FILE: #{dj_fname}"
+      Rails.logger.info '-'*70
+      Rails.logger.info "FILE: #{dj_fname}"
 
       dj_title = "#{dj_title}.zip" unless dj_title.downcase.end_with?('.zip')
 
@@ -83,19 +82,19 @@ class ProcessBatchJob < ApplicationJob
       dname = File.expand_path File.join(Setting['dir.sorting'], hash)
       info_fname = File.join dname, 'info.yml'
       info  = YAML.unsafe_load_file info_fname
-      puts "HASH: #{hash}"
+      Rails.logger.info "HASH: #{hash}"
 
       if info[:images].empty?
         add_error results, fname, 'no images found', options
         next
       end
 
-      puts "\n[DST]     [SRC]"
-      puts info[:images].map{|i| "#{i[:dst_path]}  #{i[:src_path]}"}
+      Rails.logger.info "[DST]     [SRC]"
+      info[:images].each{|i| Rails.logger.info "#{i[:dst_path]}  #{i[:src_path]}" }
       if info[:files].any?
-        puts "--------  --------------------"
-        puts info[:files].map{|i| "#{i[:dst_path]}  #{i[:src_path]}"}
-      end; puts "\n"
+        Rails.logger.info "--------  --------------------"
+        info[:files].each{|i| Rails.logger.info "#{i[:dst_path]}  #{i[:src_path]}" }
+      end
 
       if dj
         # copy data from source doujin
@@ -155,7 +154,7 @@ class ProcessBatchJob < ApplicationJob
 
           info = YAML.unsafe_load_file info_fname
           if info[:finalize_error].blank?
-            puts "DjID: #{info[:db_doujin_id]}"
+            Rails.logger.info "DjID: #{info[:db_doujin_id]}"
             results[fname][:id] = info[:db_doujin_id].to_i
             # remove WIP folder, index entry, file on disk
             FileUtils.rm_rf dname, secure: true
@@ -174,20 +173,20 @@ class ProcessBatchJob < ApplicationJob
 
     # print final report
     if files.many?
-      puts '~~~~~ o ~~~~~ o ~~~~~ o ~~~~~ o ~~~~~ o ~~~~~ o ~~~~~ o ~~~~~ o ~~~~~'
+      Rails.logger.info '~~~~~ o ~~~~~ o ~~~~~ o ~~~~~ o ~~~~~ o ~~~~~ o ~~~~~ o ~~~~~ o ~~~~~'
       base_dir, max_len = Setting['dir.to_sort'], 18
       results.keys.sort.partition{|k| results[k][:id] }.flatten.each do |k|
         fname = Pathname.new(k).relative_path_from(base_dir).to_s
         if results[k][:id]
-          print ColorizedString['OK'].white.on_green
-          print ColorizedString[" #{results[k][:id].to_s.ljust max_len}"].green
-          puts  "| #{fname}"
+          msg = ColorizedString['OK'].white.on_green +
+                ColorizedString[" #{results[k][:id].to_s.ljust max_len}"].green
+          Rails.logger.info "#{msg}| #{fname}"
         end
 
         results[k][:errors].to_a.each do |msg|
-          print ColorizedString['KO'].black.on_red
-          print ColorizedString[" #{msg.ljust max_len}"].red
-          puts"| #{fname}"
+          msg = ColorizedString['KO'].black.on_red +
+                ColorizedString[" #{msg.ljust max_len}"].red
+          Rails.logger.info "#{msg}| #{fname}"
         end
       end
     end

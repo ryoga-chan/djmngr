@@ -14,9 +14,9 @@ class ProcessIndexGroupJob < ProcessIndexRefreshJob
       break if Rails.env.development? && i >= DEVEL_LIMIT
 
       ris = self.class.progress_update(step: (i+1), steps: num_entries, msg: 'fingerprinting covers')
-      puts(ris) if i % print_info_freq == 0
+      Rails.logger.info(ris) if i % print_info_freq == 0
 
-      pd.cover_fingerprint! rescue puts("ERROR: ID #{pd.id} => #{$!}")
+      pd.cover_fingerprint! rescue Rails.logger.error("ERROR: ID #{pd.id} => #{$!}")
     end # each row
 
     # calculate covers similarity
@@ -28,7 +28,7 @@ class ProcessIndexGroupJob < ProcessIndexRefreshJob
       break if Rails.env.development? && i >= DEVEL_LIMIT
 
       ris = self.class.progress_update(step: (i+1), steps: num_entries, msg: 'comparing covers')
-      puts(ris) if i % print_info_freq == 0
+      Rails.logger.info(ris) if i % print_info_freq == 0
 
       ProcessableDoujin.transaction do
         CoverMatchingJob.find(ProcessableDoujin, pd.cover_phash_hex, from_id: (last_id ? 0 : pd.id)).each do |id, perc|

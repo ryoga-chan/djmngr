@@ -55,13 +55,13 @@ class EpubConverterJob < ApplicationJob
     # create required folders
     %w[ META-INF images pages ].each{|d| FileUtils.mkdir_p "#{tmpd}/#{d}" }
 
-    puts "Converting images..."
+    Rails.logger.info "Converting images..."
     images = []
     Zip::File.open(fname_src) do |zip|
       entries = zip.image_entries(sort: true)
 
       entries.each_with_index do |entry, i|
-        puts entry.name
+        Rails.logger.info entry.name
 
         perc = (i+1).to_f / entries.size * 100
         File.atomic_write(perc_file){|f| f.write perc.round(2) }
@@ -76,7 +76,7 @@ class EpubConverterJob < ApplicationJob
           #im = ImageProcessing::Vips.source(img).convert('jpg').saver(quality: IMG_QUALITY_RESIZE)
 
           # 90° rotated image
-          fname = "#{img_dst}-0.jpg"; puts "\t rotated"
+          fname = "#{img_dst}-0.jpg"; Rails.logger.info "\t rotated"
           #im.rotate(90).resize_and_pad(width_dst, height_dst, background: [255,255,255]).call destination: fname
           img2 = img.rotate(90).resize_to_fit(width_dst, height_dst)
           img2 = center_vertically img2, height_dst
@@ -90,13 +90,13 @@ class EpubConverterJob < ApplicationJob
             img2 = center_vertically img2, height_dst
 
             # first part of the splitted half
-            fname = "#{img_dst}-1.jpg"; puts "\t first half (#{crop_modes[0]})"
+            fname = "#{img_dst}-1.jpg"; Rails.logger.info "\t first half (#{crop_modes[0]})"
             #im.resize_to_fit(width_dst*2, height_dst).resize_to_fill(width_dst, height_dst, crop: crop_modes[0]).call destination: fname
             img2.smartcrop(width_dst, height_dst, interesting: crop_modes[0]).write_to_file fname, Q: IMG_QUALITY_RESIZE
             images << File.basename(fname)
 
             # second part of the splitted half
-            fname = "#{img_dst}-2.jpg"; puts "\t second half (#{crop_modes[1]})"
+            fname = "#{img_dst}-2.jpg"; Rails.logger.info "\t second half (#{crop_modes[1]})"
             #im.resize_to_fit(width_dst*2, height_dst).resize_to_fill(width_dst, height_dst, crop: crop_modes[1]).call destination: fname
             img2.smartcrop(width_dst, height_dst, interesting: crop_modes[1]).write_to_file fname, Q: IMG_QUALITY_RESIZE
             images << File.basename(fname)
@@ -113,7 +113,7 @@ class EpubConverterJob < ApplicationJob
     # check images presence
     die "no images found" if images.empty?
 
-    puts "Creating metadata..."
+    Rails.logger.info "Creating metadata..."
 
     File.open("#{tmpd}/mimetype", 'w'){|f| f.write "application/epub+zip" }
 
@@ -222,7 +222,7 @@ class EpubConverterJob < ApplicationJob
       XML
     end
 
-    puts "Creating epub file..."
+    Rails.logger.info "Creating epub file..."
     File.unlink fname_dst if File.exist?(fname_dst)
     [ %Q( zip -q0X #{fname_dst.shellescape} mimetype ),
      #%Q[ zip -q9XrD #{fname_dst.shellescape} * -x mimetype ],
