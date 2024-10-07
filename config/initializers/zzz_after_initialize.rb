@@ -49,7 +49,7 @@ Rails.application.config.after_initialize do
   # change process title
   # https://stackoverflow.com/questions/4603704/how-can-i-detect-if-my-code-is-running-in-the-console-in-rails-3
   if Rails.const_defined?(:Console)
-    Process.setproctitle "ruby:djmngr-console" # $0 = title
+    Process.setproctitle "#{Rails.configuration.proctitle}-console" # $0 = title
   else
     # do it after webserver start (puma changes the title too)
     # see also ApplicationController#setproctitle

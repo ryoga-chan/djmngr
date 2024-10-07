@@ -1,5 +1,5 @@
 class ApplicationController < ActionController::Base
-  PROCTITLE = "ruby:djmngr-server"
+  PROCTITLE = "#{Rails.configuration.proctitle}-server"
 
   layout -> { 'ereader' if request.format.ereader? }
 

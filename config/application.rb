@@ -54,5 +54,7 @@ module Djmngr
     # !!SEGFAULT using send_file!!
     #config.middleware.use Rack::Deflater
     #config.middleware.use Rack::Brotli
+
+    config.proctitle = 'ruby:djmngr'
   end
 end
