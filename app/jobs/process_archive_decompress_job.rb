@@ -22,10 +22,10 @@ class ProcessArchiveDecompressJob < ApplicationJob
 
   def self.prepare_and_perform(fname_or_ids, perform_when: :later, title: nil)
     raise :invalid_method unless %i[ later now ].include?(perform_when)
-    
+
     fnames   = []
     tot_size = 0
-    
+
     if fname_or_ids.is_a?(Array)
       ProcessableDoujin.where(id: fname_or_ids).each do |pd|
         fnames   << pd.file_path(full: true)
@@ -36,7 +36,7 @@ class ProcessArchiveDecompressJob < ApplicationJob
       fnames   = [fname_or_ids]
       tot_size = File.size fname_or_ids
     end
-    
+
     raise :file_not_found unless fnames.all?{|i| File.exist? i }
     return :invalid_zip if fnames.any?{|i| Marcel::MimeType.for(Pathname.new i) != 'application/zip' }
 
@@ -60,11 +60,11 @@ class ProcessArchiveDecompressJob < ApplicationJob
       end
 
       # create a symlink just in case of manual folder inspection (unsupported on windows)
-      fnames.each_with_index{|f,i| File.symlink f, File.join(dst_dir, "file_#{'%03d' % i}.zip") } if OS_LINUX
+      fnames.each_with_index{|f, i| File.symlink f, File.join(dst_dir, "file_#{'%03d' % i}.zip") } if OS_LINUX
 
       ProcessArchiveDecompressJob.send "perform_#{perform_when}", dst_dir
     end
-    
+
     hash
   end # self.prepare_and_perform
 
@@ -297,7 +297,7 @@ class ProcessArchiveDecompressJob < ApplicationJob
         pd = ProcessableDoujin.find_by name: info[:relative_path][i]
         title = pd&.notes.present? ? pd&.notes : file_path
         path = File.join path_contents,
-          i.to_s.rjust(3,'0'),
+          i.to_s.rjust(3, '0'),
           title.to_romaji.tokenize_doujin_filename(title_only: true).join(' ')
         FileUtils.mkdir_p path
         system %Q( unzip -q -d #{path.shellescape} #{file_path.shellescape} )
@@ -313,13 +313,13 @@ class ProcessArchiveDecompressJob < ApplicationJob
 
     # remove reprocessing files
     Dir[File.join path_contents, '**/metadata.yml'].each{|f| FileUtils.rm_f f }
-    
+
     # fix invalid files names
     all_files = Dir[File.join path_contents, '**', '*'].map do |f|
       if f.valid_encoding?
         f
       else
-        f_fixed = f.encode('UTF-8', invalid: :replace, undef: :replace, replace: rand(10000).to_s.rjust(4,'0'))
+        f_fixed = f.encode('UTF-8', invalid: :replace, undef: :replace, replace: rand(10000).to_s.rjust(4, '0'))
         File.rename f, f_fixed
         f_fixed
       end
@@ -338,7 +338,7 @@ class ProcessArchiveDecompressJob < ApplicationJob
       info[:files].delete notes_element
       File.unlink notes_file
     end
-    
+
     # auto rename images with default method
     if info[:file_path].one?
       info[:ren_images_method] = ZipImagesRenamer::DEFAULT_METHOD.to_s
@@ -357,7 +357,7 @@ class ProcessArchiveDecompressJob < ApplicationJob
         rename_regexp_repl: info[:images_last_regexp_repl]
       ).sort_by_method('[]', :dst_path)
     end
-    
+
     # copy filename for files
     info[:files].each_with_index{|f, i| f[:dst_path] = "#{'%04d' % i}-#{f[:src_path].gsub '/', '_'}" }
     info[:files] = info[:files].sort_by_method('[]', :dst_path)

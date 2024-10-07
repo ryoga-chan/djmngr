@@ -12,7 +12,7 @@ module CoreExt::FileUtils::Operations
 
     def cp_hard(src, dst, options = {})
       File.unlink dst if options[:force] && File.exist?(dst)
-      
+
       if OS_LINUX
         File.link      src, dst # efficient copy via hard link
       else

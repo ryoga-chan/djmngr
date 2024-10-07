@@ -1,11 +1,21 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
-puts "USAGE: rubocop-changed [-a|...]"
+puts "USAGE: rubocop-changed [--origin] [-a] [rubocop options]"
 
 # check changed files -- https://www.red56.uk/2017/03/26/running-rubocop-on-changed-files/
 #   git diff origin/main --name-only | xargs ./bin/rubocop --force-exclusion
-argv  = %x[ git diff          --name-only ].split "\n"
-argv += %x[ git diff --staged --name-only ].split "\n"
+argv = []
+if ARGV.include?('--origin')
+  ARGV.delete '--origin'
+  argv += %x[ git diff origin/main --name-only ].split "\n"
+else
+  argv += %x[ git diff             --name-only ].split "\n"
+  argv += %x[ git diff --staged    --name-only ].split "\n"
+end
 
-ARGV.concat argv.sort.compact.uniq.unshift('--force-exclusion')
-load File.join(File.dirname(__FILE__), 'rubocop')
+if argv.any?
+  ARGV.concat argv.sort.compact.uniq.unshift('--force-exclusion')
+  load File.join(File.dirname(__FILE__), 'rubocop')
+else
+  puts "no files to inspect"
+end

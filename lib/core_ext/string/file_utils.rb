@@ -13,7 +13,7 @@ module CoreExt::String::FileUtils
     dst_name = "#{my_name}#{sfix}#{my_ext}"
     my_dir == '.' ? dst_name : File.join(my_dir, dst_name)
   end # add_suffix_to_filename
-  
+
   def to_sortable_by_numbers
     tr("^0-9", ' ').split(' ').   # consider numbers only
       map{|n| '%010d' % n.to_i }. # add zero padding

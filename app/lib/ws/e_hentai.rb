@@ -68,7 +68,7 @@ module Ws::EHentai
   end # self.dump_cookies
 
   def self.load_cookies(req, fpath) = req.with_cookies(YAML.unsafe_load_file fpath)
-  
+
   def self.clear_cookies = FileUtils.rm_f(cookies_path)
 
   def self.search(term, options = {})
@@ -77,7 +77,7 @@ module Ws::EHentai
 
     begin
       term = term.split(' ').reject{|i| i.size == 1}.join(' ').gsub(/([^0-9])0+([0-9]+)/, '\1\2')
-      
+
       return result(:no_results) if term.blank?
 
       unless File.exist?(cookies_file)

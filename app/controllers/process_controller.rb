@@ -198,11 +198,11 @@ class ProcessController < ApplicationController
       redirect_to process_index_path(term: params[:term]), alert: "no files selected!"
     end
   end # batch_delete
-  
+
   # process multiple files into a single folder
   def batch_merge
     hash = ProcessArchiveDecompressJob.prepare_and_perform params[:file_ids]
-    
+
     hash == :invalid_zip ?
       redirect_to(process_index_path, alert: "invalid MIME type: not a ZIP file!") :
       redirect_to(edit_process_path id: hash)
@@ -411,7 +411,7 @@ class ProcessController < ApplicationController
       f_imgs = @info[:images].size
       @cur_info = "#{f_imgs} pics/#{f_size}"
     end
-    
+
     case params[:tab]
       when 'dupes'
         # refresh cover matching results
@@ -687,10 +687,10 @@ class ProcessController < ApplicationController
 
   def add_files
     @info = YAML.unsafe_load_file(File.join @dname, 'info.yml')
-    
+
     # inject uploaded files
     params[:files]&.each{|f| ProcessArchiveDecompressJob.inject_file f.original_filename, f.to_path, @dname, @info }
-    
+
     # inject local files
     last_name = @info[:images].last.try('[]', :dst_path)
     last_name = File.basename last_name, File.extname(last_name)
@@ -698,11 +698,11 @@ class ProcessController < ApplicationController
       name = "#{last_name.next!}#{File.extname p}"
       ProcessArchiveDecompressJob.inject_file name, p, @dname, @info
     end
-    
+
     # check collisions
     @info[:files_collision ] = @info[:files ].size != @info[:files ].map{|i| i[:dst_path] }.uniq.size
     @info[:images_collision] = @info[:images].size != @info[:images].map{|i| i[:dst_path] }.uniq.size
-    
+
     # update info
     File.open(File.join(@dname, 'info.yml'), 'w'){|f| f.puts @info.to_yaml }
 
@@ -746,7 +746,7 @@ class ProcessController < ApplicationController
         notice: "file removed from group ##{params[:parent_id]}"
     end
   end # group_rm
-  
+
   def clear
     msg = case params[:what]
       when 'samples'
@@ -758,7 +758,7 @@ class ProcessController < ApplicationController
       else
         'nothing to clear'.freeze
     end
-    
+
     redirect_to process_index_path, notice: msg
   end # process_later
 

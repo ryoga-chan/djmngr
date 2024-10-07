@@ -164,9 +164,9 @@ class ProcessableDoujin < ApplicationRecord
       copy(interpretation: "srgb").
       new_from_image([0, 0, 0, 0])
   end # self.img_transparent
-  
+
   def parse_name = @cache_parse_name ||= name.parse_doujin_filename
-  
+
   def group_sort_flags
     return @cache_group_sort_flags if @cache_group_sort_flags
     @cache_group_sort_flags = '11111' # unc, eng, jpn, kor, chi

@@ -60,12 +60,12 @@ module CoreExt::String::Doujin
   TOKENIZE_RE_NAME = /^(\[[^\[\]]+\])*\s*(\([^\[\]]+\))*\s*\[([^\]\(\)]+)(\([^\[\]]+\))*\]\s*([^\[\]\(\)]+)(\([^\[\]]+\))*\s*(\[[^\[\]]+\])*\s*/
 
   TOKENIZE_RE_SYMBOLS  = /[!@\[;\]^%*\(\);\-_+=\?\.,'\/&\\|$\{#\}<>:`~"]/
-  
+
   TAGS = {
-    eng: %w( 英語 ),
-    jpn: %w( 日本語 ),
-    kor: %w( 韓国  韓国語  韓国翻訳 ),
-    chi: %w( 中国  中国語  中国翻訳  中文翻译 ),
+    eng: %w[ 英語 ],
+    jpn: %w[ 日本語 ],
+    kor: %w[ 韓国  韓国語  韓国翻訳 ],
+    chi: %w[ 中国  中国語  中国翻訳  中文翻译 ],
   }
 
   # returns the explicit and implicit groups of authors_or_circles
@@ -91,15 +91,15 @@ module CoreExt::String::Doujin
                        self.sub(/.+\(([a-z,]+)\)\....$/, '\1').split(',') : '',
       fname:         fname.to_s.strip
     }
-    
+
     self_downcase = self.downcase
-    
+
     # detect censorship
     unless result[:properties].include?('unc')
       # decensored uncensored, 無修正 (jap), 未经审查 (chi), 무수정 (kor)
-      result[:properties] << 'unc' if %w(decens uncens 無修正 未经审查 무수정).any?{|i| self_downcase.include?(i) }
+      result[:properties] << 'unc' if %w[decens uncens 無修正 未经审查 무수정].any?{|i| self_downcase.include?(i) }
     end
-    
+
     # detect language
     result[:language] = Doujin::LANGUAGES.
       detect{|descr, lbl| result[:properties].include?(lbl) || self_downcase.include?(descr.downcase) }.try('[]', 1)
@@ -108,7 +108,7 @@ module CoreExt::String::Doujin
       result[:language] ||= lang.to_s if tags.any?{|i| self_downcase.include?(i) }
     end
     result[:language] ||= Doujin::LANGUAGES.values.first
-    
+
     result
   end # parse_doujin_filename
 
@@ -142,7 +142,7 @@ module CoreExt::String::Doujin
 
     # drop symbols
     term.gsub!(TOKENIZE_RE_SYMBOLS, ' ') if rm_sym
-    
+
     term.split(' ') # note: this collapses multiple spaces
   end # tokenize_doujin_filename
 end

@@ -24,9 +24,9 @@ class ProcessArchiveSplitJob < ApplicationJob
       info_new = info.dup
       num = '%03d' % (set_idx + 1)
       dir = "#{src_dir}_#{num}" # new base folder
-      
+
       # create subfolders
-      %w( contents cover thumbs ).each{|d| FileUtils.mkdir_p File.join(dir, d) }
+      %w[ contents cover thumbs ].each{|d| FileUtils.mkdir_p File.join(dir, d) }
 
       set.each do |image|
         # copy image
@@ -38,7 +38,7 @@ class ProcessArchiveSplitJob < ApplicationJob
         dst_path = File.join dir    , 'thumbs', image[:thumb_path]
         FileUtils.cp_hard src_path, dst_path, force: true
       end # each image
-      
+
       # update info
       info_new[:images           ] = set
       info_new[:working_dir      ] = File.basename dir
@@ -55,7 +55,7 @@ class ProcessArchiveSplitJob < ApplicationJob
 
       # autogenerate portrait cover for landascape first image
       ProcessArchiveDecompressJob.crop_landscape_cover dir, info_new
-      
+
       File.atomic_write(File.join(dir, 'info.yml')){|f| f.puts info_new.to_yaml }
     end # each set
 

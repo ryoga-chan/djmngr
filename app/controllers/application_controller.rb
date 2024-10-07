@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::Base
   PROCTITLE = "ruby:djmngr-server"
-  
+
   layout -> { 'ereader' if request.format.ereader? }
 
   before_action :setproctitle if ENV['PUMA_DAEMON']
@@ -31,7 +31,7 @@ class ApplicationController < ActionController::Base
     session[:dj_index_detail] = params[:detail] if %w[ thumbs table ].include?(params[:detail])
     session[:dj_index_detail] ||= 'table'
   end # set_doujin_list_detail
-  
+
   def setproctitle = Process.setproctitle(PROCTITLE)
 
   def authenticate
