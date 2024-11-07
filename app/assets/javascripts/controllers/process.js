@@ -10,6 +10,18 @@ $.myapp.titles_to_lowercase = function () {
     function () { $('#'+this).val( $('#'+this).val().toLowerCase().trim() ); });
 }// $.myapp.titles_to_lowercase
 
+$.myapp.translitterate_raw_title = function () {
+  var dst = $('#dest_title_romaji');
+  $.myapp.translitterate($('#dest_title').val(), {
+    beforeSend: function () {
+      dst.addClass('is-hidden').
+        after( $(p_bar).addClass('fillwidth').css('display', 'inline-block') );
+    },//beforeSend
+    success: function (resp) { dst.val(resp); },//success
+    complete: function () { dst.removeClass('is-hidden').next().remove(); },//complete
+  });
+}// $.myapp.titles_to_lowercase
+
 $.myapp.autotag_titles = function () {
   var tags = [];
   

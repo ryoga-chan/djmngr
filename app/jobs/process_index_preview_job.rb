@@ -1,4 +1,6 @@
 class ProcessIndexPreviewJob < ProcessIndexRefreshJob
+  PAGES_TO_PROCESS = 4
+
   def self.description = :'generating previews'
 
   def self.rm_previews
@@ -12,18 +14,16 @@ class ProcessIndexPreviewJob < ProcessIndexRefreshJob
     records = []
 
     if id
-      records    = rel.where(id: id).to_a
+      records = rel.where(id: id).to_a
     else
       if order.to_s.starts_with?('group')
-        # generate preview for two pages
-        records  = rel.page(page.to_i  ).per(ProcessController::GROUP_EPP).to_a
-        records += rel.page(page.to_i+1).per(ProcessController::GROUP_EPP).to_a
+        # generate preview for each page
+        (0...PAGES_TO_PROCESS).each{|i| records += rel.page(page.to_i + i).per(ProcessController::GROUP_EPP).to_a }
         # generate preview for child records
         records += records.inject([]){|a, r| a.concat r.processable_doujin_childs }
       else
-        # generate preview for two pages
-        records  = rel.page(page.to_i  ).per(Setting[:process_epp].to_i).to_a
-        records += rel.page(page.to_i+1).per(Setting[:process_epp].to_i).to_a
+        # generate preview for each page
+        (0...PAGES_TO_PROCESS).each{|i| records += rel.page(page.to_i + i).per(Setting[:process_epp].to_i).to_a }
       end
     end
 

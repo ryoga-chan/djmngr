@@ -13,6 +13,7 @@ Rails.application.routes.draw do
   get  'home/info'
 
   get  'ws/ehentai'
+  get  'ws/to_romaji'
 
   resources :process, only: %i[ index edit ] do
     collection do

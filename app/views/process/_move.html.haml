@@ -86,15 +86,15 @@
         %span.icon.in-text-small.mr-2
           %i.mi.mi-small(title="destination subfolder") create_new_folder
         - if @subfolders.many?
-          %span.select.vmiddle= f.select :sel_subfolder,
+          %span.select.vmiddle.fillwidth-3bt= f.select :sel_subfolder,
             options_for_select(@subfolders, @info[:subfolder]), {},
-            class: "input is-small vmiddle", style: 'width: 15rem',
+            class: "input is-small vmiddle", title: 'copy folder name from an existing one',
             onchange: %Q| $('#subfolder').val($(this).val() == '-custom name-' ? '' : $(this).val()) |
-          %br.is-hidden-tablet
-          %span.icon.in-text-small.mr-2.is-hidden-tablet
+          %br
+          %span.icon.in-text-small.mr-2
             %i.mi.mi-small(title="spacer") subdirectory_arrow_right
         = f.text_field :subfolder, value: @info[:subfolder], placeholder: 'destination subfolder',
-          class: 'input is-small', style: 'width: 15rem'
+          class: 'input is-small fillwidth-3bt'
         = link_to '#', class: 'button is-small', onclick: %Q|$('#subfolder').val(''); $('#sel_subfolder').val('-custom name-'); return false| do
           %span.icon
             %i.mi.mi-small(title="clear subfolder") clear
@@ -112,9 +112,12 @@
           %i.mi.mi-small(title="destination title kanji/original") raw_on
         = f.text_field :dest_title, value: @info[:dest_title],
           placeholder: 'dest. title kanji/original', tabindex: 100,
-          class: 'input is-small fillwidth',
+          class: 'input is-small fillwidth-2bt',
           data: { orig_name: @info[:orig_title] }
-        = link_to '#', class: 'button is-small is-hidden-mobile',
+        = link_to '#', class: 'button is-small', onclick: %Q|$.myapp.translitterate_raw_title(); return false| do
+          %span.icon
+            %i.mi.mi-small(title="translitterate raw title to romaji") translate
+        = link_to '#', class: 'button is-small ml-1',
           onclick: %Q|var el=$('#dest_title'); el.val(el.data('orig-name')); return false| do
           %span.icon
             %i.mi.mi-small(title="restore initial value") restore
@@ -138,9 +141,9 @@
           %i.mi.mi-small(title="destination filename") insert_drive_file
         = f.text_field :dest_filename, value: @info[:dest_filename],
           placeholder: 'dest. filename', tabindex: 103,
-          class: 'input is-small fillwidth',
+          class: 'input is-small fillwidth-1bt',
           data: { orig_name: @info[:orig_dest_filename] }
-        = link_to '#', class: 'button is-small is-hidden-mobile',
+        = link_to '#', class: 'button is-small',
           onclick: %Q|var el=$('#dest_filename'); el.val(el.data('orig-name')); return false| do
           %span.icon
             %i.mi.mi-small(title="restore initial value") restore

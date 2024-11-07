@@ -42,7 +42,10 @@ body[data-ctrl="process"][data-action="edit"] {
   }
   .scroller.two_titles { height: 6.3rem; }
   .fillwidth { width: 90%; }
-  .setting { width: calc(86% / 5); }
+  .fillwidth-1bt { width: calc(90% - 2.555rem    ); }
+  .fillwidth-2bt { width: calc(90% - 2.555rem * 2); }
+  .fillwidth-3bt { width: calc(90% - 2.555rem * 3); }
+  .setting { width: calc(90% / 5 - 0.04rem * 5); }
   
   .textarea {
     min-width: auto;

@@ -57,6 +57,17 @@ $.myapp = {
     ta.val(new_text.trim());
   },//append_to_textarea
   
+  translitterate: function (string, ajax_options) {
+    $.ajax($.extend({
+      url: '/ws/to_romaji',
+      data: { s: string },
+      method: 'GET',
+      dataType: 'text',
+      cache: false,
+      error: function () { alert('Server error!'); }//error
+    }, ajax_options));
+  },//translitterate
+  
   // https://www.freecodecamp.org/news/javascript-keycode-list-keypress-event-key-codes/#a-full-list-of-key-event-values
   shortcuts: [
     { key: '?', ctrl: false, alt: false, descr: 'show shortcuts list', action:function (ev) {
