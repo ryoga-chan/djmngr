@@ -99,7 +99,7 @@
                   .dropdown-menu
                     .dropdown-content
                       = link_to({job: :preview, sort_by: params[:sort_by], page: params[:page], term: params[:term]},
-                                data: {confirm: 'Generate previews for two pages of entries?'},
+                                data: {confirm: "Generate previews for #{ProcessIndexPreviewJob::PAGES_TO_PROCESS} pages of entries?"},
                                 class: 'dropdown-item') do
                         %span.icon-text
                           %span.icon
