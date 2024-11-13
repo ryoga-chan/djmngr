@@ -15,7 +15,8 @@ module CoreExt::String::FileUtils
   end # add_suffix_to_filename
 
   def to_sortable_by_numbers
-    tr("^0-9", ' ').split(' ').   # consider numbers only
+    utf8_clean.
+      tr("^0-9", ' ').split(' ').   # consider numbers only
       map{|n| '%010d' % n.to_i }. # add zero padding
       push(self). # preserve the alphabetic order at the end
       join(',')

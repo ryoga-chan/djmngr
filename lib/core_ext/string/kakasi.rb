@@ -4,6 +4,8 @@ module CoreExt::String::Kakasi
   KAKASI_ENC_OPTIONS = { invalid: :replace, undef: :replace, replace: '_' }.freeze
 
   RE_UNIHAN = /\p{Han}|\p{Hiragana}|\p{Katakana}/
+  
+  def utf8_clean = encode(Encoding::UTF_8, **KAKASI_ENC_OPTIONS)
 
   # -p = alt readings, -f = furigana mode
   def to_romaji(alt_readings: false, furigana_mode: false)
@@ -16,7 +18,7 @@ module CoreExt::String::Kakasi
       self[0..KAKASI_MAXLENGTH].
         # fix UTF-8 to Windows-31J (Encoding::UndefinedConversionError)
         encode(Encoding::CP932, **KAKASI_ENC_OPTIONS)
-    ).encode(Encoding::UTF_8, **KAKASI_ENC_OPTIONS). # reencode to UTF8 for further processing
+    ).utf8_clean. # reencode to UTF8 for further processing
     gsub(/\(kigou\)/, '-') # symbol -- https://jlearn.net/search/kigou?source=dictionary
   end # to_romaji
 

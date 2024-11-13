@@ -40,3 +40,7 @@
       %th DB size
       - db_file = Rails.root.join('storage', "#{Rails.env}.sqlite3").to_s
       %td= number_to_human_size File.size(db_file)
+
+    %tr
+      %th Samples size
+      %td= number_to_human_size Dir[ Rails.root.join('public', 'samples', '*.webp').to_s ].sum{|f| File.size(f) }
