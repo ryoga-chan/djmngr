@@ -14,6 +14,8 @@ Rails.application.routes.draw do
 
   get  'ws/ehentai'
   get  'ws/to_romaji'
+  get  'ws/dl_image'
+  post 'ws/dl_image'
 
   resources :process, only: %i[ index edit ] do
     collection do

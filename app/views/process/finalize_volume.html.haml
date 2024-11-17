@@ -35,6 +35,12 @@
         Delete WIP & ZIP
         %span.countdown (--)
     
+    = link_to(finalize_volume_process_path(undo: true), method: :post,
+      class: 'button is-success is-light is-rounded mt-2 mr-3', title: 're-enable finalizing for this archive')  do
+      %span.icon
+        %i.mi.mi-small undo
+      %span Re-enable finalizing
+    
     :javascript
       window.countdown = 61;
       

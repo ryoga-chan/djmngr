@@ -54,6 +54,15 @@ module CoreExt::Vips::Operations
 
   # down/up-scale image: im.resize_to_fit(w, h).jpegsave_buffer(Q: IMG_QUALITY_RESIZE)
   def resize_to_fit(maxw, maxh) = resize([maxw.to_f/width, maxh.to_f/height].min)
+
+  def downsize_to(dst_w = nil, dst_h = nil)
+    dst_w, dst_h = dst_w.to_f, dst_h.to_f
+    scale_w = dst_w / width  if dst_w > 0 && width  > dst_w
+    scale_h = dst_h / height if dst_h > 0 && height > dst_h
+    scale_p = [scale_w, scale_h].compact.min
+
+    scale_p ? resize(scale_p) : self
+  end # downsize_to
 end
 
 Vips::Image.send :include, CoreExt::Vips::Operations

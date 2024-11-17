@@ -20,7 +20,7 @@ class ProcessArchiveDecompressJob < ApplicationJob
     FileUtils.rm_rf dir, secure: true if dir && File.exist?(dir)
   end # sefl.rm_entry
 
-  def self.prepare_and_perform(fname_or_ids, perform_when: :later, title: nil)
+  def self.prepare_and_perform(fname_or_ids, perform_when: :later, title: nil, dummy: false)
     raise :invalid_method unless %i[ later now ].include?(perform_when)
 
     fnames   = []
@@ -54,6 +54,7 @@ class ProcessArchiveDecompressJob < ApplicationJob
           title:         title, # optional title from batch processing
           working_dir:   hash,
           prepared_at:   nil,
+          dummy:         dummy, # empty dummy zip file for /ws/dl_image
           notes:         (fnames.one? ? '' :
                           fnames.map.with_index{|f, i| "#{i+1}) " + File.basename(f, '.zip') }.join("\n").strip),
         }.to_yaml)
@@ -74,7 +75,10 @@ class ProcessArchiveDecompressJob < ApplicationJob
   end # self.cover_path
 
   # autogenerate portrait cover for landascape first image
-  def self.crop_landscape_cover(dst_dir, info, crop_method = :attention)
+  def self.crop_landscape_cover(dst_dir, info, crop_method = nil)
+    crop_method ||= :attention
+    return if info[:images].empty?
+    
     # get image dimensions
     cover_img = Vips::Image.new_from_file File.join(dst_dir, 'contents', info[:images].first[:src_path])
     info[:landscape_cover] = cover_img.width > cover_img.height
@@ -140,7 +144,7 @@ class ProcessArchiveDecompressJob < ApplicationJob
     info
   end # self.duplicate_cover
 
-  def self.inject_file(file_name, file_path, dst_dir, info, save_info: false)
+  def self.inject_file(file_name, file_path, dst_dir, info: nil, save_info: false, check_collision: false)
     ts = "zz#{Time.now.strftime '%Y%M%d%H%M%S%9N'}"
 
     dst_data = {
@@ -148,20 +152,31 @@ class ProcessArchiveDecompressJob < ApplicationJob
       dst_path: File.basename(file_name),
       size:     File.size(file_path),
     }
+    
+    # expand destination path if we receive a hash
+    dst_dir = File.join(Setting['dir.sorting'], dst_dir) unless dst_dir.include?(File::SEPARATOR)
+    
+    info = YAML.unsafe_load_file(File.join dst_dir, 'info.yml') unless info
 
     if file_path.is_image_filename?
       dst_data[:alt_label ] = dst_data[:src_path]
       dst_data[:thumb_path] = "#{ts}.webp"
-
       info[:images] = info[:images].push(dst_data).sort_by_method('[]', :dst_path)
+    else
+      info[:files].push dst_data
+    end
 
-      FileUtils.cp_f file_path, File.join(dst_dir, 'contents', dst_data[:src_path])
+    FileUtils.cp_f file_path, File.join(dst_dir, 'contents', dst_data[:src_path])
 
+    if file_path.is_image_filename?
       ProcessArchiveDecompressJob.generate_thumbnail \
         File.join(dst_dir, 'contents', dst_data[:src_path  ]),
         File.join(dst_dir, 'thumbs'  , dst_data[:thumb_path])
-    else
-      info[:files].push dst_data
+    end
+    
+    if check_collision
+      info[:files_collision ] = info[:files ].size != info[:files ].map{|i| i[:dst_path] }.uniq.size
+      info[:images_collision] = info[:images].size != info[:images].map{|i| i[:dst_path] }.uniq.size
     end
 
     # update data file

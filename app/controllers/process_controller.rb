@@ -219,7 +219,7 @@ class ProcessController < ApplicationController
   def delete_archive_cwd
     @info = YAML.unsafe_load_file(File.join @dname, 'info.yml')
 
-    if params[:archive_too] == 'true'
+    if params[:archive_too] == 'true' || @info[:dummy]
       if @info[:relative_path].one?
         ProcessIndexRefreshJob.rm_entry @info[:relative_path].first, track: @info[:db_doujin_id].blank?, rm_zip: true
       else
@@ -691,14 +691,14 @@ class ProcessController < ApplicationController
     # inject uploaded files
     params[:files]&.
       sort_by(&:original_filename)&.
-      each{|f| ProcessArchiveDecompressJob.inject_file f.original_filename, f.to_path, @dname, @info }
+      each{|f| ProcessArchiveDecompressJob.inject_file f.original_filename, f.to_path, @dname, info: @info }
 
     # inject local files
     last_name = @info[:images].last.try('[]', :dst_path)
     last_name = File.basename last_name, File.extname(last_name)
     params[:paths]&.sort&.each do |p|
       name = "#{last_name.next!}#{File.extname p}"
-      ProcessArchiveDecompressJob.inject_file name, p, @dname, @info
+      ProcessArchiveDecompressJob.inject_file name, p, @dname, info: @info
     end
 
     # check collisions

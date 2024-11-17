@@ -59,6 +59,13 @@ class ProcessIndexRefreshJob < ApplicationJob
   end # self.entries
 
   def self.rm_entry(path_or_id, track: false, rm_zip: false, merged: false, doujin_id: nil)
+    # dummy empty zip files created in /tmp
+    if path_or_id.is_a?(String) && File.exist?(path_or_id) &&
+       File.expand_path(path_or_id).start_with?(Rails.root.join('tmp').to_s)
+       FileUtils.rm_f(path_or_id)
+       return true
+    end
+    
     pd = ProcessableDoujin.find_by(id: path_or_id.to_i) ||
          ProcessableDoujin.find_by(name: path_or_id)
     return false unless pd

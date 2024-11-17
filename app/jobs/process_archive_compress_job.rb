@@ -37,10 +37,12 @@ class ProcessArchiveCompressJob < ApplicationJob
       end
 
       # 1. add metadata file
+      lbl_source_file = info[:relative_path].one? ?
+                          info[:relative_path].first :
+                          info[:relative_path].map{|i| File.basename i }
+      lbl_source_file = File.basename(info[:relative_path].first) if info[:dummy]
       File.atomic_write(File.join(out_dir, 'metadata.yml')){|f| f.write({
-        source_file:    (info[:relative_path].one? ?
-                           info[:relative_path].first :
-                           info[:relative_path].map{|i| File.basename i }),
+        source_file:    lbl_source_file,
         file_size:      info[:file_size],
         file_type:      info[:file_type],
         dest_folder:    info[:dest_folder],
@@ -96,6 +98,7 @@ class ProcessArchiveCompressJob < ApplicationJob
           colorized:    info[:colorized],
           media_type:   info[:media_type],
           notes:        info[:notes]
+        d.name_orig   = lbl_source_file if info[:dummy]
         d.file_folder = Pathname.new(d.file_folder).relative_path_from("/#{d.category}").to_s
         d.save!
 

@@ -1,5 +1,5 @@
 module CoreExt::String::FileUtils
-  RE_IMAGE_EXT = /\.(jpe*g|gif|png)$/i
+  RE_IMAGE_EXT = /\.(jpe*g|gif|png|webp)$/i
 
   UTF8_ENC_OPTIONS = { invalid: :replace, undef: :replace, replace: '_' }.freeze
 
@@ -21,6 +21,12 @@ module CoreExt::String::FileUtils
       push(self). # preserve the alphabetic order at the end
       join(',')
   end # to_sortable_by_numbers
+  
+  # from https://api.rubyonrails.org/classes/ActiveStorage/Filename.html#method-i-sanitized
+  def to_sanitized_filename
+    encode(Encoding::UTF_8, invalid: :replace, undef: :replace, replace: "�").
+      strip.tr("\u{202E}%$|:;/<>?*\"\t\r\n\\", "_")
+  end # to_sanitized_filename
 end
 
 String.send :include, CoreExt::String::FileUtils
