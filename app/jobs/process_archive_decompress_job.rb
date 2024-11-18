@@ -174,11 +174,7 @@ class ProcessArchiveDecompressJob < ApplicationJob
         File.join(dst_dir, 'thumbs'  , dst_data[:thumb_path])
     end
     
-    if check_collisions
-      # see also ProcessController#check_collisions
-      info[:files_collision ] = info[:files ].group_by{|i| i[:dst_path] }.map{|k,v| k if v.many? }.compact.sort
-      info[:images_collision] = info[:images].group_by{|i| i[:dst_path] }.map{|k,v| k if v.many? }.compact.sort
-    end
+    ArchiveUtils.check_filename_collisions info if check_collisions
 
     # update data file
     File.open(File.join(dst_dir, 'info.yml'), 'w'){|f| f.puts info.to_yaml } if save_info
@@ -377,6 +373,8 @@ class ProcessArchiveDecompressJob < ApplicationJob
     # copy filename for files
     info[:files].each_with_index{|f, i| f[:dst_path] = "#{'%04d' % i}-#{f[:src_path].gsub '/', '_'}" }
     info[:files] = info[:files].sort_by_method('[]', :dst_path)
+    
+    ArchiveUtils.check_filename_collisions info
 
     # autogenerate portrait cover for landascape first image
     self.class.crop_landscape_cover dst_dir, info if info[:images].any?

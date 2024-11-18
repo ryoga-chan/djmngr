@@ -263,7 +263,7 @@ class ProcessController < ApplicationController
 
     ProcessArchiveDecompressJob.crop_landscape_cover @dname, @info, @info[:landscape_cover_method]
 
-    check_collisions
+    ArchiveUtils.check_filename_collisions @info
 
     File.open(File.join(@dname, 'info.yml'), 'w'){|f| f.puts @info.to_yaml }
 
@@ -547,7 +547,7 @@ class ProcessController < ApplicationController
       @info[:images_last_regexp     ] = params[:rename_regexp]
       @info[:images_last_regexp_repl] = params[:rename_regexp_repl]
 
-      check_collisions
+      ArchiveUtils.check_filename_collisions @info
 
       ProcessArchiveDecompressJob.crop_landscape_cover @dname, @info, @info[:landscape_cover_method]
 
@@ -572,7 +572,7 @@ class ProcessController < ApplicationController
       @info[:images] = @info[:images].sort_by_method('[]', :dst_path)
     end
 
-    check_collisions
+    ArchiveUtils.check_filename_collisions @info
 
     if el
       ProcessArchiveDecompressJob.crop_landscape_cover @dname, @info, @info[:landscape_cover_method]
@@ -700,7 +700,7 @@ class ProcessController < ApplicationController
       ProcessArchiveDecompressJob.inject_file name, p, @dname, info: @info
     end
 
-    check_collisions
+    ArchiveUtils.check_filename_collisions @info
 
     # update info
     File.open(File.join(@dname, 'info.yml'), 'w'){|f| f.puts @info.to_yaml }
@@ -786,9 +786,4 @@ class ProcessController < ApplicationController
       redirect_to process_index_path, alert: "folder outside of working directory!"
     end
   end # check_archive_folder
-
-  def check_collisions
-    @info[:files_collision ] = @info[:files ].group_by{|i| i[:dst_path] }.map{|k,v| k if v.many? }.compact.sort
-    @info[:images_collision] = @info[:images].group_by{|i| i[:dst_path] }.map{|k,v| k if v.many? }.compact.sort
-  end # check_collisions
 end
