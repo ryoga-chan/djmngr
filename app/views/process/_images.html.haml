@@ -38,9 +38,11 @@
   - tab_idx = 0
   .columns.is-mobile.is-multiline
     - @info[:images].each do |img|
+      - is_dupe = img[:dst_path].in?(@info[:images_collision])
       .column.is-4-mobile.is-2-tablet.is-2-desktop.has-text-centered.nowrap<>
         = text_field_tag :img_name, img[:dst_path], id: '',
-          class: 'update-name w100', tabindex: (1000 + tab_idx+=1),
+          class: "update-name w100 #{'has-background-danger' if is_dupe}",
+          tabindex: (1000 + tab_idx+=1),
           data: { url: rename_file_process_path, path: img[:src_path] }
         
         %span.button.is-small.select-image.is-hidden

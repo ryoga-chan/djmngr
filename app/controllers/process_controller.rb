@@ -263,9 +263,7 @@ class ProcessController < ApplicationController
 
     ProcessArchiveDecompressJob.crop_landscape_cover @dname, @info, @info[:landscape_cover_method]
 
-    # check collisions
-    @info[:files_collision ] = @info[:files ].size != @info[:files ].map{|i| i[:dst_path] }.uniq.size
-    @info[:images_collision] = @info[:images].size != @info[:images].map{|i| i[:dst_path] }.uniq.size
+    check_collisions
 
     File.open(File.join(@dname, 'info.yml'), 'w'){|f| f.puts @info.to_yaml }
 
@@ -548,7 +546,8 @@ class ProcessController < ApplicationController
       @info[:ren_images_method      ] = params[:rename_with]
       @info[:images_last_regexp     ] = params[:rename_regexp]
       @info[:images_last_regexp_repl] = params[:rename_regexp_repl]
-      @info[:images_collision       ] = @info[:images].size != @info[:images].map{|i| i[:dst_path] }.uniq.size
+
+      check_collisions
 
       ProcessArchiveDecompressJob.crop_landscape_cover @dname, @info, @info[:landscape_cover_method]
 
@@ -568,12 +567,12 @@ class ProcessController < ApplicationController
     if el = @info[:files].detect{|i| i[:src_path] == params[:path] }
       el[:dst_path] = params[:name].to_s.strip
       @info[:files] = @info[:files].sort_by_method('[]', :dst_path)
-      @info[:files_collision] = @info[:files].size != @info[:files].map{|i| i[:dst_path] }.uniq.size
     elsif el = @info[:images].detect{|i| i[:src_path] == params[:path] }
       el[:dst_path] = params[:name].to_s.strip
       @info[:images] = @info[:images].sort_by_method('[]', :dst_path)
-      @info[:images_collision] = @info[:images].size != @info[:images].map{|i| i[:dst_path] }.uniq.size
     end
+
+    check_collisions
 
     if el
       ProcessArchiveDecompressJob.crop_landscape_cover @dname, @info, @info[:landscape_cover_method]
@@ -701,9 +700,7 @@ class ProcessController < ApplicationController
       ProcessArchiveDecompressJob.inject_file name, p, @dname, info: @info
     end
 
-    # check collisions
-    @info[:files_collision ] = @info[:files ].size != @info[:files ].map{|i| i[:dst_path] }.uniq.size
-    @info[:images_collision] = @info[:images].size != @info[:images].map{|i| i[:dst_path] }.uniq.size
+    check_collisions
 
     # update info
     File.open(File.join(@dname, 'info.yml'), 'w'){|f| f.puts @info.to_yaml }
@@ -789,4 +786,9 @@ class ProcessController < ApplicationController
       redirect_to process_index_path, alert: "folder outside of working directory!"
     end
   end # check_archive_folder
+
+  def check_collisions
+    @info[:files_collision ] = @info[:files ].group_by{|i| i[:dst_path] }.map{|k,v| k if v.many? }.compact.sort
+    @info[:images_collision] = @info[:images].group_by{|i| i[:dst_path] }.map{|k,v| k if v.many? }.compact.sort
+  end # check_collisions
 end

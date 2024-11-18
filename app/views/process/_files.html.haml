@@ -65,7 +65,7 @@
           %th.pl-5(colspan=5)
             .files-info
               = "&mdash; #{@info[:files].size} Files &mdash;".html_safe
-              - if @info[:files_collision]
+              - if @info[:files_collision]&.any?
                 %span.tag.is-danger DUPES!
               - else
                 %span.tag.is-success NO DUPES
@@ -89,7 +89,7 @@
               class: 'has-text-danger', title: 'delete file')
             %td.nowrap.has-text-right.is-size-8= number_to_human_size f[:size]
             %td.select-item.is-hidden= check_box_tag 'path[]', f[:src_path], false, id: '', tabindex: (1000+i)
-            %td
+            %td{class: ('has-background-danger' if f[:dst_path].in?(@info[:files_collision]))}
               = text_field_tag :file_name, f[:dst_path], id: '', size: 50,
                 class: 'update-name is-hidden', tabindex: (5000+i),
                 data: { url: rename_file_process_path, path: f[:src_path] }
@@ -109,7 +109,7 @@
         %th.pl-5(colspan=5)
           .files-info
             = "&mdash; #{@info[:images].size} Images &mdash;".html_safe
-            - if @info[:images_collision]
+            - if @info[:images_collision]&.any?
               %span.tag.is-danger DUPES!
             - else
               %span.tag.is-success NO DUPES
@@ -133,7 +133,7 @@
             class: 'has-text-danger', title: 'delete file')
           %td.nowrap.has-text-right.is-size-8= number_to_human_size img[:size]
           %td.select-item.is-hidden= check_box_tag 'path[]', img[:src_path], false, id: '', tabindex: (10000+i)
-          %td
+          %td{class: ('has-background-danger' if img[:dst_path].in?(@info[:images_collision]))}
             = text_field_tag :file_name, img[:dst_path], id: '', size: 50,
               class: 'update-name is-hidden', tabindex: (15000+i),
               data: { url: rename_file_process_path, path: img[:src_path] }

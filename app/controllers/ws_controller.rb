@@ -86,7 +86,7 @@ class WsController < ApplicationController
         return render(json: { result: :err, msg: "image conversion error:\n#{$!.to_s}" })
       end
       f.close
-      ProcessArchiveDecompressJob.inject_file file_name_dst, f.path, hash, save_info: true, check_collision: true
+      ProcessArchiveDecompressJob.inject_file file_name_dst, f.path, hash, save_info: true, check_collisions: true
       f.unlink
     end
     

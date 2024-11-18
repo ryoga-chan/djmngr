@@ -144,7 +144,7 @@ class ProcessArchiveDecompressJob < ApplicationJob
     info
   end # self.duplicate_cover
 
-  def self.inject_file(file_name, file_path, dst_dir, info: nil, save_info: false, check_collision: false)
+  def self.inject_file(file_name, file_path, dst_dir, info: nil, save_info: false, check_collisions: false)
     ts = "zz#{Time.now.strftime '%Y%M%d%H%M%S%9N'}"
 
     dst_data = {
@@ -174,9 +174,10 @@ class ProcessArchiveDecompressJob < ApplicationJob
         File.join(dst_dir, 'thumbs'  , dst_data[:thumb_path])
     end
     
-    if check_collision
-      info[:files_collision ] = info[:files ].size != info[:files ].map{|i| i[:dst_path] }.uniq.size
-      info[:images_collision] = info[:images].size != info[:images].map{|i| i[:dst_path] }.uniq.size
+    if check_collisions
+      # see also ProcessController#check_collisions
+      info[:files_collision ] = info[:files ].group_by{|i| i[:dst_path] }.map{|k,v| k if v.many? }.compact.sort
+      info[:images_collision] = info[:images].group_by{|i| i[:dst_path] }.map{|k,v| k if v.many? }.compact.sort
     end
 
     # update data file
