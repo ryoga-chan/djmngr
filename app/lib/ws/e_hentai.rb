@@ -70,15 +70,15 @@ module Ws::EHentai
   def self.load_cookies(req, fpath) = req.with_cookies(YAML.unsafe_load_file fpath)
 
   def self.clear_cookies = FileUtils.rm_f(cookies_path)
-  
+
   # returns an error symbol or an hash with image's HTTPX::Response object and metadata
   def self.dl_image(page_url)
     headers = { 'User-Agent' => ::Setting['scraper_useragent'] }
     cookies_file = cookies_path
-    
+
     url = URI.parse page_url
     return :invalid_url if url.path !~ /\A\/s\/[^\/]+\/[^\/]+-\d+\z/ # /s/xxx/yyy-###
-    
+
     # https://imiqebw.qtefxwsilugq.hath.network/h/d38f06a894accf26f4192a2ad839079df37d6d0e-223718-1280-1856-jpg/keystamp=1731686400-5ba1fe0ee9;fileindex=157780907;xres=2400/121683608_p5.jpg
     begin
       case url.host
@@ -87,7 +87,7 @@ module Ws::EHentai
             tmp_req = do_login
             dump_cookies tmp_req, cookies_file if tmp_req
           end
-          
+
           if File.exist?(cookies_file)
             req  = load_cookies(REQ_EX, cookies_file).with(headers: headers)
             resp = req.get page_url
@@ -97,19 +97,19 @@ module Ws::EHentai
           req  = REQ_EH.with(headers: headers)
           resp = req.get page_url
       end
-      
+
       return :server_error if resp.is_a?(HTTPX::ErrorResponse) || resp&.status != 200
-      
+
       image_url = Nokogiri::HTML.parse(resp.body.to_s).css('img#img').attr('src').content rescue nil
       return :image_not_found unless image_url
-      
+
       headers['Referer'] = page_url
       resp = req.with(headers: headers, timeout: { request_timeout: 10 }).get image_url
       return :image_server_error if resp.is_a?(HTTPX::ErrorResponse) || resp&.status != 200
-      
-      return { resp: resp, image_url: image_url, filename: File.basename(image_url) }
+
+      { resp: resp, image_url: image_url, filename: File.basename(image_url) }
     rescue HTTPX::TimeoutError
-      return :timeout
+      :timeout
     end
   end # self.dl_image
 

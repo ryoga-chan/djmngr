@@ -21,7 +21,7 @@ module CoreExt::String::FileUtils
       push(self). # preserve the alphabetic order at the end
       join(',')
   end # to_sortable_by_numbers
-  
+
   # from https://api.rubyonrails.org/classes/ActiveStorage/Filename.html#method-i-sanitized
   def to_sanitized_filename
     encode(Encoding::UTF_8, invalid: :replace, undef: :replace, replace: "�").

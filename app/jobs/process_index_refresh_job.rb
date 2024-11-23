@@ -65,7 +65,7 @@ class ProcessIndexRefreshJob < ApplicationJob
        FileUtils.rm_f(path_or_id)
        return true
     end
-    
+
     pd = ProcessableDoujin.find_by(id: path_or_id.to_i) ||
          ProcessableDoujin.find_by(name: path_or_id)
     return false unless pd

@@ -4,7 +4,7 @@ module CoreExt::String::Kakasi
   KAKASI_ENC_OPTIONS = { invalid: :replace, undef: :replace, replace: '_' }.freeze
 
   RE_UNIHAN = /\p{Han}|\p{Hiragana}|\p{Katakana}/
-  
+
   def utf8_clean = encode(Encoding::UTF_8, **KAKASI_ENC_OPTIONS)
 
   # -p = alt readings, -f = furigana mode

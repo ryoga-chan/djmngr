@@ -2,9 +2,9 @@ class WsController < ApplicationController
   DL_IMAGE_ZIPNAME = 'ws downloaded images'
 
   def ehentai = render json: Ws::EHentai.search(params[:term])
-  
+
   def to_romaji = render plain: params[:s].to_s.to_romaji.strip
-  
+
   # params: :u = source url, :n = dest filename, :t = dest folder,
   #         :s = scale resolution XxY, :r = referer
   def dl_image
@@ -17,10 +17,10 @@ class WsController < ApplicationController
     Zip::File.open(zip_file, create: true){} unless File.exist?(zip_file)
     # create processing folder
     hash = ProcessArchiveDecompressJob.prepare_and_perform zip_file, perform_when: :now, dummy: true
-    
+
     # download file
     resp, file_name_dst, file_name_src, file_contents = nil, nil, nil, nil
-    
+
     case url.host
       when 'e-hentai.org', 'exhentai.org'
         case result = Ws::EHentai.dl_image(params[:u])
@@ -37,10 +37,10 @@ class WsController < ApplicationController
           resp = :timeout
         end
     end
-    
+
     file_contents = resp.try(:body).to_s
     resp.try(:body)&.close # remove HTTPX tempfile
-    
+
     error = case
       when resp.is_a?(Symbol) then { result: :err, msg: resp }
       when resp.is_a?(HTTPX::ErrorResponse) || resp&.status != 200
@@ -65,7 +65,7 @@ class WsController < ApplicationController
         end
       end
     end
-    
+
     # inject file
     ext_dst, ext_src = File.extname(file_name_dst).downcase, File.extname(file_name_src).downcase
     to_scale, dst_w, dst_h = params[:s].to_s =~ /\A(\d+)*x(\d+)*\z/, $1, $2
@@ -83,13 +83,13 @@ class WsController < ApplicationController
       rescue
         f.close
         f.unlink
-        return render(json: { result: :err, msg: "image conversion error:\n#{$!.to_s}" })
+        return render(json: { result: :err, msg: "image conversion error:\n#{$!}" })
       end
       f.close
       ProcessArchiveDecompressJob.inject_file file_name_dst, f.path, hash, save_info: true, check_collisions: true
       f.unlink
     end
-    
+
     render json: { result: :ok }
   end # dl_image
 end

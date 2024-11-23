@@ -78,7 +78,7 @@ class ProcessArchiveDecompressJob < ApplicationJob
   def self.crop_landscape_cover(dst_dir, info, crop_method = nil)
     crop_method ||= :attention
     return if info[:images].empty?
-    
+
     # get image dimensions
     cover_img = Vips::Image.new_from_file File.join(dst_dir, 'contents', info[:images].first[:src_path])
     info[:landscape_cover] = cover_img.width > cover_img.height
@@ -152,10 +152,10 @@ class ProcessArchiveDecompressJob < ApplicationJob
       dst_path: File.basename(file_name),
       size:     File.size(file_path),
     }
-    
+
     # expand destination path if we receive a hash
     dst_dir = File.join(Setting['dir.sorting'], dst_dir) unless dst_dir.include?(File::SEPARATOR)
-    
+
     info = YAML.unsafe_load_file(File.join dst_dir, 'info.yml') unless info
 
     if file_path.is_image_filename?
@@ -173,7 +173,7 @@ class ProcessArchiveDecompressJob < ApplicationJob
         File.join(dst_dir, 'contents', dst_data[:src_path  ]),
         File.join(dst_dir, 'thumbs'  , dst_data[:thumb_path])
     end
-    
+
     ArchiveUtils.check_filename_collisions info if check_collisions
 
     # update data file
@@ -373,7 +373,7 @@ class ProcessArchiveDecompressJob < ApplicationJob
     # copy filename for files
     info[:files].each_with_index{|f, i| f[:dst_path] = "#{'%04d' % i}-#{f[:src_path].gsub '/', '_'}" }
     info[:files] = info[:files].sort_by_method('[]', :dst_path)
-    
+
     ArchiveUtils.check_filename_collisions info
 
     # autogenerate portrait cover for landascape first image
