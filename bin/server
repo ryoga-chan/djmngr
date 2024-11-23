@@ -1,14 +1,20 @@
 #!/usr/bin/env ruby
-puts "USAGE: bin/server [p|d]"
+puts "USAGE: bin/server [p|d] [-db] [-h]"
 puts "  p     run production foreground server"
 puts "  d     run production background server"
+puts "  -db   in devel: copy prod DB to devel"
+puts "        in prod:  delete devel DB"
 puts "        otherwise run development server\n\n"
+exit if ARGV.include?('-h')
+
+require 'fileutils'
 
 argv = %w{ s -b 0.0.0.0 -p 39102 }
 
 root_path   = File.expand_path File.join(File.dirname(__FILE__), '..')
 assets_path = File.join root_path, 'public', 'assets'
 cache_path  = File.join root_path, 'tmp', 'cache', 'assets'
+db_path     = File.join root_path, 'storage'
 
 if ARGV.include?('p') || ARGV.include?('d')
   ENV['PUMA_DAEMON'] = 'true' if ARGV.include?('d')
@@ -17,17 +23,25 @@ if ARGV.include?('p') || ARGV.include?('d')
     puts '=> recompiling assets...'
     system File.join('bin', 'recompile-assets'), chdir: root_path
   end
+  
+  FileUtils.rm_f(Dir[File.join db_path, 'development.sqlite3*']) if ARGV.include?('-db')
 else
   if File.exist?(assets_path) || File.exist?(cache_path)
     require 'fileutils'
     puts '=> removing precompiled assets and cache...'
     FileUtils.rm_rf [assets_path, cache_path]
   end
+  
+  if ARGV.include?('-db')
+    puts "=> copying prod DB to devel..."
+    system "sqlite3 production.sqlite3 'vacuum;'", chdir: db_path
+    FileUtils.rm_f Dir[File.join db_path, 'development.sqlite3*']
+    FileUtils.cp File.join(db_path, 'production.sqlite3' ),
+                 File.join(db_path, 'development.sqlite3')
+  end
 end
 
-ARGV.delete 'p'
-ARGV.delete 'd'
-argv.concat ARGV
+argv.concat ARGV - %w{ p d -db }
 
 ARGV.replace argv
 load File.join(File.dirname(__FILE__), 'rails')
