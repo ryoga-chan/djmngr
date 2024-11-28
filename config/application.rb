@@ -5,7 +5,7 @@ require "rails"
 require "active_model/railtie"
 require "active_job/railtie"
 require "active_record/railtie"
-#require "active_storage/engine"
+# require "active_storage/engine"
 require "action_controller/railtie"
 require "action_mailer/railtie"
 # require "action_mailbox/engine"
@@ -21,9 +21,7 @@ Bundler.require(*Rails.groups)
 module Djmngr
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
-    #   https://www.fastruby.io/blog/rails/what-does-load-defaults-do.html
-    #   https://guides.rubyonrails.org/configuring.html#versioned-default-values
-    config.load_defaults 7.1
+    config.load_defaults 7.2
 
     # Please, add to the `ignore` list any other `lib` subdirectories that do
     # not contain `.rb` files, or that should not be reloaded or eager loaded.
@@ -36,25 +34,9 @@ module Djmngr
     # in config/environments, which are processed later.
     #
     # config.time_zone = "Central Time (US & Canada)"
-
-    #config.eager_load_paths << Rails.root.join('lib', 'app')
+    # config.eager_load_paths << Rails.root.join("extras")
 
     # Don't generate system test files.
     config.generators.system_tests = nil
-
-    # forgery protection not needed for an intranet app
-    config.action_controller.allow_forgery_protection = false
-    # fix form sumit error when running `bin/rails s -b 0.0.0.0`
-    # and sumitting a form from the ereader
-    # https://github.com/rails/rails/issues/22965#issuecomment-172983268
-    #config.action_controller.forgery_protection_origin_check = false
-
-    # https://pawelurbanek.com/rails-gzip-brotli-compression
-    # test with: curl -siIH "Accept-Encoding: gzip, deflate, br" "http://localhost:3000" | egrep "^Content-Encoding"
-    # !!SEGFAULT using send_file!!
-    #config.middleware.use Rack::Deflater
-    #config.middleware.use Rack::Brotli
-
-    config.proctitle = 'ruby:djmngr'
   end
 end

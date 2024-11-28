@@ -11,8 +11,7 @@
 #inherit_from: .rubocop_todo.yml
 
 # Omakase Ruby styling for Rails
-inherit_gem:
-  rubocop-rails-omakase: rubocop.yml
+inherit_gem: { rubocop-rails-omakase: rubocop.yml }
 
 # Your own specialized rules go here
 AllCops:

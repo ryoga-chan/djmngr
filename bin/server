@@ -1,9 +1,10 @@
 #!/usr/bin/env ruby
-puts "USAGE: bin/server [p|d] [-db] [-h]"
+puts "USAGE: bin/server [p|d] [-db] [-static] [-h]"
 puts "  p     run production foreground server"
 puts "  d     run production background server"
 puts "  -db   in devel: copy prod DB to devel"
 puts "        in prod:  delete devel DB"
+puts "  -static  serve static assets in production"
 puts "        otherwise run development server\n\n"
 exit if ARGV.include?('-h')
 
@@ -18,6 +19,7 @@ db_path     = File.join root_path, 'storage'
 
 if ARGV.include?('p') || ARGV.include?('d')
   ENV['PUMA_DAEMON'] = 'true' if ARGV.include?('d')
+  ENV['RAILS_SERVE_STATIC_FILES'] = 'true' if ARGV.include?('-static')
   argv.concat %w{ -e production }
   unless File.exist?(assets_path)
     puts '=> recompiling assets...'
@@ -41,7 +43,7 @@ else
   end
 end
 
-argv.concat ARGV - %w{ p d -db }
+argv.concat ARGV - %w{ p d -db -static }
 
 ARGV.replace argv
 load File.join(File.dirname(__FILE__), 'rails')

@@ -6,6 +6,9 @@ class ApplicationController < ActionController::Base
   before_action :setproctitle if ENV['PUMA_DAEMON']
   before_action :authenticate
 
+  # Only allow modern browsers supporting webp images, web push, badges, import maps, CSS nesting, and CSS :has.
+  allow_browser versions: :modern
+
   def default_url_options
     opts = {}
     opts.merge! format: :ereader if request.format.ereader?

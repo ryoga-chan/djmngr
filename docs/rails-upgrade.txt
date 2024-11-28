@@ -1,0 +1,52 @@
+https://guides.rubyonrails.org/upgrading_ruby_on_rails.html
+https://guides.rubyonrails.org/configuring.html#versioned-default-values
+
+
+##### 7.2.2 => 8.0.0 ###########################################################
+https://railsdiff.org/7.2.2/8.0.0
+https://guides.rubyonrails.org/8_0_release_notes.html
+
+- check ApplicationController.allow_browser with ebook readers
+- propshaft & javascript: rewrite files? howto load files?
+- implement /home/shared_content_receiver action
+
+
+##### 7.1.2 => 7.2.2 ###########################################################
+https://railsdiff.org/7.1.2/7.2.2
+https://guides.rubyonrails.org/7_2_release_notes.html
+
+* rvm install 3.3.6 -C --with-jemalloc  # --enable-yjit
+* check YJIT is enabled, rm /config/initializers/yjit.rb
+* pwa:
+  * change public/icon.* with the existing one
+  * dl shortcuts PNG icons from https://fonts.google.com/icons
+  * cfr /app/views/pwa/manifest.json.erb with old one & check reference:
+    * https://web.dev/articles/add-manifest
+    * https://developer.mozilla.org/en-US/docs/Web/Manifest/
+    * for i in 36 48 72 96 144 192 256 384 512 768 1024; convert -scale $i"x"$i  master.jpg icon-$i.png; end
+  * https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/Guides/Making_PWAs_installable#https_localhost_or_loopback_are_required
+    https://medium.com/@antelle/how-to-generate-a-self-signed-ssl-certificate-for-an-ip-address-f0dd8dddf754
+  * drop real_favicon_generator
+    * rm app/views/layouts/application <render "application/favicon">
+    * remove gem in Gemfile
+    * remove files witin /app/assets
+
+* pwa/manifest unused entries:
+  "shortcuts": [
+    { "short_name":   "Random",
+      "name":         "Random doujinshi",
+      "description":  "Browse random doujinshi from collection",
+      "url":          "/doujinshi/random_pick?type=books&source=pwa",
+      "icons":        [{ "src": "/pwa/shortcut-rnd.png", "sizes": "192x192" }] },
+    { "short_name":   "Settings",
+      "name":         "Edit settings",
+      "description":  "Edit application settings",
+      "url":          "/home/settings?source=pwa",
+      "icons":        [{ "src": "/pwa/shortcut-settings.png", "sizes": "192x192" }] },
+    { "short_name":   "Info",
+      "name":         "Show informations",
+      "description":  "Show application system informations",
+      "url":          "/home/info?source=pwa",
+      "icons":        [{ "src": "/pwa/shortcut-info.png", "sizes": "192x192" }] }
+  "icons": [
+    { "src": "/pwa/icon.svg",      "type": "image/svg+xml", "sizes": "any",       "purpose": "any maskable" }

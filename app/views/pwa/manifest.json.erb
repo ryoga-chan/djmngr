@@ -1,0 +1,68 @@
+{
+  "short_name":       "DjMngr",
+  "name":             "Doujinshi manager",
+  "description":      "An application made for doujin/manga/comics/novel readers and photographers to manage a collection of zipped image sets, easying their work with sorting files, assigning metedata, searching, and reading online from any device",
+  "categories":       ["utilities", "books", "magazines", "photo"],
+  
+  "id":               "ryoga-chan/djmngr/v1",
+  "start_url":        "/?source=pwa",
+  "scope":            "/",
+  
+  "orientation":      "any",
+  "display":          "standalone",
+  "display_override": ["standalone", "fullscreen", "minimal-ui", "browser"],
+  "theme_color":      "#1f2424",
+  "background_color": "#1f2424",
+  
+  "shortcuts": [
+    { "short_name":   "Process",
+      "name":         "Process doujinshi",
+      "description":  "Manage processable archives",
+      "url":          "/process?source=pwa",
+      "icons":        [{ "src": "/pwa/shortcut-process.png", "sizes": "192x192" }] },
+    { "short_name":   "Browse",
+      "name":         "Browse doujinshi",
+      "description":  "Browse doujinshi within collection",
+      "url":          "/doujinshi?source=pwa",
+      "icons":        [{ "src": "/pwa/shortcut-browse.png", "sizes": "192x192" }] },
+    { "short_name":   "Random best",
+      "name":         "Random best doujinshi",
+      "description":  "Browse random best doujinshi from collection",
+      "url":          "/doujinshi/random_pick?type=best&source=pwa",
+      "icons":        [{ "src": "/pwa/shortcut-rnd-best.png", "sizes": "192x192" }] }
+  ],
+  
+ "screenshots": [
+    { "src": "/pwa/screenshot-narrow.png", "type": "image/png", "sizes":  "473x810",
+      "form_factor": "narrow", "label": "Mobile view showing the welcome screen" },
+    { "src": "/pwa/screenshot-wide.png",   "type": "image/jpg", "sizes": "1120x720",
+      "form_factor": "wide",   "label": "Desktop view showing the welcome screen" }
+  ],
+  
+  "icons": [
+    { "src": "/favicon.ico",       "type": "image/x-icon",  "sizes": "16x16 32x32 48x48 96x96" },
+    { "src": "/pwa/icon-36.png",   "type": "image/png",     "sizes":     "36x36", "purpose": "any maskable" },
+    { "src": "/pwa/icon-48.png",   "type": "image/png",     "sizes":     "48x48", "purpose": "any maskable" },
+    { "src": "/pwa/icon-72.png",   "type": "image/png",     "sizes":     "72x72", "purpose": "any maskable" },
+    { "src": "/pwa/icon-96.png",   "type": "image/png",     "sizes":     "96x96", "purpose": "any maskable" },
+    { "src": "/pwa/icon-144.png",  "type": "image/png",     "sizes":   "144x144", "purpose": "any maskable" },
+    { "src": "/pwa/icon-192.png",  "type": "image/png",     "sizes":   "192x192", "purpose": "any maskable" },
+    { "src": "/pwa/icon-256.png",  "type": "image/png",     "sizes":   "256x256", "purpose": "any maskable" },
+    { "src": "/pwa/icon-384.png",  "type": "image/png",     "sizes":   "384x384", "purpose": "any maskable" },
+    { "src": "/pwa/icon-512.png",  "type": "image/png",     "sizes":   "512x512", "purpose": "any maskable" },
+    { "src": "/pwa/icon-768.png",  "type": "image/png",     "sizes":   "768x768", "purpose": "any maskable" },
+    { "src": "/pwa/icon-1024.png", "type": "image/png",     "sizes": "1024x1024", "purpose": "any maskable" }
+  ],
+
+  "share_target": {
+    "method":   "POST",
+    "action":   "/shared_content_receiver",
+    "enctype":  "multipart/form-data",
+    "params": {
+      "title": "title", "text": "text", "url": "url",
+      "files": [
+        { "name": "images[]", "accept": [".jpg", ".jpeg", ".png", ".gif", ".webp"] }
+      ]
+    }
+  }
+}

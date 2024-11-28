@@ -73,8 +73,8 @@ RUN set -x \
   && apt-get update -qq \
 # install required packages for runtime
   && apt-get install ${APT_OPTS} \
-    sqlite3 webp zip unzip findutils grep coreutils \
-    libvips42   libkakasi2-dev libjpeg62-turbo     libpng16-16 webp imagemagick \
+    sqlite3 webp zip unzip findutils grep coreutils libjemalloc2 \
+    libvips42 libkakasi2-dev libjpeg62-turbo libpng16-16 webp imagemagick \
     nginx s6 execline \
 # add a new user
   && adduser --gecos "" --disabled-password rails \

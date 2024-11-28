@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_02_01_164045) do
+ActiveRecord::Schema[7.2].define(version: 2024_02_01_164045) do
   create_table "authors", force: :cascade do |t|
     t.string "name", null: false
     t.string "name_romaji"
@@ -19,14 +19,14 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_01_164045) do
     t.text "info"
     t.text "aliases"
     t.text "links"
+    t.string "notes"
     t.integer "doujinshi_org_id"
+    t.integer "doujinshi_org_aka_id"
     t.string "doujinshi_org_url", default: "", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
     t.boolean "favorite", default: false
     t.datetime "faved_at"
-    t.integer "doujinshi_org_aka_id"
-    t.string "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["doujinshi_org_aka_id"], name: "index_authors_on_doujinshi_org_aka_id"
     t.index ["doujinshi_org_id"], name: "index_authors_on_doujinshi_org_id"
   end
@@ -66,14 +66,14 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_01_164045) do
     t.text "info"
     t.text "aliases"
     t.text "links"
+    t.string "notes"
     t.integer "doujinshi_org_id"
+    t.integer "doujinshi_org_aka_id"
     t.string "doujinshi_org_url", default: "", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
     t.boolean "favorite", default: false
     t.datetime "faved_at"
-    t.integer "doujinshi_org_aka_id"
-    t.string "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["doujinshi_org_aka_id"], name: "index_circles_on_doujinshi_org_aka_id"
     t.index ["doujinshi_org_id"], name: "index_circles_on_doujinshi_org_id"
   end
@@ -104,41 +104,41 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_01_164045) do
     t.integer "size", null: false
     t.integer "num_images", null: false
     t.integer "num_files", null: false
-    t.integer "doujin_id"
-    t.datetime "created_at"
-    t.integer "cover_phash"
     t.boolean "merged", default: false
+    t.integer "doujin_id"
+    t.integer "cover_phash"
+    t.datetime "created_at"
   end
 
   create_table "doujinshi", force: :cascade do |t|
     t.string "name", null: false
     t.string "name_romaji"
     t.string "name_kakasi", null: false
+    t.string "name_orig", null: false
+    t.string "name_orig_kakasi", null: false
+    t.string "name_eng"
     t.integer "size", null: false
     t.string "checksum", null: false
     t.integer "num_images", null: false
     t.integer "num_files", null: false
     t.integer "score"
-    t.string "name_orig", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "category", null: false
-    t.string "file_folder", null: false
-    t.string "file_name", null: false
     t.datetime "scored_at"
+    t.string "category", null: false
+    t.text "file_folder", null: false
+    t.text "file_name", null: false
+    t.string "notes"
     t.string "reading_direction", limit: 3, default: "r2l"
     t.integer "read_pages", default: 0
     t.string "language", limit: 3, default: "jpn"
     t.boolean "censored", default: true
     t.boolean "colorized", default: false
-    t.string "notes"
     t.boolean "favorite", default: false
-    t.datetime "faved_at"
-    t.string "name_orig_kakasi", null: false
-    t.integer "cover_phash"
-    t.string "name_eng"
     t.string "media_type", default: "doujin"
+    t.datetime "faved_at"
     t.date "released_at"
+    t.integer "cover_phash"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "doujinshi_shelves", force: :cascade do |t|
@@ -165,11 +165,11 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_01_164045) do
     t.string "name", null: false
     t.string "name_kakasi", null: false
     t.integer "size", null: false
-    t.datetime "created_at"
     t.datetime "mtime"
     t.integer "images"
     t.integer "cover_phash"
     t.string "notes"
+    t.datetime "created_at"
   end
 
   create_table "settings", force: :cascade do |t|
@@ -194,13 +194,13 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_01_164045) do
     t.text "info"
     t.text "aliases"
     t.text "links"
+    t.string "notes"
     t.integer "parent_id"
     t.integer "doujinshi_org_id"
+    t.integer "doujinshi_org_aka_id"
     t.string "doujinshi_org_url", default: "", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "doujinshi_org_aka_id"
-    t.string "notes"
     t.index ["doujinshi_org_aka_id"], name: "index_themes_on_doujinshi_org_aka_id"
     t.index ["doujinshi_org_id"], name: "index_themes_on_doujinshi_org_id"
   end

@@ -18,7 +18,7 @@
         - if defined? RubyVM::YJIT.enabled? && RubyVM::YJIT.enabled?
           +YJIT
         -# https://stackoverflow.com/questions/57303214/how-to-check-ruby-2-6-3-is-using-jemalloc-i-installed-ruby-2-6-3-as-rvm-inst/57303366#57303366
-        - if defined? RbConfig && RbConfig::CONFIG['MAINLIBS'].include?('-ljemalloc')
+        - if RbConfig&.const_get(:CONFIG)&.[]('MAINLIBS').to_s.include?('-ljemalloc')
           +JEmalloc
     %tr
       %th Rails

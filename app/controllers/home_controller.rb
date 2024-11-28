@@ -73,4 +73,13 @@ class HomeController < ApplicationController
       redirect_to home_settings_path
     end
   end # settings
+
+  # https://developer.mozilla.org/en-US/docs/Web/Manifest/share_target
+  def shared_content_receiver
+    # - cover search
+    # - text translitteration
+    # - image_url/eh_page_url download
+    #params[:images|:title|:text|:url]
+    render plain: 'TODO'
+  end # shared_content_receiver
 end
