@@ -6,7 +6,7 @@ source 'https://rubygems.org'
 
 ruby '3.3.6'
 
-gem 'rails',       '~> 7.2.2',     # to use edge: gem 'rails', github: 'rails/rails', branch: 'main'
+gem 'rails',       '~> 8.0.0',   # to use edge: gem 'rails', github: 'rails/rails', branch: 'main'
   require: %w[ shellwords open-uri pp open3 ]
 gem 'sqlite3',     '~> 2.3'      # sqlite3 database for Active Record
 gem 'puma',        '~> 6.5'      # puma web server -- https://github.com/puma/puma
@@ -43,7 +43,11 @@ ENV['PHASHION_USE_GITHUB_SRC'] ?
   gem('phashion', '~> 1.2', github: 'ryoga-chan/phashion') :
   gem('phashion', '~> 1.2', source: 'https://rubygems.pkg.github.com/ryoga-chan')
 
-#gem 'bootsnap', require: false  # Reduces boot times through caching; required in config/boot.rb
+#gem "solid_cache"               # database-backed adapter for Rails.cache
+#gem "solid_queue"               # database-backed adapter for Active Job
+#gem "solid_cable"               # database-backed adapter for Action Cable
+#gem "thruster", require: false  # Add HTTP asset caching/compression and X-Sendfile acceleration to Puma [https://github.com/basecamp/thruster/]
+#gem 'bootsnap', require: false  # Reduces boot times through caching; add `require "bootsnap/setup"` in config/boot.rb
 
 group :development do
   # https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem

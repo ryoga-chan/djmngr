@@ -6,9 +6,14 @@ https://guides.rubyonrails.org/configuring.html#versioned-default-values
 https://railsdiff.org/7.2.2/8.0.0
 https://guides.rubyonrails.org/8_0_release_notes.html
 
-- check ApplicationController.allow_browser with ebook readers
+
 - propshaft & javascript: rewrite files? howto load files?
-- implement /home/shared_content_receiver action
+
+- /home/shared_content_receiver
+  - implement action
+  - update api docs
+
+- check ApplicationController.allow_browser with ebook readers
 
 
 ##### 7.1.2 => 7.2.2 ###########################################################
