@@ -74,11 +74,11 @@
         .navbar-dropdown
           = link_to authors_path, class: 'navbar-item' do
             %span.icon
-              %i.mi supervisor_account
+              %i.mi= DoujinshiController::ICONS['author']
             %span Authors
           = link_to circles_path, class: 'navbar-item' do
             %span.icon
-              %i.mi supervised_user_circle
+              %i.mi= DoujinshiController::ICONS['circle']
             %span Circles
           = link_to themes_path, class: 'navbar-item' do
             %span.icon

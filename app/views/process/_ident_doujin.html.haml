@@ -13,13 +13,13 @@
 
 .authors-circles.mb-1
   %span.icon.in-text-small.mr-2
-    %i.mi.mi-small(title="search by circle") supervised_user_circle
+    %i.mi.mi-small(title="search by circle")= DoujinshiController::ICONS['circle']
   .tags.inline-block.mb-0
     - @name[:ac_explicit].each do |ac|
       = link_to ac, {term: ac, tab: params[:tab]}, class: "tag mb-0 #{'has-text-warning' if ac == params[:term]}"
   
   %span.icon.in-text-small.mr-2.ml-4
-    %i.mi.mi-small(title="search by author") supervisor_account
+    %i.mi.mi-small(title="search by author")= DoujinshiController::ICONS['author']
   .tags.inline-block.mb-0
     - @name[:ac_implicit].each do |ac|
       = link_to ac, {term: ac, tab: params[:tab]}, class: "tag mb-0 #{'has-text-warning' if ac == params[:term]} has-background-grey"

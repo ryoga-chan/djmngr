@@ -61,12 +61,12 @@
         %span.tag.is-info
           %span.icon-text
             %span.icon
-              %i.mi supervisor_account
+              %i.mi= DoujinshiController::ICONS['author']
             %span= link_to number_with_delimiter(@stats[:mda], delimiter: "'"), authors_path
         %span.tag.is-info
           %span.icon-text
             %span.icon
-              %i.mi supervised_user_circle
+              %i.mi= DoujinshiController::ICONS['circle']
             %span= link_to number_with_delimiter(@stats[:mdc], delimiter: "'"), circles_path
         %span.tag.is-info
           %span.icon-text

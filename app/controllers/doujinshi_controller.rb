@@ -2,8 +2,8 @@ class DoujinshiController < ApplicationController
   THUMBS_PER_ROW = 6
   BATCH_SIZE     = 15 * THUMBS_PER_ROW
   ICONS = {
-    'author'    => 'supervisor_account',
-    'circle'    => 'supervised_user_circle',
+    'author'    => 'person',
+    'circle'    => 'group',
     'artbook'   => 'color_lens',
     'magazine'  => 'newspaper'
   }
