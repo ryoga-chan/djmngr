@@ -11,9 +11,10 @@ gem 'rails',       '~> 8.0.0',   # to use edge: gem 'rails', github: 'rails/rail
 gem 'sqlite3',     '~> 2.3'      # sqlite3 database for Active Record
 gem 'puma',        '~> 6.5'      # puma web server -- https://github.com/puma/puma
 gem 'puma-daemon', '~> 0.3', require: false # daemonize puma -- https://github.com/kigster/puma-daemon
-gem 'sassc-rails', '~> 2.1'      # sass to process CSS
-gem 'sprockets-rails', '~> 3.5'  # asset pipeline -- https://github.com/rails/sprockets-rails
 gem 'tzinfo-data', platforms: %i[ windows jruby ] # zoneinfo files for Windows
+gem 'propshaft'                  # asset pipeline -- https://github.com/rails/propshaft
+gem 'importmap-rails'            # use JS with ESM import maps -- https://github.com/rails/importmap-rails
+gem 'dartsass-rails'             # use Dart SASS -- https://github.com/rails/dartsass-rails
 gem 'haml-rails',  '~> 2.1'      # https://haml.info
 gem 'kaminari',    '~> 1.2'      # pagination -- https://github.com/kaminari/kaminari
 gem 'kakasi',      '~> 1.0'      # kanji kana simple inverter -- https://github.com/knu/kakasi_ffi

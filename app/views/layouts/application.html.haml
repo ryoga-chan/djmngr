@@ -13,8 +13,10 @@
     
     -#= yield :head
     
-    -# https://developer.mozilla.org/en-US/docs/Web/Manifest
+    -# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!)
+    -#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json)
     %link(rel="manifest" href="/manifest.json")/
+    
     %link(rel="icon" href="/pwa/icon-512.png" type="image/png")/
     %link(rel="icon" href="/pwa/icon.svg" type="image/svg+xml")/
     %link(rel="icon" href="/favicon.ico" type="image/x-icon")/
@@ -22,10 +24,9 @@
     %link(rel="apple-touch-icon" href="/pwa/icon-512.png" sizes="512x512")/
     %link(rel="mask-icon" href="/pwa/icon-monochrome.svg" color="#1f2424")/
     
-    = stylesheet_link_tag    "01_libs"
-    = stylesheet_link_tag    "02_application"
-    = javascript_include_tag "01_libs"
-    = javascript_include_tag "02_application"
+    -# Includes all stylesheet files in app/assets/stylesheets
+    = stylesheet_link_tag 'libs'
+    = stylesheet_link_tag 'app'
   %body{data: {env: Rails.env.to_s, ctrl: params[:controller], action: params[:action], id: params[:id]}}
     %a(name="page-top")
     

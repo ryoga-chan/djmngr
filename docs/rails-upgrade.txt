@@ -6,14 +6,18 @@ https://guides.rubyonrails.org/configuring.html#versioned-default-values
 https://railsdiff.org/7.2.2/8.0.0
 https://guides.rubyonrails.org/8_0_release_notes.html
 
-
-- propshaft & javascript: rewrite files? howto load files?
+- assets:
+  * propshaft
+  * dartsass-rails
+  - importmap-rails: howto load/rewrite JS files?
 
 - /home/shared_content_receiver
   - implement action
   - update api docs
 
 - check ApplicationController.allow_browser with ebook readers
+
+- CSS: use bulma v1 + darkly patch? -- https://github.com/jenil/bulmaswatch/issues/121
 
 
 ##### 7.1.2 => 7.2.2 ###########################################################
