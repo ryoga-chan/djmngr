@@ -1,18 +1,20 @@
-(function ($) { $(function () {
+console.info('LOADING controllers/process.js');
+
+$(function () {
 // -----------------------------------------------------------------------------
 if ($('body').data('ctrl') != 'process')
   return;
 
 var p_bar = '<progress class="progress is-small is-info" max="100">i</progress>';
 
-$.myapp.titles_to_lowercase = function () {
+MyApp.titles_to_lowercase = function () {
   $.each(['dest_title', 'dest_title_romaji', 'dest_title_eng', 'dest_filename'],
     function () { $('#'+this).val( $('#'+this).val().toLowerCase().trim() ); });
-}// $.myapp.titles_to_lowercase
+}// MyApp.titles_to_lowercase
 
-$.myapp.translitterate_raw_title = function () {
+MyApp.translitterate_raw_title = function () {
   var dst = $('#dest_title_romaji');
-  $.myapp.translitterate($('#dest_title').val(), {
+  MyApp.translitterate($('#dest_title').val(), {
     beforeSend: function () {
       dst.addClass('is-hidden').
         after( $(p_bar).addClass('fillwidth').css('display', 'inline-block') );
@@ -20,9 +22,9 @@ $.myapp.translitterate_raw_title = function () {
     success: function (resp) { dst.val(resp); },//success
     complete: function () { dst.removeClass('is-hidden').next().remove(); },//complete
   });
-}// $.myapp.titles_to_lowercase
+}// MyApp.titles_to_lowercase
 
-$.myapp.autotag_titles = function () {
+MyApp.autotag_titles = function () {
   var tags = [];
   
   if ($('#language').val() != 'jpn' && $('#language').val() != '???')
@@ -42,7 +44,7 @@ $.myapp.autotag_titles = function () {
   t = $('#dest_title_romaji').val().replace(/ *\([^)]+\)$/, '').trim();
   if (t.length > 0)
     $('#dest_title_romaji').val(`${t}${tags}`);
-}// $.myapp.autotag_titles
+}// MyApp.autotag_titles
 
 // remote update the name in "files", "images", and "batch" sections
 $('input.update-name').change(function () {
@@ -96,9 +98,9 @@ $('input.pd-notes').change(function () {
 
 if ($('body').data('ctrl') +'/'+ $('body').data('action') == 'process/index') {
   // add page shortcuts
-  $.myapp.shortcuts.push({ key: 'b', ctrl: false, alt: true, descr: 'toggle batch mode', action: function (ev) { $('a.bt-batch').get(0).click(); } });
-  $.myapp.shortcuts.push({ key: 't', ctrl: false, alt: true, descr: 'toggle checked entries for batch', action: function (ev) { $('a.bt-toggle-all').get(0).click(); } });
-  $.myapp.shortcuts.push({ key: 'r', ctrl: false, alt: true, descr: 'refresh entries index', action: function (ev) { $('a.bt-reindex').get(0).click(); } });
+  MyApp.shortcuts.push({ key: 'b', ctrl: false, alt: true, descr: 'toggle batch mode', action: function (ev) { $('a.bt-batch').get(0).click(); } });
+  MyApp.shortcuts.push({ key: 't', ctrl: false, alt: true, descr: 'toggle checked entries for batch', action: function (ev) { $('a.bt-toggle-all').get(0).click(); } });
+  MyApp.shortcuts.push({ key: 'r', ctrl: false, alt: true, descr: 'refresh entries index', action: function (ev) { $('a.bt-reindex').get(0).click(); } });
   
   $.app = $.extend($.app, {
     update_tot_filesize: function () {
@@ -126,13 +128,13 @@ if ($('body').data('ctrl') +'/'+ $('body').data('action') == 'process/index') {
 
 if ($('body').data('ctrl') +'/'+ $('body').data('action') == 'process/edit') {
   // add page shortcuts - switch active tab
-  $.myapp.shortcuts.push({ key: 'd', ctrl: false, alt: true, descr: 'switch tab to Dupes'   , action: function (ev) { $.myapp.show_loading(); $('#tab-dupes' ).get(0).click(); } });
-  $.myapp.shortcuts.push({ key: 'n', ctrl: false, alt: true, descr: 'switch tab to Names'   , action: function (ev) { $.myapp.show_loading(); $('#tab-files' ).get(0).click(); } });
-  $.myapp.shortcuts.push({ key: 'p', ctrl: false, alt: true, descr: 'switch tab to Pics'    , action: function (ev) { $.myapp.show_loading(); $('#tab-images').get(0).click(); } });
-  $.myapp.shortcuts.push({ key: 'i', ctrl: false, alt: true, descr: 'switch tab to Identify', action: function (ev) { $.myapp.show_loading(); $('#tab-ident' ).get(0).click(); } });
-  $.myapp.shortcuts.push({ key: 'f', ctrl: false, alt: true, descr: 'switch tab to Finalize', action: function (ev) { $.myapp.show_loading(); $('#tab-move'  ).get(0).click(); } });
+  MyApp.shortcuts.push({ key: 'd', ctrl: false, alt: true, descr: 'switch tab to Dupes'   , action: function (ev) { MyApp.show_loading(); $('#tab-dupes' ).get(0).click(); } });
+  MyApp.shortcuts.push({ key: 'n', ctrl: false, alt: true, descr: 'switch tab to Names'   , action: function (ev) { MyApp.show_loading(); $('#tab-files' ).get(0).click(); } });
+  MyApp.shortcuts.push({ key: 'p', ctrl: false, alt: true, descr: 'switch tab to Pics'    , action: function (ev) { MyApp.show_loading(); $('#tab-images').get(0).click(); } });
+  MyApp.shortcuts.push({ key: 'i', ctrl: false, alt: true, descr: 'switch tab to Identify', action: function (ev) { MyApp.show_loading(); $('#tab-ident' ).get(0).click(); } });
+  MyApp.shortcuts.push({ key: 'f', ctrl: false, alt: true, descr: 'switch tab to Finalize', action: function (ev) { MyApp.show_loading(); $('#tab-move'  ).get(0).click(); } });
   // add page shortcuts - tab identify - focus on search field
-  $.myapp.shortcuts.push({
+  MyApp.shortcuts.push({
     key: 'f', ctrl: false, alt: false, descr: 'Identify search focus',
     action: function (ev) {
       var el = $('#process-ident-search').focus().get(0);
@@ -140,20 +142,20 @@ if ($('body').data('ctrl') +'/'+ $('body').data('action') == 'process/edit') {
     }//action
   });
   // add page shortcuts - tab move
-  $.myapp.shortcuts.push({ key: 't', ctrl: false, alt: false, descr: 'focus on raw title', action: function (ev) { $('#dest_title').focus(); } });
-  $.myapp.shortcuts.push({ key: 'r', ctrl: false, alt: true , descr: 'copy kanji title to filename'  , action: function (ev) { $('#dest_filename').val( $('#dest_title'       ).val().trim() + '.zip' ); } });
-  $.myapp.shortcuts.push({ key: 't', ctrl: false, alt: true , descr: 'copy romaji title to filename' , action: function (ev) { $('#dest_filename').val( $('#dest_title_romaji').val().trim() + '.zip' ); } });
-  $.myapp.shortcuts.push({ key: 'e', ctrl: false, alt: true , descr: 'copy english title to filename', action: function (ev) { $('#dest_filename').val( $('#dest_title_eng'   ).val().trim() + '.zip' ); } });
-  $.myapp.shortcuts.push({ key: 'l', ctrl: false, alt: false, descr: 'convert all titles to lowercase', action: $.myapp.titles_to_lowercase });
-  $.myapp.shortcuts.push({ key: 'Enter', ctrl: false, alt: true , descr: 'finalize archive', action: function (ev) { $('.actions button[value="finalize"]').get(0).click(); } });
-  $.myapp.shortcuts.push({ key: 'Enter', ctrl: true , alt: false, descr: 'update info', action: function (ev) { $('.actions button[value="save"]').get(0).click(); } });
+  MyApp.shortcuts.push({ key: 't', ctrl: false, alt: false, descr: 'focus on raw title', action: function (ev) { $('#dest_title').focus(); } });
+  MyApp.shortcuts.push({ key: 'r', ctrl: false, alt: true , descr: 'copy kanji title to filename'  , action: function (ev) { $('#dest_filename').val( $('#dest_title'       ).val().trim() + '.zip' ); } });
+  MyApp.shortcuts.push({ key: 't', ctrl: false, alt: true , descr: 'copy romaji title to filename' , action: function (ev) { $('#dest_filename').val( $('#dest_title_romaji').val().trim() + '.zip' ); } });
+  MyApp.shortcuts.push({ key: 'e', ctrl: false, alt: true , descr: 'copy english title to filename', action: function (ev) { $('#dest_filename').val( $('#dest_title_eng'   ).val().trim() + '.zip' ); } });
+  MyApp.shortcuts.push({ key: 'l', ctrl: false, alt: false, descr: 'convert all titles to lowercase', action: MyApp.titles_to_lowercase });
+  MyApp.shortcuts.push({ key: 'Enter', ctrl: false, alt: true , descr: 'finalize archive', action: function (ev) { $('.actions button[value="finalize"]').get(0).click(); } });
+  MyApp.shortcuts.push({ key: 'Enter', ctrl: true , alt: false, descr: 'update info', action: function (ev) { $('.actions button[value="save"]').get(0).click(); } });
   // add page shortcuts - scoring
-  $.myapp.shortcuts.push({ key: '-', ctrl: false, alt: false, descr: 'clear scoring', action: function (ev) { $('span.clear-score').get(0).click(); } });
+  MyApp.shortcuts.push({ key: '-', ctrl: false, alt: false, descr: 'clear scoring', action: function (ev) { $('span.clear-score').get(0).click(); } });
   for (let i = 1; i <= 9; i++)
-    $.myapp.shortcuts.push({ key: i.toString(), ctrl: false, alt: false, descr: 'assign score '+i, action: function (ev) { $('span.set-score[data-score="'+i+'"]').get(0).click(); } });
-  $.myapp.shortcuts.push({ key: '0', ctrl: false, alt: false, descr: 'assign score 10', action: function (ev) { $('span.set-score[data-score="10"]').get(0).click(); } });
+    MyApp.shortcuts.push({ key: i.toString(), ctrl: false, alt: false, descr: 'assign score '+i, action: function (ev) { $('span.set-score[data-score="'+i+'"]').get(0).click(); } });
+  MyApp.shortcuts.push({ key: '0', ctrl: false, alt: false, descr: 'assign score 10', action: function (ev) { $('span.set-score[data-score="10"]').get(0).click(); } });
   // add page shortcuts - tab pics
-  $.myapp.shortcuts.push({ key: 'd', ctrl: false, alt: false, descr: 'delete selected images', action: function (ev) { var bt=$('button.delete-images:first').get(0); if (bt) bt.click(); } });
+  MyApp.shortcuts.push({ key: 'd', ctrl: false, alt: false, descr: 'delete selected images', action: function (ev) { var bt=$('button.delete-images:first').get(0); if (bt) bt.click(); } });
   
   // keep file names button: toggle hidden checkbox and icon
   $('#bt_keep_names').click(function () {
@@ -273,20 +275,20 @@ if ($('body').data('ctrl') +'/'+ $('body').data('action') == 'process/edit') {
   // ehentai search callback: place titles in kanji/romaji/eng fields, and full text in notes field
   $('.ehentai-search').data('onselect', function (info) {
     $('#dest_title').val(info.title_jpn_clean || info.title_clean);
-    $.myapp.append_to_textarea('#notes', info.title_jpn || info.title);
+    MyApp.append_to_textarea('#notes', info.title_jpn || info.title);
     
     if (info.title_eng) {
       $('#dest_title_eng').val(info.title_eng_clean);
-      $.myapp.append_to_textarea('#notes', 'ENG: '+info.title_eng);
+      MyApp.append_to_textarea('#notes', 'ENG: '+info.title_eng);
     }//if
     
     if (info.title_jpn) {
       $('#dest_title_romaji').val(info.title_clean);
-      $.myapp.append_to_textarea('#notes', info.title);
+      MyApp.append_to_textarea('#notes', info.title);
     }//if
     
-    $.myapp.autotag_titles();
-    $.myapp.titles_to_lowercase();
+    MyApp.autotag_titles();
+    MyApp.titles_to_lowercase();
   });
 
   // scroll tabs container to active tab (for mobile users)
@@ -301,4 +303,4 @@ if ($('body').data('ctrl') +'/'+ $('body').data('action') == 'process/batch') {
   });
 }// if process/batch
 // -----------------------------------------------------------------------------
-}); })(jQuery)
+});

@@ -1,35 +1,9 @@
-(function ($) { $(function () {
+console.info('LOADING components/ehentai-search.js');
+
+$(function () {
 // -----------------------------------------------------------------------------
 // search on term change
-$('body').on('change', '#ehentai-search-modal .search-term', search);
-
-// open search dialog
-$('body').on('click', '.ehentai-search', function (ev) {
-  ev.preventDefault();
-  
-  var caller = $(this);
-  var modal  = $('#ehentai-search-modal').data('caller', caller).addClass('is-active');
-  // set cover source
-  modal.find('img.reference').attr('src', $(caller.data('img')).attr('src'));
-  modal.find('.orig_info' ).text( caller.data('info')  );
-  modal.find('.orig_title').text( caller.data('title') );
-  if (caller.data('title') != caller.data('title-kakasi'))
-    modal.find('.orig_title_kakasi').text( caller.data('title-kakasi') );
-  // set search term and run search
-  modal.find('.search-term').val( caller.data('term') ).change();
-});
-
-// close search dialog
-$('body').on('click', '#ehentai-search-modal button.delete, #ehentai-search-modal .modal-background', function (ev) {
-  ev.preventDefault();
-  
-  var modal = $('#ehentai-search-modal').removeData('caller').removeClass('is-active');
-  modal.find('img.reference').removeAttr('src');
-  modal.find('.search-term').val('');
-});
-
-// search and show results
-function search () {
+$('body').on('change', '#ehentai-search-modal .search-term', function () {
   var modal = $('#ehentai-search-modal'),
       input = modal.find('.search-term').blur(),
       list  = modal.find('.lookup-results'),
@@ -82,6 +56,33 @@ function search () {
     complete: function () { input.parent().removeClass('is-loading'); },//complete
     error: function () { alert('Server error!'); }//error
   });
-};
+});
+
+// open search dialog
+$('body').on('click', '.ehentai-search', function (ev) {
+  ev.preventDefault();
+  
+  var caller = $(this);
+  var modal  = $('#ehentai-search-modal').data('caller', caller).addClass('is-active');
+  // set cover source
+  modal.find('img.reference').attr('src', $(caller.data('img')).attr('src'));
+  modal.find('.orig_info' ).text( caller.data('info')  );
+  modal.find('.orig_title').text( caller.data('title') );
+  if (caller.data('title') != caller.data('title-kakasi'))
+    modal.find('.orig_title_kakasi').text( caller.data('title-kakasi') );
+  // set search term and run search
+  modal.find('.search-term').val( caller.data('term') ).change();
+});
+
+// close search dialog
+$('body').on('click',
+  '#ehentai-search-modal button.delete, #ehentai-search-modal .modal-background',
+  function (ev) {
+    ev.preventDefault();
+    
+    var modal = $('#ehentai-search-modal').removeData('caller').removeClass('is-active');
+    modal.find('img.reference').removeAttr('src');
+    modal.find('.search-term').val('');
+  });
 // -----------------------------------------------------------------------------
-}); })(jQuery);
+});

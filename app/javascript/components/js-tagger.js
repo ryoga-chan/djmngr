@@ -1,49 +1,50 @@
-/*
-TAGGER
-----------------------------------------
-  = hidden_field_tag "record[relation_ids][]", nil, id: nil
-   
-  .js-tagger{data: {title: "Add tags", url: url_for(controller: :name, action: :tags_lookup) }}
-      %button.button.is-rounded.is-small.mr-2.js-tagger-search
-        %span.icon.is-small
-          %i.mi.mi-small add
-        %span tag
-    
-    .field.is-grouped.is-grouped-multiline.js-tagger-list
-      - rel = rel.to_a.unshift Model.new id: :RECORD_ID, label_field: :LABEL # new recor for template item
-      - rel.each do |r|
-        .control{class: ('js-tagger-template is-hidden' if r.new_record?)}
-          = hidden_field_tag "record[relation_ids][]", r.id_before_type_cast, id: nil
-          .tags.has-addons
-            %span.tag.is-link.is-light
-              = link_to r.label_field,
-                {controller: :name, action: :show, id: r.id_before_type_cast},
-                target: :_blank
-            %a.tag.is-delete{href: "model-#{r.id_before_type_cast}"}
+console.info('LOADING components/js-tagger.js');
 
-MODAL DIALOG
-----------------------------------------
-  #js-tagger-modal.modal
-    .modal-background
-    .modal-card(style="height: calc(100vh - 40px)")
-      %header.modal-card-head
-        %p.modal-card-title Add tags
-        %button.delete.js-tagger-cancel
-      %section.modal-card-body
-        .columns
-          .column.is-half
-            .field.is-grouped.is-grouped-multiline.current-tags
-          .column.is-half.search-area(style="border-left: 1px solid silver")
-            .control.has-icons-left
-              %input.input.is-rounded.js-tagger-term{type: :text, placeholder: :search}
-              %span.icon.is-small.is-left
-                %i.mi.mi-small search
-              %nav.panel.lookup-results
-      %footer.modal-card-foot
-        %button.button.is-success.js-tagger-set Set
-        %button.button.js-tagger-cancel Cancel
-*/
-(function ($) { $(function () {
+// TAGGER
+// ----------------------------------------
+// = hidden_field_tag "record[relation_ids][]", nil, id: nil
+//  
+// .js-tagger{data: {title: "Add tags", url: url_for(controller: :name, action: :tags_lookup) }}
+//     %button.button.is-rounded.is-small.mr-2.js-tagger-search
+//       %span.icon.is-small
+//         %i.mi.mi-small add
+//       %span tag
+//   
+//   .field.is-grouped.is-grouped-multiline.js-tagger-list
+//     - rel = rel.to_a.unshift Model.new id: :RECORD_ID, label_field: :LABEL # new recor for template item
+//     - rel.each do |r|
+//       .control{class: ('js-tagger-template is-hidden' if r.new_record?)}
+//         = hidden_field_tag "record[relation_ids][]", r.id_before_type_cast, id: nil
+//         .tags.has-addons
+//           %span.tag.is-link.is-light
+//             = link_to r.label_field,
+//               {controller: :name, action: :show, id: r.id_before_type_cast},
+//               target: :_blank
+//           %a.tag.is-delete{href: "model-#{r.id_before_type_cast}"}
+
+// MODAL DIALOG
+// ----------------------------------------
+// #js-tagger-modal.modal
+//   .modal-background
+//   .modal-card(style="height: calc(100vh - 40px)")
+//     %header.modal-card-head
+//       %p.modal-card-title Add tags
+//       %button.delete.js-tagger-cancel
+//     %section.modal-card-body
+//       .columns
+//         .column.is-half
+//           .field.is-grouped.is-grouped-multiline.current-tags
+//         .column.is-half.search-area(style="border-left: 1px solid silver")
+//           .control.has-icons-left
+//             %input.input.is-rounded.js-tagger-term{type: :text, placeholder: :search}
+//             %span.icon.is-small.is-left
+//               %i.mi.mi-small search
+//             %nav.panel.lookup-results
+//     %footer.modal-card-foot
+//       %button.button.is-success.js-tagger-set Set
+//       %button.button.js-tagger-cancel Cancel
+
+$(function () {
 // -----------------------------------------------------------------------------
 // save template in memory and remove it from DOM
 $('.js-tagger').each(function () {
@@ -206,4 +207,4 @@ $('body').on('keydown', '#js-tagger-modal .js-tagger-term', function (ev) {
   modal.data('timeout-id', timeout_id);
 });
 // -----------------------------------------------------------------------------
-}); })(jQuery);
+});

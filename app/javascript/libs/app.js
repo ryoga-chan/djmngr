@@ -1,8 +1,17 @@
-(function ($) { $(function () {
-// -----------------------------------------------------------------------------
-new Freezeframe(); // show image animation only on mouseover
+console.info('LOADING libs/app.js');
 
-$.myapp = {
+// --- shared functions and data -----------------------------------------------
+window.MyApp = {
+  //// page onload callbacks
+  //_setup_functions: [],
+  //
+  //setup: function () {
+  //  MyApp._setup_functions.forEach(function (fn, i) {
+  //    console.log('SETUP: firing #' + i + ' / ' + (fn.name || 'anonymous'));
+  //    fn();
+  //  });
+  //},//setup
+  
   nsfw_mode_setup: function () {
     var is_nsfw = localStorage['djmngr.nsfw-mode'] == 'true';
     $('body').toggleClass('nsfw-mode', is_nsfw);
@@ -11,7 +20,7 @@ $.myapp = {
   
   nsfw_mode_toggle: function () {
     localStorage['djmngr.nsfw-mode'] = !(localStorage['djmngr.nsfw-mode'] == 'true');
-    $.myapp.nsfw_mode_setup();
+    MyApp.nsfw_mode_setup();
   },//nsfw_mode_toggle
   
   toggle_fullscreen: function () {
@@ -41,14 +50,14 @@ $.myapp = {
   
   // http://stackoverflow.com/a/30905277
   copy_to_clipboard: function (text) {
-    $.myapp.last_text_copied_to_clipboard = text; // local copy, clipboard API only work in HTTPS and localhost
+    MyApp.last_text_copied_to_clipboard = text; // local copy, clipboard API only work in HTTPS and localhost
     try { navigator.clipboard.writeText(text); }
     catch (err) { console.log(err); }
   },//copy_to_clipboard
   
   paste_clipboard: function (callback) {
     try { navigator.clipboard.readText().then(callback); }
-    catch (err) { callback($.myapp.last_text_copied_to_clipboard || ''); }
+    catch (err) { callback(MyApp.last_text_copied_to_clipboard || ''); }
   },//paste_clipboard
 
   append_to_textarea: function (selector, text) {
@@ -85,29 +94,34 @@ $.myapp = {
         return text;
       }// build_table
 
-      var n = Math.ceil($.myapp.shortcuts.length / 2);
-      var html = '<div class="column is-half">' + build_table($.myapp.shortcuts.slice(0, n)) + '</div>' +
-                 '<div class="column is-half">' + build_table($.myapp.shortcuts.slice(   n)) + '</div>';
-      $.myapp.show_generic_modal('Page shortcuts', '<div class="columns">'+html+'</div>');
+      var n = Math.ceil(MyApp.shortcuts.length / 2);
+      var html = '<div class="column is-half">' + build_table(MyApp.shortcuts.slice(0, n)) + '</div>' +
+                 '<div class="column is-half">' + build_table(MyApp.shortcuts.slice(   n)) + '</div>';
+      MyApp.show_generic_modal('Page shortcuts', '<div class="columns">'+html+'</div>');
     } },
-    { key: 'n', ctrl: false, alt: false, descr: 'toggle NFSW mode', action:function (ev) { $.myapp.nsfw_mode_toggle(); } },
-    { key: 'h', ctrl: false, alt: false, descr: 'show Home', action: function (ev) { $.myapp.show_loading(); window.location = '/'; } },
+    { key: 'n', ctrl: false, alt: false, descr: 'toggle NFSW mode', action:function (ev) { MyApp.nsfw_mode_toggle(); } },
+    { key: 'h', ctrl: false, alt: false, descr: 'show Home', action: function (ev) { MyApp.show_loading(); window.location = '/'; } },
     { key: 's', ctrl: false, alt: false, descr: 'global search focus', action: function (ev) { $('#global-search').focus().get(0).select(); } },
-    { key: 'S', ctrl: false, alt: false, descr: 'show Settings', action: function (ev) { $.myapp.show_loading(); window.location = '/home/settings'; } },
-    { key: 'b', ctrl: false, alt: false, descr: 'browse collection', action: function (ev) { $.myapp.show_loading(); window.location = '/doujinshi'; } },
-    { key: 'p', ctrl: false, alt: false, descr: 'show Process', action: function (ev) { $.myapp.show_loading(); window.location = '/process'; } },
-    { key: 'r', ctrl: false, alt: false, descr: 'show random book', action: function (ev) { $.myapp.show_loading(); window.location = '/doujinshi/random_pick?type=books'; } },
-    { key: 'R', ctrl: false, alt: false, descr: 'show random best book', action: function (ev) { $.myapp.show_loading(); window.location = '/doujinshi/random_pick?type=best'; } },
-    { key: 'c', ctrl: false, alt: false, descr: 'show Compare', action: function (ev) { $.myapp.show_loading(); window.location = '/doujinshi/compare'; } }
+    { key: 'S', ctrl: false, alt: false, descr: 'show Settings', action: function (ev) { MyApp.show_loading(); window.location = '/home/settings'; } },
+    { key: 'b', ctrl: false, alt: false, descr: 'browse collection', action: function (ev) { MyApp.show_loading(); window.location = '/doujinshi'; } },
+    { key: 'p', ctrl: false, alt: false, descr: 'show Process', action: function (ev) { MyApp.show_loading(); window.location = '/process'; } },
+    { key: 'r', ctrl: false, alt: false, descr: 'show random book', action: function (ev) { MyApp.show_loading(); window.location = '/doujinshi/random_pick?type=books'; } },
+    { key: 'R', ctrl: false, alt: false, descr: 'show random best book', action: function (ev) { MyApp.show_loading(); window.location = '/doujinshi/random_pick?type=best'; } },
+    { key: 'c', ctrl: false, alt: false, descr: 'show Compare', action: function (ev) { MyApp.show_loading(); window.location = '/doujinshi/compare'; } }
   ]//shortcuts
-}//$.myapp
+};//window.MyApp
+
+
+$(function () {
+// -----------------------------------------------------------------------------
+new Freezeframe(); // show image animation only on mouseover
 
 // bind keyboard shortcuts
 $('body').on('keydown', function (ev) {
   if (ev.key == 'Escape') {
     // close generic modal if opened
     if ($('#generic-modal').hasClass('is-active'))
-      $.myapp.hide_generic_modal();
+      MyApp.hide_generic_modal();
     
     // close ehentai-search modal if opened
     // TODO: merge ehentai-dialog with the generic one
@@ -128,28 +142,28 @@ $('body').on('keydown', function (ev) {
   
   // close generic modal if opened
   if (ev.key == 'Escape' && $('#generic-modal').hasClass('is-active')) {
-    $.myapp.hide_generic_modal();
+    MyApp.hide_generic_modal();
     return false;
   }//if
   
   // execute each corresponding action
-  $.each($.myapp.shortcuts, function (i, s) {
+  $.each(MyApp.shortcuts, function (i, s) {
     if (ev.key == s.key && ev.ctrlKey == s.ctrl && ev.altKey == s.alt) {
       ev.preventDefault();
       s.action(ev);
     }//if
   });
-});
+});// bind keyboard shortcuts
 
 // add spinner to navbar when clicking internal links
 $('a[href]:not(.no-spinner, .run-progr, [target="_blank"], [href^="#"])').click(function (ev) {
   if (!ev.ctrlKey && !ev.altKey)
-    $.myapp.show_loading();
+    MyApp.show_loading();
 });
 // add spinner to navbar when submitting forms
-$('form').submit(function (ev) { $.myapp.show_loading(); });
-// onload page remove navbar spinner if present
-$.myapp.hide_loading();
+$('form').submit(function (ev) { MyApp.show_loading(); });
+// remove spinner on navbar if present on page load
+MyApp.hide_loading();
 
 // temporarily disable "run external program" button when clicked
 $('body').on('click', '.run-progr', function (ev) {
@@ -159,11 +173,12 @@ $('body').on('click', '.run-progr', function (ev) {
 });
 
 // apply sfw-mode if previously selected
-$.myapp.nsfw_mode_setup();
-// bind toggle sfw-mode button
+MyApp.nsfw_mode_setup();
+
+// toggle sfw-mode button
 $('a.nsfw-mode-toggle').click(function (ev) {
   ev.preventDefault();
-  $.myapp.nsfw_mode_toggle();
+  MyApp.nsfw_mode_toggle();
 });
 // -----------------------------------------------------------------------------
-}); })(jQuery)
+});

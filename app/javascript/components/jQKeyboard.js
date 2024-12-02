@@ -1,6 +1,8 @@
-// original implementation by <Ho Poi Yee> @ https://github.com/poiyee/jQKeyboard
-(function($){
+console.info('LOADING components/jQKeyboard.js');
+
+(function () {
 // -----------------------------------------------------------------------------
+// original implementation by <Ho Poi Yee> @ https://github.com/poiyee/jQKeyboard
 var keyboardLayout = [
   // element properties: [text, value, keycode, column_span, is_new_row?]
   [ // NORMAL VIEW
@@ -339,4 +341,4 @@ function setCaretPosition (elem, pos) {
   }//if
 }//setCaretPosition
 // -----------------------------------------------------------------------------
-})(jQuery);
+})();

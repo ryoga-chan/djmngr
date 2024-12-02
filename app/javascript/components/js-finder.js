@@ -1,32 +1,9 @@
-(function ($) { $(function () {
+console.info('LOADING components/js-finder.js');
+
+$(function () {
 // -----------------------------------------------------------------------------
 // search on term change
-$('body').on('change', '#js-finder-modal .search-term', search);
-
-// open search dialog
-$('body').on('click', '.js-finder', function (ev) {
-  ev.preventDefault();
-  
-  var caller = $(this);
-  var modal  = $('#js-finder-modal').data('caller', caller).addClass('is-active');
-  // set an eventual default search term
-  modal.find('.search-term').val( caller.data('term') ).focus();
-  // run search if term is present
-  if (caller.data('term') && caller.data('term').trim().length > 0)
-    modal.find('.search-term').change();
-});
-
-// close search dialog
-$('body').on('click', '#js-finder-modal button.delete, #js-finder-modal .modal-background', function (ev) {
-  ev.preventDefault();
-  
-  var modal = $('#js-finder-modal').removeData('caller').removeClass('is-active');
-  modal.find('.search-term').val('');
-  modal.find('.lookup-results').empty();
-});
-
-// search and show results
-function search () {
+$('body').on('change', '#js-finder-modal .search-term', function () {
   var modal = $('#js-finder-modal'),
       input = modal.find('.search-term').blur(),
       list  = modal.find('.lookup-results'),
@@ -91,6 +68,30 @@ function search () {
     complete: function () { input.parent().removeClass('is-loading'); },//complete
     error: function () { alert('Server error!'); }//error
   });
-};
+});
+
+// open search dialog
+$('body').on('click', '.js-finder', function (ev) {
+  ev.preventDefault();
+  
+  var caller = $(this);
+  var modal  = $('#js-finder-modal').data('caller', caller).addClass('is-active');
+  // set an eventual default search term
+  modal.find('.search-term').val( caller.data('term') ).focus();
+  // run search if term is present
+  if (caller.data('term') && caller.data('term').trim().length > 0)
+    modal.find('.search-term').change();
+});
+
+// close search dialog
+$('body').on('click',
+  '#js-finder-modal button.delete, #js-finder-modal .modal-background',
+  function (ev) {
+    ev.preventDefault();
+    
+    var modal = $('#js-finder-modal').removeData('caller').removeClass('is-active');
+    modal.find('.search-term').val('');
+    modal.find('.lookup-results').empty();
+  });
 // -----------------------------------------------------------------------------
-}); })(jQuery);
+});

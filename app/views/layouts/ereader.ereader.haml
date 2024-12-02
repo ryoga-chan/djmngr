@@ -1,17 +1,32 @@
 !!!
 %html
   %head
-    %meta{charset: "utf-8"}/
-    %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
-    %meta{:content => "width=device-width,initial-scale=1", :name => "viewport"}/
-    -# https://www.html.am/html-codes/image-codes/html-favicon-code.cfm
-    %link{rel: "shortcut icon"   , href: "/favicon.ico"}/
-    %link{rel: "apple-touch-icon", href: "/apple-touch-icon.png"}/
-    %title= "DjMngr | #{@page_title || params[:controller]}".html_safe
+    %meta(charset="utf-8")/
+    %meta(content="text/html; charset=UTF-8" http-equiv="Content-Type")/
+    %meta(content="width=device-width,initial-scale=1" name="viewport")/
+    %meta(name="mobile-web-app-capable" content="yes")/
     = csrf_meta_tags
     = csp_meta_tag
-    = stylesheet_link_tag    "ereader"
-    = javascript_include_tag "ereader"
+
+    %title= "DjMngr | #{@page_title || params[:controller]}"
+
+    -# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!)
+    %link(rel="manifest" href="/manifest.json")/
+    %link(rel="icon" href="/pwa/icon-512.png" type="image/png")/
+    %link(rel="icon" href="/pwa/icon.svg" type="image/svg+xml")/
+    %link(rel="icon" href="/favicon.ico" type="image/x-icon")/
+    %link(rel="shortcut icon" href="/favicon.ico")/
+    %link(rel="apple-touch-icon" href="/pwa/icon-512.png" sizes="512x512")/
+    %link(rel="mask-icon" href="/pwa/icon-monochrome.svg" color="#1f2424")/
+
+    = stylesheet_link_tag    'ereader'
+    
+    = javascript_include_tag 'libs/jquery'
+    = javascript_include_tag 'libs/hammer'
+    = javascript_include_tag 'libs/hammer-jquery'
+    = javascript_include_tag 'components/img_sequential_load'
+    = javascript_include_tag 'components/jQKeyboard'
+    = javascript_tag %Q|$(function () { $('.jQKeyboardToggle').initKeypad(); });|
   %body{data: {env: Rails.env.to_s, ctrl: params[:controller], action: params[:action], id: params[:id]}}
     -# NOTE: "notice" and "alert" are Rails defaults, "warn" is a custom key
     - {notice: 'is-info', warn: 'is-warning', alert: 'is-danger'}.each do |key, css_class|

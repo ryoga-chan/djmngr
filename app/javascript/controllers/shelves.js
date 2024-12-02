@@ -1,4 +1,6 @@
-(function ($) { $(function () {
+console.info('LOADING controllers/shelves.js');
+
+$(function () {
 // -----------------------------------------------------------------------------
 if ($('body').data('ctrl') != 'shelves')
   return;
@@ -26,4 +28,4 @@ if ($('body').data('action') == 'edit') {
   });
 }// action index
 // -----------------------------------------------------------------------------
-}); })(jQuery)
+});

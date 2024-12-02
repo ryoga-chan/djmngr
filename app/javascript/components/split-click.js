@@ -1,19 +1,17 @@
-/*
-Fire a custom click event on each half of an element that can be splitted in
-four ways: -, |, /, \.
+console.info('LOADING components/split-click.js');
 
-HTML
-  <tag data-split-mode="-">...</tag>
-
-JS
-  $('selector').split_click({
-    mode: '-', // -, |, \, /
-    area1: function (element, event) {},
-    area2: function (element, event) {}
-  });
-*/
-(function ($) {
-// -----------------------------------------------------------------------------
+// Fire a custom click event on each half of an element that can be splitted in
+// four ways: -, |, /, \.
+// 
+// HTML
+//   <tag data-split-mode="-">...</tag>
+// 
+// JS
+//   $('selector').split_click({
+//     mode: '-', // -, |, \, /
+//     area1: function (element, event) {},
+//     area2: function (element, event) {}
+//   });
 $.fn.split_click = function (opts) {
   opts = $.extend({mode: '-'}, opts);
   
@@ -39,5 +37,3 @@ $.fn.split_click = function (opts) {
   
   return this;
 };// $.fn.split_click
-// -----------------------------------------------------------------------------
-})(jQuery);
