@@ -1,4 +1,3 @@
-# place this code in lib/tasks/db.rake
 namespace :db do
   desc 'Archive sqlite database'
   task :backup2zip do

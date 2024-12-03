@@ -7,7 +7,9 @@ Rails.application.configure do
       logger_args = ENV['PUMA_DAEMON'] \
         ? [File.join(Dir.tmpdir(), "#{config.proctitle}-server.log"), 2]
         : [STDOUT]
-      puts "* Logging to #{logger_args.first.inspect}" unless Rails.const_defined?(:Console)
+      unless Rails.const_defined?(:Console) || defined?(Rake)
+        puts "* Logging to #{logger_args.first.inspect}"
+      end
       config.logger = ActiveSupport::Logger.new(*logger_args)
 
       config.lograge.enabled = true
