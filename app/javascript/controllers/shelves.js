@@ -1,5 +1,3 @@
-console.info('LOADING controllers/shelves.js');
-
 $(function () {
 // -----------------------------------------------------------------------------
 if ($('body').data('ctrl') != 'shelves')

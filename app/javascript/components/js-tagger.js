@@ -1,5 +1,3 @@
-console.info('LOADING components/js-tagger.js');
-
 // TAGGER
 // ----------------------------------------
 // = hidden_field_tag "record[relation_ids][]", nil, id: nil
@@ -94,9 +92,8 @@ $('body').on('click', '#js-tagger-modal .js-tagger-set', function (ev) {
 // add tag from results
 $('body').on('click', '#js-tagger-modal .lookup-results a', function (ev) {
   ev.preventDefault();
-  
   var modal  = $('#js-tagger-modal'),
-      tagger = modal.data('tagger')
+      tagger = modal.data('tagger'),
       result_tag = $(this);
   
   // prevent another click while fading the tag

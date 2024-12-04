@@ -1,6 +1,4 @@
 // `hammer` jQuery plugin -- https://github.com/hammerjs/jquery.hammer.js | https://github.com/hammerjs/hammer.js
-console.info('LOADING libs/hammer-jquery.js');
-
 if (!Hammer) { throw new Error('Hammer is required!'); }
 
 // extend the emit method to also trigger jQuery events

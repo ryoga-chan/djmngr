@@ -1,5 +1,3 @@
-console.info('LOADING components/js-finder.js');
-
 $(function () {
 // -----------------------------------------------------------------------------
 // search on term change

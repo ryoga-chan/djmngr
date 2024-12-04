@@ -1,5 +1,3 @@
-console.info('LOADING components/img_ondemand_load.js');
-
 $.fn.load_ondemand_images = function(options = {}) {
   var images = this.filter('img[data-url]');
   

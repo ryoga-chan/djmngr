@@ -1,5 +1,3 @@
-console.info('LOADING controllers/favorities.js');
-
 $(function () {
 // -----------------------------------------------------------------------------
 var p_bar = '<progress class="progress is-small is-info" max="100">i</progress>';

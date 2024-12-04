@@ -76,7 +76,8 @@ class HomeController < ApplicationController
 
   # https://developer.mozilla.org/en-US/docs/Web/Manifest/share_target
   def shared_content_receiver
-    # - cover search
+    # - one file:       cover search
+    # - multiple files: image/files add to dummy archive
     # - text translitteration
     # - image_url/eh_page_url download
     #params[:images|:title|:text|:url]

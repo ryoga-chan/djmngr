@@ -1,5 +1,3 @@
-console.info('LOADING libs/app.js');
-
 // --- shared functions and data -----------------------------------------------
 window.MyApp = {
   //// page onload callbacks

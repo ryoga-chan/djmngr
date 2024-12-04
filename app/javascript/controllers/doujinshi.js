@@ -1,5 +1,3 @@
-console.info('LOADING controllers/doujinshi.js');
-
 $(function () {
 // -----------------------------------------------------------------------------
 if ($('body').data('ctrl') != 'doujinshi')

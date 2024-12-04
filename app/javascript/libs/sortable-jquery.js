@@ -1,6 +1,4 @@
 // `sortable` jQuery plugin -- https://github.com/SortableJS/jquery-sortablejs | https://github.com/SortableJS/Sortable
-console.info('LOADING libs/sortable-jquery.js');
-
 import Sortable from 'sortablejs';
 window.Sortable ||= Sortable;
 

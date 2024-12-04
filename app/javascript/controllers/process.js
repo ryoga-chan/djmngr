@@ -1,5 +1,3 @@
-console.info('LOADING controllers/process.js');
-
 $(function () {
 // -----------------------------------------------------------------------------
 if ($('body').data('ctrl') != 'process')

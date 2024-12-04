@@ -1,5 +1,3 @@
-console.info('LOADING components/jQKeyboard.js');
-
 (function () {
 // -----------------------------------------------------------------------------
 // original implementation by <Ho Poi Yee> @ https://github.com/poiyee/jQKeyboard

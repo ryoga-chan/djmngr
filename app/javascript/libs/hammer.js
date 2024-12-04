@@ -1,5 +1,3 @@
-console.info('LOADING libs/hammer.js');
-
 /*! Hammer.JS - v2.0.7 - 2016-04-22
  * http://hammerjs.github.io/
  *

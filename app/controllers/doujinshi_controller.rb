@@ -204,7 +204,7 @@ class DoujinshiController < ApplicationController
         ExternalProgramRunner.run params[:run], target
         render json: {ris: :done}
       }#json
-    end
+    end # respond_to
   end # show
 
   def score

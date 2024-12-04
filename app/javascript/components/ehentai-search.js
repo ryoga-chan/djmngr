@@ -1,5 +1,3 @@
-console.info('LOADING components/ehentai-search.js');
-
 $(function () {
 // -----------------------------------------------------------------------------
 // search on term change
