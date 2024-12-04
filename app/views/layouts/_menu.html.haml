@@ -51,7 +51,7 @@
       
       %span.navbar-item
         = form_with url: search_doujinshi_path, method: :get,
-          html: {onsubmit: %Q|jQuery(this).find('button').addClass('is-loading'); jQuery.myapp.show_loading()|} do |f|
+          html: {onsubmit: %Q|jQuery(this).find('button').addClass('is-loading'); MyApp.show_loading()|} do |f|
           .field.has-addons
             .control
               .select= f.select :where,
@@ -103,7 +103,7 @@
               .file.is-primary
                 %label.file-label
                   = f.file_field :cover, class: 'file-input', id: '',
-                    onchange: %Q|jQuery(this).next().find('i.mi').text('hourglass_bottom'); jQuery.myapp.show_loading(); this.form.submit()|
+                    onchange: %Q|jQuery(this).next().find('i.mi').text('hourglass_bottom'); MyApp.show_loading(); this.form.submit()|
                   %span.file-cta
                     %span.file-icon.mr-3
                       %i.mi image_search
@@ -122,7 +122,7 @@
               %i.mi cookie
             %span Clear EH cookies
 
-          = link_to '#', class: 'navbar-item no-spinner', onclick: "jQuery.myapp.toggle_fullscreen(); return false" do
+          = link_to '#', class: 'navbar-item no-spinner', onclick: "MyApp.toggle_fullscreen(); return false" do
             %span.icon
               %i.mi fullscreen
             %span Toggle F.S.

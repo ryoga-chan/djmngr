@@ -73,12 +73,12 @@
       = render partial: 'field_versions_toggle', locals: {field: 'name_orig'}
       
       = link_to '#', class: 'button is-info is-small is-rounded ml-1 ',
-        onclick: %Q|$.myapp.titles_to_lowercase(); return false| do
+        onclick: %Q|MyApp.titles_to_lowercase(); return false| do
         %span.icon.is-small
           %i.mi.mi-small(title="convert all titles to downcase") text_rotate_vertical
       
       = link_to '#', class: 'button is-info is-small is-rounded ml-1 ',
-        onclick: %Q|$.myapp.autotag_titles(); return false| do
+        onclick: %Q|MyApp.autotag_titles(); return false| do
         %span.icon.is-small
           %i.mi.mi-small(title="autotag titles") label
       

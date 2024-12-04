@@ -83,7 +83,7 @@
         = link_to f.name, action: :prepare_archive, path: f.name
     .item-actions.mt-2
       = link_to('#', title: 'copy file name',
-        onclick: %Q|jQuery.myapp.copy_to_clipboard( $(this).parent().prev().find('a').text().trim() ); return false|,
+        onclick: %Q|MyApp.copy_to_clipboard( $(this).parent().prev().find('a').text().trim() ); return false|,
         class: 'button is-info is-rounded is-small tiny-bt mr-4') do
         %span.icon.is-small
           %i.mi.mi-small content_copy
@@ -146,7 +146,7 @@
   %tr{class: tr_class}
     %td.has-text-right
       = button_tag(type: :button, title: 'paste clipboard contents into notes',
-          onclick: %Q|var el=$(this).parent().next().find('.pd-notes'); $.myapp.paste_clipboard(function (text) { el.val(text).change(); })|,
+          onclick: %Q|var el=$(this).parent().next().find('.pd-notes'); MyApp.paste_clipboard(function (text) { el.val(text).change(); })|,
           class: 'button is-info is-rounded is-small tiny-bt ml-2') do
         %span.icon.is-small
           %i.mi.mi-small content_paste

@@ -36,7 +36,7 @@
           = links_to_search_engines search_term, target: :_blank
       
       .other-settings.mb-1
-        %span.icon.in-text-small.mr-2(onclick="jQuery.myapp.autotag_titles()")
+        %span.icon.in-text-small.mr-2(onclick="MyApp.autotag_titles()")
           %i.mi.mi-small(title="other properties") settings
         
         .select.setting(title="language")= f.select :language,
@@ -98,7 +98,7 @@
         = link_to '#', class: 'button is-small', onclick: %Q|$('#subfolder').val(''); $('#sel_subfolder').val('-custom name-'); return false| do
           %span.icon
             %i.mi.mi-small(title="clear subfolder") clear
-        = link_to '#', class: 'button is-small ml-1', onclick: %Q|$.myapp.titles_to_lowercase(); return false| do
+        = link_to '#', class: 'button is-small ml-1', onclick: %Q|MyApp.titles_to_lowercase(); return false| do
           %span.icon
             %i.mi.mi-small(title="convert all titles to downcase") text_rotate_vertical
         
@@ -114,7 +114,7 @@
           placeholder: 'dest. title kanji/original', tabindex: 100,
           class: 'input is-small fillwidth-2bt',
           data: { orig_name: @info[:orig_title] }
-        = link_to '#', class: 'button is-small', onclick: %Q|$.myapp.translitterate_raw_title(); return false| do
+        = link_to '#', class: 'button is-small', onclick: %Q|MyApp.translitterate_raw_title(); return false| do
           %span.icon
             %i.mi.mi-small(title="translitterate raw title to romaji") translate
         = link_to '#', class: 'button is-small ml-1',

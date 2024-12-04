@@ -53,7 +53,7 @@
       %span.is-size-6.nowrap= "(#{@files.total_count} / #{number_to_human_size ProcessableDoujin.sum(:size), precision: 2, significant: false})"
       
     = form_with url: process_index_path, method: :get,
-      html: {onsubmit: %Q|jQuery(this).find('button').addClass('is-loading'); jQuery.myapp.show_loading()|,
+      html: {onsubmit: %Q|jQuery(this).find('button').addClass('is-loading'); MyApp.show_loading()|,
              id: 'frm_search', class: "filters mb-2 #{'is-hidden' if params[:term].blank?}" } do |f|
       = f.hidden_field :sort_by, value: params[:sort_by]
       
