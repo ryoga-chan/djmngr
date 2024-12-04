@@ -1,27 +1,26 @@
 https://guides.rubyonrails.org/upgrading_ruby_on_rails.html
 https://guides.rubyonrails.org/configuring.html#versioned-default-values
 
+TODO:
+- CSS upgrade to Bulma v1 + darkly patch?
+  https://github.com/jenil/bulmaswatch/issues/121
+
 
 ##### 7.2.2 => 8.0.0 ###########################################################
 https://railsdiff.org/7.2.2/8.0.0
 https://guides.rubyonrails.org/8_0_release_notes.html
 
-- assets:
+* assets:
   * https://github.com/rails/propshaft
   * https://github.com/rails/dartsass-rails
   * https://github.com/rails/importmap-rails
     NOTE: *DON'T* modules doens't work in ereaders! eg. jquery, hammer
   * minify and gzip tasks
-
-- check process.js ajax:success is OK after installing jquery-ujs
-
+* process.js - fix ajax:success with jquery-ujs
+* check ApplicationController.allow_browser with ebook readers
 - /home/shared_content_receiver
   - implement action
   - update api docs
-
-- check ApplicationController.allow_browser with ebook readers
-
-- CSS: use bulma v1 + darkly patch? -- https://github.com/jenil/bulmaswatch/issues/121
 
 
 ##### 7.1.2 => 7.2.2 ###########################################################
