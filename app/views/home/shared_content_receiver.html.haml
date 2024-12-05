@@ -1,0 +1,66 @@
+- case @action
+  - when :xlate
+    .title.is-size-4 Translitterated text
+    
+    .columns
+      .column
+        .columns.is-mobile.mb-0
+          .column
+            %span.icon.ml-4
+              %i.mi translate
+          .column.has-text-right
+            %span.button.is-info{onclick: "MyApp.copy_to_clipboard(#{@xlate_out.to_json})"}
+              %span.icon-text
+                %span.icon
+                  %i.mi content_copy
+                %span copy to clipboard
+        .box.content.is-family-monospace= @xlate_out
+      .column
+        .columns.is-mobile.mb-0
+          .column
+            %span.icon.ml-4
+              %i.mi raw_on
+          .column.has-text-right
+            %span.button.is-info{onclick: "MyApp.copy_to_clipboard(#{@xlate_in.to_json})"}
+              %span.icon-text
+                %span.icon
+                  %i.mi content_copy
+                %span copy to clipboard
+        .box.content.is-family-monospace= @xlate_in
+  
+  - when :dl_url
+    .title.is-size-4 Download image from url
+    
+    - if @resp[:result] == :ok
+      .tag.is-success.mr-4 Success!
+      = link_to edit_process_path(id: @resp[:hash], tab: :images), class: 'button is-info mb-2' do
+        %span.icon-text
+          %span.icon
+            %i.mi photo_library
+          %span view archive
+      .box.content.is-family-monospace(style="word-wrap: break-word")= params[:u]
+      .has-text-right
+        %span.button.is-info{onclick: "MyApp.copy_to_clipboard(#{params[:u].to_json})"}
+          %span.icon-text
+            %span.icon
+              %i.mi content_copy
+            %span copy to clipboard
+    - else
+      .tag.is-danger.mb-2 ERROR!
+      .box.content
+        %pre.is-family-monospace= @resp[:msg]
+
+  - when :add_files
+    .title.is-size-4 Inject files into archive
+    
+    .tag.is-success.mr-4.mb-2= "#{params[:images].size} files injected!"
+    = link_to edit_process_path(id: @hash, tab: :images), class: 'button is-info mb-2' do
+      %span.icon-text
+        %span.icon
+          %i.mi photo_library
+        %span view archive
+    
+    .box.content(style="word-wrap: break-word")
+      %ul
+        - @files.each do |f|
+          %li= f[:name]

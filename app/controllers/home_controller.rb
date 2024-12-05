@@ -75,12 +75,36 @@ class HomeController < ApplicationController
   end # settings
 
   # https://developer.mozilla.org/en-US/docs/Web/Manifest/share_target
+  # params[:title|:images|:text|:url]
   def shared_content_receiver
-    # - one file:       cover search
-    # - multiple files: image/files add to dummy archive
-    # - text translitteration
-    # - image_url/eh_page_url download
-    #params[:images|:title|:text|:url]
-    render plain: 'TODO'
+    case
+      # download image_url/eh_page_url
+      when params[:url].present? || params[:text]&.match(/^https*:\/\//i)
+        params[:u] = params.delete(:url) || params.delete(:text)
+        @action, @resp = :dl_url, ImageToDummyArchive.download(params)
+
+      # text translitteration
+      when params[:text].present?
+        @action    = :xlate
+        @xlate_in  = params[:text].strip
+        @xlate_out = @xlate_in.to_romaji
+
+      # multiple files: add to dummy archive
+      when params[:images]&.many?
+        @files = params[:images].map{|i| {name: i.original_filename, path: i.path} }
+        @action, @hash = :add_files, ImageToDummyArchive.inject_files(@files)
+
+      # single file: search by cover image
+      when params[:images]&.one?
+        if cover_hash = CoverMatchingJob.hash_image(params[:images].first.path)
+          CoverMatchingJob.perform_now cover_hash
+          redirect_to search_cover_doujinshi_path(hash: cover_hash)
+        else
+          flash.now[:alert] = "fingerprinting image error"
+        end
+
+      else
+        flash.now[:alert] = "wrong/missing parameters"
+    end
   end # shared_content_receiver
 end

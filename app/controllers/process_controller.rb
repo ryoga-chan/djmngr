@@ -236,6 +236,9 @@ class ProcessController < ApplicationController
 
     msg   = params[:archive_too] == 'true' ? "archive and folder deleted:" : "folder deleted for"
     title = @info[:relative_path].one?     ? @info[:relative_path].first   : @info[:title]
+    if @info[:file_path].first.start_with?(ImageToDummyArchive::TMP_DIR)
+      title = File.basename @info[:file_path].first
+    end
     redirect_to process_index_path, notice: "#{msg} [#{title}] in [#{params[:id][0..10]}...]"
   end # delete_archive_cwd
 

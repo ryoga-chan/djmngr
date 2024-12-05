@@ -36,7 +36,6 @@
 
       %table.table.is-striped.is-hoverable.ml-4
         %tbody
-          - tmp_path = Rails.root.join('tmp').to_s
           - @preparing.each do |f|
             %tr
               %td= link_to('🗑', {action: :delete_archive_cwd, id: f[:working_dir]},
@@ -44,7 +43,7 @@
                 class: 'has-text-danger', title: 'delete processing folder')
               %td.has-text-right= number_to_human_size f[:tot_size]
               - lbl = f[:relative_path].one? ? f[:relative_path].first : f[:title]
-              - lbl = "📥 #{h File.basename(lbl, '.zip')}" if File.expand_path(lbl).start_with?(tmp_path)
+              - lbl = "📥 #{h File.basename(lbl, '.zip')}" if f[:file_path].first.start_with?(ImageToDummyArchive::TMP_DIR)
               %td= link_to lbl, action: :edit, id: f[:working_dir]
 
     -# files listing

@@ -19,9 +19,8 @@ https://guides.rubyonrails.org/8_0_release_notes.html
 * process.js - fix ajax:success with jquery-ujs
 * check ApplicationController.allow_browser with ebook readers
 - /home/shared_content_receiver
-  - implement action
+  * implement action
   - update api docs
-
 
 ##### 7.1.2 => 7.2.2 ###########################################################
 https://railsdiff.org/7.1.2/7.2.2
