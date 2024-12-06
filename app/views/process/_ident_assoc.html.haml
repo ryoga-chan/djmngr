@@ -18,6 +18,7 @@
         = link_to :C, Circle.doujinshi_org_search_url(params[:term]), target: :_blank, title: "search circle on doujinshi.org"
 
 - term_re = Regexp.new Regexp.escape(params[:term].to_s), Regexp::IGNORECASE
+- radio_bt_class = 'is-hidden' if @info[:file_type] != 'doujin'
 
 .columns.search-results.mt-3
   .column(class="associated")
@@ -37,7 +38,7 @@
               - subject_title = members.join("\n") if members.any?
               
               .subject(title=subject_title)
-                = f.radio_button :doujin_dest_id, "#{type}-#{r.id}",
+                = f.radio_button :doujin_dest_id, "#{type}-#{r.id}", class: radio_bt_class,
                   checked: "#{type}-#{r.id}" == "#{@info[:doujin_dest_type]}-#{@info[:doujin_dest_id]}",
                   onchange: "this.form.submit()"
                 - name = r.name.present? ? r.name : r.name_kana

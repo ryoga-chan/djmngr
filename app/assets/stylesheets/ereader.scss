@@ -318,10 +318,10 @@ body[data-ctrl="doujinshi"][data-action="zip_read"] {
   overflow: hidden;
   
   $bg_colors: #ffffff, #696969, #222222, #000000;
-  .bg-white { background: image-url("hourglass.png") center 10% no-repeat, list.nth($bg_colors, 1); }
-  .bg-smoke { background: image-url("hourglass.png") center 10% no-repeat, list.nth($bg_colors, 2); }
-  .bg-dark  { background: image-url("hourglass.png") center 10% no-repeat, list.nth($bg_colors, 3); }
-  .bg-black { background: image-url("hourglass.png") center 10% no-repeat, list.nth($bg_colors, 4); }
+  .bg-white { background: url("hourglass.png") center 10% no-repeat, list.nth($bg_colors, 1); }
+  .bg-smoke { background: url("hourglass.png") center 10% no-repeat, list.nth($bg_colors, 2); }
+  .bg-dark  { background: url("hourglass.png") center 10% no-repeat, list.nth($bg_colors, 3); }
+  .bg-black { background: url("hourglass.png") center 10% no-repeat, list.nth($bg_colors, 4); }
   div.main { background-size: 10vmax 10vmax; }
   #menu {
     .bg-white { background: none; background-color: list.nth($bg_colors, 1); }

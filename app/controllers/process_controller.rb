@@ -322,9 +322,11 @@ class ProcessController < ApplicationController
       info_changed = true
     end
 
-    # set "artbook" as default media type for "artbook" category
-    if params[:file_type] == 'artbook' && params[:file_type] != @info[:file_type]
-      params[:media_type] = 'artbook'
+    if params[:file_type] && params[:file_type] != @info[:file_type]
+      # set "artbook" as default media type for "artbook" category
+      params[:media_type] = 'artbook' if params[:file_type] == 'artbook'
+      # clear destination folder from previous auto selection
+      params[:dest_folder] = '' if params[:file_type] != 'doujin'
     end
 
     %i[

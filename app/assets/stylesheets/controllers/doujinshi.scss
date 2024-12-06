@@ -77,3 +77,10 @@ body[data-ctrl="doujinshi"][data-action="favorites"] {
     overflow: auto;
   }
 }
+
+body[data-ctrl="doujinshi"][data-action="show"] {
+  .entries-scroller {
+    max-height: 5rem;
+    overflow: scroll;
+  }
+}

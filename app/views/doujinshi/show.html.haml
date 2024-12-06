@@ -50,22 +50,28 @@
             .kanji= @doujin.name
       - if @doujin.authors.any?
         %tr
-          %th Author
+          %th.nowrap
+            Author
+            %span.is-size-8= "(#{@doujin.authors.count})"
           %td
-            - @doujin.authors.to_a.sort_by_method(:label_name_latin).each do |i|
-              .assoc-author
-                = link_to i.label_name_latin, doujinshi_path(tab: :author, author_id: i.id, anchor: :listing)
-                &minus;
-                = link_to '🔍', author_path(i.id)
+            .entries-scroller
+              - @doujin.authors.to_a.sort_by_method(:label_name_latin).each do |i|
+                .assoc-author
+                  = link_to i.label_name_latin, doujinshi_path(tab: :author, author_id: i.id, anchor: :listing)
+                  &minus;
+                  = link_to '🔍', author_path(i.id)
       - if @doujin.circles.any?
         %tr
-          %th Circle
+          %th.nowrap
+            Circle
+            %span.is-size-8= "(#{@doujin.circles.count})"
           %td
-            - @doujin.circles.to_a.sort_by_method(:label_name_latin).each do |i|
-              .assoc-author
-                = link_to i.label_name_latin, doujinshi_path(tab: :circle, circle_id: i.id, anchor: :listing)
-                &minus;
-                = link_to '🔍', circle_path(i.id)
+            .entries-scroller
+              - @doujin.circles.to_a.sort_by_method(:label_name_latin).each do |i|
+                .assoc-author
+                  = link_to i.label_name_latin, doujinshi_path(tab: :circle, circle_id: i.id, anchor: :listing)
+                  &minus;
+                  = link_to '🔍', circle_path(i.id)
       %tr
         %th Info
         %td

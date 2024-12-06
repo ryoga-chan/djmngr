@@ -7,8 +7,8 @@ module SearchJapaneseSubject
     def search(terms, search_method: 'linear')
       return self.none if terms.blank?
 
-      tokens_orig    = terms.to_s          .tokenize_doujin_filename
-      tokens_kakasi  = terms.to_s.to_romaji.tokenize_doujin_filename
+      tokens_orig    = terms.to_s.strip          .tokenize_doujin_filename
+      tokens_kakasi  = terms.to_s.strip.to_romaji.tokenize_doujin_filename
       rel_conditions = []
 
       if search_method == 'sparse'
@@ -43,7 +43,7 @@ module SearchJapaneseSubject
 
     # search elements by a single term and rank them by score
     def search_by_name(term, limit: 10)
-      return self.where("1 <> 1") if term.to_s.blank?
+      return self.where("1 <> 1") if term.blank?
 
       klass = self.name.downcase
 
@@ -82,7 +82,7 @@ module SearchJapaneseSubject
         LIMIT :limit
       SQL
 
-      term_weight = term.downcase
+      term_weight = term.downcase.strip
       query_params = { term_weight:  term_weight,
                        term_weightk: term_weight.to_romaji,
                        term_where:   "%#{term.tr(' ', '%')          }%",

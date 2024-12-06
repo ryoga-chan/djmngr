@@ -64,6 +64,7 @@ module MetadataCrudController
 
       records = @model.none
       records = @model.search params[:term] if params[:term].present?
+      records = records.where(doujinshi_org_aka_id: nil) # exclude obsolete entries
 
       if @model == Theme
         records = records.select(columns + ["0 AS num_dj"])
