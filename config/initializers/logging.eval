@@ -1,0 +1,14 @@
+# this file is sourced with `eval` in /config/environments/*
+# NOTE: custom logger can't be defined in an initializer
+#       it's overwritten by Rails's default
+logger_args = [STDOUT]
+
+if ENV['PUMA_DAEMON'] && Rails.env.production?
+  logger_args = [File.join(Dir.tmpdir, "ruby:djmngr-server.log"), 2]
+end
+
+unless Rails.const_defined?(:Console) || defined?(Rake)
+  puts "* Logging to #{logger_args.first.inspect}"
+end
+
+config.logger = ActiveSupport::TaggedLogging.logger *logger_args
