@@ -12,8 +12,8 @@ module ImageToDummyArchive
     url = URI.parse params[:u] rescue nil
     return { result: :err, msg: 'invalid/empty parameter "u"' } if url.nil? || url.class == URI::Generic
 
-    hash = create_processing_folder \
-      File.basename(params[:t] || ZIPNAME).to_s.to_sanitized_filename[...251] + '.zip'
+    zip_name = File.basename(params[:t] || ZIPNAME).to_s.to_sanitized_filename[...251] + '.zip'
+    hash = create_processing_folder File.join(TMP_DIR, zip_name)
 
     # download file
     resp, file_name_dst, file_name_src, file_contents = nil, nil, nil, nil

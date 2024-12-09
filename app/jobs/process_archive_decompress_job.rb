@@ -50,7 +50,9 @@ class ProcessArchiveDecompressJob < ApplicationJob
         f.puts({
           file_path:     fnames,
           file_size:     tot_size,
-          relative_path: fnames.map{|i| Pathname.new(i).relative_path_from(Setting['dir.to_sort']).to_s },
+          relative_path: dummy \
+            ? fnames.map{|i| Pathname.new(i).relative_path_from(ImageToDummyArchive::TMP_DIR).to_s }
+            : fnames.map{|i| Pathname.new(i).relative_path_from(Setting['dir.to_sort']).to_s },
           title:         title, # optional title from batch processing
           working_dir:   hash,
           prepared_at:   nil,
