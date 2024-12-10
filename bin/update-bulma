@@ -1,7 +1,0 @@
-#!/usr/bin/sh
-VER=`curl -sL https://github.com/jgthms/bulma/releases | grep '/tree/' | head -n 1 | sed -r 's:.+/([0-9.]+).+:\1:'`
-URL="https://github.com/jgthms/bulma/releases/download/$VER/bulma-$VER.zip"
-echo "DL $VER @ $URL"
-curl -Lo tmp/bulma.zip $URL
-unzip -oqd app/assets/stylesheets tmp/bulma.zip bulma/bulma.sass 'bulma/sass/*' -x '*.DS_Store' \
-  && rm -f tmp/bulma.zip

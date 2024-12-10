@@ -1,10 +1,6 @@
 https://guides.rubyonrails.org/upgrading_ruby_on_rails.html
 https://guides.rubyonrails.org/configuring.html#versioned-default-values
 
-TODO:
-- CSS upgrade to Bulma v1 + darkly patch?
-  https://github.com/jenil/bulmaswatch/issues/121
-
 
 ##### 7.2.2 => 8.0.0 ###########################################################
 https://railsdiff.org/7.2.2/8.0.0
@@ -18,9 +14,10 @@ https://guides.rubyonrails.org/8_0_release_notes.html
   * minify and gzip tasks
 * process.js - fix ajax:success with jquery-ujs
 * check ApplicationController.allow_browser with ebook readers
-- /home/shared_content_receiver
+* /home/shared_content_receiver
   * implement action
-  - update api docs
+  * update api docs
+
 
 ##### 7.1.2 => 7.2.2 ###########################################################
 https://railsdiff.org/7.1.2/7.2.2

@@ -6,9 +6,9 @@
       %th DjMngr
       %td
         = ::VERSION
-        - git_rev = `git rev-parse HEAD` rescue nil
+        - git_rev = `git rev-parse --short HEAD` rescue nil
         - if git_rev
-          &middot;
+          &mdash;
           = git_rev
     
     %tr
@@ -24,12 +24,6 @@
       %th Rails
       %td= Rails.version
     
-    - node_ver = `node --version` rescue nil
-    - if node_ver
-      %tr
-        %th Node
-        %td= node_ver
-    
     - vips_ver = `vips --version` rescue nil
     - if vips_ver
       %tr
@@ -42,5 +36,9 @@
       %td= number_to_human_size File.size(db_file)
 
     %tr
+      %th Thumbs size
+      %td= number_to_human_size Dir[ Rails.root.join('public', 'thumbs', '*.webp').to_s ].sum{|f| File.size f }
+
+    %tr
       %th Samples size
-      %td= number_to_human_size Dir[ Rails.root.join('public', 'samples', '*.webp').to_s ].sum{|f| File.size(f) }
+      %td= number_to_human_size Dir[ Rails.root.join('public', 'samples', '*.webp').to_s ].sum{|f| File.size f }

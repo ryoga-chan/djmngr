@@ -24,7 +24,6 @@ gem 'progressbar', '~> 1.13'     # cli progressbar -- https://github.com/jfelchn
 gem 'rubyzip',     '~> 2.3', require: 'zip' # manage ZIP files -- https://github.com/rubyzip/rubyzip
 gem 'paper_trail', '~> 16.0'     # track model changes -- https://github.com/paper-trail-gem/paper_trail
 gem 'colorize',    '~> 1.1', require: 'colorized_string' # terminal colors -- https://github.com/fazibear/colorize
-gem 'terser',      '~> 1.2'      # Ruby wrapper for Terser JavaScript compressor (nodejs script)
 gem 'httpx',       '~> 1.3'      # HTTP client -- https://gitlab.com/os85/httpx OR https://github.com/HoneyryderChuck/httpx
                                  # https://honeyryderchuck.gitlab.io/httpx/wiki/home.html | https://honeyryderchuck.gitlab.io/httpx/rdoc/
 

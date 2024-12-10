@@ -60,12 +60,6 @@ RUN set -x \
   && ./bin/rails db:migrate db:schema:dump \
   && mv storage/production.sqlite3 db/schema.rb .
 
-# remove terser/nodejs as it's used only for assets:precompile
-RUN set -x \
-  && sed -r -i 's/^gem .terser.+/#\0/' Gemfile \
-  && bundle install \
-  && rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git
-
 # ----- final ------------------------------------------------------------------
 FROM base
 
