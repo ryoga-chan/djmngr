@@ -81,6 +81,6 @@ body[data-ctrl="doujinshi"][data-action="favorites"] {
 body[data-ctrl="doujinshi"][data-action="show"] {
   .entries-scroller {
     max-height: 5rem;
-    overflow: scroll;
+    overflow: auto;
   }
 }
