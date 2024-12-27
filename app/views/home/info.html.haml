@@ -15,20 +15,18 @@
       %th Ruby
       %td
         = RUBY_VERSION
-        - if defined? RubyVM::YJIT.enabled? && RubyVM::YJIT.enabled?
+        - if defined?(RubyVM::YJIT) && RubyVM::YJIT&.enabled?
           +YJIT
         -# https://stackoverflow.com/questions/57303214/how-to-check-ruby-2-6-3-is-using-jemalloc-i-installed-ruby-2-6-3-as-rvm-inst/57303366#57303366
-        - if RbConfig&.const_get(:CONFIG)&.[]('MAINLIBS').to_s.include?('-ljemalloc')
+        - if defined?(RbConfig::CONFIG) && RbConfig::CONFIG&.[]('MAINLIBS').to_s.include?('-ljemalloc')
           +JEmalloc
     %tr
       %th Rails
       %td= Rails.version
     
-    - vips_ver = `vips --version` rescue nil
-    - if vips_ver
-      %tr
-        %th Vips
-        %td= vips_ver
+    %tr
+      %th Vips
+      %td= Vips::LIBRARY_VERSION
     
     %tr
       %th DB size

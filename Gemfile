@@ -4,9 +4,9 @@ source 'https://rubygems.org'
 #   bundle update
 #   gem cleanup
 
-ruby '3.3.6'
+ruby '>= 3.0.0'
 
-gem 'rails',       '~> 8.0.0',   # to use edge: gem 'rails', github: 'rails/rails', branch: 'main'
+gem 'rails',       '~> 8.0.1',   # to use edge: gem 'rails', github: 'rails/rails', branch: 'main'
   require: %w[ shellwords open-uri pp open3 ]
 gem 'sqlite3',     '~> 2.3'      # sqlite3 database for Active Record
 gem 'puma',        '~> 6.5'      # puma web server -- https://github.com/puma/puma
@@ -17,7 +17,7 @@ gem 'importmap-rails'            # use JS with ESM import maps -- https://github
 gem 'dartsass-rails'             # use Dart SASS -- https://github.com/rails/dartsass-rails
 gem 'haml-rails',  '~> 2.1'      # https://haml.info
 gem 'kaminari',    '~> 1.2'      # pagination -- https://github.com/kaminari/kaminari
-gem 'kakasi',      '~> 1.0'      # kanji kana simple inverter -- https://github.com/knu/kakasi_ffi
+
 gem 'lograge',     '~> 0.14'     # greppable logs -- https://github.com/roidrage/lograge
 gem 'marcel',      '~> 1.0'      # mime type of files -- https://github.com/rails/marcel
 gem 'progressbar', '~> 1.13'     # cli progressbar -- https://github.com/jfelchner/ruby-progressbar
@@ -26,6 +26,9 @@ gem 'paper_trail', '~> 16.0'     # track model changes -- https://github.com/pap
 gem 'colorize',    '~> 1.1', require: 'colorized_string' # terminal colors -- https://github.com/fazibear/colorize
 gem 'httpx',       '~> 1.3'      # HTTP client -- https://gitlab.com/os85/httpx OR https://github.com/HoneyryderChuck/httpx
                                  # https://honeyryderchuck.gitlab.io/httpx/wiki/home.html | https://honeyryderchuck.gitlab.io/httpx/rdoc/
+
+gem 'fiddle',      '~> 1.1'      # libffi wrapper -- https://github.com/ruby/fiddle
+gem 'kakasi',      '~> 1.0'      # kanji kana simple inverter -- https://github.com/knu/kakasi_ffi
 
 # image manipulation  ==>         https://github.com/janko/image_processing
 # used by ActiveStorage variants: https://guides.rubyonrails.org/active_storage_overview.html#transforming-images

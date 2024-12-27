@@ -4,7 +4,7 @@
 load 'config/initializers/version.rb' rescue nil
 raise :no_version_found unless defined?(VERSION)
 # read RUBY VERSION
-RUBY_VER = File.read('.ruby-version').strip.sub(/.+-([0-9\.]+).*/, '\1') rescue nil
+RUBY_VER = File.read('.ruby-version').strip.sub(/(.+-)*([0-9\.]+).*/, '\2') rescue nil
 raise :no_version_found unless RUBY_VER
 
 puts "=== App #{VERSION} on Ruby #{RUBY_VER} ==="
