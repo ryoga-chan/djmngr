@@ -27,6 +27,9 @@ gem 'colorize',    '~> 1.1', require: 'colorized_string' # terminal colors -- ht
 gem 'httpx',       '~> 1.3'      # HTTP client -- https://gitlab.com/os85/httpx OR https://github.com/HoneyryderChuck/httpx
                                  # https://honeyryderchuck.gitlab.io/httpx/wiki/home.html | https://honeyryderchuck.gitlab.io/httpx/rdoc/
 
+# https://nokogiri.org/tutorials/installing_nokogiri.html#how-can-i-avoid-using-a-precompiled-native-gem
+gem 'nokogiri',    '~> 1.18', force_ruby_platform: true # HTML/XML parser -- https://github.com/sparklemotion/nokogiri
+
 gem 'fiddle',      '~> 1.1'      # libffi wrapper -- https://github.com/ruby/fiddle
 gem 'kakasi',      '~> 1.0'      # kanji kana simple inverter -- https://github.com/knu/kakasi_ffi
 
