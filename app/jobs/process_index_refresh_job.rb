@@ -6,7 +6,7 @@ class ProcessIndexRefreshJob < ApplicationJob
     '📃 xlate' => :kakasi,
     '🕛 time'  => :time,
     '🧰 size'  => :size,
-    '📦 group' => :group,
+    '📔 cover' => :group,
   }
 
   around_perform do |job, block|
