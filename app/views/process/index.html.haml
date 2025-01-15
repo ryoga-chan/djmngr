@@ -107,19 +107,19 @@
                             %i.mi preview
                           %span preview
                       %hr.dropdown-divider
-                      = link_to({job: :group}, class: 'dropdown-item',
-                                data: {confirm: 'Compare all covers?'}) do
-                        %span.icon-text
-                          %span.icon
-                            %i.mi image
-                          %span cover
-                      %hr.dropdown-divider
                       = link_to({job: :refresh}, class: 'dropdown-item',
                                 data: {confirm: 'Rescan to-sort folder?'}) do
                         %span.icon-text
                           %span.icon
                             %i.mi refresh
                           %span refresh
+                      %hr.dropdown-divider
+                      = link_to({job: :group}, class: 'dropdown-item',
+                                data: {confirm: 'Compare all covers?'}) do
+                        %span.icon-text
+                          %span.icon
+                            %i.mi image
+                          %span cover
               = bts_batch_actions = capture do
                 .control.batch-bt.is-hidden
                   = link_to '#', class: 'bt-toggle-all button',
