@@ -6,5 +6,6 @@ Rails.application.configure do
   # config.action_dispatch.x_sendfile_header = "X-Sendfile" # for Apache
   config.action_dispatch.x_sendfile_header = "X-Accel-Redirect" # for NGINX
 
-  config.force_ssl = false
+  config.assume_ssl = false
+  config.force_ssl  = false
 end if Rails.env.production?

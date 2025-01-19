@@ -29,7 +29,7 @@ class ProcessIndexRefreshJob < ApplicationJob
 
   def self.progress_file    = File.join(Setting['dir.sorting'], 'process-job.progress').to_s
   def self.rm_progress_file = FileUtils.rm_f(progress_file)
-  def self.progress = File.exist?(progress_file) ? File.read(progress_file) : :"starting job..."
+  def self.progress = File.read(progress_file) rescue :"starting job..."
   def self.progress_update(step:, steps:, msg: nil)
     text = "#{msg || description} | #{'%0.2f' % (step/steps.to_f*100)}% (#{step}/#{steps}) | #{Time.now.strftime '%F %T'}"
     File.atomic_write(progress_file){|f| f.write text }
