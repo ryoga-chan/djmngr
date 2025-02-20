@@ -1,4 +1,7 @@
 class Theme < ApplicationRecord
+  has_many :authors_themes
+  has_many :circles_themes
+
   has_and_belongs_to_many :authors, before_add: -> (t, a) {
     return unless t.authors.where(id: a.id).exists? # ensure uniqueness
     t.errors.add :base, "author already associated [#{a.id}: #{a.name}]"

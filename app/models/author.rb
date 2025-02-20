@@ -1,4 +1,7 @@
 class Author < ApplicationRecord
+  has_many :authors_themes
+  has_many :authors_doujinshi
+
   has_and_belongs_to_many :circles, before_add: -> (a, c) {
     return unless a.circles.where(id: c.id).exists? # ensure uniqueness
     a.errors.add :base, "circle already associated [#{c.id}: #{c.name}]"

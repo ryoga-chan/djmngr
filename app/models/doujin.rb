@@ -13,6 +13,9 @@ class Doujin < ApplicationRecord
 
   MEDIA_TYPES = %w[ doujin cg manga artbook ].freeze
 
+  has_many :authors_doujinshi
+  has_many :circles_doujinshi
+
   has_and_belongs_to_many :authors, before_add: -> (d, a) {
     return unless d.authors.where(id: a.id).exists? # ensure uniqueness
     d.errors.add :base, "author already associated [#{a.id}: #{a.name}]"

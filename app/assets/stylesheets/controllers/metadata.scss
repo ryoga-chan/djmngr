@@ -19,4 +19,8 @@ body[data-ctrl="authors"][data-action="show"],
 body[data-ctrl="circles"][data-action="show"],
 body[data-ctrl="themes"][data-action="show"] {
   pre { white-space: pre-line; }
+  .entries-scroller {
+    max-height: 7rem;
+    overflow: auto;
+  }
 }

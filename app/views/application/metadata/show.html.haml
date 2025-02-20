@@ -97,16 +97,42 @@
   
   - ([Author, Circle, Theme] - [@model]).each do |model|
     - rel_name = model.name.pluralize.downcase
+    - rel = @record.send(rel_name).order(Arel.sql "COALESCE(NULLIF(name_romaji, ''), NULLIF(name_kakasi, ''))")
+    
     %tr
-      %th= "Related #{model.name.pluralize}"
+      %th= "Related #{model.name.pluralize} (#{rel.count})"
       %td
-        .tags
-          - rel = @record.send(rel_name).order(Arel.sql "COALESCE(NULLIF(name_romaji, ''), NULLIF(name_kakasi, ''))")
-          - rel.select(:id, :name_romaji, :name_kakasi).each do |assoc|
-            %span.tag.is-link.is-light
-              = link_to assoc.label_name_latin,
-                {controller: rel_name, action: :show, id: assoc.id},
-                target: :_blank
+        .entries-scroller
+          - if model != Theme
+            :ruby
+              rel = rel. # count associated doujinshi
+                joins("LEFT OUTER JOIN #{rel_name}_doujinshi ON #{rel_name}_doujinshi.#{rel_name.singularize}_id = #{rel_name}.id").
+                group({rel_name => [:id, :name_romaji, :name_kakasi]}).
+                select \
+                  "#{rel_name}.id",
+                  "#{rel_name}.name_romaji",
+                  "#{rel_name}.name_kakasi",
+                  "COUNT(#{rel_name}_doujinshi.#{rel_name.singularize}_id) AS num"
+            - if (rel2 = rel.having("COUNT(#{rel_name}_doujinshi.#{rel_name.singularize}_id) > 0")).any?
+              .tags.with_doujinshi
+                - rel2.each do |assoc|
+                  %span.tag.is-link.is-light
+                    = link_to "#{assoc.label_name_latin} (#{assoc.num})",
+                      {controller: rel_name, action: :show, id: assoc.id},
+                      target: :_blank
+            - if (rel2 = rel.having("COUNT(#{rel_name}_doujinshi.#{rel_name.singularize}_id) = 0")).any?
+              .tags.without_doujinshi
+                - rel2.each do |assoc|
+                  %span.tag.is-link.is-light
+                    = link_to "#{assoc.label_name_latin}",
+                      {controller: rel_name, action: :show, id: assoc.id},
+                      target: :_blank
+          - else
+            - rel.select(:id, :name_romaji, :name_kakasi).each do |assoc|
+              %span.tag.is-link.is-light
+                = link_to assoc.label_name_latin,
+                  {controller: rel_name, action: :show, id: assoc.id},
+                  target: :_blank
   
   %tr
     %th Timestamps
