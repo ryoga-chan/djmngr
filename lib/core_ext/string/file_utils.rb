@@ -1,6 +1,6 @@
 module CoreExt::String::FileUtils
   RE_IMAGE_EXT = /\.(jpe*g|gif|png|webp)$/i
-
+  SORTABLE_MAX = 10 # max number of numbers to consider for sorting
   UTF8_ENC_OPTIONS = { invalid: :replace, undef: :replace, replace: '_' }.freeze
 
   def is_image_filename? = encode(Encoding::UTF_8, **UTF8_ENC_OPTIONS).match?(RE_IMAGE_EXT)
@@ -14,12 +14,30 @@ module CoreExt::String::FileUtils
     my_dir == '.' ? dst_name : File.join(my_dir, dst_name)
   end # add_suffix_to_filename
 
+  def to_a_sortable_by_numbers
+    nums = utf8_clean.
+      tr("^0-9", ' ').split(' ').map{|n| n.to_i }.
+      # prioritize by folder depth
+      unshift(count(File::SEPARATOR))
+
+    # consider only SORTABLE_MAX numbers at max
+    nums.size <= SORTABLE_MAX \
+      ? (SORTABLE_MAX - nums.size).times{ nums.push 0 }
+      : nums.slice!(SORTABLE_MAX, 1_000)
+
+    # preserve alphabetic order at last
+    nums.push self
+  end # to_a_sortable_by_numbers
+
+  def slice_me!(s, l)
+    slice! s, l
+    self
+  end # slice_me!
+
   def to_sortable_by_numbers
-    utf8_clean.
-      tr("^0-9", ' ').split(' ').   # consider numbers only
-      map{|n| '%010d' % n.to_i }. # add zero padding
-      push(self). # preserve the alphabetic order at the end
-      join(',')
+    to_a_sortable_by_numbers. # add zero padding
+      map{|n| n.is_a?(Numeric) ? ('%010d' % n).slice_me!(10, 1_000) : n }.
+      join #'|'
   end # to_sortable_by_numbers
 
   # from https://api.rubyonrails.org/classes/ActiveStorage/Filename.html#method-i-sanitized
