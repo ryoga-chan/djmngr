@@ -80,7 +80,7 @@
       - else
         - if @preparing_paths.include?(f.name)
           %span.tag.is-warning(title="processing") 🛠
-        = link_to f.name, action: :prepare_archive, path: f.name
+        = link_to f.name, {action: :prepare_archive, path: f.name}, class: 'process-file'
     .item-actions.mt-2
       = link_to('#', title: 'copy file name',
         onclick: %Q|MyApp.copy_to_clipboard( $(this).parent().prev().find('a').text().trim() ); return false|,
