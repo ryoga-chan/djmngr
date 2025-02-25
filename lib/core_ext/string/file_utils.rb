@@ -18,7 +18,7 @@ module CoreExt::String::FileUtils
     nums = utf8_clean.
       tr("^0-9", ' ').split(' ').map{|n| n.to_i }.
       # prioritize by folder depth
-      unshift(count(File::SEPARATOR))
+      unshift(scrub.count(File::SEPARATOR))
 
     # consider only SORTABLE_MAX numbers at max
     nums.size <= SORTABLE_MAX \
