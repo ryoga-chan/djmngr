@@ -5,9 +5,9 @@ module CoreExt::Vips::Operations
 
   module ClassMethods
     def webp_cropped_thumb(buffer_or_img, width: 160, height: 240, padding: true)
-      vips = buffer_or_img.is_a?(::Vips::Image) ?
-        buffer_or_img :
-        new_from_buffer(buffer_or_img, '')
+      vips = buffer_or_img.is_a?(::Vips::Image) \
+        ? buffer_or_img
+        : new_from_buffer(buffer_or_img, '')
 
       im = ::ImageProcessing::Vips.source vips
       if padding

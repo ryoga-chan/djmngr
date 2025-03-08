@@ -48,6 +48,7 @@ gem 'image_processing', '~> 1.13', require: %w[ ruby-vips image_processing ]
 ENV['PHASHION_USE_GITHUB_SRC'] ?
   gem('phashion', '~> 1.2', github: 'ryoga-chan/phashion') :
   gem('phashion', '~> 1.2', source: 'https://rubygems.pkg.github.com/ryoga-chan')
+gem 'dhash-vips', '~> 0.2'       # dHash and IDHash for image similarity -- https://github.com/Nakilon/dhash-vips
 
 #gem "solid_cache"               # database-backed adapter for Rails.cache
 #gem "solid_queue"               # database-backed adapter for Active Job

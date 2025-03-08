@@ -21,8 +21,7 @@ class ProcessBatchInspectJob < ApplicationJob
         info[:files][name] = image_entries.map &:name
 
         if cover = image_entries.first # extract cover image
-          info[:thumbs][name] = CoverMatchingJob.
-            hash_image_buffer cover.get_input_stream.read
+          info[:thumbs][name] = CoverMatchingJob.hash_image_buffer cover.get_input_stream.read
         end
       end
 
@@ -35,8 +34,11 @@ class ProcessBatchInspectJob < ApplicationJob
       matching_found = false
 
       groups.keys.each do |g|
-        hd = Phashion.hamming_distance info[:thumbs][f][:phash].to_i(16), info[:thumbs][g][:phash].to_i(16)
-        if hd < CoverMatchingJob::MAX_HAMMING_DISTANCE
+        match_found = CoverMatchingJob.similarity \
+          info[:thumbs][f][:phash ], info[:thumbs][g][:phash ],
+          info[:thumbs][f][:idhash], info[:thumbs][g][:idhash]
+
+        if match_found
           groups[g] << f
           matching_found = true
           break

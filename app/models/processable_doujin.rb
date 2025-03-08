@@ -76,27 +76,24 @@ class ProcessableDoujin < ApplicationRecord
     fname = file_path full: true
     return unless File.exist?(fname)
 
-    phash = nil
+    h = {}
 
     Zip::File.open(fname) do |zip|
       zip_images = zip.image_entries(sort: true)
+      @images = zip_images.size
 
-      if zip_images.any?
-        phash = CoverMatchingJob.hash_image_buffer zip_images.first.get_input_stream.read, hash_only: true
-        @images = zip_images.size
+      if cover = zip_images.first
+        h = CoverMatchingJob.hash_image_buffer cover.get_input_stream.read, hash_only: true
       end
     end
 
-    phash
+    h
   end # cover_fingerprint
 
   def cover_fingerprint!
     raise :record_not_persisted unless persisted?
-    fp = cover_fingerprint
-    self.class.connection.execute \
-      %Q(UPDATE #{self.class.table_name} SET cover_phash = 0x#{fp} WHERE id = #{id})
-    update images: @images
-    fp
+    h = cover_fingerprint
+    update! cover_phash: h[:phash], cover_idhash: h[:idhash], images: @images
   end # cover_fingerprint!
 
   def generate_preview

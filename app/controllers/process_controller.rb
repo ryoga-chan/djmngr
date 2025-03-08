@@ -232,7 +232,7 @@ class ProcessController < ApplicationController
 
     ProcessArchiveDecompressJob.rm_entry folder: @dname
 
-    CoverMatchingJob.rm_results_file @info[:cover_hash]
+    CoverMatchingJob.rm_results_file @info[:cover_hash][:idhash]
 
     msg   = params[:archive_too] == 'true' ? "archive and folder deleted:" : "folder deleted for"
     title = @info[:relative_path].one?     ? @info[:relative_path].first   : @info[:title]
@@ -424,7 +424,7 @@ class ProcessController < ApplicationController
           cover_path = ProcessArchiveDecompressJob.cover_path @dname, @info
           @info[:cover_hash] = CoverMatchingJob.hash_image cover_path
           File.open(File.join(@dname, 'info.yml'), 'w'){|f| f.puts @info.to_yaml }
-          CoverMatchingJob.perform_now @info[:cover_hash]
+          CoverMatchingJob.perform_now @info[:cover_hash][:phash], @info[:cover_hash][:idhash]
         end
 
         @dupes, @dupes_deleted = [], []
@@ -432,7 +432,7 @@ class ProcessController < ApplicationController
         # search dupes by cover similarity
         # check matching status/results
         if @info[:cover_hash].present? && !@info[:cover_results].is_a?(Hash)
-          cover_matching = CoverMatchingJob.results @info[:cover_hash]
+          cover_matching = CoverMatchingJob.results @info[:cover_hash][:idhash]
           if cover_matching.is_a?(Hash)
             @info[:cover_results        ] = cover_matching[:results        ]
             @info[:cover_results_deleted] = cover_matching[:results_deleted]

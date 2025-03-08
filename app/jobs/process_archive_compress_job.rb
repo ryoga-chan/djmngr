@@ -167,7 +167,7 @@ class ProcessArchiveCompressJob < ApplicationJob
         File.atomic_write(File.join(src_dir, 'finalize.perc')){|f| f.write perc.round(2) }
       end # Doujin.transaction
 
-      CoverMatchingJob.rm_results_file info[:cover_hash]
+      CoverMatchingJob.rm_results_file info[:cover_hash][:idhash]
     rescue
       info[:finalize_error    ] = $!.to_s
       info[:finalize_backtrace] = $!.backtrace

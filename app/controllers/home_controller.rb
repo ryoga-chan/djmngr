@@ -97,8 +97,8 @@ class HomeController < ApplicationController
       # single file: search by cover image
       when params[:images]&.one?
         if cover_hash = CoverMatchingJob.hash_image(params[:images].first.path)
-          CoverMatchingJob.perform_now cover_hash
-          redirect_to search_cover_doujinshi_path(hash: cover_hash)
+          CoverMatchingJob.perform_now cover_hash[:phash], cover_hash[:idhash]
+          redirect_to search_cover_doujinshi_path(hash: cover_hash[:idhash])
         else
           flash.now[:alert] = "fingerprinting image error"
         end

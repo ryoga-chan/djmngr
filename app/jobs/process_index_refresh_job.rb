@@ -74,35 +74,30 @@ class ProcessIndexRefreshJob < ApplicationJob
 
     if File.exist?(zip_path)
       if track
-        cover_hash = nil
+        dd = DeletedDoujin.new
 
         # count images and other files
-        file_counters = { num_images: 0, num_files: 0 }
         Zip::File.open(zip_path) do |zip|
-          zip.entries.sort_by_method(:name).each do |e|
-            next unless e.file?
+          entries = zip.split_entries(sort: true)
 
-            is_image = e.name.is_image_filename?
+          dd.num_images = entries[:images].size
+          dd.num_files  = entries[:files ].size
 
-            # generate phash for the first image file
-            if cover_hash.nil? && is_image
-              cover_hash = CoverMatchingJob.hash_image_buffer(e.get_input_stream.read)[:phash]
-            end
-
-            file_counters[is_image ? :num_images : :num_files] += 1
+          # generate phash for the first image file
+          if cover = entries[:images].first
+            h = CoverMatchingJob.hash_image_buffer(cover.get_input_stream.read, hash_only: true)
+            dd.cover_phash  = h[:phash]
+            dd.cover_idhash = h[:idhash]
           end
         end
 
         # track deletion
-        name = pd.name.tr(File::SEPARATOR, ' ')
-        dd = DeletedDoujin.create! file_counters.merge({
-          name:             name,
-          name_kakasi:      name.to_romaji,
-          size:             File.size(zip_path),
-          merged:           merged,
-          doujin_id:        doujin_id,
-        })
-        dd.cover_fingerprint! cover_hash if cover_hash.present?
+        name = pd.name.tr File::SEPARATOR, ' '
+        dd.update! name:        name,
+                   name_kakasi: name.to_romaji,
+                   size:        File.size(zip_path),
+                   merged:      merged,
+                   doujin_id:   doujin_id
       end # if track
 
       # remove file from disk

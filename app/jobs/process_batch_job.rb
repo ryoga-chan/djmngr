@@ -126,8 +126,8 @@ class ProcessBatchJob < ApplicationJob
       # run cover image hash matching
       cover_path = ProcessArchiveDecompressJob.cover_path dname, info
       info[:cover_hash] = CoverMatchingJob.hash_image cover_path
-      CoverMatchingJob.perform_now info[:cover_hash]
-      cover_matching = CoverMatchingJob.results info[:cover_hash]
+      CoverMatchingJob.perform_now info[:cover_hash][:phash], info[:cover_hash][:idhash]
+      cover_matching = CoverMatchingJob.results info[:cover_hash][:idhash]
       info[:cover_results] = cover_matching[:results]
       info[:cover_status ] = cover_matching[:status]
       File.open(info_fname, 'w'){|f| f.puts info.to_yaml }
