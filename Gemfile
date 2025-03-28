@@ -41,14 +41,10 @@ gem 'kakasi',      '~> 1.0'      # kanji kana simple inverter -- https://github.
 #                                 https://www.libvips.org/API/current/func-list.html
 gem 'image_processing', '~> 1.13', require: %w[ ruby-vips image_processing ]
 
-# https://github.com/westonplatter/phashion -- pHash: image perceptual hashing
-#   using a custom version because the original author still hasn't updated the
-#   official gem with the latest patch:
-#   => https://github.com/westonplatter/phashion/issues/90#issuecomment-1942376596
-ENV['PHASHION_USE_GITHUB_SRC'] ?
-  gem('phashion', '~> 1.2', github: 'ryoga-chan/phashion') :
-  gem('phashion', '~> 1.2', source: 'https://rubygems.pkg.github.com/ryoga-chan')
-gem 'dhash-vips', '~> 0.2'       # dHash and IDHash for image similarity -- https://github.com/Nakilon/dhash-vips
+# image perceptual hashing
+gem 'phash-rb'  , '~> 0.1', require: 'phash' # pHash-0.9.6 (ruby) -- https://github.com/khasinski/phash-rb
+#gem 'phashion'  , '~> 1.2'      # pHash-0.9.6 (C) -- see https://github.com/ryoga-chan/phashion
+#gem 'dhash-vips', '~> 0.2'      # dHash & IDHash -- https://github.com/Nakilon/dhash-vips
 
 #gem "solid_cache"               # database-backed adapter for Rails.cache
 #gem "solid_queue"               # database-backed adapter for Active Job

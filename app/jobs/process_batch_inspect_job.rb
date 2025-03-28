@@ -36,7 +36,7 @@ class ProcessBatchInspectJob < ApplicationJob
       groups.keys.each do |g|
         match_found = CoverMatchingJob.similarity \
           info[:thumbs][f][:phash ], info[:thumbs][g][:phash ],
-          info[:thumbs][f][:idhash], info[:thumbs][g][:idhash]
+          info[:thumbs][f][:sdhash], info[:thumbs][g][:sdhash]
 
         if match_found
           groups[g] << f

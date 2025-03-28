@@ -59,3 +59,7 @@ bin/rails g controller ws ehentai
 bin/rails g model processable_doujin_dupe pd_parent_id:integer pd_child_id:integer likeness:integer
 
 bin/rails g migration add_cover_idhash_to_doujinshi cover_idhash:string
+
+bin/rails g migration add_cover_sdhash_to_doujinshi cover_sdhash:integer
+Doujin.transaction{ Doujin.find_each.with_index{|d, i| print "#{i}\r"; d.cover_fingerprint! }};puts ''
+Doujin.transaction{ ProcessableDoujin.find_each.with_index{|d, i| print "#{i}\r"; d.cover_fingerprint! }};puts ''

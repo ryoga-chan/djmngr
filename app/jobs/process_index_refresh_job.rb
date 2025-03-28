@@ -87,7 +87,7 @@ class ProcessIndexRefreshJob < ApplicationJob
           if cover = entries[:images].first
             h = CoverMatchingJob.hash_image_buffer(cover.get_input_stream.read, hash_only: true)
             dd.cover_phash  = h[:phash]
-            dd.cover_idhash = h[:idhash]
+            dd.cover_sdhash = h[:sdhash]
           end
         end
 

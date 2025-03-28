@@ -232,7 +232,7 @@ class Doujin < ApplicationRecord
   def cover_fingerprint!
     raise :record_not_persisted unless persisted?
     h = cover_fingerprint
-    update! cover_phash: h[:phash], cover_idhash: h[:idhash]
+    update! cover_phash: h[:phash], cover_sdhash: h[:sdhash]
   end # cover_fingerprint!
 
   # next page numer for `/doujinshi/ID/read` action
@@ -306,7 +306,7 @@ class Doujin < ApplicationRecord
     return unless @save_deletion_data
 
     fname = file_dl_name omit_ext: true
-    attrs = attributes.slice *%w[ size num_images num_files cover_phash cover_idhash ]
+    attrs = attributes.slice *%w[ size num_images num_files cover_phash cover_sdhash ]
 
     DeletedDoujin.create attrs.merge({
       doujin_id:        id,

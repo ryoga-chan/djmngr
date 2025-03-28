@@ -93,7 +93,7 @@ class ProcessableDoujin < ApplicationRecord
   def cover_fingerprint!
     raise :record_not_persisted unless persisted?
     h = cover_fingerprint
-    update! cover_phash: h[:phash], cover_idhash: h[:idhash], images: @images
+    update! cover_phash: h[:phash], cover_sdhash: h[:sdhash], images: @images
   end # cover_fingerprint!
 
   def generate_preview

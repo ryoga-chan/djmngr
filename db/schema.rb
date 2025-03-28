@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_07_164547) do
+ActiveRecord::Schema[8.0].define(version: 2025_03_26_114000) do
   create_table "authors", force: :cascade do |t|
     t.string "name", null: false
     t.string "name_romaji"
@@ -109,6 +109,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_07_164547) do
     t.integer "cover_phash"
     t.datetime "created_at"
     t.string "cover_idhash", limit: 64
+    t.integer "cover_sdhash"
   end
 
   create_table "doujinshi", force: :cascade do |t|
@@ -141,6 +142,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_07_164547) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "cover_idhash", limit: 64
+    t.integer "cover_sdhash"
   end
 
   create_table "doujinshi_shelves", force: :cascade do |t|
@@ -173,6 +175,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_07_164547) do
     t.string "notes"
     t.datetime "created_at"
     t.string "cover_idhash", limit: 64
+    t.integer "cover_sdhash"
   end
 
   create_table "settings", force: :cascade do |t|

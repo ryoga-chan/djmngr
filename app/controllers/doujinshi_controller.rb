@@ -481,8 +481,9 @@ class DoujinshiController < ApplicationController
     end
 
     if cover_hash
-      CoverMatchingJob.perform_now cover_hash[:phash], cover_hash[:idhash]
-      return redirect_to(hash: cover_hash[:idhash], format: params[:format])
+      CoverMatchingJob.perform_now cover_hash[:phash], cover_hash[:sdhash]
+      fname = CoverMatchingJob.results_fname cover_hash[:phash]
+      return redirect_to(hash: fname, format: params[:format])
     end
 
     fname = File.join(Setting['dir.sorting'], 'cover-search.yml').to_s

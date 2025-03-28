@@ -36,8 +36,8 @@ class DeletedDoujin < ApplicationRecord
     rel.order(Arel.sql "COALESCE(NULLIF(alt_name_kakasi, ''), NULLIF(name_kakasi, ''))")
   end # self.search
 
-  def cover_fingerprint!(h)
+  def cover_fingerprint!(info)
     raise :record_not_persisted unless persisted?
-    update! cover_phash: h[:phash], cover_idhash: h[:idhash]
+    update! cover_phash: info[:phash], cover_sdhash: info[:sdhash]
   end # cover_fingerprint!
 end
