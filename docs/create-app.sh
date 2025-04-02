@@ -63,3 +63,5 @@ bin/rails g migration add_cover_idhash_to_doujinshi cover_idhash:string
 bin/rails g migration add_cover_sdhash_to_doujinshi cover_sdhash:integer
 Doujin.transaction{ Doujin.find_each.with_index{|d, i| print "#{i}\r"; d.cover_fingerprint! }};puts ''
 Doujin.transaction{ ProcessableDoujin.find_each.with_index{|d, i| print "#{i}\r"; d.cover_fingerprint! }};puts ''
+ProcessableDoujinDupe.delete_all
+ProcessIndexGroupJob.perform_now
