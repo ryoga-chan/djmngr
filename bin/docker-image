@@ -13,7 +13,7 @@ IMG_NAME = "ryogachan/djmngr:#{VERSION}"
 
 case ARGV.shift
   when 'build'
-    puts "Building image:"
+    puts "### Building image:"
     sleep 2
     
     # read bundler credentials
@@ -35,37 +35,39 @@ case ARGV.shift
     system %Q| docker image tag #{IMG_NAME} ryogachan/djmngr:latest |
   
   when 'run'
-    puts "Running built image:"
+    puts "### Running built image:"
     cmd = %Q| docker run --rm -ti -p 3000:3000 --name trash #{IMG_NAME} |
     puts cmd
     system cmd
   
   when 'sh'
-    puts "Opening shell in image:"
+    puts "### Opening shell in image:"
     cmd = %Q| docker run --rm -ti -p 3000:3000 --name trash #{IMG_NAME} bash -il |
     puts cmd
     system cmd
   
   when 'exec'
-    puts "Opening shell in container:"
+    puts "### Opening shell in container:"
     cmd = %Q| docker exec -ti trash bash -il |
     puts cmd
     system cmd
   
   when 'push'
-    puts "Logging in:"
+    puts "### Logging in:"
     system %Q| docker login |
     
-    puts "\nPushing:"
+    puts "\n### Pushing [#{VERSION}]:"
     system %Q| docker push #{IMG_NAME} |
+    
+    puts "\n### Tagging [latest]:"
     system %Q| docker push ryogachan/djmngr:latest |
   
   when 'cc'
-    puts "Clear builder cache:"
+    puts "### Clear builder cache:"
     system %Q| docker builder prune -f |
   
   when 'prune'
-    puts "Pruning docker images & system:"
+    puts "### Pruning docker images & system:"
     # https://stackoverflow.com/questions/32490229/how-can-i-delete-docker-images-by-tag-preferably-with-wildcarding/47265229#47265229
     images = `docker images --filter=reference="ryogachan/djmngr*" -q | sort -u`.split("\n")
     system %Q| docker image rm -f #{images.join ' '} |

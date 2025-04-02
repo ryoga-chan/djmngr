@@ -27,6 +27,7 @@ class CreateDoujinshi < ActiveRecord::Migration[7.0]
       t.datetime :faved_at
       t.date     :released_at
       t.integer  :cover_phash
+      t.integer  :cover_sdhash
 
       t.timestamps
     end

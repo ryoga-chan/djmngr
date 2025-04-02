@@ -16,6 +16,7 @@ class CreateDeletedDoujinshi < ActiveRecord::Migration[7.0]
       # data from the eventual already processed file
       t.integer  :doujin_id
       t.integer  :cover_phash
+      t.integer  :cover_sdhash
 
       t.datetime :created_at
     end
