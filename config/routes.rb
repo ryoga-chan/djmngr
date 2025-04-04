@@ -30,6 +30,8 @@ Rails.application.routes.draw do
       post    :prepare_batch    # prepare mass processing of selected files
       post    :batch_delete     # delete selected files
       post    :batch_merge      # process selected files into a single folder
+      post    :batch_rehash     # rehash a different page
+      get     :batch_rehash
       get     :sample_images
       get     :clear
       get     :compare_add

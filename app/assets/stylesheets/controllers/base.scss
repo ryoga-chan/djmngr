@@ -148,3 +148,8 @@ body:not(.nsfw-mode) {
   flex-direction: column;
   text-align: left;
 }
+
+.dropdown-menu {
+  border: 1px outset silver;
+  border-radius: 0.5rem;
+}

@@ -72,7 +72,7 @@ class ProcessableDoujin < ApplicationRecord
   end # process_later
 
   # extract cover from zip file and generate its phash
-  def cover_fingerprint
+  def cover_fingerprint(page: 1)
     fname = file_path full: true
     return unless File.exist?(fname)
 
@@ -82,7 +82,7 @@ class ProcessableDoujin < ApplicationRecord
       zip_images = zip.image_entries(sort: true)
       @images = zip_images.size
 
-      if cover = zip_images.first
+      if cover = zip_images[page.to_i - 1]
         h = CoverMatchingJob.hash_image_buffer cover.get_input_stream.read, hash_only: true
       end
     end
@@ -90,9 +90,9 @@ class ProcessableDoujin < ApplicationRecord
     h
   end # cover_fingerprint
 
-  def cover_fingerprint!
+  def cover_fingerprint!(page: 1)
     raise :record_not_persisted unless persisted?
-    h = cover_fingerprint
+    h = cover_fingerprint page: page
     update! cover_phash: h[:phash], cover_sdhash: h[:sdhash], images: @images
   end # cover_fingerprint!
 

@@ -6,7 +6,7 @@ source 'https://rubygems.org'
 
 ruby '>= 3.0.0'
 
-gem 'rails',       '~> 8.0.1',   # to use edge: gem 'rails', github: 'rails/rails', branch: 'main'
+gem 'rails',       '~> 8.0.2',   # to use edge: gem 'rails', github: 'rails/rails', branch: 'main'
   require: %w[ shellwords open-uri pp open3 ]
 gem 'sqlite3',     '~> 2.3'      # sqlite3 database for Active Record
 gem 'puma',        '~> 6.5'      # puma web server -- https://github.com/puma/puma

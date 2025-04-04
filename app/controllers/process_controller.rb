@@ -208,6 +208,15 @@ class ProcessController < ApplicationController
       redirect_to(edit_process_path id: hash)
   end # batch_merge
 
+  def batch_rehash
+    if params[:file_ids].to_a.any?
+      ProcessIndexGroupJob.perform_later ids: params[:file_ids], page: params[:page].to_i
+      redirect_to process_index_path(term: params[:term])
+    else
+      redirect_to process_index_path(term: params[:term]), alert: "no files selected!"
+    end
+  end # batch_rehash
+
   def delete_archive
     ProcessArchiveDecompressJob.rm_entry path: params[:path]
     ProcessIndexRefreshJob.rm_entry params[:path], track: true, rm_zip: true
