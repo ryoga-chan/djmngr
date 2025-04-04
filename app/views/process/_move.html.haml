@@ -30,7 +30,7 @@
             - else
               = @info[:file_type]
           
-          - if @info[:relative_path].one?
+          - if @info[:relative_path].one? && !@info[:dummy]
             %span.mr-3= render partial: 'file_actions', locals: {fname: @info[:relative_path].first}
           
           = links_to_search_engines search_term, target: :_blank

@@ -211,6 +211,7 @@ class ProcessController < ApplicationController
   def batch_rehash
     if params[:file_ids].to_a.any?
       ProcessIndexGroupJob.perform_later ids: params[:file_ids], page: params[:page].to_i
+      sleep 1
       redirect_to process_index_path(term: params[:term])
     else
       redirect_to process_index_path(term: params[:term]), alert: "no files selected!"
