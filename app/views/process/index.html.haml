@@ -67,20 +67,8 @@
       = f.hidden_field :term, value: params[:term]
       
       .columns.my-0.is-mobile
-        .column.py-0.pb-2
-          -#%span Sort files by
-          .field.has-addons
-            .control
-              .select(style="vertical-align: middle")= select_tag :sort_by,
-                options_for_select(ProcessIndexRefreshJob::ORDER, params[:sort_by]),
-                onchange: %Q|jQuery('#frm_search').find('input[name="sort_by"]').val(jQuery(this).val()).end().submit()|
-            .control
-              %button.button(type="button" onclick="jQuery('form.filters').toggleClass('is-hidden').find('input[type=\"text\"]').focus()")
-                %span.icon.ml-1
-                  %i.mi(title="show search bar") filter_list
-                %span.is-hidden-touch.ml-1 search
         .column.py-0
-          .actions.mb-4.has-text-right.has-text-left-mobile
+          .actions.mb-4
             .dropdown.is-hoverable.has-text-left(title="mass actions" onclick="jQuery(this).toggleClass('is-active')")
               .dropdown-trigger
                 %button.button(type="button")
@@ -201,16 +189,29 @@
                           %span.is-hidden-mobile previews
                           %span.is-hidden-tablet prv
       
-            %a.button.is-hidden-mobile(href="#page-bottom")
-              %span.icon
-                %i.mi vertical_align_bottom
+        .column.py-0.pb-2
+          -#%span Sort files by
+          .field.has-addons.is-justify-content-right
+            .control
+              .select(style="vertical-align: middle")= select_tag :sort_by,
+                options_for_select(ProcessIndexRefreshJob::ORDER, params[:sort_by]),
+                onchange: %Q|jQuery('#frm_search').find('input[name="sort_by"]').val(jQuery(this).val()).end().submit()|
+            .control
+              %button.button(type="button" onclick="jQuery('form.filters').toggleClass('is-hidden').find('input[type=\"text\"]').focus()")
+                %span.icon
+                  %i.mi(title="show search bar") filter_list
+                -#%span.is-hidden-touch search
+            .control
+              %a.button(href="#page-bottom")
+                %span.icon
+                  %i.mi vertical_align_bottom
 
       - if @files.empty?
         %em no files to process
       - else
         = page_entries_info @files
 
-        %table.to_process.table.is-striped.is-hoverable.ml-4
+        %table.to_process.table.is-striped.is-hoverable
           %tbody
             - idx = 0
             - max_page_weight = Setting[:process_aps].to_f.megabytes
@@ -237,14 +238,14 @@
               - else
                 = render partial: 'index_row', locals: { f: f, idx: idx+=1, max_page_weight: max_page_weight }
         
-        .columns.mt-0.mb-4
+        .columns.is-mobile.mt-0.mb-4
           .column.py-0
-            .actions.has-text-right
+            .actions
               .dropdown.is-up.is-hoverable.has-text-left(title="batch actions" onclick="jQuery(this).toggleClass('is-active')")
                 = bts_batch_actions
-              
-              %a.button(href="#page-top")
-                %span.icon
-                  %i.mi vertical_align_top
+          .column.py-0.has-text-right
+            %a.button(href="#page-top")
+              %span.icon
+                %i.mi vertical_align_top
         
         = paginate @files, params: {sort_by: params[:sort_by]}
