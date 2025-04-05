@@ -80,7 +80,7 @@
                   %i.mi(title="show search bar") filter_list
                 %span.is-hidden-touch.ml-1 search
         .column.py-0
-          .actions.mb-4.has-text-right.has-text-centered-mobile
+          .actions.mb-4.has-text-right.has-text-left-mobile
             .dropdown.is-hoverable.has-text-left(title="mass actions" onclick="jQuery(this).toggleClass('is-active')")
               .dropdown-trigger
                 %button.button(type="button")
@@ -116,124 +116,95 @@
                         %span compare
 
             .dropdown.is-hoverable.has-text-left(title="batch actions" onclick="jQuery(this).toggleClass('is-active')")
-              .dropdown-trigger
-                %button.button(type="button")
-                  %span.icon.mr-0.ml-1
-                    %i.mi inventory_2
-                  %span.is-hidden-touch batch
-                  %span.icon.ml-0.is-small
-                    %i.mi.mi-small expand_more
-              .dropdown-menu
-                .dropdown-content
-                  -# https://stackoverflow.com/questions/3027149/how-do-i-create-multiple-submit-buttons-for-the-same-form-in-rails
-                  .dropdown-item
-                    = f.button(type: :submit, class: 'button is-danger batch-delete',
-                               formaction: batch_delete_process_index_path,
-                               data: {msg: 'Delete NUM (SIZE) files?', confirm: 'Delete selected files?'}) do
-                      %span.icon
-                        %i.mi delete_forever
-                      %span.is-hidden-mobile delete
-                      %span.is-hidden-tablet del
-
-                  .dropdown-item
-                    = f.button(type: :submit, class: 'button is-info',
-                               formaction: batch_merge_process_index_path,
-                               data: {confirm: 'Merge selected files?'}) do
-                      %span.icon
-                        %i.mi merge
-                      %span.is-hidden-mobile merge
-                      %span.is-hidden-tablet mrg
-
-                  .dropdown-item
-                    = f.button type: :submit, class: 'button is-link' do
-                      %span.icon
-                        %i.mi send
-                      %span.is-hidden-mobile prepare
-                      %span.is-hidden-tablet prp
-
-                  %hr.dropdown-divider
-
-                  .dropdown-item
-                    = f.button(type: :submit, class: 'button is-info',
-                               formaction: batch_rehash_process_index_path(page: 2),
-                               data: {confirm: 'Compare page 2 for selected files?'}) do
-                      %span.icon
-                        %i.mi looks_two
-                      %span.is-hidden-mobile page 2
-                      %span.is-hidden-tablet p2
-
-                  .dropdown-item
-                    = f.button(type: :submit, class: 'button is-info',
-                               formaction: batch_rehash_process_index_path(page: 3),
-                               data: {confirm: 'Compare page 3 for selected files?'}) do
-                      %span.icon
-                        %i.mi looks_3
-                      %span.is-hidden-mobile page 3
-                      %span.is-hidden-tablet p3
-
-                  .dropdown-item
-                    = f.button(type: :submit, class: 'button is-info',
-                               formaction: batch_rehash_process_index_path(page: 1),
-                               data: {confirm: 'Compare page 1 for selected files?'}) do
-                      %span.icon
-                        %i.mi looks_one
-                      %span.is-hidden-mobile page 1
-                      %span.is-hidden-tablet p1
-
-                  %hr.dropdown-divider
-
-                  .dropdown-item
-                    = link_to '#', class: 'bt-toggle-all button',
-                      onclick: %Q|jQuery('td.rm-or-batch :checkbox').each(function(){ $(this).prop('checked', !$(this).prop('checked')) }).first(); jQuery.app.update_tot_filesize(); return false| do
-                      %span.icon-text
+              = bts_batch_actions = capture do
+                .dropdown-trigger
+                  %button.button(type="button")
+                    %span.icon.mr-0.ml-1
+                      %i.mi inventory_2
+                    %span.is-hidden-touch batch
+                    %span.icon.ml-0.is-small
+                      %i.mi.mi-small expand_more
+                .dropdown-menu
+                  .dropdown-content
+                    -# https://stackoverflow.com/questions/3027149/how-do-i-create-multiple-submit-buttons-for-the-same-form-in-rails
+                    .dropdown-item
+                      = f.button(type: :submit, class: 'button is-danger batch-delete',
+                                 formaction: batch_delete_process_index_path,
+                                 data: {msg: 'Delete NUM (SIZE) files?', confirm: 'Delete selected files?'}) do
                         %span.icon
-                          %i.mi select_all
-                        %span.is-hidden-mobile select
-                        %span.is-hidden-tablet sel
+                          %i.mi delete_forever
+                        %span.is-hidden-mobile delete
+                        %span.is-hidden-tablet del
 
-                  .dropdown-item
-                    = link_to '#', class: 'button',
-                      onclick: %Q|jQuery('figure.image').toggleClass('is-hidden')| do
-                      %span.icon-text
+                    .dropdown-item
+                      = f.button(type: :submit, class: 'button is-info',
+                                 formaction: batch_merge_process_index_path,
+                                 data: {confirm: 'Merge selected files?'}) do
                         %span.icon
-                          %i.mi compare
-                        %span.is-hidden-mobile previews
-                        %span.is-hidden-tablet prv
+                          %i.mi merge
+                        %span.is-hidden-mobile merge
+                        %span.is-hidden-tablet mrg
 
-            - bts_batch_actions = capture do
-              .control.batch-bt.is-hidden
-                = link_to '#', class: 'bt-toggle-all button',
-                  onclick: %Q|jQuery('td.rm-or-batch :checkbox').each(function(){ $(this).prop('checked', !$(this).prop('checked')) }).first(); jQuery.app.update_tot_filesize(); return false| do
-                  %span.icon.ml-1
-                    %i.mi select_all
-                  %span.is-hidden-touch.ml-1 toggle
-              .control.batch-rm.is-hidden
-                -# https://stackoverflow.com/questions/3027149/how-do-i-create-multiple-submit-buttons-for-the-same-form-in-rails
-                = f.button(type: :submit, class: 'button is-danger batch-delete',
-                           formaction: batch_delete_process_index_path,
-                           data: {msg: 'Delete NUM (SIZE) files?', confirm: 'Delete selected files?'}) do
-                  %span.icon.ml-1
-                    %i.mi delete_forever
-                  %span.is-hidden-mobile.ml-1 delete
-              .control.batch-bt.is-hidden
-                = f.button(type: :submit, class: 'button is-info',
-                           formaction: batch_merge_process_index_path,
-                           data: {confirm: 'Merge selected files?'}) do
-                  %span.icon.ml-1
-                    %i.mi merge
-                  %span.is-hidden-mobile.ml-1 merge
-              .control.batch-bt.is-hidden
-                = f.button type: :submit, class: 'button is-link' do
-                  %span.icon.ml-1
-                    %i.mi send
-                  %span.is-hidden-mobile.ml-1 prepare
-              .control
-                = link_to '#', class: 'bt-batch button',
-                  onclick: %Q|jQuery('.batch-bt, .batch-rm, .bt-mass').toggleClass('is-hidden'); return false| do
-                  %span.icon.ml-1
-                    %i.mi inventory_2
-                  %span.is-hidden-touch batch
+                    .dropdown-item
+                      = f.button type: :submit, class: 'button is-link' do
+                        %span.icon
+                          %i.mi send
+                        %span.is-hidden-mobile prepare
+                        %span.is-hidden-tablet prp
+
+                    %hr.dropdown-divider
+
+                    .dropdown-item
+                      = f.button(type: :submit, class: 'button is-info',
+                                 formaction: batch_rehash_process_index_path(page: 2),
+                                 data: {confirm: 'Compare page 2 for selected files?'}) do
+                        %span.icon
+                          %i.mi looks_two
+                        %span.is-hidden-mobile page 2
+                        %span.is-hidden-tablet p2
+
+                    .dropdown-item
+                      = f.button(type: :submit, class: 'button is-info',
+                                 formaction: batch_rehash_process_index_path(page: 3),
+                                 data: {confirm: 'Compare page 3 for selected files?'}) do
+                        %span.icon
+                          %i.mi looks_3
+                        %span.is-hidden-mobile page 3
+                        %span.is-hidden-tablet p3
+
+                    .dropdown-item
+                      = f.button(type: :submit, class: 'button is-info',
+                                 formaction: batch_rehash_process_index_path(page: 1),
+                                 data: {confirm: 'Compare page 1 for selected files?'}) do
+                        %span.icon
+                          %i.mi looks_one
+                        %span.is-hidden-mobile page 1
+                        %span.is-hidden-tablet p1
+
+                    %hr.dropdown-divider
+
+                    .dropdown-item
+                      = link_to '#', class: 'bt-toggle-all button',
+                        onclick: %Q|jQuery('td.rm-or-batch :checkbox').each(function(){ $(this).prop('checked', !$(this).prop('checked')) }).first(); jQuery.app.update_tot_filesize(); return false| do
+                        %span.icon-text
+                          %span.icon
+                            %i.mi select_all
+                          %span.is-hidden-mobile select
+                          %span.is-hidden-tablet sel
+
+                    .dropdown-item
+                      = link_to '#', class: 'button',
+                        onclick: %Q|jQuery('figure.image').toggleClass('is-hidden')| do
+                        %span.icon-text
+                          %span.icon
+                            %i.mi compare
+                          %span.is-hidden-mobile previews
+                          %span.is-hidden-tablet prv
       
+            %a.button.is-hidden-mobile(href="#page-bottom")
+              %span.icon
+                %i.mi vertical_align_bottom
+
       - if @files.empty?
         %em no files to process
       - else
@@ -268,7 +239,12 @@
         
         .columns.my-0
           .column.py-0
-            .actions
-              .field.has-addons.mb-4.is-justify-content-end= bts_batch_actions
+            .actions.has-text-right
+              .dropdown.is-up.is-hoverable.has-text-left(title="batch actions" onclick="jQuery(this).toggleClass('is-active')")
+                = bts_batch_actions
+              
+              %a.button(href="#page-top")
+                %span.icon
+                  %i.mi vertical_align_top
         
         = paginate @files, params: {sort_by: params[:sort_by]}

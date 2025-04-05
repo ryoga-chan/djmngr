@@ -54,18 +54,19 @@
         %span.icon.is-small
           %i.mi.mi-small delete
     
-  %td.batch-size.file-size.has-text-right.w1.nowrap
-    - if f.images
-      .images
-        %span= f.images
-        %span.is-size-7 P
-      - mean_page_weight = (f.size.to_f / f.images)
-      - if mean_page_weight > (local_assigns[:max_page_weight] || 0.6.megabytes)
-        .tag.is-warning.is-size-8= "#{number_to_human_size mean_page_weight}/P"
-    .size
-      - num, unit = number_to_human_size(f.size).split(' ')
-      %span= num
-      %span.is-size-7= unit
+  %td.batch-size.file-size.has-text-right.w1
+    .nowrap
+      - if f.images
+        .images
+          %span<>= f.images
+          %span.is-size-8 P
+        - mean_page_weight = (f.size.to_f / f.images)
+        - if mean_page_weight > (local_assigns[:max_page_weight] || 0.6.megabytes)
+          .tag.is-warning.is-size-8= "#{number_to_human_size mean_page_weight}/P"
+      .size
+        - num, unit = number_to_human_size(f.size).split(' ')
+        %span<>= num
+        %span.is-size-8= unit[0]
     - if @group_sort
       .group-entry-tags.is-hidden-desktop= group_entry_tags
 
@@ -119,29 +120,29 @@
                       %i.mi.mi-small preview
                     %span preview
     
-            .dropdown-item
-              = link_to(batch_rehash_process_index_path(page: 2, file_ids: [f.id]),
-                data: { confirm: 'Compare page 2 for this file?' }, title: 'compare page 2',
-                class: 'button is-info is-rounded is-small tiny-bt') do
-                %span.icon.is-small
-                  %i.mi.mi-small looks_two
-                %span page 2
-            
-            .dropdown-item
-              = link_to(batch_rehash_process_index_path(page: 3, file_ids: [f.id]),
-                data: { confirm: 'Compare page 3 for this file?' }, title: 'compare page 3', 
-                class: 'button is-info is-rounded is-small tiny-bt') do
-                %span.icon.is-small
-                  %i.mi.mi-small looks_3
-                %span page 3
-            
-            .dropdown-item
-              = link_to(batch_rehash_process_index_path(page: 1, file_ids: [f.id]),
-                data: { confirm: 'Compare page 1 for this file?' }, title: 'compare page 1',
-                class: 'button is-info is-rounded is-small tiny-bt') do
-                %span.icon.is-small
-                  %i.mi.mi-small looks_one
-                %span page 1
+              .dropdown-item
+                = link_to(batch_rehash_process_index_path(page: 2, file_ids: [f.id]),
+                  data: { confirm: 'Compare page 2 for this file?' }, title: 'compare page 2',
+                  class: 'button is-info is-rounded is-small tiny-bt') do
+                  %span.icon.is-small
+                    %i.mi.mi-small looks_two
+                  %span page 2
+              
+              .dropdown-item
+                = link_to(batch_rehash_process_index_path(page: 3, file_ids: [f.id]),
+                  data: { confirm: 'Compare page 3 for this file?' }, title: 'compare page 3', 
+                  class: 'button is-info is-rounded is-small tiny-bt') do
+                  %span.icon.is-small
+                    %i.mi.mi-small looks_3
+                  %span page 3
+              
+              .dropdown-item
+                = link_to(batch_rehash_process_index_path(page: 1, file_ids: [f.id]),
+                  data: { confirm: 'Compare page 1 for this file?' }, title: 'compare page 1',
+                  class: 'button is-info is-rounded is-small tiny-bt') do
+                  %span.icon.is-small
+                    %i.mi.mi-small looks_one
+                  %span page 1
 
             - unless DOCKER_VM
               :ruby
