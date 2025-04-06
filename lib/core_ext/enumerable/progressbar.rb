@@ -46,5 +46,5 @@ module CoreExt::Enumerable::Progressbar
     end # map_with_progressbar ---------------------------------------------------
     alias :map_with_pb            :map_with_progressbar
     alias :map_with_progress_bar  :map_with_progressbar
-  end # module Enumerable
+  end # module ::Enumerable
 end

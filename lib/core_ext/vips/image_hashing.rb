@@ -16,10 +16,9 @@ module CoreExt::Vips::ImageHashing
     # perceptual
     def fingerprint_phash(buf: nil, path: nil, img: nil, fmt: :db)
       Tempfile.create(%w[phash- .webp], Setting['dir.sorting']) do |f|
-        # TODO: avoid tempfile using the image instance object instead
-        #       see https://github.com/khasinski/phash-rb/issues/2
-        fingerprint_load_image(buf, path, img).webpsave f.path
-        h = Phash::Image.new(f.path).fingerprint
+        # TODO: see lib/core_ext/phash/patch.rb
+        image = fingerprint_load_image(buf, path, img)#.webpsave f.path
+        h = Phash::Image.new(image).fingerprint #(f.path).fingerprint
         case fmt
           when :db  then [h].pack('Q').unpack('q').first
           when :hex then h.to_s(16).rjust(16, '0')
