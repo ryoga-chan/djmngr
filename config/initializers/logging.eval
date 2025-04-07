@@ -14,3 +14,11 @@ unless Rails.const_defined?(:Console)    || # bin/rails console
 end
 
 config.logger = ActiveSupport::TaggedLogging.logger *logger_args
+
+if ENV['PUMA_DAEMON'] && Rails.env.production?
+  # https://codeincomplete.com/articles/ruby-daemons/#redirecting-output
+  logdev = config.logger.instance_variable_get('@logdev').dev
+  $stderr.reopen logdev
+  $stdout.reopen logdev
+  $stdout.sync = $stderr.sync = true
+end
