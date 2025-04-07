@@ -65,3 +65,5 @@ Doujin.transaction{ Doujin.find_each.with_index{|d, i| print "#{i}\r"; d.cover_f
 Doujin.transaction{ ProcessableDoujin.find_each.with_index{|d, i| print "#{i}\r"; d.cover_fingerprint! }};puts ''
 ProcessableDoujinDupe.delete_all
 ProcessIndexGroupJob.perform_now
+
+bin/rails g migration add_startup_to_settings startup:boolean

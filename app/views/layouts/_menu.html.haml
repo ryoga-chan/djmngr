@@ -109,12 +109,18 @@
                       %i.mi image_search
                     %span.file-label
                       Cover match
-          
+
           = link_to clear_process_index_path(what: :samples), class: 'navbar-item no-spinner',
             data: { confirm: 'clear temporary sample images?' } do
             %span.icon
               %i.mi image_not_supported
             %span Clear samples
+
+          = link_to clear_process_index_path(what: :dupes), class: 'navbar-item no-spinner',
+            data: { confirm: 'clear processing dupes data?' } do
+            %span.icon
+              %i.mi dynamic_feed
+            %span Clear dupes data
 
           = link_to clear_process_index_path(what: :eh_cookies), class: 'navbar-item no-spinner',
             data: { confirm: 'clear EH cookies?' } do
@@ -138,7 +144,7 @@
               %span.icon
                 %i.mi launch
               %span= ext_lbl
-      
+
           = link_to home_info_path, class: 'navbar-item' do
             %span.icon
               %i.mi info

@@ -3,8 +3,6 @@ class CoverMatchingJob < ApplicationJob
   # http://www.mikeperham.com/2010/05/21/detecting-duplicate-images-with-phashion/
   # << Our testing showed that 15 bits is a good value to start with, it detected
   #    all duplicates with a minimum of false positives >>
-  MAX_HAMMING_DISTANCE_PHASH  = 13 # = less than ~20% (13/64) different bits
-  MAX_HAMMING_DISTANCE_SDHASH = 13 # = less than ~20% (13/64) different bits
 
   queue_as :search
 
@@ -103,11 +101,11 @@ class CoverMatchingJob < ApplicationJob
                 AND id > #{from_id.to_i}
             )
           )
-          WHERE dist1 < #{MAX_HAMMING_DISTANCE_PHASH}
+          WHERE dist1 < #{Setting['hd_phash']}
           LIMIT 100
         )
       )
-      WHERE dist2 < #{MAX_HAMMING_DISTANCE_SDHASH}
+      WHERE dist2 < #{Setting['hd_sdhash']}
       ORDER BY dist1, dist2
     SQL
 
@@ -119,8 +117,8 @@ class CoverMatchingJob < ApplicationJob
   # hash parameters are signed integers
   # returns nil or the similarity percentage of the matching
   def self.similarity(phash1, phash2, sdhash1, sdhash2)
-    if (d1 = Integer.hamming_distance( phash1,  phash2, signed: true)) < MAX_HAMMING_DISTANCE_PHASH &&
-       (d2 = Integer.hamming_distance(sdhash1, sdhash2, signed: true)) < MAX_HAMMING_DISTANCE_SDHASH
+    if (d1 = Integer.hamming_distance( phash1,  phash2, signed: true)) < Setting['hd_phash'] &&
+       (d2 = Integer.hamming_distance(sdhash1, sdhash2, signed: true)) < Setting['hd_sdhash']
       ((1 - d1.to_f / 64) * 100).round
     else
       nil

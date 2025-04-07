@@ -186,8 +186,8 @@ class DoujinshiController < ApplicationController
           fname = @doujin.thumb_disk_path
           img = Vips::Image.webpload(fname, page: params[:page].to_i) # ImageProcessing::Vips.source(fname).call save: false
           data = request.format.webp? ?
-            img.webpsave_buffer(Q: IMG_QUALITY_THUMB, lossless: false, min_size: true) :
-            img.jpegsave_buffer(Q: IMG_QUALITY_THUMB, background: [255, 255, 255])
+            img.webpsave_buffer(Q: Setting['img_q_thumb'], lossless: false, min_size: true) :
+            img.jpegsave_buffer(Q: Setting['img_q_thumb'], background: [255, 255, 255])
           send_data data,
             type: request.format.to_sym, disposition: :inline,
             filename: "#{@doujin.id}.#{request.format.to_sym}"
@@ -325,7 +325,7 @@ class DoujinshiController < ApplicationController
           @content = Vips::Image.
             new_from_buffer(@content, '').
             resize_to_fit(maxw, maxh).
-            jpegsave_buffer(Q: IMG_QUALITY_RESIZE)
+            jpegsave_buffer(Q: Setting['img_q_resize'])
         end
       else
         @fname = 'not-found.png'

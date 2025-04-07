@@ -44,7 +44,16 @@ class Setting < ApplicationRecord
     end
   end # validate_record
 
-  def self.get(k)= find_by(key: k)
+  def self.get(k)
+    @@cache ||= {}
+    return @@cache[k] if @@cache[k]
+
+    s = find_by(key: k)
+    @@cache[k] = s.freeze if s&.startup?
+
+    s
+  end # self.get
+
   def self.[] (k)= get(k)&.value
   def self.get_json(k)= JSON.parse(get(k)&.value) rescue nil
 

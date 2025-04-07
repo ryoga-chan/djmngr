@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_26_114000) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_07_104423) do
   create_table "authors", force: :cascade do |t|
     t.string "name", null: false
     t.string "name_romaji"
@@ -184,6 +184,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_26_114000) do
     t.string "notes"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "startup", default: false
   end
 
   create_table "shelves", force: :cascade do |t|

@@ -121,8 +121,7 @@
                                  data: {msg: 'Delete NUM (SIZE) files?', confirm: 'Delete selected files?'}) do
                         %span.icon
                           %i.mi delete_forever
-                        %span.is-hidden-mobile delete
-                        %span.is-hidden-tablet del
+                        %span delete
 
                     .dropdown-item
                       = f.button(type: :submit, class: 'button is-info',
@@ -130,15 +129,13 @@
                                  data: {confirm: 'Merge selected files?'}) do
                         %span.icon
                           %i.mi merge
-                        %span.is-hidden-mobile merge
-                        %span.is-hidden-tablet mrg
+                        %span merge
 
                     .dropdown-item
                       = f.button type: :submit, class: 'button is-link' do
                         %span.icon
                           %i.mi send
-                        %span.is-hidden-mobile prepare
-                        %span.is-hidden-tablet prp
+                        %span prepare
 
                     %hr.dropdown-divider
 
@@ -148,8 +145,7 @@
                                  data: {confirm: 'Compare page 2 for selected files?'}) do
                         %span.icon
                           %i.mi looks_two
-                        %span.is-hidden-mobile page 2
-                        %span.is-hidden-tablet p2
+                        %span page 2
 
                     .dropdown-item
                       = f.button(type: :submit, class: 'button is-info',
@@ -157,8 +153,7 @@
                                  data: {confirm: 'Compare page 3 for selected files?'}) do
                         %span.icon
                           %i.mi looks_3
-                        %span.is-hidden-mobile page 3
-                        %span.is-hidden-tablet p3
+                        %span page 3
 
                     .dropdown-item
                       = f.button(type: :submit, class: 'button is-info',
@@ -166,8 +161,7 @@
                                  data: {confirm: 'Compare page 1 for selected files?'}) do
                         %span.icon
                           %i.mi looks_one
-                        %span.is-hidden-mobile page 1
-                        %span.is-hidden-tablet p1
+                        %span page 1
 
                     %hr.dropdown-divider
 
@@ -177,8 +171,7 @@
                         %span.icon-text
                           %span.icon
                             %i.mi select_all
-                          %span.is-hidden-mobile select
-                          %span.is-hidden-tablet sel
+                          %span select
 
                     .dropdown-item
                       = link_to '#', class: 'button',
@@ -186,8 +179,7 @@
                         %span.icon-text
                           %span.icon
                             %i.mi compare
-                          %span.is-hidden-mobile previews
-                          %span.is-hidden-tablet prv
+                          %span previews
       
         .column.py-0.pb-2
           -#%span Sort files by

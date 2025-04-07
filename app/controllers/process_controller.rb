@@ -766,9 +766,12 @@ class ProcessController < ApplicationController
       when 'samples'
         ProcessIndexPreviewJob.rm_previews
         'sample images cleared'
+      when 'dupes'
+        ProcessableDoujinDupe.truncate_and_restart_sequence
+        'dupes data cleared'
       when 'eh_cookies'
         Ws::EHentai.clear_cookies
-        'EH coockies cleared'
+        'EH cookies cleared'
       else
         'nothing to clear'.freeze
     end

@@ -1,3 +1,9 @@
+.is-size-5.notification.is-info
+  %span.icon-text
+    %span.icon.is-medium
+      %i.mi.mi-medium warning
+    %span Restart application after changing highlighted entries
+
 = form_with url: home_settings_path do |f|
   .title.is-size-4
     Settings / General
@@ -117,6 +123,30 @@
           = f.number_field 'setting[][value]', value: s.value, class: :input, step: 0.1, min: 0.1
           %span.icon.is-small.is-left
             %i.mi.mi-small monitor_weight
+
+  - %i[ hd_phash hd_sdhash ].each do |k|
+    - s = Setting.find_by key: k
+    = f.hidden_field 'setting[][id]', value: s.id
+    .field.is-horizontal
+      .field-label.is-normal= render partial: 'setting_help', locals: {s: s}
+      .field-body
+        .field
+          .control.is-expanded.has-icons-left
+            = f.number_field 'setting[][value]', value: s.value, class: :input, step: 1, min: 0, max: 64
+            %span.icon.is-small.is-left
+              %i.mi.mi-small straighten
+
+  - %i[ img_q_thumb img_q_resize ].each do |k|
+    - s = Setting.find_by key: k
+    = f.hidden_field 'setting[][id]', value: s.id
+    .field.is-horizontal
+      .field-label.is-normal= render partial: 'setting_help', locals: {s: s}
+      .field-body
+        .field
+          .control.is-expanded.has-icons-left
+            = f.number_field 'setting[][value]', value: s.value, class: :input, step: 1, min: 1, max: 100
+            %span.icon.is-small.is-left
+              %i.mi.mi-small deblur
 
   -# ---------------------------------------------------------------------------
 

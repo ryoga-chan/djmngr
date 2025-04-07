@@ -57,7 +57,7 @@ class HomeController < ApplicationController
       params[:setting].each do |p|
         s = Setting.find_by(id: p[:id])
         s.attributes = p.permit(:value)
-        restart = true if s.key.start_with?('search_engine.') && s.value_changed?
+        restart = true if s.value_changed? && s.startup?
         errors << s unless s.save
       end
 

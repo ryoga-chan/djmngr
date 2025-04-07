@@ -5,9 +5,5 @@ OS_LINUX   = Gem::Platform.local.os =~ /linux/i
 OS_WINDOWS = Gem.win_platform?
 DOCKER_VM  = ENV['DOCKER_RUNNING'].present?
 
-# default image manipulation output quality
-IMG_QUALITY_THUMB  = 70
-IMG_QUALITY_RESIZE = 80
-
 DJ_DIR_REPROCESS     = '00_reprocess'.freeze
 DJ_DIR_PROCESS_LATER = 'zz_later'.freeze

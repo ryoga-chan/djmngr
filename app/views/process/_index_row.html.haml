@@ -102,66 +102,75 @@
               %i.mi.mi-small expand_more
         .dropdown-menu
           .dropdown-content
+            .dropdown-item
+              - fname = (@group_sort && is_doujin) ? f.file_dl_name(omit_ext: true) : f.name
+              = links_to_search_engines fname.tokenize_doujin_filename.join(' '), target: :_blank
+
             - unless @group_sort && is_doujin
-              - unless f.name.starts_with?(DJ_DIR_PROCESS_LATER) || f.name.starts_with?(DJ_DIR_REPROCESS)
-                .dropdown-item
+              - bt_later = capture do
+                - unless f.name.starts_with?(DJ_DIR_PROCESS_LATER) || f.name.starts_with?(DJ_DIR_REPROCESS)
                   = link_to(process_later_process_path(id: f.id), title: 'process later',
                     data: { confirm: 'Process this file later?' },
                     class: 'button is-info is-rounded is-small tiny-bt') do
                     %span.icon.is-small
                       %i.mi.mi-small fast_forward
                     %span later
-              
-              - unless has_thumb
-                .dropdown-item
+
+              - bt_preview = capture do
+                - unless has_thumb
                   = link_to({job: :preview, id: f.id, page: params[:page]}, title: 'generate file preview',
                     class: 'button is-info is-rounded is-small tiny-bt') do
                     %span.icon.is-small
                       %i.mi.mi-small preview
                     %span preview
-    
+
+              - if bt_later || bt_preview
+                .dropdown-item
+                  = bt_later
+                  = bt_preview
+
               .dropdown-item
-                = link_to(batch_rehash_process_index_path(page: 2, file_ids: [f.id]),
-                  data: { confirm: 'Compare page 2 for this file?' }, title: 'compare page 2',
-                  class: 'button is-info is-rounded is-small tiny-bt') do
-                  %span.icon.is-small
-                    %i.mi.mi-small looks_two
-                  %span page 2
-              
-              .dropdown-item
-                = link_to(batch_rehash_process_index_path(page: 3, file_ids: [f.id]),
-                  data: { confirm: 'Compare page 3 for this file?' }, title: 'compare page 3', 
-                  class: 'button is-info is-rounded is-small tiny-bt') do
-                  %span.icon.is-small
-                    %i.mi.mi-small looks_3
-                  %span page 3
-              
-              .dropdown-item
-                = link_to(batch_rehash_process_index_path(page: 1, file_ids: [f.id]),
-                  data: { confirm: 'Compare page 1 for this file?' }, title: 'compare page 1',
-                  class: 'button is-info is-rounded is-small tiny-bt') do
-                  %span.icon.is-small
-                    %i.mi.mi-small looks_one
-                  %span page 1
+                - if f.images >= 2
+                  = link_to(batch_rehash_process_index_path(page: 2, file_ids: [f.id]),
+                    data: { confirm: 'Compare page 2 for this file?' }, title: 'compare page 2',
+                    class: 'button is-info is-rounded is-small tiny-bt mr-1') do
+                    %span.icon.is-small
+                      %i.mi.mi-small looks_two
+                    %span pag
+
+                - if f.images >= 3
+                  = link_to(batch_rehash_process_index_path(page: 3, file_ids: [f.id]),
+                    data: { confirm: 'Compare page 3 for this file?' }, title: 'compare page 3',
+                    class: 'button is-info is-rounded is-small tiny-bt mr-1') do
+                    %span.icon.is-small
+                      %i.mi.mi-small looks_3
+                    %span pag
+
+                - if f.images >= 1
+                  = link_to(batch_rehash_process_index_path(page: 1, file_ids: [f.id]),
+                    data: { confirm: 'Compare page 1 for this file?' }, title: 'compare page 1',
+                    class: 'button is-info is-rounded is-small tiny-bt') do
+                    %span.icon.is-small
+                      %i.mi.mi-small looks_one
+                    %span pag
 
             - unless DOCKER_VM
-              :ruby
-                bt_url = (@group_sort && is_doujin) \
-                  ? doujin_path(f, run: :comics_viewer, format: :json)
-                  : show_externally_process_index_path(path: f.name, run: :comics_viewer, format: :json)
               .dropdown-item.is-hidden-touch
+                :ruby
+                  bt_url = (@group_sort && is_doujin) \
+                    ? doujin_path(f, run: :comics_viewer, format: :json)
+                    : show_externally_process_index_path(path: f.name, run: :comics_viewer, format: :json)
                 = link_to bt_url,
                     title: 'read with external viewer',
-                    remote: true, class: 'button is-info is-rounded is-small tiny-bt run-progr' do
+                    remote: true, class: 'button is-info is-rounded is-small tiny-bt run-progr mr-1' do
                   %span.icon.is-small
                     %i.mi.mi-small launch
                   %span read ext
               
-              :ruby
-                bt_url = (@group_sort && is_doujin) \
-                  ? doujin_path(f, run: :file_manager, format: :json)
-                  : show_externally_process_index_path(path: f.name, run: :file_manager, format: :json)
-              .dropdown-item.is-hidden-touch
+                :ruby
+                  bt_url = (@group_sort && is_doujin) \
+                    ? doujin_path(f, run: :file_manager, format: :json)
+                    : show_externally_process_index_path(path: f.name, run: :file_manager, format: :json)
                 = link_to bt_url,
                     title: 'open in file manager',
                     remote: true, class: 'button run-progr is-info is-rounded is-small tiny-bt' do

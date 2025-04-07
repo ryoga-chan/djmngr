@@ -1,12 +1,14 @@
 # https://stackoverflow.com/questions/73868603/accessing-models-and-modules-in-a-rails-7-initializer/73881810#73881810
 Rails.application.config.after_initialize do
   ActiveRecord::Base.logger.silence do
+    break if defined?(Rake) # noop when running tasks
+
     if Setting.table_exists?
       # create default settings
       [
-        { key: 'dir.to_sort'      , value: Rails.root.join('dj-library', 'to-sort').to_s, notes: 'folder containing doujinshi to process' },
-        { key: 'dir.sorting'      , value: Rails.root.join('dj-library', 'sorting').to_s, notes: 'folder containing doujinshi under process' },
-        { key: 'dir.sorted'       , value: Rails.root.join('dj-library', 'sorted' ).to_s, notes: 'folder containing processed doujinshi' },
+        { key: 'dir.to_sort'      , value: Rails.root.join('dj-library', 'to-sort').to_s, notes: 'folder containing doujinshi to process'   , startup: true },
+        { key: 'dir.sorting'      , value: Rails.root.join('dj-library', 'sorting').to_s, notes: 'folder containing doujinshi under process', startup: true },
+        { key: 'dir.sorted'       , value: Rails.root.join('dj-library', 'sorted' ).to_s, notes: 'folder containing processed doujinshi'    , startup: true },
         { key: 'reading_direction', value: 'r2l'      , notes: 'default reading direction' }, # r2l, l2r
         { key: 'reading_bg_color' , value: 'dark'     , notes: 'default reading background color' }, # white, smoke, dark, black
         { key: 'epub_devices'     , value: 'Kobo_Sage@1440x1920, Kobo_Glo@758x1024', notes: 'screen dimension of your devices, used for epub creation\ninput format = Name@WxH, Name2@WxH, ...' },
@@ -23,18 +25,32 @@ Rails.application.config.after_initialize do
         { key: 'process_aps'      , value: 0.6, notes: 'max average page size (in MiB) in process section (a warning is shown when exceeding this value)' },
         { key: 'basic_auth'       , value: '', notes: 'enable basic auth for PCs, input format = "user:password"' },
         { key: 'ehentai_auth'     , value: '', notes: 'optional ehentai credentials, input format = "user:password"' },
-        { key: 'search_engine.00' , value: 'DD|https://duckduckgo.com/?q=', notes: 'search engine url, input format = "[-]label|url"' },
-        { key: 'search_engine.01' , value: '-GG|https://www.google.com/search?q=', notes: 'search engine url, input format = "[-]label|url"' },
-        { key: 'search_engine.02' , value: 'MU|https://www.mangaupdates.com/authors.html?search=', notes: 'search engine url, input format = "[-]label|url"' },
-        { key: 'search_engine.03' , value: '', notes: 'search engine url, input format = "[-]label|url"' },
-        { key: 'search_engine.04' , value: '', notes: 'search engine url, input format = "[-]label|url"' },
-        { key: 'search_engine.05' , value: '', notes: 'search engine url, input format = "[-]label|url"' },
-        { key: 'search_engine.06' , value: '', notes: 'search engine url, input format = "[-]label|url"' },
-        { key: 'search_engine.07' , value: '', notes: 'search engine url, input format = "[-]label|url"' },
-        { key: 'search_engine.08' , value: '', notes: 'search engine url, input format = "[-]label|url"' },
-        { key: 'search_engine.09' , value: '', notes: 'search engine url, input format = "[-]label|url"' },
+        # image hashing max hamming distance -- less than ~20% (13/64) different bits
+        { key: 'hd_phash'         , value: 13, notes: 'max hamming distance for pHash image similarity' , startup: true },
+        { key: 'hd_sdhash'        , value: 13, notes: 'max hamming distance for sdHash image similarity', startup: true },
+        # image save quality
+        { key: 'img_q_thumb'      , value: 70, notes: 'default output quality for image thumbnails'     , startup: true },
+        { key: 'img_q_resize'     , value: 80, notes: 'default output quality for image resizing'       , startup: true },
+        # search engines
+        { key: 'search_engine.00' , value: 'DD|https://duckduckgo.com/?q=', notes: 'search engine url, input format = "[-]label|url"', startup: true },
+        { key: 'search_engine.01' , value: '-GG|https://www.google.com/search?q=', notes: 'search engine url, input format = "[-]label|url"', startup: true },
+        { key: 'search_engine.02' , value: 'MU|https://www.mangaupdates.com/authors.html?search=', notes: 'search engine url, input format = "[-]label|url"', startup: true },
+        { key: 'search_engine.03' , value: '', notes: 'search engine url, input format = "[-]label|url"', startup: true },
+        { key: 'search_engine.04' , value: '', notes: 'search engine url, input format = "[-]label|url"', startup: true },
+        { key: 'search_engine.05' , value: '', notes: 'search engine url, input format = "[-]label|url"', startup: true },
+        { key: 'search_engine.06' , value: '', notes: 'search engine url, input format = "[-]label|url"', startup: true },
+        { key: 'search_engine.07' , value: '', notes: 'search engine url, input format = "[-]label|url"', startup: true },
+        { key: 'search_engine.08' , value: '', notes: 'search engine url, input format = "[-]label|url"', startup: true },
+        { key: 'search_engine.09' , value: '', notes: 'search engine url, input format = "[-]label|url"', startup: true },
       ].each do |fields|
-        Setting.find_or_initialize_by(fields.slice :key).update fields.slice(:value, :notes) unless Setting[fields[:key]]
+        fields[:startup] = false if fields[:startup].nil?
+        s = Setting.find_or_initialize_by(fields.slice :key)
+
+        if s.notes != fields[:notes] || s.startup != fields[:startup]
+          attrs = fields.slice :notes, :startup
+          attrs[:value] = fields[:value] if s.new_record?
+          s.update attrs
+        end
       end
 
       # create collection folders
