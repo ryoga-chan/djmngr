@@ -17,7 +17,7 @@ module CoreExt::Vips::Operations
       else
         im = im.resize_to_fit(width, height)
       end
-      thumb = im.convert('webp').saver(quality: Setting['img_q_thumb']).call(save: false)
+      thumb = im.convert('webp').saver(quality: Setting['img_q_thumb'].to_i).call(save: false)
 
       { orig_width:   vips.width,
         orig_height:  vips.height,
@@ -52,7 +52,7 @@ module CoreExt::Vips::Operations
     img_scaled.extract_area x_offset, 0, w, h   # `extract_area` also aliased as `crop`
   end # scale_and_crop_to_offset_perc
 
-  # down/up-scale image: im.resize_to_fit(w, h).jpegsave_buffer(Q: Setting['img_q_resize'])
+  # down/up-scale image: im.resize_to_fit(w, h).jpegsave_buffer(Q: Setting['img_q_resize'].to_i)
   def resize_to_fit(maxw, maxh) = resize([maxw.to_f/width, maxh.to_f/height].min)
 
   def downsize_to(dst_w = nil, dst_h = nil)

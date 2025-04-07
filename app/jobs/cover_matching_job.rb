@@ -117,8 +117,8 @@ class CoverMatchingJob < ApplicationJob
   # hash parameters are signed integers
   # returns nil or the similarity percentage of the matching
   def self.similarity(phash1, phash2, sdhash1, sdhash2)
-    if (d1 = Integer.hamming_distance( phash1,  phash2, signed: true)) < Setting['hd_phash'] &&
-       (d2 = Integer.hamming_distance(sdhash1, sdhash2, signed: true)) < Setting['hd_sdhash']
+    if (d1 = Integer.hamming_distance( phash1,  phash2, signed: true)) < Setting['hd_phash' ].to_i &&
+       (d2 = Integer.hamming_distance(sdhash1, sdhash2, signed: true)) < Setting['hd_sdhash'].to_i
       ((1 - d1.to_f / 64) * 100).round
     else
       nil

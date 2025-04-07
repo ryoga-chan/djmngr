@@ -101,7 +101,7 @@ class ProcessArchiveDecompressJob < ApplicationJob
             scale_and_crop_to_offset_perc(THUMB_WIDTH, THUMB_HEIGHT, crop_method.to_s.to_i)
         end
 
-      vips.convert('webp').saver(quality: Setting['img_q_thumb']).
+      vips.convert('webp').saver(quality: Setting['img_q_thumb'].to_i).
         call destination: File.join(dst_dir, 'thumbs', '0000.webp')
     end
   end # self.crop_landscape_cover
@@ -110,7 +110,7 @@ class ProcessArchiveDecompressJob < ApplicationJob
   def self.generate_thumbnail(src, dst)
     ImageProcessing::Vips.source(src).
       resize_and_pad(THUMB_WIDTH, THUMB_HEIGHT, alpha: true).
-      convert('webp').saver(quality: Setting['img_q_thumb']).call destination: dst
+      convert('webp').saver(quality: Setting['img_q_thumb'].to_i).call destination: dst
   end # self.generate_thumbnail
 
   def self.duplicate_cover(dst_dir, info, save_info: false)
@@ -209,7 +209,7 @@ class ProcessArchiveDecompressJob < ApplicationJob
     Vips::Image.
       new_from_buffer(File.binread(fname), '').
       rot(dir == 'right' ? 1 : 3).
-      write_to_file fname, Q: Setting['img_q_resize']
+      write_to_file fname, Q: Setting['img_q_resize'].to_i
 
     ProcessArchiveDecompressJob.refresh_cover_thumb dst_dir, info, save_info: save_info
   end # self.refresh_cover_thumb

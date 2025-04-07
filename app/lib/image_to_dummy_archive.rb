@@ -72,7 +72,7 @@ module ImageToDummyArchive
           vips  = Vips::Image.new_from_buffer file_contents, ''
           vips  = vips.downsize_to dst_w, dst_h if to_scale
           # https://www.rubydoc.info/gems/ruby-vips/Vips/Image:write_to_buffer
-          kargs = ext_dst.in?(%w[ .jpg .png .webp ]) ? { Q: Setting['img_q_resize'] } : {}
+          kargs = ext_dst.in?(%w[ .jpg .png .webp ]) ? { Q: Setting['img_q_resize'].to_i } : {}
           f.write vips.write_to_buffer(ext_dst, **kargs)
         else
           f.write file_contents
