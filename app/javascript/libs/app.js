@@ -112,7 +112,8 @@ window.MyApp = {
 
 $(function () {
 // -----------------------------------------------------------------------------
-new Freezeframe(); // show image animation only on mouseover
+// show image animation only on mouseover
+$(".freezeframe img, img.freezeframe").freeze_frame();
 
 // bind keyboard shortcuts
 $('body').on('keydown', function (ev) {

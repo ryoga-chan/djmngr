@@ -6,6 +6,12 @@ if (!Freezeframe) { throw new Error('Freezeframe is required!'); }
 
 $.fn.freeze_frame = function() {
   return this.
-    filter(':not(.frozenframe)').addClass('frozenframe').
-    each(function() { new Freezeframe(this); });
+    // run only when the image is loaded --  https://stackoverflow.com/questions/3877027/jquery-callback-on-image-load-even-when-the-image-is-cached/3877079#3877079
+    one('load', function() {
+      $(this).addClass('frozenframe');
+      new Freezeframe(this);
+    }).each(function() {
+      if (this.complete && !$(this).hasClass('frozenframe'))
+        $(this).trigger('load');
+    });
 };//$.fn.freeze_frame

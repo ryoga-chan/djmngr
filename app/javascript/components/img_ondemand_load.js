@@ -13,7 +13,7 @@ $.fn.load_ondemand_images = function(options = {}) {
     });
   
   if (options.freezeframe)
-    this.freeze_frame();
+    images.freeze_frame();
   
   return this;
 };//$.fn.load_ondemand_images
