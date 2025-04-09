@@ -18,42 +18,30 @@
 
 %tr{class: tr_class, data: {id: f.id, group_item_id: local_assigns[:pair_data]&.id}}
   %td.rm-or-batch.w1.has-text-centered
-    - if @group_sort && is_doujin
-      .likeness.is-size-7
-        .tag.has-background-success(title="in collection")
-          %span.icon.is-small
-            %i.mi.mi-small save
-        .tag.is-warning= "#{local_assigns[:pair_data]&.likeness}%"
+    - if is_doujin
+      .has-text-warning.my-2
+        = f.score || :'--'
+        &star;
     - else
       .file-select.mb-3= check_box_tag 'file_ids[]', f.id, false,
         id: '', data: {size: f.size}, tabindex: (1000+idx)
-      
-      - if @group_sort
-        .likeness.is-size-7
-          - if local_assigns[:pair_data]
-            .tag.has-background-info(title="duplicate")
-              %span.icon.is-small
-                %i.mi.mi-small file_copy
-            .tag.is-warning= "#{local_assigns[:pair_data]&.likeness}%"
-          - else
-            .tag.has-background-grey(title="reference")
-              %span.icon.is-small
-                %i.mi.mi-small plagiarism
+
+    .mb-1= render partial: 'entry_menu', locals: { f: f, has_thumb: has_thumb, is_doujin: is_doujin }
 
     - if is_doujin
       = link_to(doujin_path(id: f.id),
         method: :delete, data: { confirm: 'Delete from collection?' },
-        class: 'button is-danger is-rounded is-small tiny-bt delete-file', title: 'delete from collection') do
+        class: 'button is-danger is-rounded is-small tiny-bt delete-file mt-1', title: 'delete from collection') do
         %span.icon.is-small
           %i.mi.mi-small delete
     - else
       = link_to({action: :delete_archive, path: f.name, page: params[:page], sort_by: params[:sort_by], term: params[:term], row: idx},
         method: :delete, data: { confirm: 'Delete from to-sort folder?' },
-        class: 'button is-danger is-rounded is-small tiny-bt delete-file',
+        class: 'button is-danger is-rounded is-small tiny-bt delete-file mt-1',
         title: 'delete from to-sort folder') do
         %span.icon.is-small
           %i.mi.mi-small delete
-    
+
   %td.batch-size.file-size.has-text-right.w1
     .nowrap
       - if f.images
@@ -86,102 +74,6 @@
         - if @preparing_paths.include?(f.name)
           %span.tag.is-warning(title="processing") 🛠
         = link_to f.name, {action: :prepare_archive, path: f.name}, class: 'process-file'
-    .item-actions.mt-2
-      = link_to('#', title: 'copy file name',
-        onclick: %Q|MyApp.copy_to_clipboard( $(this).parent().prev().find('a').text().trim() ); return false|,
-        class: 'button is-info is-rounded is-small tiny-bt mr-4') do
-        %span.icon.is-small
-          %i.mi.mi-small content_copy
-      
-      .dropdown.is-hoverable.has-text-left(title="entry actions" onclick="jQuery(this).toggleClass('is-active')")
-        .dropdown-trigger
-          %button.button.is-info.is-rounded.is-small.tiny-bt.px-3(type="button")
-            %span.icon.is-small
-              %i.mi.mi-small construction
-            %span.icon.is-small
-              %i.mi.mi-small expand_more
-        .dropdown-menu
-          .dropdown-content
-            .dropdown-item
-              - fname = (@group_sort && is_doujin) ? f.file_dl_name(omit_ext: true) : f.name
-              = links_to_search_engines fname.tokenize_doujin_filename.join(' '), target: :_blank
-
-            - unless @group_sort && is_doujin
-              - bt_later = capture do
-                - unless f.name.starts_with?(DJ_DIR_PROCESS_LATER) || f.name.starts_with?(DJ_DIR_REPROCESS)
-                  = link_to(process_later_process_path(id: f.id), title: 'process later',
-                    data: { confirm: 'Process this file later?' },
-                    class: 'button is-info is-rounded is-small tiny-bt') do
-                    %span.icon.is-small
-                      %i.mi.mi-small fast_forward
-                    %span later
-
-              - bt_preview = capture do
-                - unless has_thumb
-                  = link_to({job: :preview, id: f.id, page: params[:page]}, title: 'generate file preview',
-                    class: 'button is-info is-rounded is-small tiny-bt') do
-                    %span.icon.is-small
-                      %i.mi.mi-small preview
-                    %span preview
-
-              - if bt_later || bt_preview
-                .dropdown-item
-                  = bt_later
-                  = bt_preview
-
-              .dropdown-item
-                - if f.images >= 2
-                  = link_to(batch_rehash_process_index_path(page: 2, file_ids: [f.id]),
-                    data: { confirm: 'Compare page 2 for this file?' }, title: 'compare page 2',
-                    class: 'button is-info is-rounded is-small tiny-bt mr-1') do
-                    %span.icon.is-small
-                      %i.mi.mi-small looks_two
-                    %span pag
-
-                - if f.images >= 3
-                  = link_to(batch_rehash_process_index_path(page: 3, file_ids: [f.id]),
-                    data: { confirm: 'Compare page 3 for this file?' }, title: 'compare page 3',
-                    class: 'button is-info is-rounded is-small tiny-bt mr-1') do
-                    %span.icon.is-small
-                      %i.mi.mi-small looks_3
-                    %span pag
-
-                - if f.images >= 1
-                  = link_to(batch_rehash_process_index_path(page: 1, file_ids: [f.id]),
-                    data: { confirm: 'Compare page 1 for this file?' }, title: 'compare page 1',
-                    class: 'button is-info is-rounded is-small tiny-bt') do
-                    %span.icon.is-small
-                      %i.mi.mi-small looks_one
-                    %span pag
-
-            - unless DOCKER_VM
-              .dropdown-item.is-hidden-touch
-                :ruby
-                  bt_url = (@group_sort && is_doujin) \
-                    ? doujin_path(f, run: :comics_viewer, format: :json)
-                    : show_externally_process_index_path(path: f.name, run: :comics_viewer, format: :json)
-                = link_to bt_url,
-                    title: 'read with external viewer',
-                    remote: true, class: 'button is-info is-rounded is-small tiny-bt run-progr mr-1' do
-                  %span.icon.is-small
-                    %i.mi.mi-small launch
-                  %span read ext
-              
-                :ruby
-                  bt_url = (@group_sort && is_doujin) \
-                    ? doujin_path(f, run: :file_manager, format: :json)
-                    : show_externally_process_index_path(path: f.name, run: :file_manager, format: :json)
-                = link_to bt_url,
-                    title: 'open in file manager',
-                    remote: true, class: 'button run-progr is-info is-rounded is-small tiny-bt' do
-                  %span.icon.is-small
-                    %i.mi.mi-small folder
-                  %span open fm
-
-      - if @group_sort && is_doujin
-        %span.has-text-warning.is-size-7.ml-4
-          = f.score || :'--'
-          &star;
 
     - if @group_sort && is_doujin
       - if f.name_romaji.present?
@@ -219,7 +111,10 @@
 
 - if @group_sort && is_doujin
   %tr.sample.freezeframe{class: tr_class}
-    %td
+    %td.has-text-centered
+      - if local_assigns[:pair_data]
+        .likeness.is-size-7.mb-1
+          .tag.is-warning= "#{local_assigns[:pair_data]&.likeness}%"
     %td(colspan=3)
       .columns
         .column.is-5-mobile.is-3-tablet.is-3-desktop
@@ -229,15 +124,26 @@
 - else
   %tr{class: tr_class}
     %td.has-text-centered
+      = link_to('#', title: 'copy file name & select this entry',
+        onclick: %Q|var tr=$(this).parents('tr:first').prev(); MyApp.copy_to_clipboard( tr.find('a.process-file').text().trim() ); tr.find('.file-select :checkbox').prop('checked', true); return false|,
+        class: 'button is-info is-rounded is-small tiny-bt mt-2') do
+        %span.icon.is-small
+          %i.mi.mi-small content_copy
+
+      - if local_assigns[:pair_data]
+        .likeness.is-size-7.mt-3
+          .tag.is-warning= "#{local_assigns[:pair_data]&.likeness}%"
+
+    %td(colspan=3)
       = button_tag(type: :button, title: 'paste clipboard contents into notes',
-          onclick: %Q|var el=$(this).parent().next().find('.pd-notes'); MyApp.paste_clipboard(function (text) { el.val(text).change(); })|,
-          class: 'button is-info is-rounded is-small tiny-bt') do
+          onclick: %Q|var el=$(this).next('.pd-notes'); MyApp.paste_clipboard(function (text) { el.val(text).change(); })|,
+          class: 'button is-info is-rounded is-small tiny-bt mt-2 mr-2') do
         %span.icon.is-small
           %i.mi.mi-small content_paste
-    %td(colspan=3)
+
       %input.input.is-small.pd-notes{value: f.notes, tabindex: (1100+idx),
         placeholder: :notes, maxlength: 255, data: {url: pd_notes_process_path(f.id)}}
-      
+
       - if has_thumb
         %figure.image.sample.mt-2
           = link_to f.thumb_url(mobile: true), target: :_blank do

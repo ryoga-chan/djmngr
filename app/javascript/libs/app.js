@@ -117,6 +117,8 @@ $(".freezeframe img, img.freezeframe").freeze_frame();
 
 // bind keyboard shortcuts
 $('body').on('keydown', function (ev) {
+  //console.log([ev.key, ev.ctrlKey, ev.altKey]);
+  
   if (ev.key == 'Escape') {
     // close generic modal if opened
     if ($('#generic-modal').hasClass('is-active'))
@@ -134,16 +136,8 @@ $('body').on('keydown', function (ev) {
     return false;
   }// Escape
   
-  if ($(document.activeElement).is(':input'))
+  if ($(document.activeElement).is(':input') && !ev.ctrlKey && !ev.altKey)
     return true;
-  
-  //console.log([ev.key, ev.ctrlKey, ev.altKey]);
-  
-  // close generic modal if opened
-  if (ev.key == 'Escape' && $('#generic-modal').hasClass('is-active')) {
-    MyApp.hide_generic_modal();
-    return false;
-  }//if
   
   // execute each corresponding action
   $.each(MyApp.shortcuts, function (i, s) {

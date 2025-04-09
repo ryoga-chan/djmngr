@@ -7,7 +7,7 @@ class ApplicationController < ActionController::Base
   before_action :authenticate
 
   # Only allow modern browsers supporting webp images, web push, badges, import maps, CSS nesting, and CSS :has.
-  allow_browser versions: :modern, if: -> { request.format.symbol == :html }
+  allow_browser versions: :modern, if: -> { Rails.env.production? && request.format.symbol == :html }
 
   def default_url_options
     opts = {}

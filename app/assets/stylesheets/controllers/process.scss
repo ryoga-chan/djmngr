@@ -18,6 +18,8 @@ body[data-ctrl="process"][data-action="index"] {
       margin: 0.5rem;
       transform: scale(2.5);
     }
+
+    input.pd-notes { width: calc(100% - 2.5rem); }
   }
 }
 
