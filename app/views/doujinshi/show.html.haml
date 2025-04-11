@@ -10,7 +10,7 @@
       fav_toggle_doujinshi_path(type: 'Doujin', id: @doujin.id),
       class: "button is-rounded fav mb-2 mx-4 #{'is-warning' if @doujin.favorite?}"
 
-    .dropdown.is-hoverable.has-text-left(onclick="jQuery(this).toggleClass('is-active')")
+    .dropdown.is-hoverable.has-text-left(onclick="$(this).toggleClass('is-active')")
       .dropdown-trigger
         %button.button
           %span Download

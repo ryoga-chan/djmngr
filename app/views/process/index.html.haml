@@ -52,7 +52,7 @@
       %span.is-size-6.nowrap= "(#{@files.total_count} / #{number_to_human_size ProcessableDoujin.sum(:size), precision: 2, significant: false})"
       
     = form_with url: process_index_path, method: :get,
-      html: {onsubmit: %Q|jQuery(this).find('button').addClass('is-loading'); MyApp.show_loading()|,
+      html: {onsubmit: %Q|$(this).find('button').addClass('is-loading'); MyApp.show_loading()|,
              id: 'frm_search', class: "filters mb-2 #{'is-hidden' if params[:term].blank?}" } do |f|
       = f.hidden_field :sort_by, value: params[:sort_by]
       
@@ -69,7 +69,7 @@
       .columns.my-0.is-mobile
         .column.py-0
           .actions.mb-4
-            .dropdown.is-hoverable.has-text-left(title="mass actions" onclick="jQuery(this).toggleClass('is-active')")
+            .dropdown.is-hoverable.has-text-left(title="mass actions" onclick="$(this).toggleClass('is-active')")
               .dropdown-trigger
                 %button.button(type="button")
                   %span.icon.mr-0.ml-1
@@ -103,7 +103,7 @@
                           %i.mi image
                         %span compare
 
-            .dropdown.is-hoverable.has-text-left(title="batch actions" onclick="jQuery(this).toggleClass('is-active')")
+            .dropdown.is-hoverable.has-text-left(title="batch actions" onclick="$(this).toggleClass('is-active')")
               = bts_batch_actions = capture do
                 .dropdown-trigger
                   %button.button(type="button")
@@ -167,7 +167,7 @@
 
                     .dropdown-item
                       = link_to '#', class: 'bt-toggle-all button',
-                        onclick: %Q|jQuery('td.rm-or-batch :checkbox').each(function(){ $(this).prop('checked', !$(this).prop('checked')) }).first(); jQuery.app.update_tot_filesize(); return false| do
+                        onclick: %Q|$('td.rm-or-batch :checkbox').each(function(){ $(this).prop('checked', !$(this).prop('checked')) }).first(); $.app.update_tot_filesize(); return false| do
                         %span.icon-text
                           %span.icon
                             %i.mi select_all
@@ -175,7 +175,7 @@
 
                     .dropdown-item
                       = link_to '#', class: 'button',
-                        onclick: %Q|jQuery('figure.image').toggleClass('is-hidden')| do
+                        onclick: %Q|$('figure.image').toggleClass('is-hidden')| do
                         %span.icon-text
                           %span.icon
                             %i.mi compare
@@ -187,9 +187,9 @@
             .control
               .select(style="vertical-align: middle")= select_tag :sort_by,
                 options_for_select(ProcessIndexRefreshJob::ORDER, params[:sort_by]),
-                onchange: %Q|jQuery('#frm_search').find('input[name="sort_by"]').val(jQuery(this).val()).end().submit()|
+                onchange: %Q|$('#frm_search').find('input[name="sort_by"]').val($(this).val()).end().submit()|
             .control
-              %button.button(type="button" onclick="jQuery('form.filters').toggleClass('is-hidden').find('input[type=\"text\"]').focus()")
+              %button.button(type="button" onclick="$('form.filters').toggleClass('is-hidden').find('input[type=\"text\"]').focus()")
                 %span.icon
                   %i.mi(title="show search bar") filter_list
                 -#%span.is-hidden-touch search
@@ -233,7 +233,7 @@
         .columns.is-mobile.mt-0.mb-4
           .column.py-0
             .actions
-              .dropdown.is-up.is-hoverable.has-text-left(title="batch actions" onclick="jQuery(this).toggleClass('is-active')")
+              .dropdown.is-up.is-hoverable.has-text-left(title="batch actions" onclick="$(this).toggleClass('is-active')")
                 = bts_batch_actions
           .column.py-0.has-text-right
             %a.button(href="#page-top")

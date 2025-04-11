@@ -228,7 +228,7 @@
     }//if-else
   }//toggle_fullscreen
   
-  (function($){ $(function () {
+  $(function () {
     // initialize initial images
     render_image('init', $('img.prev'), imgPath(#{params[:page]}) );
     render_image('init', $('img.curr'), imgPath(#{(params[:page] + 1) < @num_files ? (params[:page] + 1) : (@num_files - 1)}));
@@ -253,7 +253,7 @@
     
     // fix a Google Chrome mobile glitch that sometimes clips the bottom of portrait images
     setTimeout(function () { zoomImageToLevel(100) }, 250);
-  }); })(jQuery)
+  });
 
 - cur_bg_color = is_ereader_browser? ? Setting::READING_BG_COLORS.first : Setting[:reading_bg_color]
 .main{class: "bg-#{cur_bg_color}",
@@ -306,16 +306,16 @@
       %center
         jump to
         %br
-        %a.button.skip(href="#" onclick="jQuery(this).next().val((cur_page-10) < 0 ? 0 : (cur_page-10)).change(); return false") <<
+        %a.button.skip(href="#" onclick="$(this).next().val((cur_page-10) < 0 ? 0 : (cur_page-10)).change(); return false") <<
         = select_tag :page,
           options_for_select(@num_files.times.map{|i| [i+1, i] }, params[:page]),
           onchange: %Q|this.form.submit()|
-        %a.button.skip(href="#" onclick="jQuery(this).prev().val((cur_page+10) > num_files ? num_files : (cur_page+10)).change(); return false") >>
+        %a.button.skip(href="#" onclick="$(this).prev().val((cur_page+10) > num_files ? num_files : (cur_page+10)).change(); return false") >>
     
     .options
       %input.button{type: "submit",
         value: (params[:nr].to_i == 0 ? "Auto scale ON" : "Auto scale OFF"),
-        onclick: "jQuery('#nr').val( 1 - parseInt(jQuery('#nr').val()) )"}
+        onclick: "$('#nr').val( 1 - parseInt($('#nr').val()) )"}
       %a.button(href="#" onclick="toggle_fullscreen(); return false")
         F.Screen
         %span.fs-status OFF

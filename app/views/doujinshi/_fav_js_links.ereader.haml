@@ -1,5 +1,5 @@
 :javascript
-  (function($){ $(function () {
+  $(function () {
     // toggle favorites
     $('a.fav').on('click', function (ev) {
       ev.preventDefault();
@@ -14,4 +14,4 @@
         complete: function () { el.show().next().remove(); },//complete
       });
     });
-  }); })(jQuery)
+  });

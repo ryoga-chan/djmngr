@@ -10,7 +10,7 @@
     .field.has-addons.is-justify-content-center.mb-4
       .control
         = f.button type: :button, class: 'button is-rounded is-info',
-          onclick: %Q|jQuery('.columns .column span.select-image').click()| do
+          onclick: %Q|$('.columns .column span.select-image').click()| do
           %span.icon.is-small
             %i.mi select_all
           %span Toggle

@@ -6,7 +6,7 @@
   - p_base.each do |k|
     = f.hidden_field k, value: params[k]
 
-  %button.button.is-small.mb-2(type="button" onclick="jQuery(this).next().toggleClass('is-hidden-mobile')")
+  %button.button.is-small.mb-2(type="button" onclick="$(this).next().toggleClass('is-hidden-mobile')")
     %span.icon
       %i.mi(title="toggle filters") filter_list
   %span.filters.is-hidden-mobile
@@ -93,7 +93,7 @@
     - if @doujinshi
       = form_with url: move_doujinshi_path, method: :post do |f|
         .has-text-centered.mb-1
-          %a.button.is-info.is-rounded.is-small(onclick="jQuery(this).add('.field.move, .dj-select').toggleClass('is-hidden')")
+          %a.button.is-info.is-rounded.is-small(onclick="$(this).add('.field.move, .dj-select').toggleClass('is-hidden')")
             %span.icon.is-small
               %i.mi output
             %span Move
@@ -108,7 +108,7 @@
                   %i.mi search
             .control
               = link_to '#', title: "view doujin", target: :_blank,
-                onclick: "jQuery(this).attr('href', '/doujinshi/'+jQuery('#doujin_id').val() || 0)",
+                onclick: "$(this).attr('href', '/doujinshi/'+$('#doujin_id').val() || 0)",
                 class: 'button is-rounded is-small' do
                 %span.icon.is-small
                   %i.mi visibility

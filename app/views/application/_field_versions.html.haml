@@ -11,7 +11,7 @@
             %th.w1.nowrap= l v.created_at
             %td.w1
               = link_to '#', class: 'button is-info is-small is-rounded', title: 'restore this text',
-                  onclick: %Q|jQuery('##{prefix}_#{field}').val( jQuery(this).parents('tr:first').find('td:first').text().trim() ); return false| do
+                  onclick: %Q|$('##{prefix}_#{field}').val( $(this).parents('tr:first').find('td:first').text().trim() ); return false| do
                 %span.icon.is-small
                   %i.mi.mi-small restore
     - else

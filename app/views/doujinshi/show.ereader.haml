@@ -24,9 +24,9 @@
                 %span.clear-score{data: {score: 0}}
                   &times;
             :javascript
-              jQuery(function () {
-                jQuery('.scoring span').click(function () {
-                  jQuery('#score').val( jQuery(this).data('score') ).get(0).form.submit();
+              $(function () {
+                $('.scoring span').click(function () {
+                  $('#score').val( $(this).data('score') ).get(0).form.submit();
                 });
               })
       
@@ -46,7 +46,7 @@
 
       .actions
         = link_to '&nabla;Download'.html_safe, '#', class: :button, style: "margin-right: 2rem;",
-          onclick: "jQuery(this).next().add(this).toggleClass('hidden'); return false"
+          onclick: "$(this).next().add(this).toggleClass('hidden'); return false"
         .dl-list.hidden
           - Setting.epub_devices.each do |specs|
             = link_to "&nabla;#{h specs[:name].tr '_', ' '}".html_safe, epub_doujinshi_path(specs.merge convert: @doujin.id), class: :button

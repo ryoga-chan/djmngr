@@ -61,7 +61,7 @@
             {}, class: "input is-small vmiddle"
         
       .notes.mb-1
-        %span.icon.in-text-small.mr-2(onclick="if (confirm('Clear notes?')) jQuery('#notes').val('')")
+        %span.icon.in-text-small.mr-2(onclick="if (confirm('Clear notes?')) $('#notes').val('')")
           %i.mi.mi-small(title="notes") comment
         = f.text_area :notes, value: @info[:notes], placeholder: 'notes',
           class: 'textarea fillwidth is-size-8', maxlength: 255,
@@ -154,7 +154,7 @@
             - @suggestions.each do |lbl|
               %tr
                 %td= link_to lbl, '#', title: 'copy this suggestion',
-                  onclick: %Q|jQuery('#dest_filename').val( jQuery(this).text().trim() + '.zip' ); return false|
+                  onclick: %Q|$('#dest_filename').val( $(this).text().trim() + '.zip' ); return false|
 
       .final-path.mb-1
         %span.icon.in-text-small.mr-2

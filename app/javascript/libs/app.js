@@ -118,7 +118,7 @@ $(".freezeframe img, img.freezeframe").freeze_frame();
 // bind keyboard shortcuts
 $('body').on('keydown', function (ev) {
   //console.log([ev.key, ev.ctrlKey, ev.altKey]);
-  
+
   if (ev.key == 'Escape') {
     // close generic modal if opened
     if ($('#generic-modal').hasClass('is-active'))

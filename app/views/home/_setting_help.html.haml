@@ -1,4 +1,4 @@
 %label.label{class: ('has-background-info' if s.startup?)}
   = s.key
-  %span.icon.is-small.in-text-small{title: s.notes, onclick: %Q|alert(jQuery(this).attr('title'))|}
+  %span.icon.is-small.in-text-small{title: s.notes, onclick: %Q|alert($(this).attr('title'))|}
     %i.mi.mi-small help

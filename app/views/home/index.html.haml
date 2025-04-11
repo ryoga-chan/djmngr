@@ -133,7 +133,7 @@
 
 - if @last_djs.any?
   .has-text-centered
-    = link_to '#', onclick: "jQuery('#recent_djs').toggleClass('is-hidden').load_ondemand_images({freezeframe: true})",
+    = link_to '#', onclick: "$('#recent_djs').toggleClass('is-hidden').load_ondemand_images({freezeframe: true})",
       class: 'button is-info is-rounded mb-3' do
       %span.icon-text
         %span.icon

@@ -35,11 +35,11 @@
                 %span.icon.is-small.is-left
                   %i.mi.mi-small search
               .control
-                %a.button.is-rounded(onclick="jQuery('#js-finder-modal .search-term').val('').focus()")
+                %a.button.is-rounded(onclick="$('#js-finder-modal .search-term').val('').focus()")
                   %span.icon
                     %i.mi backspace
               .control
-                %a.button.is-info.is-rounded(onclick="jQuery('#js-finder-modal .search-term').change()")
+                %a.button.is-info.is-rounded(onclick="$('#js-finder-modal .search-term').change()")
                   %span.icon
                     %i.mi search
           .column.is-1.has-text-centered
@@ -60,11 +60,11 @@
                 %span.icon.is-small.is-left
                   %i.mi.mi-small search
               .control
-                %a.button.is-rounded(onclick="jQuery('#ehentai-search-modal .search-term').focus().val('')")
+                %a.button.is-rounded(onclick="$('#ehentai-search-modal .search-term').focus().val('')")
                   %span.icon
                     %i.mi backspace
               .control
-                %a.button.is-info.is-rounded(onclick="jQuery('#ehentai-search-modal .search-term').change()")
+                %a.button.is-info.is-rounded(onclick="$('#ehentai-search-modal .search-term').change()")
                   %span.icon
                     %i.mi search
           .column.is-2.has-text-centered
@@ -83,9 +83,9 @@
       .lookup-results.is-size-8.mt-4
 
 #generic-modal.modal
-  .modal-background(onclick="jQuery(this).parent().removeClass('is-active')")
+  .modal-background(onclick="$(this).parent().removeClass('is-active')")
   .modal-card
     %header.modal-card-head
       %p.modal-card-title title
-      %button.delete(onclick="jQuery(this).parents('.modal:first').removeClass('is-active')")
+      %button.delete(onclick="$(this).parents('.modal:first').removeClass('is-active')")
     %section.modal-card-body

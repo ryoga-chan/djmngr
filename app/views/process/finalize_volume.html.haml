@@ -47,7 +47,7 @@
       
       function update_countdown () {
         window.countdown = window.countdown - 1;
-        jQuery('span.countdown').text('('+window.countdown+')');
+        $('span.countdown').text('('+window.countdown+')');
         if (window.countdown > 0)
           setTimeout(update_countdown, 1000);
         else

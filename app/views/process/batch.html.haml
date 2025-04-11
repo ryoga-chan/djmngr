@@ -23,7 +23,7 @@
     
     .field.has-addons.is-justify-content-right
       .control
-        = link_to '#', onclick: %Q|jQuery('.column .cover').toggleClass('is-hidden')|,
+        = link_to '#', onclick: %Q|$('.column .cover').toggleClass('is-hidden')|,
           class: 'button is-rounded is-small' do
           %span.icon.is-small
             %i.mi compare
@@ -93,7 +93,7 @@
                 %i.mi search
           .control
             = link_to '#', title: "view doujin", target: :_blank,
-              onclick: "jQuery(this).attr('href', '/doujinshi/'+jQuery('#options_doujin_id').val())",
+              onclick: "$(this).attr('href', '/doujinshi/'+$('#options_doujin_id').val())",
               class: 'button is-small' do
               %span.icon
                 %i.mi visibility
@@ -124,7 +124,7 @@
             .select= f.select :overwrite, options_for_select(list, cur), {}, class: "input is-rounded is-small"
       .field.has-addons.is-justify-content-center
         .control
-          = link_to '#', onclick: %Q|jQuery('.column.cover').toggleClass('is-hidden')|,
+          = link_to '#', onclick: %Q|$('.column.cover').toggleClass('is-hidden')|,
             class: 'button is-rounded is-small' do
             %span.icon.is-small
               %i.mi compare

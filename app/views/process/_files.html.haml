@@ -48,7 +48,7 @@
   
   - bts_edit = capture do
     = link_to '#', class: 'button is-rounded is-light',
-      onclick: %Q|jQuery('.select-item, .update-name, .files-actions > *').toggleClass('is-hidden'); return false| do
+      onclick: %Q|$('.select-item, .update-name, .files-actions > *').toggleClass('is-hidden'); return false| do
       %span.icon.is-small
         %i.mi edit
       %span Edit
@@ -75,7 +75,7 @@
           %th.w1 Size
           %th.select-item.is-hidden
             = link_to '#', title: 'select all',
-              onclick: %Q|jQuery('#filenames tr.files :checkbox').prop('checked', true); return false| do
+              onclick: %Q|$('#filenames tr.files :checkbox').prop('checked', true); return false| do
               %span.icon.is-small
                 %i.mi select_all
           %th
@@ -119,7 +119,7 @@
         %th.w1 Size
         %th.select-item.is-hidden
           = link_to '#', title: 'select all',
-            onclick: %Q|jQuery('#filenames tr.images :checkbox').prop('checked', true); return false| do
+            onclick: %Q|$('#filenames tr.images :checkbox').prop('checked', true); return false| do
             %span.icon.is-small
               %i.mi select_all
         %th

@@ -2,7 +2,7 @@
   .navbar-brand
     %a.navbar-item(href='/' title='home page')= image_tag 'logo.webp', style: "border-radius: 0.5rem", class: :sfw
     %a.navbar-burger.no-spinner{:role => "button", :'data-target' => "appNavbar",
-      :onclick => %Q|jQuery(this).add('#appNavbar').toggleClass('is-active') | }
+      :onclick => %Q|$(this).add('#appNavbar').toggleClass('is-active') | }
       %span
       %span
       %span
@@ -17,7 +17,7 @@
             %span Process
       
       %span.navbar-item.has-dropdown.is-hoverable{class: (params[:controller] != 'doujinshi' ? nil : 'is-current'),
-        onclick: "jQuery(this).toggleClass('is-active')"}
+        onclick: "$(this).toggleClass('is-active')"}
         %a.navbar-link
           %span.icon-text
             %span.icon
@@ -51,7 +51,7 @@
       
       %span.navbar-item
         = form_with url: search_doujinshi_path, method: :get,
-          html: {onsubmit: %Q|jQuery(this).find('button').addClass('is-loading'); MyApp.show_loading()|} do |f|
+          html: {onsubmit: %Q|$(this).find('button').addClass('is-loading'); MyApp.show_loading()|} do |f|
           .field.has-addons
             .control
               .select= f.select :where,
@@ -66,7 +66,7 @@
                   %i.mi search
     
       %span.navbar-item.has-dropdown.is-hoverable{class: (%w{ authors circles themes }.include?(params[:controller]) ? 'is-current' : nil),
-        onclick: "jQuery(this).toggleClass('is-active')"}
+        onclick: "$(this).toggleClass('is-active')"}
         %a.navbar-link
           %span.icon
             %i.mi folder_shared
@@ -86,7 +86,7 @@
             %span Themes
       
       %span.navbar-item.has-dropdown.is-hoverable{class: ("#{params[:controller]}/#{params[:action]}" == 'home/settings' ? 'is-current' : nil),
-        onclick: "jQuery(this).toggleClass('is-active')"}
+        onclick: "$(this).toggleClass('is-active')"}
         %a.navbar-link
           %span.icon-text
             %span.icon
@@ -103,7 +103,7 @@
               .file.is-primary
                 %label.file-label
                   = f.file_field :cover, class: 'file-input', id: '',
-                    onchange: %Q|jQuery(this).next().find('i.mi').text('hourglass_bottom'); MyApp.show_loading(); this.form.submit()|
+                    onchange: %Q|$(this).next().find('i.mi').text('hourglass_bottom'); MyApp.show_loading(); this.form.submit()|
                   %span.file-cta
                     %span.file-icon.mr-3
                       %i.mi image_search

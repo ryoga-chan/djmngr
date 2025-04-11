@@ -5,7 +5,7 @@
 %tr
   %td.acenter= link_to '&#9826;'.html_safe, '#',
     data: { cover: doujin_path(d, format: :jpg)},
-    onclick: %Q|jQuery(this).hide().after(jQuery('<img class="thumb">').attr('src', jQuery(this).data('cover'))); return false|
+    onclick: %Q|$(this).hide().after($('<img class="thumb">').attr('src', $(this).data('cover'))); return false|
   %td.acenter
     .score= "#{d.score.to_i}&hearts;".html_safe if d.score.to_i > 0
     .read-perc= d.percent_read.to_i == 100 ? '&#10003;'.html_safe : "#{d.percent_read.round}%" if d.read_pages.to_i > 0
