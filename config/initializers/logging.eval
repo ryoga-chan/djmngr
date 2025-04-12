@@ -7,11 +7,7 @@ if ENV['PUMA_DAEMON'] && Rails.env.production?
   logger_args = [File.join(Dir.tmpdir, "ruby:djmngr-server.log"), 2]
 end
 
-unless Rails.const_defined?(:Console)    || # bin/rails console
-       Rails.const_defined?(:Generators) || # bin/rails generate
-       defined?(Rake)                       # bin/rails x:y:z
-  puts "* Logging to #{logger_args.first.inspect}"
-end
+puts "* Logging to #{logger_args.first.inspect}" if defined?(Rails::Server)
 
 config.logger = ActiveSupport::TaggedLogging.logger *logger_args
 

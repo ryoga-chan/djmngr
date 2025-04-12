@@ -1,13 +1,9 @@
 namespace :db do
   desc 'Archive sqlite database'
   task :backup2zip do
-    db_file  = Rails.root.join('storage', 'production.sqlite3').to_s
-    zip_file = Rails.root.join("db-#{Time.now.strftime '%F_%H-%M'}.sql.7z").to_s
-
-    print "Dumping DB... " # restore with: 7za x -so db.sql.7z | sqlite3 db.sqlite3
-    `(sqlite3 #{db_file.shellescape} .dump | 7za a -mx=9 -m0=PPMd:mem=64m -si #{zip_file.shellescape}) 2>&1`
-
-    puts "CREATED: #{zip_file}"
+    require_relative '../../app/lib/db_dumper'
+    print "Dumping DB... "
+    puts "CREATED: #{DbDumper.dump}"
   end
 
   # ----------------------------------------------------------------------------
