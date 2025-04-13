@@ -17,7 +17,11 @@ module DbDumper
 
   def self.db_fingerprint
     src = Rails.root.join('storage', 'production.sqlite3*').to_s
-    Dir[src].map{|f| File.size f }.sum
+    
+    Dir[src].map{|f|
+      s = File.stat f
+      "#{s.size}@#{f.mtime}"
+    }.join("|")
   end # self.db_fingerprint
 
   # periodically dump DB
