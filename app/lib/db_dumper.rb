@@ -26,16 +26,19 @@ module DbDumper
 
   # periodically dump DB
   def self.periodic_dump
+    fp_file = File.join(Setting['dir.sorting'], 'db-fingerprint.txt').to_s
+
     Thread.new{
-      f1 = db_fingerprint
+      File.write fp_file, db_fingerprint
 
       loop {
         sleep(Time.now.tomorrow.at_midnight + 4.hours - Time.now) # wait till 4AM
 
+        f1 = File.read fp_file
         f2 = db_fingerprint
 
         if f1 != f2
-          f1 = f2
+          File.write fp_file, f2
           dump
           clean
         end
