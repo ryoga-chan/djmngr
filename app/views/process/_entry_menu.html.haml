@@ -34,30 +34,31 @@
             = bt_later
             = bt_preview
 
-        .dropdown-item
-          - if f.images >= 2
-            = link_to(batch_rehash_process_index_path(page: 2, file_ids: [f.id]),
-              data: { confirm: 'Compare page 2 for this file?' }, title: 'compare page 2',
-              class: 'button is-info is-rounded is-small tiny-bt mr-1') do
-              %span.icon.is-small
-                %i.mi.mi-small looks_two
-              %span pag
+        - if f.images.to_i > 0
+          .dropdown-item
+            - if f.images >= 2
+              = link_to(batch_rehash_process_index_path(page: 2, file_ids: [f.id]),
+                data: { confirm: 'Compare page 2 for this file?' }, title: 'compare page 2',
+                class: 'button is-info is-rounded is-small tiny-bt mr-1') do
+                %span.icon.is-small
+                  %i.mi.mi-small looks_two
+                %span pag
 
-          - if f.images >= 3
-            = link_to(batch_rehash_process_index_path(page: 3, file_ids: [f.id]),
-              data: { confirm: 'Compare page 3 for this file?' }, title: 'compare page 3',
-              class: 'button is-info is-rounded is-small tiny-bt mr-1') do
-              %span.icon.is-small
-                %i.mi.mi-small looks_3
-              %span pag
+            - if f.images >= 3
+              = link_to(batch_rehash_process_index_path(page: 3, file_ids: [f.id]),
+                data: { confirm: 'Compare page 3 for this file?' }, title: 'compare page 3',
+                class: 'button is-info is-rounded is-small tiny-bt mr-1') do
+                %span.icon.is-small
+                  %i.mi.mi-small looks_3
+                %span pag
 
-          - if f.images >= 1
-            = link_to(batch_rehash_process_index_path(page: 1, file_ids: [f.id]),
-              data: { confirm: 'Compare page 1 for this file?' }, title: 'compare page 1',
-              class: 'button is-info is-rounded is-small tiny-bt') do
-              %span.icon.is-small
-                %i.mi.mi-small looks_one
-              %span pag
+            - if f.images >= 1
+              = link_to(batch_rehash_process_index_path(page: 1, file_ids: [f.id]),
+                data: { confirm: 'Compare page 1 for this file?' }, title: 'compare page 1',
+                class: 'button is-info is-rounded is-small tiny-bt') do
+                %span.icon.is-small
+                  %i.mi.mi-small looks_one
+                %span pag
 
       - unless DOCKER_VM
         .dropdown-item.is-hidden-touch
