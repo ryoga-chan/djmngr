@@ -1,4 +1,6 @@
-Rails.application.config.proctitle = 'ruby:djmngr'.freeze
+# app config values:
+#   SET: Rails.application.config.xxx = 123
+#   GET: Rails.configuration.xxx
 
 # https://stackoverflow.com/questions/13506690/how-to-determine-if-rails-is-running-from-cli-console-or-as-server
 # https://stackoverflow.com/questions/26095275/how-to-detect-that-you-rails-app-is-running-from-a-rails-runner

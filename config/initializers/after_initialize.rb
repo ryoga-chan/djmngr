@@ -62,25 +62,4 @@ Rails.application.config.after_initialize do
       end # if Setting.table_exists?
     end # ActiveRecord::Base.logger.silence
   end # create defaults
-
-  if Rails.env.production?
-    case APP_MODE
-      when :console
-        # change process title
-        Process.setproctitle "#{Rails.configuration.proctitle}-console" # $0 = title
-      when :server
-        # change process title after webserver start (puma changes the title too)
-        # see also ApplicationController#setproctitle
-        Thread.new{
-          loop {
-            sleep 1
-            res = HTTPX.head("http://localhost:39102/up")&.status rescue 404
-            Process.setproctitle ApplicationController::PROCTITLE
-            break if res == 200
-          }# loop
-        }# Thread.new
-
-        DbDumper.periodic_dump
-    end # case APP_MODE
-  end # if Rails.env.production?
 end

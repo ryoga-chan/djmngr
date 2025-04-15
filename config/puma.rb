@@ -43,3 +43,13 @@ plugin :solid_queue if ENV["SOLID_QUEUE_IN_PUMA"]
 pidfile ENV["PIDFILE"] if ENV["PIDFILE"]
 
 daemonize if ENV['PUMA_DAEMON']
+
+# runs in the Puma master process after it boots or restart completes
+on_booted do
+  # change process title
+  t  = "ruby:djmngr-#{APP_MODE}"
+  t += "#{t}-dev" unless Rails.env.production?
+  Process.setproctitle t
+
+  DbDumper.periodic_dump
+end # on_booted
