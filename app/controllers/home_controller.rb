@@ -64,11 +64,12 @@ class HomeController < ApplicationController
       flash[:alert] = [] if errors.any?
       errors.each{|s| flash[:alert] += s.errors.full_messages.map{|m| "#{s.key}: #{m}"} }
 
-      # restart application
-      if restart
-        flash[:notice] = "restarting application..."
-        Thread.new { sleep 1; FileUtils.touch Rails.root.join('tmp', 'restart.txt').to_s }
-      end
+      # NOTE: do not use puma restart or latest db changes may be lost
+      ## restart application
+      #if restart
+      #  flash[:notice] = "restarting application..."
+      #  Thread.new { sleep 1; FileUtils.touch Rails.root.join('tmp', 'restart.txt').to_s }
+      #end
 
       redirect_to home_settings_path
     end
