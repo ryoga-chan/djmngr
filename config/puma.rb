@@ -1,5 +1,3 @@
-require 'puma/daemon' if ENV['PUMA_DAEMON']
-
 # This configuration file will be evaluated by Puma. The top-level methods that
 # are invoked here are part of Puma's configuration DSL. For more information
 # about methods provided by the DSL, see https://puma.io/puma/Puma/DSL.html.
@@ -33,7 +31,7 @@ threads threads_count, threads_count
 port ENV.fetch("PORT", 3000)
 
 # Allow puma to be restarted by `bin/rails restart` command.
-#plugin :tmp_restart
+plugin :tmp_restart
 
 # Run the Solid Queue supervisor inside of Puma for single-server deployments
 plugin :solid_queue if ENV["SOLID_QUEUE_IN_PUMA"]
@@ -41,8 +39,6 @@ plugin :solid_queue if ENV["SOLID_QUEUE_IN_PUMA"]
 # Specify the PID file. Defaults to tmp/pids/server.pid in development.
 # In other environments, only set the PID file if requested.
 pidfile ENV["PIDFILE"] if ENV["PIDFILE"]
-
-daemonize if ENV['PUMA_DAEMON']
 
 # runs in the Puma master process after it boots or restart completes
 on_booted do

@@ -10,7 +10,6 @@ gem 'rails',       '~> 8.0.2',   # to use edge: gem 'rails', github: 'rails/rail
   require: %w[ shellwords open-uri pp open3 ]
 gem 'sqlite3',     '~> 2.3'      # sqlite3 database for Active Record
 gem 'puma',        '~> 6.5'      # puma web server -- https://github.com/puma/puma
-gem 'puma-daemon', '~> 0.3', require: false # daemonize puma -- https://github.com/kigster/puma-daemon
 gem 'tzinfo-data', platforms: %i[ windows jruby ] # zoneinfo files for Windows
 gem 'propshaft'                  # asset pipeline -- https://github.com/rails/propshaft
 gem 'importmap-rails'            # use JS with ESM import maps -- https://github.com/rails/importmap-rails

@@ -18,7 +18,7 @@ cache_path  = File.join root_path, 'tmp', 'cache', 'assets'
 db_path     = File.join root_path, 'storage'
 
 if ARGV.include?('p') || ARGV.include?('d')
-  ENV['PUMA_DAEMON'] = 'true' if ARGV.include?('d')
+  ENV['LOG_TO_FILE'] = 'true' if ARGV.include?('d')
   ENV['RAILS_SERVE_STATIC_FILES'] = 'true' if ARGV.include?('-static')
   argv.concat %w{ -e production }
   unless File.exist?(assets_path)
