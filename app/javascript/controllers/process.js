@@ -114,7 +114,22 @@ if ($('body').data('ctrl') +'/'+ $('body').data('action') == 'process/index') {
   });
   
   // update total file size label
-  $('.file-select').click($.app.update_tot_filesize);
+  $('.file-select :checkbox').click($.app.update_tot_filesize);
+
+  // copy filename and select the entry
+  $('.bt-copy').click(function (ev) {
+    ev.preventDefault();
+    var tr = $(this).parents('tr:first').prev();
+    MyApp.copy_to_clipboard( tr.find('a.process-file').text().trim() );
+    tr.find('.file-select :checkbox').click();
+  });
+
+  // paste clipboard text into notes
+  $('.bt-paste').click(function (ev) {
+    ev.preventDefault();
+    var el = $(this).next('.pd-notes');
+    MyApp.paste_clipboard(function (text) { el.val(text).change(); });
+  });
   
   // fade out and remove the ungrouped entry in group mode
   $('.grop-actions a.remove').on('ajax:success', function (ev, resp, status, jxhr) {

@@ -432,7 +432,7 @@ class ProcessController < ApplicationController
           # update @info rehashing cover and run a new search
           @info = @info.slice! :cover_hash, :cover_results, :cover_status # reset @info
           cover_path = ProcessArchiveDecompressJob.cover_path @dname, @info
-          @info[:cover_hash] = CoverMatchingJob.hash_image cover_path
+          @info[:cover_hash] = CoverMatchingJob.hash_image(cover_path, hash_only: true)
           File.open(File.join(@dname, 'info.yml'), 'w'){|f| f.puts @info.to_yaml }
           CoverMatchingJob.perform_now @info[:cover_hash][:phash], @info[:cover_hash][:sdhash]
         end

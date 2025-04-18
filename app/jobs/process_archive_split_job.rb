@@ -40,6 +40,7 @@ class ProcessArchiveSplitJob < ApplicationJob
       end # each image
 
       # update info
+      info_new[:dummy            ] = true
       info_new[:images           ] = set
       info_new[:working_dir      ] = File.basename dir
       info_new[:prepared_at      ] = Time.now

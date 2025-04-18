@@ -50,5 +50,34 @@ namespace :dj do
     ProcessBatchJob.perform_now doujin_id, files, options
 
     exit 0 # make sure that the extra arguments won't be interpreted as Rake task
-  end # process
+  end # task dj:process
+
+  namespace :sorting do
+    desc "zip and remove every `contents` folder from `dir.sorting`"
+    task zip: :environment do
+      #Rails.env = ENV['RAILS_ENV'] = 'production'
+      #Rake::Task['environment'].invoke
+
+      outd = File.join Setting['dir.sorting'], 'zipped'
+      FileUtils.mkdir_p outd
+
+      Dir[File.join(Setting['dir.sorting'], '*')].each do |d|
+        info_path = File.join d, 'info.yml'
+        next unless File.exist?(info_path)
+
+        # read archive name
+        name = YAML.unsafe_load_file(info_path)[:relative_path].first
+        puts "- #{name}"
+
+        # zip and delete folder
+        fname = File.join(outd, name)
+        FileUtils.rm_f fname
+        system "find -type f | sort | zip -q #{fname.shellescape} -@", chdir: File.join(d, 'contents')
+        FileUtils.rm_rf d if $?.to_i == 0
+      end
+      puts ''
+
+      puts "see: #{outd}"
+    end # task dj:sorting:zip
+  end # dj:sorting
 end

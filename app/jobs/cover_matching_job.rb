@@ -21,7 +21,7 @@ class CoverMatchingJob < ApplicationJob
              image: Base64.encode64(thumb[:image].webpsave_buffer).chomp
   end # self.hash_image_buffer
 
-  def self.hash_image(image_path)
+  def self.hash_image(image_path, hash_only: false)
     result = hash_image_buffer File.binread(image_path)
 
     # create metadata + embedded image
@@ -32,7 +32,9 @@ class CoverMatchingJob < ApplicationJob
       }).to_yaml)
     end
 
-    result
+    hash_only \
+      ? result.slice(:phash, :sdhash)
+      : result
   end # self.hash_image
 
   def self.results_fname(hash) = [hash.to_i].pack('q').unpack('Q').first.to_s(16).rjust(16, '0')

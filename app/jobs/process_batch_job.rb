@@ -125,7 +125,7 @@ class ProcessBatchJob < ApplicationJob
 
       # run cover image hash matching
       cover_path = ProcessArchiveDecompressJob.cover_path dname, info
-      info[:cover_hash] = CoverMatchingJob.hash_image cover_path
+      info[:cover_hash] = CoverMatchingJob.hash_image(cover_path, hash_only: true)
       CoverMatchingJob.perform_now info[:cover_hash][:phash], info[:cover_hash][:sdhash]
       cover_matching = CoverMatchingJob.results info[:cover_hash][:phash]
       info[:cover_results] = cover_matching[:results]

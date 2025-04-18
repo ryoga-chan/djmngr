@@ -124,9 +124,8 @@
 - else
   %tr{class: tr_class}
     %td.has-text-centered
-      = link_to('#', title: 'copy file name & select this entry',
-        onclick: %Q|var tr=$(this).parents('tr:first').prev(); MyApp.copy_to_clipboard( tr.find('a.process-file').text().trim() ); tr.find('.file-select :checkbox').prop('checked', true); return false|,
-        class: 'button is-info is-rounded is-small tiny-bt mt-2') do
+      = button_tag(type: :button, title: 'copy file name & select this entry',
+        class: 'bt-copy button is-info is-rounded is-small tiny-bt mt-2') do
         %span.icon.is-small
           %i.mi.mi-small content_copy
 
@@ -136,8 +135,7 @@
 
     %td(colspan=3)
       = button_tag(type: :button, title: 'paste clipboard contents into notes',
-          onclick: %Q|var el=$(this).next('.pd-notes'); MyApp.paste_clipboard(function (text) { el.val(text).change(); })|,
-          class: 'button is-info is-rounded is-small tiny-bt mt-2 mr-2') do
+          class: 'bt-paste button is-info is-rounded is-small tiny-bt mt-2 mr-2') do
         %span.icon.is-small
           %i.mi.mi-small content_paste
 
