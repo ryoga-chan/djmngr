@@ -1,3 +1,5 @@
+console.info('imported: libs/hammer');
+
 /*! Hammer.JS - v2.0.7 - 2016-04-22
  * http://hammerjs.github.io/
  *

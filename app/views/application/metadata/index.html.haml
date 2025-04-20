@@ -55,7 +55,7 @@
           %td
             = link_to '&star;'.html_safe, fav_toggle_doujinshi_path(type: @model, id: r.id),
               title: ("faved @ #{l r.faved_at}" if r.favorite? && r.faved_at),
-              class: "fav #{'has-text-warning' if r.favorite?}"
+              class: "fav no-spinner #{'has-text-warning' if r.favorite?}"
           %td
             - dj_count = r.doujinshi.count
             = link_to dj_count, controller: :doujinshi, action: :index, tab: target_model,

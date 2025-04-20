@@ -1,3 +1,8 @@
+console.info('imported: controllers/shelves');
+
+import 'libs/app-setup';
+import 'libs/sortable-jquery';
+
 $(function () {
 // -----------------------------------------------------------------------------
 if ($('body').data('ctrl') != 'shelves')

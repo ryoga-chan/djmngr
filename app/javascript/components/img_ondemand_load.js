@@ -1,3 +1,7 @@
+console.info('imported: components/img_ondemand_load');
+
+import 'libs/jquery'; // sets window.{jQuery, $}
+
 $.fn.load_ondemand_images = function(options = {}) {
   var images = this.filter('img[data-url]');
   

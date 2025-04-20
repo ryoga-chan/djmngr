@@ -1,3 +1,7 @@
+console.info('imported: components/js-tagger');
+
+import 'libs/jquery'; // sets window.{jQuery, $}
+
 // TAGGER
 // ----------------------------------------
 // = hidden_field_tag "record[relation_ids][]", nil, id: nil

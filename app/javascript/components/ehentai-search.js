@@ -1,3 +1,7 @@
+console.info('imported: components/ehentai-search');
+
+import 'libs/jquery'; // sets window.{jQuery, $}
+
 $(function () {
 // -----------------------------------------------------------------------------
 // search on term change

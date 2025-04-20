@@ -1,3 +1,5 @@
+console.info('imported: components/img_sequential_load');
+
 // recursively load the next image
 $.__sequential_image_loading = function (ev_type, caller) {
   //console.log({f: 'img_sequential_load', type: ev_type, caller: caller });

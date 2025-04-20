@@ -1,3 +1,5 @@
+console.info('imported: components/jQKeyboard');
+
 (function () {
 // -----------------------------------------------------------------------------
 // original implementation by <Ho Poi Yee> @ https://github.com/poiyee/jQKeyboard

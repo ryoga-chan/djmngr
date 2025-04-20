@@ -1,3 +1,11 @@
+console.info('imported: controllers/process');
+
+import 'libs/app-setup';
+
+import 'components/ehentai-search';
+import 'components/js-finder';
+import 'components/split-click';
+
 $(function () {
 // -----------------------------------------------------------------------------
 if ($('body').data('ctrl') != 'process')
@@ -97,9 +105,8 @@ $('input.pd-notes').change(function () {
 if ($('body').data('ctrl') +'/'+ $('body').data('action') == 'process/index') {
   // add page shortcuts
   MyApp.shortcuts.push({ key: 'f', ctrl: false, alt: false, descr: 'process first entry', action: function (ev) { $('a.process-wip, a.process-file').get(0).click(); } });
-  MyApp.shortcuts.push({ key: 'b', ctrl: false, alt: true, descr: 'toggle batch mode', action: function (ev) { $('a.bt-batch').get(0).click(); } });
   MyApp.shortcuts.push({ key: 't', ctrl: false, alt: true, descr: 'toggle checked entries for batch', action: function (ev) { $('a.bt-toggle-all').get(0).click(); } });
-  MyApp.shortcuts.push({ key: 'r', ctrl: false, alt: true, descr: 'refresh entries index', action: function (ev) { $('a.bt-reindex').get(0).click(); } });
+  MyApp.shortcuts.push({ key: 'r', ctrl: false, alt: true, descr: 'rescan to-sort folder', action: function (ev) { $('a.bt-rescan').get(0).click(); } });
   
   $.app = $.extend($.app, {
     update_tot_filesize: function () {
@@ -305,7 +312,9 @@ if ($('body').data('ctrl') +'/'+ $('body').data('action') == 'process/edit') {
   });
 
   // scroll tabs container to active tab (for mobile users)
-  $('.tabs.is-boxed').scrollLeft( $('.tabs.is-boxed li.is-active').position().left );
+  let tabs = $('.tabs.is-boxed');
+  if (tabs.length > 0)
+    tabs.scrollLeft( tabs.find('li.is-active').position().left );
 }// if /process/edit
 
 

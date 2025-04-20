@@ -1,3 +1,7 @@
+console.info('imported: components/split-click');
+
+import 'libs/jquery'; // sets window.{jQuery, $}
+
 // Fire a custom click event on each half of an element that can be splitted in
 // four ways: -, |, /, \.
 // 

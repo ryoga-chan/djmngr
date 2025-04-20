@@ -1,3 +1,9 @@
+console.info('imported: controllers/metadata');
+
+import 'libs/app-setup';
+
+import 'components/js-tagger';
+
 $(function () {
 // -----------------------------------------------------------------------------
 if ($.inArray($('body').data('ctrl'), ['authors', 'circles', 'themes']) < 0)

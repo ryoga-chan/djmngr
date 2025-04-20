@@ -1,3 +1,5 @@
+console.info('imported: libs/hammer-jquery');
+
 // `hammer` jQuery plugin -- https://github.com/hammerjs/jquery.hammer.js | https://github.com/hammerjs/hammer.js
 if (!Hammer) { throw new Error('Hammer is required!'); }
 

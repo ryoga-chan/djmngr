@@ -1,3 +1,7 @@
+console.info('imported: controllers/common');
+
+import 'libs/app-setup';
+
 $(function () {
 // -----------------------------------------------------------------------------
 var p_bar = '<progress class="progress is-small is-info" max="100">i</progress>';

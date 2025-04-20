@@ -1,3 +1,11 @@
+console.info('imported: controllers/doujinshi');
+
+import 'libs/app-setup';
+
+import 'components/ehentai-search';
+import 'components/js-finder';
+import 'components/js-tagger';
+
 $(function () {
 // -----------------------------------------------------------------------------
 if ($('body').data('ctrl') != 'doujinshi')

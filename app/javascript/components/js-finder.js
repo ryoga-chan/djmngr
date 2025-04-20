@@ -1,3 +1,7 @@
+console.info('imported: components/js-finder');
+
+import 'libs/jquery'; // sets window.{jQuery, $}
+
 $(function () {
 // -----------------------------------------------------------------------------
 // search on term change
@@ -61,7 +65,7 @@ $('body').on('change', '#js-finder-modal .search-term', function () {
          });
       });//each
       
-      list.freeze_frame();
+      list.find('figure > img').freeze_frame();
     },//success
     complete: function () { input.parent().removeClass('is-loading'); },//complete
     error: function () { alert('Server error!'); }//error

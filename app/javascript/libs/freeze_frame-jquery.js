@@ -1,8 +1,10 @@
+console.info('imported: libs/freeze_frame-jquery');
+
+import 'libs/jquery'; // sets window.{jQuery, $}
+
 // `freeze_frame` jQuery plugin -- https://github.com/ctrl-freaks/freezeframe.js
 import Freezeframe from 'freezeframe';
 window.Freezeframe ||= Freezeframe;
-
-if (!Freezeframe) { throw new Error('Freezeframe is required!'); }
 
 $.fn.freeze_frame = function() {
   return this.

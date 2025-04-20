@@ -32,4 +32,4 @@
   %td= link_to '&star;'.html_safe,
     fav_toggle_doujinshi_path(type: :Doujin, id: d.id),
     title: ("faved @ #{l d.faved_at}" if d.favorite? && d.faved_at),
-    class: "fav #{'has-text-warning' if d.favorite?}"
+    class: "fav no-spinner #{'has-text-warning' if d.favorite?}"
