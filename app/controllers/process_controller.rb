@@ -37,6 +37,7 @@ class ProcessController < ApplicationController
     if ProcessIndexRefreshJob.lock_file? # jobs: Refresh, Preview
       @refreshing       = true
       @refresh_progress = ProcessIndexRefreshJob.progress.to_s.split ' | '.freeze
+      @page_title       = @refresh_progress[1]
     else
       @group_sort = session['process.index.sort_by'].to_s.starts_with?('group')
 

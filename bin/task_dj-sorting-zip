@@ -1,2 +1,0 @@
-#!/usr/bin/sh
-RAILS_ENV=production bin/rails dj:sorting:zip

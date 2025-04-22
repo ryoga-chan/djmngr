@@ -1,0 +1,7 @@
+#!/usr/bin/sh
+if [ -z "$1" ]; then
+  bin/rails --tasks
+else
+  export RAILS_ENV=production
+  bin/rails "$@"
+fi
