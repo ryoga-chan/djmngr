@@ -23,12 +23,5 @@ pin "libs/sortable-jquery"      # https://github.com/SortableJS/jquery-sortablej
 pin "freezeframe" # @5.0.2
 pin "libs/freeze_frame-jquery"
 
-# TODO: see alternatives
-#   - https://stackoverflow.com/questions/21444253/jquery-swipe-without-jquery-mobile-library/21444454#21444454
-#   - https://www.w3schools.com/jsref/event_touchstart.asp
-pin "libs/hammer"               # https://github.com/hammerjs/hammer.js (swipe events)
-pin "libs/hammer-jquery"        # https://github.com/hammerjs/jquery.hammer.js
-pin "libs/hammer-module"        # es6 module import shim
-
 pin_all_within 'components'
 pin_all_within 'controllers'
