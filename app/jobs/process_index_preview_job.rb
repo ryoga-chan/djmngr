@@ -10,7 +10,7 @@ class ProcessIndexPreviewJob < ProcessIndexRefreshJob
 
   def perform(order: nil, term: nil, page: nil, id: nil)
     page    = 1 if page.to_i <= 0
-    rel     = self.class.entries(order: order, term: term)
+    rel     = self.class.entries(order: (id ? nil : order), term: term)
     records = []
 
     if id
