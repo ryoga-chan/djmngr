@@ -69,11 +69,11 @@
     %a{name: "row_#{idx}"}
     .name
       - if @group_sort && is_doujin
-        = link_to f.file_dl_name(omit_ext: true), doujin_path(f), target: :_blank
+        = link_to hl_multispace(f.file_dl_name omit_ext: true), doujin_path(f), target: :_blank
       - else
         - if @preparing_paths.include?(f.name)
           %span.tag.is-warning(title="processing") 🛠
-        = link_to f.name, {action: :prepare_archive, path: f.name}, class: 'process-file'
+        = link_to hl_multispace(f.name), {action: :prepare_archive, path: f.name}, class: 'process-file'
 
     - if @group_sort && is_doujin
       - if f.name_romaji.present?
