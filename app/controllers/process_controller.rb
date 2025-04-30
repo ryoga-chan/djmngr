@@ -400,7 +400,10 @@ class ProcessController < ApplicationController
     @perc  = File.read(File.join @dname, 'completion.perc').to_f rescue 0.0 unless @info[:prepared_at]
     @fname = File.basename(@info[:relative_path].one? ? @info[:relative_path].first.to_s : @info[:title].to_s)
 
-    return render unless @info[:prepared_at]
+    unless @info[:prepared_at]
+      @page_title = "#{@perc}%"
+      return render
+    end
 
     # clone relations from another doujin
     if params[:ident_from] && (d = Doujin.find_by id: params[:ident_from])
