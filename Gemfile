@@ -41,7 +41,7 @@ gem 'kakasi',      '~> 1.0'      # kanji kana simple inverter -- https://github.
 gem 'image_processing', '~> 1.13', require: %w[ ruby-vips image_processing ]
 
 # image perceptual hashing
-gem 'phash-rb'   , '~> 0.1', require: 'phash' # pHash-0.9.6 (ruby) -- https://github.com/khasinski/phash-rb
+gem 'phash-rb'   , '~> 0.2', require: 'phash' # pHash-0.9.6 (ruby) -- https://github.com/khasinski/phash-rb
 #gem 'phashion'  , '~> 1.2'      # pHash-0.9.6 (C) -- see https://github.com/ryoga-chan/phashion
 #gem 'dhash-vips', '~> 0.2'      # dHash & IDHash -- https://github.com/Nakilon/dhash-vips
 
