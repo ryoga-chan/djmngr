@@ -81,7 +81,7 @@ ADD ./ /
 COPY --from=build $BUNDLE_PATH $BUNDLE_PATH
 COPY --from=build --chown=rails:rails /app /app
 
-EXPOSE 3000
+EXPOSE 39102
 
 # data volumes list:
 #   VOLUME /app/dj-library
