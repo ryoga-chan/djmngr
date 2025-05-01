@@ -128,14 +128,19 @@ if ($('body').data('ctrl') +'/'+ $('body').data('action') == 'process/index') {
     ev.preventDefault();
     var tr = $(this).parents('tr:first').prev();
     MyApp.copy_to_clipboard( tr.find('a.process-file').text().trim() );
-    tr.find('.file-select :checkbox').click();
+    var cb = tr.find('.file-select :checkbox');
+    if (!cb.prop('checked'))
+      cb.click();
   });
 
   // paste clipboard text into notes
   $('.bt-paste').click(function (ev) {
     ev.preventDefault();
+    var cb = $(this).parents('tr:first').prev().find('.file-select :checkbox');
     var el = $(this).next('.pd-notes');
     MyApp.paste_clipboard(function (text) { el.val(text).change(); });
+    if (cb.prop('checked'))
+      cb.click();
   });
   
   // fade out and remove the ungrouped entry in group mode
