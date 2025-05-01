@@ -13,7 +13,7 @@ services:
     networks:
       - net
     ports:
-      - 3000:3000
+      - 3000:39102
 
 networks:
   net:
