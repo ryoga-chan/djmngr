@@ -92,6 +92,14 @@ body:not(.nsfw-mode) {
   figure:hover { img, canvas { opacity: 1; } }
 }
 
+figure {
+  img, canvas {
+    border-radius: 0.5rem;
+    background-color: #2e3333; // app bg color = #1f2424
+    border: 1px solid #212626;
+  }
+}
+
 // info thumbnails in columns
 .columns.thumbs {
   .thumb {
