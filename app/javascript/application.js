@@ -7,6 +7,7 @@ import 'controllers/common';
 
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/import
 switch ($q('body').attributes['data-ctrl'].textContent) {
+  case 'home':      import('controllers/home');      break;
   case 'process':   import('controllers/process');   break;
   case 'doujinshi': import('controllers/doujinshi'); break;
   case 'shelves':   import('controllers/shelves');   break;

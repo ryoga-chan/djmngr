@@ -7,7 +7,7 @@ import Freezeframe from 'freezeframe';
 window.Freezeframe ||= Freezeframe;
 
 $.fn.freeze_frame = function() {
-  return this.
+  return this.filter(':not(.frozenframe)').
     // run only when the image is loaded --  https://stackoverflow.com/questions/3877027/jquery-callback-on-image-load-even-when-the-image-is-cached/3877079#3877079
     one('load', function() {
       $(this).addClass('frozenframe');

@@ -142,15 +142,12 @@
                   \/
                   %span<>= score != :ND ? Setting.score_labels[score] : 'None'
 
-- if @last_djs.any?
+- if Doujin.any?
+  #recent_djs.is-hidden.columns.is-mobile.is-multiline.thumbs
+
   .has-text-centered
-    = link_to '#', onclick: "$('#recent_djs').toggleClass('is-hidden').load_ondemand_images({freezeframe: true})",
-      class: 'button is-info is-rounded mb-3' do
+    %a#load_recent.button.is-info.is-rounded.mt-3{href: home_recent_path(format: :html), data: {page: 0}}
       %span.icon-text
         %span.icon
           %i.mi new_releases
-        %span toggle recent doujinshi
-  #recent_djs.is-hidden.columns.is-mobile.is-multiline.thumbs
-    = render partial: 'doujinshi/thumbs_row',
-      locals: { short_label: true, show_name_orig: true, show_categ: true,
-                images_ondemand: true, doujinshi: @last_djs }
+        %span load recent doujinshi

@@ -33,8 +33,6 @@ class HomeController < ApplicationController
         h.merge key => { n: d.n, perc: perc }
       end
 
-    @last_djs = Doujin.order(created_at: :desc).limit(12)
-
     # build css properties for the pie chart
     if request.format.html?
       cur_deg = 0
@@ -46,6 +44,14 @@ class HomeController < ApplicationController
       end
     end
   end # index
+  
+  def recent
+    records = Doujin.order(created_at: :desc).page(params[:page]).per(12)
+    
+    render partial: 'doujinshi/thumbs_row', layout: false,
+      locals: { short_label: true, show_name_orig: true, show_categ: true,
+                images_ondemand: true, doujinshi: records }
+  end # recent
 
   def settings
     @page_title = :settings

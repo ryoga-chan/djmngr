@@ -12,8 +12,6 @@ $(function () {
 if ($('body').data('ctrl') != 'doujinshi')
   return;
 
-var p_bar = '<progress class="progress is-small is-info" max="100">i</progress>';
-
 // show cover on mouseover
 $('table.dj-details tbody tr > td.show-thumb').
   mouseenter(function (ev) {
@@ -64,7 +62,7 @@ if ($('body').data('action') == 'show') {
   
   // update scoring
   $('.scoring > .icon').click(function () {
-    $('.scoring').hide().after(p_bar);
+    $('.scoring').hide().after(MyApp.p_bar);
     $('#score').val( $(this).data('score') ).get(0).form.submit();
   });
   
@@ -85,14 +83,14 @@ if ($('body').data('action') == 'show') {
     }//if
     
     // show spinner
-    $('td.shelves .columns').hide().after(p_bar);
+    $('td.shelves .columns').hide().after(MyApp.p_bar);
     
     this.form.submit();
   });
   
   // remove doujin from shelf: show spinner
   $('td.shelves .columns a.is-delete').click(function () {
-    $('td.shelves .columns').hide().after(p_bar);
+    $('td.shelves .columns').hide().after(MyApp.p_bar);
   });
 }// action show
 

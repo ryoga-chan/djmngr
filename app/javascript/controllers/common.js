@@ -4,8 +4,6 @@ import 'libs/app-setup';
 
 $(function () {
 // -----------------------------------------------------------------------------
-var p_bar = '<progress class="progress is-small is-info" max="100">i</progress>';
-
 // toggle favorites
 $('a.fav').on('click', function (ev) {
   ev.preventDefault();
@@ -20,7 +18,7 @@ $('a.fav').on('click', function (ev) {
       if (is_bt)
         el.addClass('is-loading');
       else
-        el.data('text', el.html()).html(p_bar);
+        el.data('text', el.html()).html(MyApp.p_bar);
     },//beforeSend
     success: function (resp) {
       if (resp.result != 'ok')

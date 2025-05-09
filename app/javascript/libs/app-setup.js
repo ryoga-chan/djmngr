@@ -13,6 +13,8 @@ window.$q = window.document.querySelector   .bind(window.document);
 window.$Q = window.document.querySelectorAll.bind(window.document);
 
 window.MyApp = {
+  p_bar: '<progress class="progress is-small is-info" max="100">i</progress>',
+  
   nsfw_mode_setup: function () {
     var is_nsfw = localStorage['djmngr.nsfw-mode'] == 'true';
     $('body').toggleClass('nsfw-mode', is_nsfw);

@@ -11,8 +11,6 @@ $(function () {
 if ($('body').data('ctrl') != 'process')
   return;
 
-var p_bar = '<progress class="progress is-small is-info" max="100">i</progress>';
-
 MyApp.titles_to_lowercase = function () {
   $.each(['dest_title', 'dest_title_romaji', 'dest_title_eng', 'dest_filename'],
     function () { $('#'+this).val( $('#'+this).val().toLowerCase().trim() ); });
@@ -23,7 +21,7 @@ MyApp.translitterate_raw_title = function () {
   MyApp.translitterate($('#dest_title').val(), {
     beforeSend: function () {
       dst.addClass('is-hidden').
-        after( $(p_bar).addClass('fillwidth').css('display', 'inline-block') );
+        after( $(MyApp.p_bar).addClass('fillwidth').css('display', 'inline-block') );
     },//beforeSend
     success: function (resp) { dst.val(resp); },//success
     complete: function () { dst.removeClass('is-hidden').next().remove(); },//complete
@@ -67,7 +65,7 @@ $('input.update-name').change(function () {
     cache: false,
     beforeSend: function () {
       el.val( el.val().trim() );
-      el.addClass('is-hidden').after(p_bar);
+      el.addClass('is-hidden').after(MyApp.p_bar);
     },//beforeSend
     success: function (resp) {
       if (resp.result != 'ok')
@@ -90,7 +88,7 @@ $('input.pd-notes').change(function () {
     cache: false,
     beforeSend: function () {
       el.val( el.val().trim() );
-      el.addClass('is-hidden').after(p_bar);
+      el.addClass('is-hidden').after(MyApp.p_bar);
     },//beforeSend
     success: function (resp) {
       if (resp.result != 'ok')
@@ -293,7 +291,7 @@ if ($('body').data('ctrl') +'/'+ $('body').data('action') == 'process/edit') {
       $(this).nextAll('span.icon[data-score]:not(.clear-score)').removeClass('has-text-warning').find('i').text('star_outline');
     }//if-else
     
-    $('.scoring').after(p_bar);
+    $('.scoring').after(MyApp.p_bar);
     $(this).parents('form:first').submit();
   });
 

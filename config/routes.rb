@@ -14,6 +14,7 @@ Rails.application.routes.draw do
   get  'home/index'
   get  'home/settings'
   post 'home/settings'
+  get  'home/recent'
   get  'home/info'
   post "shared_content_receiver" => 'home#shared_content_receiver'
 
