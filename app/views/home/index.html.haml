@@ -6,8 +6,8 @@
   .column.has-text-centered.is-4-tablet
     %span.tag.is-hidden-mobile.mb-5 counters
     
-    .tags
-      .tags.has-addons.mr-4.mb-0
+    .tags-sums
+      .tags.mb-0
         %span.tag.is-info.is-light
           %span.icon-text
             %span.icon
@@ -21,7 +21,10 @@
             %span.icon
               %i.mi auto_awesome
             %span= link_to number_with_delimiter(@stats[:dj_fav], delimiter: "'"), favorites_doujinshi_path
-      .tags.has-addons.mr-4.mb-0
+            %span.pl-1 faves
+
+    .tags-collection
+      .tags.mb-0
         - @stats[:dj_cat].each do |cat, n|
           %span.tag.is-info
             %span.icon-text
@@ -29,8 +32,8 @@
                 %i.mi= DoujinshiController::ICONS[cat]
               %span= link_to number_with_delimiter(n, delimiter: "'"), doujinshi_path(tab: cat)
 
-    .tags
-      .tags.has-addons.mr-4.mb-0
+    .tags-processing-sums
+      .tags.has-addons.mb-0
         %span.tag.is-info.is-light
           %span.icon-text
             %span.icon
@@ -40,19 +43,24 @@
                 = number_with_delimiter @stats[:todo], delimiter: "'"
                 \/
                 = number_to_human_size @stats[:todo_size], precision: 2, significant: false
+
+    .tags-processing-count
+      .tags.mb-0
         %span.tag.is-info
           %span.icon-text
             %span.icon
               %i.mi settings
             %span= link_to @stats[:wip], process_index_path
+            %span.pl-1 WIP
         %span.tag.is-info
           %span.icon-text
             %span.icon
               %i.mi library_books
             %span= link_to @stats[:epub], epub_doujinshi_path
+            %span.pl-1 ePub
 
     .tags
-      .tags.has-addons.mr-4.mb-0
+      .tags.mb-0
         -#%span.tag.is-info.is-light
         -#  %span.icon-text
         -#    %span.icon
