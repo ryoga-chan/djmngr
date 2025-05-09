@@ -3,7 +3,7 @@
     style: "display: inline-block; margin: 1rem 2rem 10rem 2rem; padding: 1rem; background-color: white; color: black; border: 2px outset silver; border-radius: 1rem;"
 
 .columns
-  .column.has-text-centered
+  .column.has-text-centered.is-4-tablet
     %span.tag.is-hidden-mobile.mb-5 counters
     
     .tags
@@ -74,7 +74,7 @@
               %i.mi local_offer
             %span= link_to number_with_delimiter(@stats[:mdt], delimiter: "'"), themes_path
 
-  .column.is-2-desktop.is-3-tablet.has-text-centered
+  .column.has-text-centered.is-3-desktop
     %span.tag.is-hidden-mobile.mb-5 random picks
     
     %hr.is-hidden-tablet.my-0
@@ -109,7 +109,7 @@
   
     %hr.is-hidden-tablet.my-0.mt-3
     
-  .column.is-5-desktop.is-4-tablet.has-text-centered
+  .column.has-text-centered
     %span.tag.is-hidden-mobile.mb-5
       scoring distribution over
       = number_with_delimiter @stats[:dj], delimiter: "'"
@@ -122,8 +122,8 @@
         - if @pie_slices_css
           .pie-chart{style: "width: 12rem; height: 12rem; border-radius: 50%; margin: auto; background: conic-gradient(#{@pie_slices_css.join ', '})"}
 
-      .column.is-family-monospace
-        .pie-legend.tags
+      .column.is-family-monospace.is-size-7
+        .pie-legend.tags.is-justify-content-center
           - @scores.each_with_index do |pair, i|
             - score, data = pair
             %span.tags.has-addons.mr-2.mb-0{title: "#{data[:n]} doujinshi"}
@@ -132,7 +132,7 @@
                 = link_to scored_doujinshi_path(score_min: score, score_max: score) do
                   %span<>= score
                   \/
-                  %span.is-size-8<>= score != :ND ? Setting.score_labels[score] : 'None'
+                  %span<>= score != :ND ? Setting.score_labels[score] : 'None'
 
 - if @last_djs.any?
   .has-text-centered
