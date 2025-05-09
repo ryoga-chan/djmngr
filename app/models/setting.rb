@@ -83,4 +83,8 @@ class Setting < ApplicationRecord
         s.value.to_s.split('|')
       }.compact
   end # self.search_engines
+
+  def self.score_labels
+    @@score_labels ||= self[:score_labels].to_s.split(',').unshift(nil)
+  end # self.score_labels
 end

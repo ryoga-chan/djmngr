@@ -76,7 +76,8 @@
               %br.is-hidden-desktop
               %span.icon.mr-1.is-hidden-desktop
             %span.icon.is-medium.in-text.set-score.mr-4.mb-5{data: {score: i},
-              class: (i <= @info[:score].to_i ? 'has-text-warning' : ''), title: i}
+              title: Setting.score_labels[i],
+              class: (i <= @info[:score].to_i ? 'has-text-warning' : '') }
               %i.mi.mi-medium= i <= @info[:score].to_i ? :star_rate : :star_outline
               %span= i
           %span.icon.is-medium.in-text.clear-score{data: {score: 0}}

@@ -25,6 +25,7 @@ Rails.application.config.after_initialize do
           { key: 'process_aps'      , value: 0.6, notes: 'max average page size (in MiB) in process section (a warning is shown when exceeding this value)' },
           { key: 'basic_auth'       , value: '', notes: 'enable basic auth for PCs, input format = "user:password"' },
           { key: 'ehentai_auth'     , value: '', notes: 'optional ehentai credentials, input format = "user:password"' },
+          { key: 'score_labels'     , value: 'Terrible,Poor,Satisfactory,Mediocre,Fair,Good,Very Good,Excellent,Outstanding,Perfect', notes: 'scoring tooltips (1-10), input format = "a,b,c,..."', startup: true },
           # image hashing max hamming distance -- less than ~20% (13/64) different bits
           { key: 'hd_phash'         , value: 13, notes: 'max hamming distance for pHash image similarity' , startup: true },
           { key: 'hd_sdhash'        , value: 13, notes: 'max hamming distance for sdHash image similarity', startup: true },
