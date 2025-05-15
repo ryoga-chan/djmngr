@@ -73,6 +73,7 @@
         %span.scoring.fillwidth
           - (1..10).each do |i|
             - if i == 6
+              %span.is-size-7.is-hidden-desktop= Setting.score_labels[@info[:score].to_i]
               %br.is-hidden-desktop
               %span.icon.mr-1.is-hidden-desktop
             %span.icon.is-medium.in-text.set-score.mr-4.mb-5{data: {score: i},

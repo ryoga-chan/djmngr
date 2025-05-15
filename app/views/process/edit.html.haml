@@ -24,7 +24,8 @@
   - if @info[:prepared_at]
 
     .title
-      Archive processing
+      Archive
+      %a(href=process_index_path) processing
       %br.is-hidden-tablet
       %span.is-size-5= @info[:prepared_at].strftime '@ %F %H:%M'
     .subtitle= @fname
