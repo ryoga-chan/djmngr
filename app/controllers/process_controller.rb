@@ -54,7 +54,7 @@ class ProcessController < ApplicationController
           map{|f| f.ends_with?('/file.zip') ? 0 : File.size(f) rescue 0 }.sum
         YAML.unsafe_load_file(f).merge tot_size: tot_size
       }.sort_by_method('[]', :relative_path)
-      @preparing_paths = @preparing.map{|i| i[:relative_path] }
+      @preparing_paths = @preparing.map{|i| i[:relative_path] }.flatten
     end
 
     files_glob = File.join Setting['dir.sorting'], 'batch_*.yml'
