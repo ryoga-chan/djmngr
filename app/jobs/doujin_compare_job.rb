@@ -72,13 +72,18 @@ class DoujinCompareJob < ApplicationJob
       info[:sampled  ] = all_entries.size != thumb_entries.size
 
       thumb_entries.each do |e|
-        thumb = Vips::Image.webp_cropped_thumb \
-          e.get_input_stream.read,
-          width: THUMB_SIZE[:width],
-          height: THUMB_SIZE[:height],
-          padding: false
-        info[:max_height] = thumb[:height] if thumb[:height] > info[:max_height]
-        info[:images] << { name: e.name, data: Base64.encode64(thumb[:image].webpsave_buffer).chomp }
+        begin
+          thumb = Vips::Image.webp_cropped_thumb(
+            e.get_input_stream.read,
+            width: THUMB_SIZE[:width],
+            height: THUMB_SIZE[:height],
+            padding: false
+          )[:image]
+        rescue
+          thumb = ProcessableDoujin.img_not_found
+        end
+        info[:max_height] = thumb.height if thumb.height > info[:max_height]
+        info[:images] << { name: e.name, data: Base64.encode64(thumb.webpsave_buffer).chomp }
       end
     end
 
