@@ -43,7 +43,7 @@
                 class: 'has-text-danger', title: 'delete processing folder')
               %td.has-text-right= number_to_human_size f[:tot_size]
               - lbl = f[:relative_path].one? ? f[:relative_path].first : f[:title]
-              - lbl = "📥 #{h File.basename(lbl, '.zip')}" if f[:file_path].first.start_with?(ImageToDummyArchive::TMP_DIR)
+              - lbl = "📥 #{h File.basename(lbl, '.zip')}".html_safe if f[:file_path].first.start_with?(ImageToDummyArchive::TMP_DIR)
               %td= link_to lbl, {action: :edit, id: f[:working_dir]}, class: 'process-wip'
 
     -# files listing
