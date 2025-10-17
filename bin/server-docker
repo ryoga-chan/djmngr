@@ -14,4 +14,4 @@ if [ -z "${LD_PRELOAD+x}" ] && [ -f /usr/lib/*/libjemalloc.so.2 ]; then
   export LD_PRELOAD="$(echo /usr/lib/*/libjemalloc.so.2)"
 fi
 
-exec su -w LD_PRELOAD -c "cd /app ; bundle exec ./bin/server p" rails
+exec su -w LD_PRELOAD -c "cd /app ; bundle exec ./bin/server p -static" rails
