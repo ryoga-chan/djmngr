@@ -2,7 +2,7 @@ module ApplicationHelper
   B64_GIF_TRASPARENT = 'R0lGODlhAgADAPAAAAAAAAAAACH5BAEAAAAALAAAAAACAAMAAAIChF8AOw=='
 
   def is_ereader_browser?
-    %w[ Kobo Kindle NOOK ].any?{|i| request.user_agent.include? i }
+    %w[ Kobo Kindle NOOK ].any?{|i| request.user_agent&.include? i }
   end # is_ereader?
 
   def inline_image_tag(mime, b64_data, options = {})
