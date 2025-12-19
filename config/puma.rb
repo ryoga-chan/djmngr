@@ -43,8 +43,8 @@ pidfile ENV["PIDFILE"] if ENV["PIDFILE"]
 # runs in the Puma master process after it boots or restart completes
 on_booted do
   # change process title
-  t  = "ruby:djmngr-#{APP_MODE}"
-  t += "#{t}-dev" unless Rails.env.production?
+  t = "ruby:djmngr-#{APP_MODE}"
+  t = "#{t}-dev" unless Rails.env.production?
   Process.setproctitle t
 
   DbDumper.periodic_dump
