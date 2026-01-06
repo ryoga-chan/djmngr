@@ -122,11 +122,23 @@
               %i.mi dynamic_feed
             %span Clear dupes data
 
+          %span.navbar-item(title="JSON file from \"Get cookies.txt LOCALLY\" Chrome extension")
+            = form_with url: set_eh_cookies_process_index_path, method: :post, html: {style: 'margin-left: -0.6rem'} do |f|
+              .file.is-primary
+                %label.file-label
+                  = f.file_field :eh_cookies, class: 'file-input', id: '',
+                    onchange: %Q|$(this).next().find('i.mi').text('hourglass_bottom'); MyApp.show_loading(); this.form.submit()|
+                  %span.file-cta
+                    %span.file-icon.mr-3
+                      %i.mi cookie
+                    %span.file-label
+                      Import E-Hentai cookies
+
           = link_to clear_process_index_path(what: :eh_cookies), class: 'navbar-item no-spinner',
             data: { confirm: 'clear EH cookies?' } do
             %span.icon
               %i.mi cookie
-            %span Clear EH cookies
+            %span Clear E-Hentai cookies
 
           = link_to '#', class: 'navbar-item no-spinner', onclick: "MyApp.toggle_fullscreen(); return false" do
             %span.icon

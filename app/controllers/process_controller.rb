@@ -781,7 +781,22 @@ class ProcessController < ApplicationController
     end
 
     redirect_to process_index_path, notice: msg
-  end # process_later
+  end # clear
+
+  def set_eh_cookies
+    return redirect_to(root_path, alert: "no file uploaded") unless request.post? && params[:eh_cookies]
+
+    mime = Marcel::MimeType.for params[:eh_cookies], name: params[:eh_cookies].original_filename, declared_type: params[:eh_cookies].content_type
+    return redirect_to(root_path, alert: "invalid JSON file") if mime != Marcel::MimeType.for(extension: :'.json')
+
+    begin
+      data = JSON.parse(params[:eh_cookies].tempfile.read).to_yaml
+      File.write Ws::EHentai.cookies_path, data
+      redirect_to root_path, notice: "E-Hentai cookies imported"
+    rescue
+      redirect_to root_path, alert: "error parsing E-Hentai cookies file (#{$!.to_s})"
+    end
+  end # set_eh_cookies
 
 
   private # ____________________________________________________________________

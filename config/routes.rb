@@ -35,6 +35,7 @@ Rails.application.routes.draw do
       get     :batch_rehash
       get     :sample_images
       get     :clear
+      post    :set_eh_cookies
       get     :compare_add
       get     :compare_remove
     end # collection

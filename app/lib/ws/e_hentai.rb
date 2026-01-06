@@ -37,23 +37,25 @@ module Ws::EHentai
   FIELDS = %i[ gid token title title_jpn thumb filecount filesize posted error ].freeze
 
   def self.do_login
-    return nil if Setting[:ehentai_auth].blank?
-
-    user, pass = Setting[:ehentai_auth].split(':', 2)
-
-    r = REQ.with(headers: { 'User-Agent' => ::Setting['scraper_useragent'] })
-    p = r.post 'https://forums.e-hentai.org/index.php?act=Login&CODE=01',
-      form: { UserName: user, PassWord: pass,
-              CookieDate: 1, b: :d, bt: '1-1', ipb_login_submit: 'Login!' }
-    return nil unless p.to_s.include?('You are now logged in')
-
-    p = r.get 'https://e-hentai.org/bounce_login.php?b=d&bt=1-1'
-    return nil unless p.to_s.include?('Moderation Power')
-
-    r
+    return nil # e-hentai login page protected by cloudflare since 2026-01
+    
+    #return nil if Setting[:ehentai_auth].blank?
+    #
+    #user, pass = Setting[:ehentai_auth].split(':', 2)
+    #
+    #r = REQ.with(headers: { 'User-Agent' => ::Setting['scraper_useragent'] })
+    #p = r.post 'https://forums.e-hentai.org/index.php?act=Login&CODE=01',
+    #  form: { UserName: user, PassWord: pass,
+    #          CookieDate: 1, b: :d, bt: '1-1', ipb_login_submit: 'Login!' }
+    #return nil unless p.to_s.include?('You are now logged in')
+    #
+    #p = r.get 'https://e-hentai.org/bounce_login.php?b=d&bt=1-1'
+    #return nil unless p.to_s.include?('Moderation Power')
+    #
+    #r
   end # self.do_login
 
-  def self.cookies_path = File.join(Setting[:'dir.sorting'], 'eh-cookies.yml')
+  def self.cookies_path = Rails.root.join('tmp', 'eh-cookies.yml').to_s
 
   def self.dump_cookies(req, fpath)
     return unless req
