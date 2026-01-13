@@ -154,7 +154,7 @@ module Ws::EHentai
 
       # extract galleries ID & token
       results = resp.body.to_s.
-        split('"').grep(/https:\/\/#{site}.org\/g\/[0-9]+\/[^\/]+\//).
+        split('"').grep(/https:\/\/#{site}.org\/g\/[0-9]+\/[^\/]+\//).uniq.
         map{|url| url.split('/')[-2..-1] }
       return result(:no_results) if results.empty?
 
@@ -164,7 +164,9 @@ module Ws::EHentai
         post '/api.php'.freeze, json: { method: :gdata, gidlist: results, namespace: 1 }
       return result(:server_error) if resp.status != 200
 
-      results = JSON.parse resp, symbolize_names: true rescue result(:parse)
+      results = JSON.parse resp, symbolize_names: true rescue return(result :parse)
+      return results[:error] if results[:error].present?
+      return result(:other) unless results.is_a?(Hash) && results[:gmetadata].is_a?(Array)
 
       # extract and format results
       results[:gmetadata].map do |r|
