@@ -794,7 +794,7 @@ class ProcessController < ApplicationController
       File.write Ws::EHentai.cookies_path, data
       redirect_to root_path, notice: "E-Hentai cookies imported"
     rescue
-      redirect_to root_path, alert: "error parsing E-Hentai cookies file (#{$!.to_s})"
+      redirect_to root_path, alert: "error parsing E-Hentai cookies file (#{$!})"
     end
   end # set_eh_cookies
 

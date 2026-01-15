@@ -8,7 +8,7 @@ module ProcessHelper
   # highlight multiple spaces where present
   def hl_multispace(str)
     h(str).gsub(/( {2,})/) do |m|
-      %Q|<span class="has-background-warning">#{'&nbsp;' * m.size}</span>|
+      %Q(<span class="has-background-warning">#{'&nbsp;' * m.size}</span>)
     end.html_safe
   end # hl_multispace
 end

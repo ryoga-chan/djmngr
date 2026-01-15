@@ -7,7 +7,7 @@ Rails.application.config.assets.version = "1.0"
 # Rails.application.config.assets.paths << Emoji.images_path
 
 # config/initializers/dartsass.rb
-base_path  = Rails.root.join('app','assets','stylesheets').to_s
+base_path  = Rails.root.join('app', 'assets', 'stylesheets').to_s
 css_assets = Dir[ File.join(base_path, '*.scss').to_s ].sort
 Rails.application.config.dartsass.builds = css_assets.inject({}) do |h, f|
   # { input_relative_filename.scss => output_filename.css }

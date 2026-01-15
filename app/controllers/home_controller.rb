@@ -44,10 +44,10 @@ class HomeController < ApplicationController
       end
     end
   end # index
-  
+
   def recent
     records = Doujin.order(created_at: :desc).page(params[:page]).per(12)
-    
+
     render partial: 'doujinshi/thumbs_row', layout: false,
       locals: { short_label: true, show_name_orig: true, show_categ: true,
                 images_ondemand: true, doujinshi: records }

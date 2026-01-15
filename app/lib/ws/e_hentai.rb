@@ -36,9 +36,8 @@ module Ws::EHentai
 
   FIELDS = %i[ gid token title title_jpn thumb filecount filesize posted error ].freeze
 
+  # NOTE: login page is protected by cloudflare since 2026-01
   def self.do_login
-    return nil # e-hentai login page protected by cloudflare since 2026-01
-    
     #return nil if Setting[:ehentai_auth].blank?
     #
     #user, pass = Setting[:ehentai_auth].split(':', 2)
