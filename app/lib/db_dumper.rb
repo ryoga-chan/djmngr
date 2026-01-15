@@ -1,4 +1,6 @@
 module DbDumper
+  FPRINT_FILE = Rails.root.join('tmp', 'db-periodic_dump.stats').to_s
+
   # create dump of production DB and return the file name
   #   - dump   : sqlite3 db.sqlite3 .dump | zstd -6 > db.sql.zst
   #   - restore: unzstd db.sql.zst | sqlite3 db.sqlite3
@@ -26,19 +28,17 @@ module DbDumper
 
   # periodically dump DB
   def self.periodic_dump
-    fp_file = File.join(Setting['dir.sorting'], 'db-fingerprint.txt').to_s
-
     Thread.new{
-      File.write fp_file, db_fingerprint
+      File.write FPRINT_FILE, db_fingerprint
 
       loop {
         sleep(Time.now.tomorrow.at_midnight + 4.hours - Time.now) # wait till 4AM
 
-        f1 = File.read fp_file
+        f1 = File.read FPRINT_FILE
         f2 = db_fingerprint
 
         if f1 != f2
-          File.write fp_file, f2
+          File.write FPRINT_FILE, f2
           dump
           clean
         end
