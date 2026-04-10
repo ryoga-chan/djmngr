@@ -279,7 +279,7 @@ class ProcessController < ApplicationController
 
     ArchiveUtils.check_filename_collisions @info
 
-    File.open(File.join(@dname, 'info.yml'), 'w'){|f| f.puts @info.to_yaml }
+    File.atomic_write(File.join @dname, 'info.yml'){|f| f.puts @info.to_yaml }
 
     # redirect to next tabs when deleting images from "Pics" tab
     if params[:tab] == 'images'
@@ -383,7 +383,7 @@ class ProcessController < ApplicationController
       info_changed = true
     end
 
-    File.open(File.join(@dname, 'info.yml'), 'w'){|f| f.puts @info.to_yaml } if info_changed
+    File.atomic_write(File.join @dname, 'info.yml'){|f| f.puts @info.to_yaml } if info_changed
 
     if params[:button] == 'finalize'
       redirect_to finalize_volume_process_path(id: params[:id], confirm: true)
@@ -437,7 +437,7 @@ class ProcessController < ApplicationController
           @info = @info.slice! :cover_hash, :cover_results, :cover_status # reset @info
           cover_path = ProcessArchiveDecompressJob.cover_path @dname, @info
           @info[:cover_hash] = CoverMatchingJob.hash_image(cover_path, hash_only: true)
-          File.open(File.join(@dname, 'info.yml'), 'w'){|f| f.puts @info.to_yaml }
+          File.atomic_write(File.join @dname, 'info.yml'){|f| f.puts @info.to_yaml }
           CoverMatchingJob.perform_now @info[:cover_hash][:phash], @info[:cover_hash][:sdhash]
         end
 
@@ -452,7 +452,7 @@ class ProcessController < ApplicationController
             @info[:cover_results_deleted] = cover_matching[:results_deleted]
             @info[:cover_status         ] = cover_matching[:status]
             @info[:dupes_found] = cover_matching[:results].try(:any?) || cover_matching[:results_deleted].try(:any?)
-            File.open(File.join(@dname, 'info.yml'), 'w'){|f| f.puts @info.to_yaml }
+            File.atomic_write(File.join @dname, 'info.yml'){|f| f.puts @info.to_yaml }
           else
             @info[:cover_status] = cover_matching
           end
@@ -570,7 +570,7 @@ class ProcessController < ApplicationController
 
       ProcessArchiveDecompressJob.crop_landscape_cover @dname, @info, @info[:landscape_cover_method]
 
-      File.open(File.join(@dname, 'info.yml'), 'w'){|f| f.puts @info.to_yaml }
+      File.atomic_write(File.join @dname, 'info.yml'){|f| f.puts @info.to_yaml }
 
       redirect_to edit_process_path(id: params[:id], tab: params[:tab])
     rescue
@@ -596,7 +596,7 @@ class ProcessController < ApplicationController
     if el
       ProcessArchiveDecompressJob.crop_landscape_cover @dname, @info, @info[:landscape_cover_method]
 
-      File.open(File.join(@dname, 'info.yml'), 'w'){|f| f.puts @info.to_yaml }
+      File.atomic_write(File.join @dname, 'info.yml'){|f| f.puts @info.to_yaml }
       render(json: {result: 'ok'})
     else
       render(json: {result: 'err', msg: "image not found [#{params[:name]}]" })
@@ -722,7 +722,7 @@ class ProcessController < ApplicationController
     ArchiveUtils.check_filename_collisions @info
 
     # update info
-    File.open(File.join(@dname, 'info.yml'), 'w'){|f| f.puts @info.to_yaml }
+    File.atomic_write(File.join @dname, 'info.yml'){|f| f.puts @info.to_yaml }
 
     num_injected = params[:files]&.size.to_i + params[:paths]&.size.to_i
     redirect_to edit_process_path(id: params[:id], tab: params[:tab]),

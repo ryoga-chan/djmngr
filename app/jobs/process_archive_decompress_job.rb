@@ -141,7 +141,7 @@ class ProcessArchiveDecompressJob < ApplicationJob
     info[:images].unshift dst_data
 
     # update data file
-    File.open(File.join(dst_dir, 'info.yml'), 'w'){|f| f.puts info.to_yaml } if save_info
+    File.atomic_write(File.join(dst_dir, 'info.yml')){|f| f.puts info.to_yaml } if save_info
 
     info
   end # self.duplicate_cover
@@ -179,7 +179,7 @@ class ProcessArchiveDecompressJob < ApplicationJob
     ArchiveUtils.check_filename_collisions info if check_collisions
 
     # update data file
-    File.open(File.join(dst_dir, 'info.yml'), 'w'){|f| f.puts info.to_yaml } if save_info
+    File.atomic_write(File.join(dst_dir, 'info.yml')){|f| f.puts info.to_yaml } if save_info
 
     info
   end # self.inject_file
@@ -197,7 +197,7 @@ class ProcessArchiveDecompressJob < ApplicationJob
     img = Vips::Image.new_from_file File.join(dst_dir, 'contents', info[:images].first[:src_path  ])
     info[:landscape_cover] = img.is_landscape?
 
-    File.open(File.join(dst_dir, 'info.yml'), 'w'){|f| f.puts info.to_yaml } if save_info
+    File.atomic_write(File.join(dst_dir, 'info.yml')){|f| f.puts info.to_yaml } if save_info
 
     info
   end # self.refresh_cover_thumb
