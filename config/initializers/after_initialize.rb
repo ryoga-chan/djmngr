@@ -24,6 +24,7 @@ Rails.application.config.after_initialize do
           { key: 'process_img_sel'  , value: '-', notes: 'image selection mode for "Images" tab in process section' },
           { key: 'process_epp'      , value: 25, notes: 'entries per page in process section' },
           { key: 'process_aps'      , value: 0.6, notes: 'max average page size (in MiB) in process section (a warning is shown when exceeding this value)' },
+          { key: 'process_ppc'      , value: 4, notes: 'number of pages to consider for cover image preview generation' },
           { key: 'basic_auth'       , value: '', notes: 'enable basic auth for PCs, input format = "user:password"' },
           #{ key: 'ehentai_auth'     , value: '', notes: 'optional ehentai credentials, input format = "user:password"' },
           { key: 'score_labels'     , value: 'Terrible,Poor,Satisfactory,Mediocre,Fair,Good,Very Good,Excellent,Outstanding,Perfect', notes: 'scoring tooltips (1-10), input format = "a,b,c,..."', startup: true },

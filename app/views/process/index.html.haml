@@ -81,7 +81,7 @@
                 .dropdown-content
                   .dropdown-item
                     = link_to({job: :preview, sort_by: params[:sort_by], page: params[:page], term: params[:term]},
-                              data: {confirm: "Generate previews for #{ProcessIndexPreviewJob::PAGES_TO_PROCESS} pages of entries?"},
+                              data: {confirm: "Generate previews for #{Setting['process_ppc']} pages of entries?"},
                               class: 'button is-info w100 is-justify-content-left') do
                       %span.icon-text
                         %span.icon
